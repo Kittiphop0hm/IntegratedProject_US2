@@ -1,6 +1,23 @@
 <script setup>
+import { onMounted } from 'vue';
 import Navbar from '../components/Navbar.vue'
 import SaleItemGallery from '../components/SaleItemGallery.vue'
+import {getItems} from '../libs/fetchUtil'
+import { ref } from 'vue';
+
+const myProducts = ref([])
+
+onMounted( async () => {
+    try{
+        myProducts.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
+        console.log(myProducts.value)
+    }
+    catch(error){
+       console.log(error)
+        
+    }
+})
+
 </script>
 
 <template>
@@ -34,8 +51,8 @@ import SaleItemGallery from '../components/SaleItemGallery.vue'
       </div>
     </div>
   </div>
-
-  <!-- แสดงรายการสินค้า -->
   <SaleItemGallery />
+
+
 </template>
 
