@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `INT221_db`.`saleItem` (
   `description` VARCHAR(400) NOT NULL,
   `price` INT NOT NULL,
   `ramGb` INT NULL,
-  `screenSizeInch` DECIMAL NULL,
+  `screenSizeInch` DECIMAL(7,2) NULL,
   `storageGb` INT NULL,
   `color` VARCHAR(45) NULL,
   `quantity` INT NOT NULL DEFAULT 1,
