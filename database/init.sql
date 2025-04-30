@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `INT221_db`.`saleItem` (
   `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `brand_id` INT NOT NULL,
-  PRIMARY KEY (`id`, `brand_id`),
+  PRIMARY KEY (`id`),
   INDEX `fk_saleItem_brand1_idx` (`brand_id` ASC) VISIBLE,
   CONSTRAINT `fk_saleItem_brand1`
     FOREIGN KEY (`brand_id`)
