@@ -8,34 +8,43 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: INT221_db
+      TZ: Asia/Bangkok
     ports:
       - "3306:3306"
+    networks:
+      - mynetwork
     healthcheck:
-      test: ["CMD","mysqladmin","ping","-h","localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       retries: 3
       start_period: 5s
-      
-
 
   be:
     build: ./backend
     container_name: be-container
-    ports: 
+    ports:
       - "8080:8080"
+    networks:
+      - mynetwork
     depends_on:
-      - db
+            db:
+              condition: service_healthy
 
-   fe:
-    build: 
+  fe:
+    build:
       context: ./frontend
-      dockerfile: dockerfile_Dev
+      dockerfile: dockerfile_Prod
     container_name: fe-container
     ports:
-      - "5173:5713"
+      - "8085:80"
+    networks:
+      - mynetwork
     depends_on:
-      - be    
-
+      - be
 
 volumes:
   mysql-data:
+
+networks:
+  mynetwork:
+    driver: bridge
