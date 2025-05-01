@@ -6,5 +6,4 @@ import TagAlert from './TagAlert.vue';
 <template>
     <TagAlert/>
     <Navbar/>
-    <div class="text-2xl"> Landing Page</div>
 </template>
