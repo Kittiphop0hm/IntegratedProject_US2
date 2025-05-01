@@ -17,10 +17,6 @@
             </div>
         </div>
     </div>
-
-
-
-
     <div class="carousel rounded-box w-full">
         <div class="carousel-item w-1/4">
             <img
@@ -57,5 +53,5 @@
             src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp"
             class="w-full" />
         </div>
-        </div>
+    </div>
 </template>
