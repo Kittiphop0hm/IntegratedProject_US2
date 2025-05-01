@@ -28,6 +28,7 @@ onMounted(async () => {
       class="border rounded-xl shadow hover:shadow-md p-4 transition duration-300 ease-in-out cursor-pointer Itbms-row"
     >
       <router-link :to="{ name: 'SaleItemDetail', params: { id: item.id } }" class="block">
+
         <img
         src="/iPhone14ProMax.jpg"
         alt="phone image"
@@ -43,7 +44,7 @@ onMounted(async () => {
         </div>
 
         <div class="text-sm mt-1 Itbms-storageGb">
-          {{ item.storageGb }}<span class="Itbms-storageGb"> GB</span>
+          {{ item.storageGb }}<span> GB</span>
         </div>
 
         <div class="text-blue-600 text-lg font-bold mt-2 Itbms-price">
