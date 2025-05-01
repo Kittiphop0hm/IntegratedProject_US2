@@ -18,7 +18,7 @@ onMounted(async () => {
     if (data && data.id) {
       item.value = data;
     } else {
-      error.value = "The requested item was not found.";
+      error.value = "The requested sale item does not exist.";
     }
   } catch (err) {
     console.error(err);
@@ -126,17 +126,18 @@ function goToHome() {
 
   <!-- Error Popup -->
   <div
-    v-show="error"
-    class="fixed top-10 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-500 text-red-700 px-6 py-4 rounded-md shadow-md transition-opacity duration-300"
-  >
-    <div class="flex items-center justify-between space-x-4">
-      <p>{{ error }}</p>
-      <button
-        @click="goToHome"
-        class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-      >
-        Go Home
-      </button>
-    </div>
+  v-show="error"
+  class="Itbms-message fixed top-10 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-500 text-red-700 px-6 py-4 rounded-md shadow-md transition-opacity duration-300"
+>
+  <div class="flex flex-col items-center justify-between space-y-4">
+    <p>{{ error }}</p>
+    <button
+      @click="goToHome"
+      class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 Itbms-button"
+    >
+      OK
+    </button>
   </div>
+</div>
+
 </template>
