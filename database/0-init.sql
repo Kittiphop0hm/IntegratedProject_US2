@@ -19,8 +19,8 @@ USE `INT221_db` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `INT221_db`.`products` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(60) NOT NULL,
-  `description` VARCHAR(400) NULL,
+  `name` VARCHAR(60) NOT NULL CHECK (name <> ''),
+  `description` VARCHAR(400) NULL CHECK (description <> ''),
   `stock` INT(10) NOT NULL,
   `price` INT(10) NOT NULL,
   `brand` VARCHAR(45) NOT NULL,
@@ -35,10 +35,10 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `INT221_db`.`brand` (
   `id` INT NOT NULL,
-  `name` VARCHAR(30) NOT NULL,
-  `websiteUrl` VARCHAR(40) NULL,
-  `isActive` TINYINT NULL DEFAULT 0,
-  `countryOfOrigin` VARCHAR(80) NULL,
+  `name` VARCHAR(30) NOT NULL CHECK (TRIM(name) <> ''),
+  `websiteUrl` VARCHAR(40) NULL CHECK (websiteUrl <> ''),
+  `isActive` TINYINT NULL DEFAULT 0 ,
+  `countryOfOrigin` VARCHAR(80) NULL CHECK (countryOfOrigin <> ''),
   `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
@@ -50,13 +50,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `INT221_db`.`saleItem` (
   `id` INT NOT NULL,
-  `model` VARCHAR(60) NOT NULL,
-  `description` VARCHAR(400) NOT NULL,
+  `model` VARCHAR(60) NOT NULL CHECK (TRIM(model) <> ''),
+  `description` VARCHAR(400) NOT NULL CHECK (TRIM(description) <> '') ,
   `price` INT NOT NULL,
   `ramGb` INT NULL,
   `screenSizeInch` DECIMAL(7,2) NULL,
   `storageGb` INT NULL,
-  `color` VARCHAR(45) NULL,
+  `color` VARCHAR(45) NULL CHECK (color <> ''),
   `quantity` INT NOT NULL DEFAULT 1,
   `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
