@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from 'vue';
-import Navbar from '../components/Navbar.vue'
+import Navbar from './Navbar.vue'
 import SaleItemGallery from '../components/SaleItemGallery.vue'
 import {getItems} from '../libs/fetchUtil'
 import { ref } from 'vue';
