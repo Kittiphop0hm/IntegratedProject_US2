@@ -9,8 +9,8 @@ const isBurgerBar = ref(false)
 <template>
   <nav class="w-full max-h-[90px]">
     <div class="w-full h-[90px] border-b border-gray-300 px-10 flex justify-between items-center">
-      <router-link>
-          <h1 class="font-bold text-xl">ITB-MSHOP</h1>
+      <router-link to="/">
+          <h1 class="font-bold text-xl cursor-pointer hover:opacity-70">ITB-MSHOP</h1>
       </router-link>
 
       <div class="flex justify-center items-center text-lg m-auto max-md:hidden">
@@ -18,7 +18,7 @@ const isBurgerBar = ref(false)
           <router-link class="font-semibold">Home</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link>Product</router-link>
+          <router-link to="/sale-items">Product</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
           <router-link>About</router-link>

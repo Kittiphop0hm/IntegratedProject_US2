@@ -1,57 +1,26 @@
 <script setup>
-
+import { ref } from 'vue';
 
 </script>
 
 <template>
-    <div class="hero min-h-[80vh]" style="background-image: url(https://www.fgdc.gov/img/slider/slider-bg-network.jpg/image);">
-        <div class="hero-overlay"></div>
-        <div class="hero-content text-neutral-content text-center">
-            <div class="max-w-md">
-            <h1 class="mb-5 text-5xl font-bold">Hello there</h1>
-            <p class="mb-5">
-                Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                quasi. In deleniti eaque aut repudiandae et a id nisi.
-            </p>
-            <button class="btn btn-primary">Get Started</button>
+    <div class="w-full max-h-[632px]">
+        <div class="w-full h-[632px] bg-[#211C24] text-white overflow-hidden flex flex-row justify-between items-center px-[100px] xl:px-[160px]">
+            <div class="w-[50%]">
+                <h1 class="text-4xl font-bold">ITB-MSHOP</h1>
+                <p>The phone you’ve always wanted is just a click away. Grab it before it’s gone!</p>
+                <router-link to="/sale-items">
+                    <button class="border border-white py-3 px-10 mt-5 cursor-pointer hover:opacity-70">
+                        Shop now
+                    </button>
+                </router-link>
+            </div>
+            <div>
+                <img src="/images/Iphone-cta.png" alt="iphone-cta">
             </div>
         </div>
     </div>
-    <div class="carousel rounded-box w-full">
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.webp"
-            class="w-full" />
-        </div>
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp"
-            class="w-full" />
-        </div>
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1572635148818-ef6fd45eb394.webp"
-            class="w-full" />
-        </div>
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1494253109108-2e30c049369b.webp"
-            class="w-full" />
-        </div>
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1550258987-190a2d41a8ba.webp"
-            class="w-full" />
-        </div>
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1559181567-c3190ca9959b.webp"
-            class="w-full" />
-        </div>
-        <div class="carousel-item w-1/4">
-            <img
-            src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp"
-            class="w-full" />
-        </div>
-    </div>
+
+
+    
 </template>
