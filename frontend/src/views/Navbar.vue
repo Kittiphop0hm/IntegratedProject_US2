@@ -15,16 +15,16 @@ const isBurgerBar = ref(false)
 
       <div class="flex justify-center items-center text-lg m-auto max-md:hidden">
         <div class="mx-3 hover:opacity-80">
-          <router-link class="font-semibold">Home</router-link>
+          <router-link to="/" class="font-semibold">Home</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
           <router-link to="/sale-items">Product</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link>About</router-link>
+          <router-link to="/">About</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link>Contact</router-link>
+          <router-link to="/">Contact</router-link>
         </div>
       </div>
 
@@ -51,25 +51,25 @@ const isBurgerBar = ref(false)
   <div v-show="isBurgerBar" class="w-full h-full md:hidden">
     <div class="flex flex-col justify-center items-center border-b border-gray-300 p-3">
         <div class="my-3 hover:opacity-80">
-          <router-link>Home</router-link>
+          <router-link to="/">Home</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <router-link>Product</router-link>
+          <router-link to="/sale-items">Product</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <router-link>About</router-link>
+          <router-link to="/">About</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <router-link>Contact</router-link>
+          <router-link to="/">Contact</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <router-link>Like</router-link>
+          <router-link to="/">Like</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <router-link>Carts</router-link>
+          <router-link to="/">Carts</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <router-link>Login</router-link>
+          <router-link to="/">Login</router-link>
         </div>
     </div>
   </div>
