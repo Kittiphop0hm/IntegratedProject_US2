@@ -10,7 +10,7 @@ import { ref } from 'vue';
                 <h1 class="text-4xl font-bold my-3 max-md:text-3xl">ITB-MSHOP</h1>
                 <p class="max-md:text-center max-md:text-sm">The phone you’ve always wanted is just a click away. Grab it before it’s gone!</p>
                 <router-link to="/sale-items">
-                    <button class="border border-white w-[191px] h-[56px] px-10 mt-5 rounded-lg cursor-pointer hover:opacity-70">
+                    <button class="Itbms-shopnow not-[]:border border-white w-[191px] h-[56px] px-10 mt-5 rounded-lg cursor-pointer hover:opacity-70">
                         Shop now
                     </button>
                 </router-link>
@@ -20,4 +20,4 @@ import { ref } from 'vue';
             </div>
         </div>
     </div>
-</template>
+</template> 
