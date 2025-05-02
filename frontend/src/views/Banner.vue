@@ -8,8 +8,6 @@ onMounted( async () => {
     try {
         const items = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
         bestSaleItems.value = items.slice(0, 4)
-        console.log(bestSaleItems.value);
-        
     } catch(error) {
         console.log(error);
     }
