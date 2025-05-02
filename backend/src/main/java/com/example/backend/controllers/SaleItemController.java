@@ -13,8 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/sale-items")
-// @CrossOrigin("http://localhost:5173/")
-@CrossOrigin("http://ip24us2.sit.kmutt.ac.th:8085/")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class SaleItemController {
     @Autowired
     private SaleItemService service;
