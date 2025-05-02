@@ -30,7 +30,7 @@ onMounted(async () => {
       <router-link :to="{ name: 'SaleItemDetail', params: { id: item.id } }" class="block">
 
         <img
-        src="/iPhone14ProMax.jpg"
+        src="/images/iPhone14ProMax.jpg"
         alt="phone image"
         class="w-full h-36 object-cover rounded-md mb-4"
       />

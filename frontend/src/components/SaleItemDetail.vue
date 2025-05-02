@@ -79,21 +79,21 @@ function goToHome() {
      
       <div class="lg:w-1/2">
         <div class=" rounded-md p-2 bg-white">
-          <img src="/iPhone14ProMax.jpg" alt="main image" class="w-full " />
+          <img src="/images/iPhone14ProMax.jpg" alt="main image" class="w-full " />
         </div>
 
         <div class="grid grid-cols-4 gap-2 mt-4">
           <div class="border border-gray-300 rounded p-1">
-            <img src="/iPhone14ProMax.jpg" alt="thumb 1" class="w-30 mx-auto" />
+            <img src="/images/iPhone14ProMax.jpg" alt="thumb 1" class="w-30 mx-auto" />
           </div>
           <div class="border border-gray-300 rounded p-1">
-            <img src="/iPhone14ProMax.jpg" alt="thumb 2" class="w-30 mx-auto" />
+            <img src="/images/iPhone14ProMax.jpg" alt="thumb 2" class="w-30 mx-auto" />
           </div>
           <div class="border border-gray-300 rounded p-1">
-            <img src="/iPhone14ProMax.jpg" alt="thumb 3" class="w-30 mx-auto" />
+            <img src="/images/iPhone14ProMax.jpg" alt="thumb 3" class="w-30 mx-auto" />
           </div>
           <div class="border border-gray-300 rounded p-1">
-            <img src="/iPhone14ProMax.jpg" alt="thumb 4" class="w-30 mx-auto" />
+            <img src="/images/iPhone14ProMax.jpg" alt="thumb 4" class="w-30 mx-auto" />
           </div>
         </div>
       </div>
