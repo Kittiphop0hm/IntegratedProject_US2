@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted , computed } from "vue";
 import { getItemById } from "../libs/fetchUtil";
 import Navbar from "../views/Navbar.vue";
 
@@ -8,8 +8,6 @@ const route = useRoute();
 const router = useRouter();
 const item = ref([]);
 const error = ref('');
-
-
 onMounted(async () => {
   try {
     const data = await getItemById(
@@ -29,8 +27,14 @@ onMounted(async () => {
 
 
 function goToHome() {
-  router.push("/");
+  router.push("/sale-items");
 }
+const formattedPrice = computed(() =>
+  item.value?.price != null ? item.value.price.toLocaleString() : '-'
+);
+
+
+
 </script>
 
 <template>
@@ -70,14 +74,14 @@ function goToHome() {
     <div class="text-gray-800 bg-white bg-opacity-70 p-2 mb-4">
       <p>
         <span class="text-blue-600">Home</span> &gt;
-        <span class="Itbms-model font-semibold">{{ item.model }}</span>
-        <span class="Itbms-ramGb font-semibold ml-1">{{ item.ramGb }}<span class="Itbms-ramGb-unit">/GB </span></span>
-        <span class="Itbms-color font-semibold">{{ item.color }}</span>
+        <span class="itbms-model font-semibold">{{ item.model }}</span>
+        <span class="itbms-ramGb font-semibold ml-1">{{ item.ramGb }}<span class="itbms-ramGb-unit">/GB </span></span>
+        <span class="itbms-color font-semibold">{{ item.color }}</span>
       </p>
     </div>
 
     
-    <div class="Itbms-row flex flex-col lg:flex-row lg:space-x-10">
+    <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
      
       <div class="lg:w-1/2">
         <div class=" rounded-md p-2 bg-white">
@@ -102,25 +106,25 @@ function goToHome() {
 
     
       <div class="lg:w-1/2 mt-8 lg:mt-0">
-        <p class="Itbms-brand text-lg mt-2">Brand: {{ item.brandName }}</p>
-        <p class="Itbms-mode text-lg mt-2">Model: {{ item.model }}</p>
-        <p class="Itbms-price text-lg text-blue-600 mt-2">
-          Price: ฿{{ item.price}} <span class="Itbms-price-unit">Baht</span>
+        <p class="itbms-brand text-lg mt-2">Brand: {{ item.brandName }}</p>
+        <p class="itbms-model text-lg mt-2">Model: {{ item.model }}</p>
+        <p class="itbms-price text-lg text-blue-600 mt-2">
+          Price: ฿ {{ formattedPrice }} Baht
         </p>
-        <p class="Itbms-description text-lg mt-2">
+        <p class="itbms-description text-lg mt-2">
           Description: <br />
           {{ item.description }}
         </p>
-        <p class="Itbms-ramGb text-lg mt-2">RAM: {{ item.ramGb }} <span class="Itbms-ramGb-unit">GB</span></p>
-        <p class="Itbms-screenSizeInch text-lg mt-2">
-          Screen size: {{ item.screenSizeInch }} <span class="Itbms-screenSizeInch-unit">inch</span>
+        <p class="itbms-ramGb text-lg mt-2">RAM: {{ item.ramGb ? item.ramGb : '-' }} <span class="itbms-ramGb-unit"> GB</span></p>
+        <p class="itbms-screenSizeInch text-lg mt-2">
+          Screen size: {{ item.screenSizeInch ? item.screenSizeInch : '-' }} <span class="itbms-screenSizeInch-unit">Inches</span>
         </p>
-        <p class="Itbms-storageGb text-lg mt-2">
-          Storage: {{ item.storageGb }} <span class="Itbms-storageGb-unit">GB</span>
+        <p class="itbms-storageGb text-lg mt-2">
+          Storage: {{ item.storageGb ? item.storageGb : '-' }} <span class="itbms-storageGb-unit">GB</span>
         </p>
-        <p class="Itbms-color text-lg mt-2">Color: {{ item.color }}</p>
-        <p class="Itbms-quantity text-lg mt-2">
-          Available quantity: {{ item.quantity }} <span class="Itbms-quantity-unit">units</span>
+        <p class="itbms-color text-lg mt-2">Color:{{ item.color ? item.color : '-' }}</p>
+        <p class="itbms-quantity text-lg mt-2">
+          Available quantity: {{ item.quantity }} <span class="itbms-quantity-unit">units</span>
         </p>
       </div>
     </div>
@@ -131,11 +135,11 @@ function goToHome() {
   v-show="error"
   class=" fixed top-15 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-500 text-red-700 px-6 py-4 rounded-md shadow-md transition-opacity duration-300"
 >
-  <div class="flex flex-col items-center justify-between space-y-4 ">
-    <p><span class="Itbms-message">{{ error }}</span></p>
+  <div class="itbms-message flex flex-col items-center justify-between space-y-4 ">
+    <p><span class="itbms-message">{{ error }}</span></p>
     <button
       @click="goToHome"
-      class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 Itbms-button"
+      class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 itbms-button"
     >
       OK
     </button>
