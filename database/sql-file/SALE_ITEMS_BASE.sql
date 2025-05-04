@@ -36,7 +36,7 @@ VALUES
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
 (
-8, 2, 'iPhone 14 Plus', '"iPhone 14 Plus 128GB สี Starlight เครื่องศูนย์ไทย โมเดล TH แบต 100% มีกล่องครบ ประกันศูนย์ถึง พ.ย. 68 ส่งฟรี"', 7, 29700, 6.7, 6, 256, 'Blue'
+8, 2, 'iPhone 14 Plus', 'iPhone 14 Plus 128GB สี Starlight เครื่องศูนย์ไทย โมเดล TH แบต 100% มีกล่องครบ ประกันศูนย์ถึง พ.ย. 68 ส่งฟรี', 7, 29700, 6.7, 6, 256, 'Blue'
 );
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
@@ -51,7 +51,7 @@ VALUES
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
 (
-16, 1, 'Galaxy S23 Ultra', '"Samsung Galaxy S23 Ultra 512GB สีดำปีศาจ สภาพนางฟ้า 99% ไร้รอย แถมเคสแท้ แบตอึดสุดๆ รองรับปากกา S-Pen อุปกรณ์ครบกล่อง ประกันศูนย์เหลือ 6 เดือน ส่งฟรี"', 6, 39600, 6.8, 0, 512, '<null>'
+16, 1, 'Galaxy S23 Ultra', 'Samsung Galaxy S23 Ultra 512GB สีดำปีศาจ สภาพนางฟ้า 99% ไร้รอย แถมเคสแท้ แบตอึดสุดๆ รองรับปากกา S-Pen อุปกรณ์ครบกล่อง ประกันศูนย์เหลือ 6 เดือน ส่งฟรี', 6, 39600, 6.8, 0, 512, '<null>'
 );
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
@@ -106,7 +106,7 @@ VALUES
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
 (
-32, 3, '13T Pro', '"Xiaomi 13T Pro 12/512GB สี Meadow Green ชิป Dimensity 9200+ เร็วแรง กล้อง Leica ถ่ายรูปสวยขั้นเทพ มีที่ชาร์จ 120W ครบกล่อง จัดส่งฟรีทั่วประเทศ"', 6, 23100, 0, 12, 0, 'Alpine Blue'
+32, 3, '13T Pro', 'Xiaomi 13T Pro 12/512GB สี Meadow Green ชิป Dimensity 9200+ เร็วแรง กล้อง Leica ถ่ายรูปสวยขั้นเทพ มีที่ชาร์จ 120W ครบกล่อง จัดส่งฟรีทั่วประเทศ', 6, 23100, 0, 12, 0, 'Alpine Blue'
 );
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
@@ -256,7 +256,7 @@ VALUES
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
 (
-77, 10, 'Reno9 Pro+', '"OPPO Reno9 Pro+ 5G 256GB สี Glossy Purple สวยสะดุดตา ใช้งานลื่นสุดๆ แบต 4700 mAh รองรับชาร์จไว ครบกล่อง + ใบเสร็จศูนย์ ส่งฟรี Flash Express"', 8, 23100, 6.7, 12, 256, 'Eternal Gold'
+77, 10, 'Reno9 Pro+', 'OPPO Reno9 Pro+ 5G 256GB สี Glossy Purple สวยสะดุดตา ใช้งานลื่นสุดๆ แบต 4700 mAh รองรับชาร์จไว ครบกล่อง + ใบเสร็จศูนย์ ส่งฟรี Flash Express', 8, 23100, 6.7, 12, 256, 'Eternal Gold'
 );
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
