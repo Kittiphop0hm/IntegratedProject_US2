@@ -54,5 +54,4 @@ public class SaleItem {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updatedOn", nullable = false)
     private Instant updatedOn;
-
 }
