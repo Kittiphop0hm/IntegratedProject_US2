@@ -351,7 +351,6 @@ const IsOppoActive = () => {
             </router-link>
             <!-- End Huawei -->
 
-
             <!-- ASUS -->
             <router-link to="/sale-items" v-show="isAsus" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
                 <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
@@ -491,5 +490,4 @@ const IsOppoActive = () => {
             <!-- End OPPO -->
         </div>
     </div>
-    
 </template>
