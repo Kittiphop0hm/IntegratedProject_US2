@@ -37,7 +37,7 @@ services:
       dockerfile: dockerfile_Prod
     container_name: fe-container
     ports:
-      - "8085:80"
+      - "80:80"
     networks:
       - mynetwork
     depends_on:
