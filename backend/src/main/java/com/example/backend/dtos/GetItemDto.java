@@ -8,13 +8,13 @@ import java.math.BigDecimal;
 @Setter
 public class GetItemDto {
     private Integer id;
-    private String model;
     private String brandName;
+    private String color;
     private String description;
+    private Integer quantity;
+    private String model;
     private Integer price;
     private Integer ramGb;
-    private BigDecimal screenSizeInch;
-    private Integer quantity;
     private Integer storageGb;
-    private String color;
+    private BigDecimal screenSizeInch;
 }

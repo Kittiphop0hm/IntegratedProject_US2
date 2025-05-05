@@ -15,21 +15,22 @@ import java.util.Set;
 @Table(name = "brand")
 public class Brand {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
-    @Column(name = "websiteUrl", length = 40)
-    private String websiteUrl;
+    @Column(name = "countryOfOrigin", length = 80)
+    private String countryOfOrigin;
+
+    @Column(name = "webSiteUrl", length = 40)
+    private String webSiteUrl;
 
     @ColumnDefault("0")
     @Column(name = "isActive")
     private Byte isActive;
-
-    @Column(name = "countryOfOrigin", length = 80)
-    private String countryOfOrigin;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false)
