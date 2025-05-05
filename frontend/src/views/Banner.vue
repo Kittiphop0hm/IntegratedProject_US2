@@ -8,8 +8,6 @@ onMounted( async () => {
     try {
         const items = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
         bestSaleItems.value = items.slice(0, 4)
-        console.log(bestSaleItems.value);
-
     } catch(error) {
         console.log(error);
     }
@@ -38,7 +36,7 @@ onMounted( async () => {
                         <div class="font-bold text-center mt-4">
                             <h1 class="font-medium">{{ item.model }}</h1>
                             <h1 class="font-medium">{{ item.storageGb }} GB</h1>
-                            <p class="text-lg">฿{{ item.price.toLocaleString('en-US') }}</p>
+                            <p class="text-lg">฿{{ item.price.toLocaleString('th-TH') }}</p>
                         </div>
                     <router-link to="/sale-items">
                         <button class="w-[188px] h-[48px] mt-3 bg-black text-white rounded-lg cursor-pointer hover:border-2 hover:border-black hover:bg-gray-200 hover:text-black">
