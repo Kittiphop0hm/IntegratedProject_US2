@@ -75,8 +75,8 @@ const IsOppoActive = () => {
             </div>
 
             <!-- Apple -->
-            <div v-show="isApple" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
-                <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
+            <router-link to="/sale-items" v-show="isApple" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
+                <div to="/sale-items" class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
                     <div class="rounded-2xl w-full">
                         <div class="w-[10%] flex justify-center items-center bg-blue-500 rounded-2xl max-lg:w-[20%]">
                             <p class="text-center text-sm text-white">New</p>
@@ -140,11 +140,11 @@ const IsOppoActive = () => {
                         </div>
                     </div>                   
                 </div>
-            </div>
+            </router-link>
             <!-- End apple -->
 
             <!-- Samsung -->
-            <div v-show="isSamsung" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
+            <router-link to="/sale-items" v-show="isSamsung" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
                 <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
                     <div class="rounded-2xl w-full">
                         <div class="w-[10%] flex justify-center items-center bg-blue-500 rounded-2xl max-lg:w-[20%]">
@@ -152,11 +152,11 @@ const IsOppoActive = () => {
                         </div>
                     </div>
                     <div>
-                        <img src="/images/Image.png" alt="Iphone" class="w-[100%] h-[300px] rounded-xl shadow-2xl">
+                        <img src="/images/samsung.png" alt="Iphone" class="w-[100%] h-[100%]">
                     </div>
                     <div class="flex flex-col justify-center items-center mt-5">
-                        <h1 class="text-center text-2xl font-bold">Samsung</h1>
-                        <p>6/512 GB</p>
+                        <h1 class="text-center text-2xl font-bold">Samsung S23 Ultra</h1>
+                        <p>-/512 GB</p>
                     </div>
                 </div>
 
@@ -209,12 +209,12 @@ const IsOppoActive = () => {
                         </div>
                     </div>                   
                 </div>
-            </div>
+            </router-link>
             <!-- End Samsung -->
 
 
             <!-- Xiaomi -->
-            <div v-show="isXiaomi" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
+            <router-link to="/sale-items" v-show="isXiaomi" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
                 <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
                     <div class="rounded-2xl w-full">
                         <div class="w-[10%] flex justify-center items-center bg-blue-500 rounded-2xl max-lg:w-[20%]">
@@ -222,11 +222,11 @@ const IsOppoActive = () => {
                         </div>
                     </div>
                     <div>
-                        <img src="/images/Image.png" alt="Iphone" class="w-[100%] h-[300px] rounded-xl shadow-2xl">
+                        <img src="/images/xiaomi.png" alt="Iphone" class="w-[100%] h-[400px]">
                     </div>
                     <div class="flex flex-col justify-center items-center mt-5">
-                        <h1 class="text-center text-2xl font-bold">Xiaomi</h1>
-                        <p>6/512 GB</p>
+                        <h1 class="text-center text-2xl font-bold">Xiaomi Note 12 Pro</h1>
+                        <p>8/128 GB</p>
                     </div>
                 </div>
 
@@ -279,11 +279,11 @@ const IsOppoActive = () => {
                         </div>
                     </div>                   
                 </div>
-            </div>
+            </router-link>
             <!-- End Xiaomi -->
 
             <!-- Huawei -->
-            <div v-show="isHuawei" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
+            <router-link to="/sale-items" v-show="isHuawei" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
                 <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
                     <div class="rounded-2xl w-full">
                         <div class="w-[10%] flex justify-center items-center bg-blue-500 rounded-2xl max-lg:w-[20%]">
@@ -291,7 +291,7 @@ const IsOppoActive = () => {
                         </div>
                     </div>
                     <div>
-                        <img src="/images/Image.png" alt="Iphone" class="w-[100%] h-[300px] rounded-xl shadow-2xl">
+                        <img src="/images/huawei.png" alt="Iphone" class="w-[100%] h-[400px]">
                     </div>
                     <div class="flex flex-col justify-center items-center mt-5">
                         <h1 class="text-center text-2xl font-bold">Huawei</h1>
@@ -348,12 +348,12 @@ const IsOppoActive = () => {
                         </div>
                     </div>                   
                 </div>
-            </div>
+            </router-link>
             <!-- End Huawei -->
 
 
             <!-- ASUS -->
-            <div v-show="isAsus" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
+            <router-link to="/sale-items" v-show="isAsus" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
                 <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
                     <div class="rounded-2xl w-full">
                         <div class="w-[10%] flex justify-center items-center bg-blue-500 rounded-2xl max-lg:w-[20%]">
@@ -361,7 +361,7 @@ const IsOppoActive = () => {
                         </div>
                     </div>
                     <div>
-                        <img src="/images/Image.png" alt="Iphone" class="w-[100%] h-[300px] rounded-xl shadow-2xl">
+                        <img src="/images/asus.png" alt="Iphone" class="w-[100%] h-[300px]">
                     </div>
                     <div class="flex flex-col justify-center items-center mt-5">
                         <h1 class="text-center text-2xl font-bold">Asus</h1>
@@ -418,11 +418,11 @@ const IsOppoActive = () => {
                         </div>
                     </div>                   
                 </div>
-            </div>
+            </router-link>
             <!-- End ASUS -->
 
             <!-- OPPO -->
-            <div v-show="isOppo" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
+            <router-link to="/sale-items" v-show="isOppo" class="w-full h-[60vh] flex flex-row justify-center items-center gap-5 max-lg:h-full max-lg:flex-col">
                 <div class="w-[40%] h-full bg-gray-200 rounded-xl flex flex-col justify-around items-center p-10 cursor-pointer hover:shadow-xl max-lg:p-5 max-lg:w-full">
                     <div class="rounded-2xl w-full">
                         <div class="w-[10%] flex justify-center items-center bg-blue-500 rounded-2xl max-lg:w-[20%]">
@@ -430,7 +430,7 @@ const IsOppoActive = () => {
                         </div>
                     </div>
                     <div>
-                        <img src="/images/Image.png" alt="Iphone" class="w-[100%] h-[300px] rounded-xl shadow-2xl">
+                        <img src="/images/oppo.png" alt="Iphone" class="w-[100%] h-[400px]">
                     </div>
                     <div class="flex flex-col justify-center items-center mt-5">
                         <h1 class="text-center text-2xl font-bold">Oppo</h1>
@@ -487,7 +487,7 @@ const IsOppoActive = () => {
                         </div>
                     </div>                   
                 </div>
-            </div>
+            </router-link>
             <!-- End OPPO -->
         </div>
     </div>
