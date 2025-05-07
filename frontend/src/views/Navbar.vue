@@ -7,7 +7,7 @@ const isBurgerBar = ref(false)
 </script>
 
 <template>
-  <nav class="w-full max-h-[90px]">
+  <nav class="w-full max-h-[90px] ">
     <div class="w-full h-[90px] border-b border-gray-300 px-10 flex justify-between items-center">
       <router-link to="/">
           <h1 class="font-bold text-xl cursor-pointer hover:opacity-70">ITB-MSHOP</h1>

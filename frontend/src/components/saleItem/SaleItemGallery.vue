@@ -1,24 +1,24 @@
 <script setup>
-import ListSaleItemModel from "./model/ListSaleItemModel.vue";
-import { ref, onMounted } from "vue";
-import { getItems } from "../libs/fetchUtil";
-
-const items = ref([]);
-
-onMounted(async () => {
-  try {
-    const data = await getItems(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`
-    );
-    items.value = data;
-  } catch (err) {
-    console.log(err);
-  }
-});
+import SaleItemListModel from "../model/SaleItemListModel.vue";
+const props = defineProps({
+    saleItems: {
+        type: Array ,
+        required: true
+    }
+})
 </script>
 
 <template>
-  <ListSaleItemModel :items="items">
+  <div class="pl-10 pr-10 pt-10">
+    <router-link :to="{ name: 'SaleItemAdd' }">
+      <button
+        class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+      >
+        Add Sale Item
+      </button>
+    </router-link>
+  </div>
+  <SaleItemListModel :items="saleItems">
     <template #listItem="{ yourItem }">
       <router-link
         :to="{ name: 'SaleItemDetail', params: { id: yourItem.id } }"
@@ -39,8 +39,13 @@ onMounted(async () => {
             {{ yourItem.model }}
           </div>
           <div class="text-sm mt-1">
-            <span class="itbms-ramGb"> {{ yourItem.ramGb ? yourItem.ramGb : '-' }} / </span>
-            <span class="itbms-storageGb"> {{ yourItem.storageGb ? yourItem.storageGb : '-' }} <span class="itbms-storageGb-unit">GB</span></span>
+            <span class="itbms-ramGb">
+              {{ yourItem.ramGb ? yourItem.ramGb : "-" }} /
+            </span>
+            <span class="itbms-storageGb">
+              {{ yourItem.storageGb ? yourItem.storageGb : "-" }}
+              <span class="itbms-storageGb-unit">GB</span></span
+            >
           </div>
           <div class="text-blue-600 text-lg font-bold mt-2 itbms-price">
             <span class="itbms-price-unit">Baht:</span
@@ -49,8 +54,8 @@ onMounted(async () => {
         </div>
       </router-link>
     </template>
-  </ListSaleItemModel>
-  <div v-show="items.length === 0" class="flex justify-center mt-0">
+  </SaleItemListModel>
+  <div v-show="saleItems.length === 0" class="flex justify-center mt-0">
     <h2 class="text-3xl font-bold text-black itbms-*">no sale item</h2>
   </div>
 </template>
