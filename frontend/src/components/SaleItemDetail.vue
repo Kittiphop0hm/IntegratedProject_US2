@@ -15,20 +15,22 @@ onMounted(async () => {
       route.params.id
     );
     if (data.status === 404) {
-      error.value = "The requested sale item does not exist.";
+      // error.value = "The requested sale item does not exist.";
+      alert("The requested sale item does not exist.");
+      router.push("/sale-items");
     } else {
       item.value=data
     }
   } catch (err) {
     console.error(err);
-    error.value = "There was an error loading the item.";
+    // error.value = "There was an error loading the item.";
   }
 });
 
 
-function goToHome() {
-  router.push("/sale-items");
-}
+// function goToHome() {
+//   router.push("/sale-items");
+// }
 const formattedPrice = computed(() =>
   item.value?.price != null ? item.value.price.toLocaleString() : '-'
 );
@@ -131,19 +133,19 @@ const formattedPrice = computed(() =>
   </div>
 
   <!-- Error Popup -->
-  <div
+  <!-- <div
   v-show="error"
   class=" fixed top-15 left-1/2 transform -translate-x-1/2 z-50 bg-red-100 border border-red-500 text-red-700 px-6 py-4 rounded-md shadow-md transition-opacity duration-300"
 >
-  <div class="itbms-message flex flex-col items-center justify-between space-y-4 ">
-    <p><span class="itbms-message">{{ error }}</span></p>
+  <div class="itbms-alert flex flex-col items-center justify-between space-y-4 ">
+    <p><span class="itbms-alert">{{ error }}</span></p>
     <button
-      @click="goToHome"
+      @click="goToHome"คลิป
       class="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 itbms-button"
     >
       OK
     </button>
   </div>
-</div>
+</div> -->
 
 </template>
