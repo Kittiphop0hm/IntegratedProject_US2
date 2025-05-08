@@ -9,15 +9,6 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="pl-10 pr-10 pt-10">
-    <router-link :to="{ name: 'SaleItemAdd' }">
-      <button
-        class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-      >
-        Add Sale Item
-      </button>
-    </router-link>
-  </div>
   <SaleItemListModel :items="saleItems">
     <template #listItem="{ yourItem }">
       <router-link

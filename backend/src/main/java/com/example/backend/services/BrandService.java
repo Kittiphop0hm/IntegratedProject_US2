@@ -17,6 +17,6 @@ public class BrandService {
     private BrandRepository brandRepository;
 
     public List<Brand> getAllBrands() {
-        return brandRepository.findAll();
+        return brandRepository.findAllByOrderByNameAsc();
     }
 }

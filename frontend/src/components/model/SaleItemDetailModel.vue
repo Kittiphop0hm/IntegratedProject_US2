@@ -11,7 +11,10 @@ const router = useRouter();
     <!-- Breadcrumb -->
     <div class="text-gray-800 bg-white bg-opacity-70 p-2 mb-4">
       <p>
-        <span class="text-blue-600">Home</span> &gt;
+        <router-link 
+          :to="{ name: 'SaleItemHome' }">
+          <span class="text-blue-600">Home</span>
+        </router-link> &gt;
         <span class="itbms-model font-semibold"> 
             <slot name="path"></slot>
         </span>
