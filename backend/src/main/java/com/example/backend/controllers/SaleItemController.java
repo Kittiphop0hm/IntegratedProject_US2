@@ -53,6 +53,7 @@ public class SaleItemController {
         SaleItemResponseDto responseDto = service.updateSaleItem(id, updateSaleItemDto);
         return ResponseEntity.ok(responseDto);
     }
+
    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteSaleItemById(@PathVariable Integer id) {
         service.deleteSaleItem(id);
