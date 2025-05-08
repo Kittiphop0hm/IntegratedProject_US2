@@ -46,6 +46,7 @@ public class SaleItemController {
         SaleItemResponseDto responseDto = service.createSaleItem(createSaleItemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<SaleItemResponseDto> updateSaleItem(
             @PathVariable Integer id,
