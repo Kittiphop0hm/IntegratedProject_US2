@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LandingPage from "../views/LandingPage.vue";
-import SaleItemDetail from "../components/SaleItem/SaleItemDetail.vue";
-import SaleItemAddEdit from "../components/SaleItem/SaleItemAddEdit.vue";
+import SaleItemDetail from "../components/saleItem/SaleItemDetail.vue";
+import SaleItemAddEdit from "../components/saleItem/SaleItemAddEdit.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

@@ -11,7 +11,10 @@ const router = useRouter();
     <!-- Breadcrumb -->
     <div class="text-gray-800 bg-white bg-opacity-70 p-2 mb-4">
       <p>
-        <span class="text-blue-600">Home</span> &gt;
+        <router-link 
+          :to="{ name: 'SaleItemHome' }">
+          <span class="text-blue-600">Home</span>
+        </router-link> &gt;
         <span class="itbms-model font-semibold"> 
             <slot name="path"></slot>
         </span>
@@ -79,7 +82,7 @@ const router = useRouter();
           <slot name="button1">Input Name Button1</slot>
         </button
         >
-          <button class="itbms-cancel-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600">
+          <button class="itbms-cancel-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
           <slot name="button2">Input Name Button2</slot>
         </button>
         </div>
