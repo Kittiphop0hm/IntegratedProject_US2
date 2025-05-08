@@ -79,7 +79,7 @@ const router = useRouter();
           <slot name="button1">Input Name Button1</slot>
         </button
         >
-          <button class="itbms-cancel-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600">
+          <button class="itbms-delete-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">
           <slot name="button2">Input Name Button2</slot>
         </button>
         </div>

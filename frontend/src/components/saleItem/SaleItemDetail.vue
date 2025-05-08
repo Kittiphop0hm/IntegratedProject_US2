@@ -1,13 +1,15 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
-import { getItemById } from "../../libs/fetchUtil";
+import { getItemById,deleteItemById } from "../../libs/fetchUtil";
 import Navbar from "../../views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
+import SaleItemDelete from "./SaleItemDelete.vue";
 
 const route = useRoute();
 const router = useRouter();
 const item = ref([]);
+const isDelete = ref(false)
 onMounted(async () => {
   try {
     const data = await getItemById(
@@ -28,6 +30,15 @@ onMounted(async () => {
 const formattedPrice = computed(() =>
   item.value?.price != null ? item.value.price.toLocaleString() : "-"
 );
+
+const cancelDelete = () => {
+  isDelete.value = false
+}
+
+const deleteSaleItem = async () => {
+  console.log('delete');
+  const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id)  
+}
 </script>
 
 <template>
@@ -65,7 +76,8 @@ const formattedPrice = computed(() =>
       <span class="text-white">Edit</span>
     </template>
     <template #button2>
-      <span class="text-white">Delete</span>
+      <span @click="isDelete = !isDelete" class="text-white">Delete</span>
     </template>
   </SaleItemDetailModel>
+  <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
 </template>
