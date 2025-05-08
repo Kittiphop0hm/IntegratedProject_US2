@@ -36,8 +36,15 @@ const cancelDelete = () => {
 }
 
 const deleteSaleItem = async () => {
-  console.log('delete');
-  const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id)  
+  try {
+    const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id) 
+    if (deleteStatus === 204) {
+      isDelete.value = false
+      router.push("/sale-items");
+    } 
+  } catch (err) {
+    console.error(err);
+  }
 }
 </script>
 
