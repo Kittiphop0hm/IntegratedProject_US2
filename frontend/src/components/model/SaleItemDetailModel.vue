@@ -23,7 +23,7 @@ const props = defineProps({
       <p>
         <router-link 
           :to="{ name: 'SaleItemHome' }">
-          <span class="text-blue-600">Home</span>
+          <span class="itbms-home-button text-blue-600">Home</span>
         </router-link> &gt;
         <span class="itbms-model font-semibold"> 
             <slot name="path"></slot>

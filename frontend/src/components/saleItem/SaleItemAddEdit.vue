@@ -43,8 +43,8 @@ onMounted(async () => {
         alert("The requested sale item does not exist.");
         router.push("/sale-items");
       } else {
-        const {id , ...rest} = data
-        saleItem.value = {...rest };
+        const { id, ...rest } = data;
+        saleItem.value = { ...rest };
         // console.log("saleItem.value:", saleItem.value);
         saleItemForchecking.value = { ...rest };
         // console.log("saleItemForchecking.value:", saleItemForchecking.value);
@@ -57,10 +57,9 @@ onMounted(async () => {
     );
     saleItem.value.brandId = brandsFilter.brandId;
     saleItemForchecking.value.brandId = brandsFilter.brandId;
-    console.log(JSON.stringify(saleItemForchecking.value))
+    console.log(JSON.stringify(saleItemForchecking.value));
     console.log(JSON.stringify(saleItem.value));
-    console.log(Object.keys(saleItem.value)); 
-
+    console.log(Object.keys(saleItem.value));
   }
 });
 
@@ -95,7 +94,7 @@ const isActive = computed(() => {
 });
 
 async function submitForm() {
-  console.log(Object.keys(saleItem.value)); 
+  console.log(Object.keys(saleItem.value));
   isSubmitted.value = true;
   if (Number(route.params.id)) {
     await editItem(
@@ -133,10 +132,10 @@ async function submitForm() {
   {{ brands }}
   <h1>---------------------------------------------------------------------------</h1> -->
 
-  <br>
-  <h1>saleItemForchecking</h1>
-  
-  {{ saleItemForchecking }}
+  <!-- <br>
+  <h1>saleItemForchecking</h1> -->
+
+  <!-- {{ saleItemForchecking }}
   <br>
   {{ saleItemForchecking.id }}
   {{ saleItemForchecking.brandId }}
@@ -147,9 +146,9 @@ async function submitForm() {
   {{ saleItemForchecking.screenSizeInch }}
   {{ saleItemForchecking.storageGb }}
   {{ saleItemForchecking.color }}
-  {{ saleItemForchecking.quantity }}
+  {{ saleItemForchecking.quantity }} -->
   <!-- <h1>---------------------------------------------------------------------------</h1> -->
-  <br>
+  <!-- <br>
   <br>
   <h1>saleItem</h1>
   {{ saleItem }}
@@ -164,14 +163,28 @@ async function submitForm() {
   {{ saleItem.screenSizeInch }}
   {{ saleItem.storageGb }}
   {{ saleItem.color }}
-  {{ saleItem.quantity }}
+  {{ saleItem.quantity }} -->
 
   <Navbar />
   <!-- {{ brands ? brands: "Nothing in brandList" }} -->
   <form @submit.prevent="submitForm">
     <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
       <template #path>
-        <span class="font-semibold">New Sale Item</span>
+        <span class="font-semibold" v-show="!Number(route.params.id)"
+          >New Sale Item</span
+        >
+        <span class="itbms-back-button font-semibold" v-show="Number(route.params.id)">
+          <span class="itbms-model font-semibold">{{ saleItem.model }}</span>
+          <router-link
+            :to="{ name: 'SaleItemDetail', params: { id: route.params.id } }"
+          >
+            <span class="itbms-ramGb font-semibold ml-1"
+              >{{ saleItem.ramGb
+              }}<span class="itbms-ramGb-unit">/GB </span></span
+            >
+            <span class="itbms-color font-semibold">{{ saleItem.color }}</span>
+          </router-link>
+        </span>
       </template>
       <template #brand>
         <select
@@ -184,7 +197,7 @@ async function submitForm() {
           <option
             v-for="(brand, index) in brands"
             :key="index"
-            class="flex"
+            class="itbms-brand flex"
             :value="brand.brandId"
           >
             {{ brand.brandName }}
@@ -195,7 +208,7 @@ async function submitForm() {
         <input
           v-model.trim="saleItem.model"
           type="text"
-          class="ml-32 border rounded-md px-2 py-1 w-70"
+          class="itbms-model ml-32 border rounded-md px-2 py-1 w-70"
           placeholder="Model Name"
           :required="true"
         />
@@ -206,7 +219,7 @@ async function submitForm() {
         <input
           v-model.number="saleItem.price"
           type="number"
-          class="ml-35 border text-white rounded-md px-2 py-1 w-70"
+          class="itbms-price ml-35 border text-white rounded-md px-2 py-1 w-70"
           placeholder="Price"
           :required="true"
         />
@@ -215,7 +228,7 @@ async function submitForm() {
         <textarea
           v-model.trim="saleItem.description"
           type="text"
-          class="mt-1 border rounded-md px-2 py-1 w-118"
+          class="itbms-description mt-1 border rounded-md px-2 py-1 w-118"
           placeholder="Description"
           :required="true"
         ></textarea>
@@ -224,7 +237,7 @@ async function submitForm() {
         <input
           v-model.number="saleItem.ramGb"
           type="number"
-          class="ml-35 border rounded-md px-2 py-1 w-70"
+          class="itbms-ramGb ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="RAM"
         />
       </template>
@@ -233,7 +246,7 @@ async function submitForm() {
           v-model.number="saleItem.screenSizeInch"
           type="number"
           step="0.1"
-          class="ml-21 border rounded-md px-2 py-1 w-70"
+          class="itbms-screenSizeInch ml-21 border rounded-md px-2 py-1 w-70"
           placeholder="Screen Size"
         />
       </template>
@@ -241,7 +254,7 @@ async function submitForm() {
         <input
           v-model.number="saleItem.storageGb"
           type="number"
-          class="ml-29 border rounded-md px-2 py-1 w-70"
+          class="itbms-storageGb ml-29 border rounded-md px-2 py-1 w-70"
           placeholder="Storage"
         />
       </template>
@@ -249,7 +262,7 @@ async function submitForm() {
         <input
           v-model.trim="saleItem.color"
           type="text"
-          class="ml-35 border rounded-md px-2 py-1 w-70"
+          class="itbms-color ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="Color"
         />
       </template>
@@ -257,7 +270,7 @@ async function submitForm() {
         <input
           v-model.number="saleItem.quantity"
           type="number"
-          class="ml-7 border rounded-md px-2 py-1 w-70"
+          class="itbms-quantity ml-7 border rounded-md px-2 py-1 w-70"
           placeholder="Quantity"
           :required="true"
         />
@@ -266,14 +279,14 @@ async function submitForm() {
         <button
           type="submit"
           :disabled="!isActive || !isUpdated || isSubmitted"
-          class="text-white"
+          class="itbms-save-button text-white"
         >
           Add
         </button>
       </template>
       <template #button2>
         <router-link :to="{ name: 'SaleItemHome' }">
-          <button class="text-white">Cancel</button>
+          <button class="itbms-cancel-button text-white">Cancel</button>
         </router-link>
       </template>
     </SaleItemDetailModel>

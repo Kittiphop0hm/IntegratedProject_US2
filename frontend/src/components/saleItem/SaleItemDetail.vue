@@ -88,11 +88,11 @@ const deleteSaleItem = async () => {
     >
         <template #button1>
           <router-link :to="{ name: 'SaleItemEdit'  }">
-            <span class="text-white">Edit</span>
+            <span class="itbms-edit-button text-white">Edit</span>
           </router-link>
     </template>
     <template #button2>
-      <span @click="isDelete = !isDelete" class="text-white">Delete</span>
+      <span @click="isDelete = !isDelete" class="itbms-edit-button text-white">Delete</span>
     </template>
   </SaleItemDetailModel>
   <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
