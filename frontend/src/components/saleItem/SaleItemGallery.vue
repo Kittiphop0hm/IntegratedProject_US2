@@ -9,6 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
+
   <SaleItemListModel :items="saleItems">
     <template #listItem="{ yourItem }">
       <router-link
@@ -46,7 +47,5 @@ const props = defineProps({
       </router-link>
     </template>
   </SaleItemListModel>
-  <div v-show="saleItems.length === 0" class="flex justify-center mt-0">
-    <h2 class="text-3xl font-bold text-black itbms-*">no sale item</h2>
-  </div>
+
 </template>

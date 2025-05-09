@@ -20,13 +20,13 @@ public class CreateSaleItemDto {
     @NotNull(message = "Price is required")
     @Min(value = 1, message = "Price must be greater than 0")
     private Integer price;
-    @Min(value = 1, message = "RAM must be greater than 0")
+//    @Min(value = 1, message = "RAM must be greater than 0")
     private Integer ramGb;
-    @Min(value = 1, message = "Storage must be greater than 0")
+//    @Min(value = 1, message = "Storage must be greater than 0")
     private Integer storageGb;
-    @DecimalMin(value = "0.1", message = "Screen size must be greater than 0")
+//    @DecimalMin(value = "0.1", message = "Screen size must be greater than 0")
     private BigDecimal screenSizeInch;
-    @NotBlank(message = "Color is required")
+//    @NotBlank(message = "Color is required")
     private String color;
     @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be at least 1")

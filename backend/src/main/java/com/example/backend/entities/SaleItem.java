@@ -50,12 +50,12 @@ public class SaleItem {
     private String color;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdOn", nullable = false, insertable = false, updatable = false)
+    @Column(name = "createdOn", nullable = false , insertable = false, updatable = false)
     @Generated(value = GenerationTime.INSERT)
     private Instant createdOn;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false)
+    @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false)
     @Generated(value = GenerationTime.ALWAYS)
     private Instant updatedOn;
 }

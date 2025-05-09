@@ -50,6 +50,13 @@ const deleteSaleItem = async () => {
 
 <template>
   <Navbar />
+  <div v-show="route.query.alert === 'true'" class=" p-10 pb-0">
+    <div class="bg-black/20 shadow-xl rounded px-8 pt-6 pb-8">
+      <h1 class=" text-2xl text-green-400">Successfully</h1>
+      <br>
+      <p> The Sale Item has been successfully updated.</p>
+    </div>
+  </div>
   <SaleItemDetailModel>
     <template #path>
       <span class="itbms-model font-semibold">{{ item.model }}</span>
@@ -80,10 +87,12 @@ const deleteSaleItem = async () => {
       <span class="itbms-quantity-unit">units</span></template
     >
         <template #button1>
-      <span class="text-white">Edit</span>
+          <router-link :to="{ name: 'SaleItemEdit'  }">
+            <span class="itbms-edit-button text-white">Edit</span>
+          </router-link>
     </template>
     <template #button2>
-      <span @click="isDelete = !isDelete" class="text-white">Delete</span>
+      <span @click="isDelete = !isDelete" class="itbms-edit-button text-white">Delete</span>
     </template>
   </SaleItemDetailModel>
   <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
