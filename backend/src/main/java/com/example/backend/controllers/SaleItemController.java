@@ -55,5 +55,4 @@ public class SaleItemController {
         service.deleteSaleItem(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
    }
-
 }
