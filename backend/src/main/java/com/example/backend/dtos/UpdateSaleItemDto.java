@@ -21,16 +21,16 @@ public class UpdateSaleItemDto {
     @PositiveOrZero(message = "Price must be 0 or more")
     private Integer price;
 
-    @PositiveOrZero(message = "RAM must be 0 or more")
+//    @PositiveOrZero(message = "RAM must be 0 or more")
     private Integer ramGb;
 
-    @PositiveOrZero(message = "Storage must be 0 or more")
+//    @PositiveOrZero(message = "Storage must be 0 or more")
     private Integer storageGb;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Screen size must be greater than 0")
+//    @DecimalMin(value = "0.0", inclusive = false, message = "Screen size must be greater than 0")
     private BigDecimal screenSizeInch;
 
-    @NotBlank(message = "Color is required")
+//    @NotBlank(message = "Color is required")
     private String color;
 
     @NotNull(message = "Quantity is required")

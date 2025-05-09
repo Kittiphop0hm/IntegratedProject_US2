@@ -1,15 +1,19 @@
 <script setup>
 import Navbar from "@/views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
-import { useBrandStore } from "../../stores/brands.js";
-import { storeToRefs } from "pinia";
-import { onMounted, ref } from "vue";
-const { brands } = storeToRefs(useBrandStore());
-const { getBrands } = useBrandStore();
-onMounted(() => {
-  brands.value = getBrands();
-});
-const saleItem = ref({
+import { computed, onMounted, ref, watchEffect } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import {
+  getItems,
+  addItem,
+  getItemById,
+  editItem,
+} from "../../libs/fetchUtil.js";
+const router = useRouter();
+const route = useRoute();
+const brands = ref([]);
+
+const initSaleItem = {
   brandId: "",
   model: "",
   price: "",
@@ -19,9 +23,139 @@ const saleItem = ref({
   storageGb: "",
   color: "",
   quantity: "",
+};
+
+const saleItem = ref({ ...initSaleItem });
+const saleItemForchecking = ref({ ...initSaleItem });
+onMounted(async () => {
+  try {
+    brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
+  } catch (err) {
+    console.log(err);
+  }
+  if (Number(route.params.id)) {
+    try {
+      const data = await getItemById(
+        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+        route.params.id
+      );
+      if (data.status === 404) {
+        alert("The requested sale item does not exist.");
+        router.push("/sale-items");
+      } else {
+        const {id , ...rest} = data
+        saleItem.value = {...rest };
+        // console.log("saleItem.value:", saleItem.value);
+        saleItemForchecking.value = { ...rest };
+        // console.log("saleItemForchecking.value:", saleItemForchecking.value);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+    const brandsFilter = brands.value.find(
+      (brand) => brand.brandName === saleItem.value.brandName
+    );
+    saleItem.value.brandId = brandsFilter.brandId;
+    saleItemForchecking.value.brandId = brandsFilter.brandId;
+    console.log(JSON.stringify(saleItemForchecking.value))
+    console.log(JSON.stringify(saleItem.value));
+    console.log(Object.keys(saleItem.value)); 
+
+  }
 });
+
+const isSubmitted = ref(false);
+const isUpdated = computed(() => {
+  // return (
+  //   saleItem.value.brandId !== saleItemForchecking.value.brandId ||
+  //   saleItem.value.model !== saleItemForchecking.value.model ||
+  //   saleItem.value.price !== saleItemForchecking.value.price ||
+  //   saleItem.value.description !== saleItemForchecking.value.description ||
+  //   saleItem.value.ramGb !== saleItemForchecking.value.ramGb ||
+  //   saleItem.value.screenSizeInch !== saleItemForchecking.value.screenSizeInch ||
+  //   saleItem.value.storageGb !== saleItemForchecking.value.storageGb ||
+  //   saleItem.value.color !== saleItemForchecking.value.color ||
+  //   saleItem.value.quantity !== saleItemForchecking.value.quantity
+  //  )
+  return (
+    JSON.stringify(saleItem.value) !== JSON.stringify(saleItemForchecking.value)
+  );
+});
+// watchEffect(() => {
+//   console.log('isUpdated:', isUpdated.value);
+// });
+const isActive = computed(() => {
+  return (
+    saleItem.value.brandId !== "" &&
+    saleItem.value.model !== "" &&
+    saleItem.value.price !== "" &&
+    saleItem.value.description !== "" &&
+    saleItem.value.quantity !== ""
+  );
+});
+
+async function submitForm() {
+  console.log(Object.keys(saleItem.value)); 
+  isSubmitted.value = true;
+  if (Number(route.params.id)) {
+    await editItem(
+      `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+      route.params.id,
+      saleItem.value
+    );
+    saleItem.value = { ...initSaleItem };
+    router.push({
+      name: "SaleItemDetail",
+      params: { id: route.params.id },
+      query: { alert: "true" },
+    });
+  } else {
+    try {
+      await addItem(
+        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+        saleItem.value
+      );
+      saleItem.value = { ...initSaleItem };
+      router.push({ name: "SaleItemHome", query: { alert: "true" } });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
 </script>
+
 <template>
+  <!-- <br>
+  {{ saleItem }}
+  <br>
+  <h1>---------------------------------------------------------------------------</h1>
+  <br>
+  {{ brands }}
+  <h1>---------------------------------------------------------------------------</h1> -->
+
+  <br>
+  <h1>saleItemForchecking</h1>
+  
+  {{ saleItemForchecking }}
+  <br>
+  {{ saleItemForchecking.id }}
+  {{ saleItemForchecking.brandId }}
+  {{ saleItemForchecking.model }}
+  {{ saleItemForchecking.price }}
+  {{ saleItemForchecking.description }}
+  {{ saleItemForchecking.ramGb }}
+  {{ saleItemForchecking.screenSizeInch }}
+  {{ saleItemForchecking.storageGb }}
+  {{ saleItemForchecking.color }}
+  {{ saleItemForchecking.quantity }}
+  <!-- <h1>---------------------------------------------------------------------------</h1> -->
+  <br>
+  <br>
+  <h1>saleItem</h1>
+  {{ saleItem }}
+  <br>
+  <br>
+  {{ saleItem.id }}
   {{ saleItem.brandId }}
   {{ saleItem.model }}
   {{ saleItem.price }}
@@ -31,10 +165,11 @@ const saleItem = ref({
   {{ saleItem.storageGb }}
   {{ saleItem.color }}
   {{ saleItem.quantity }}
+
   <Navbar />
   <!-- {{ brands ? brands: "Nothing in brandList" }} -->
   <form @submit.prevent="submitForm">
-    <SaleItemDetailModel>
+    <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
       <template #path>
         <span class="font-semibold">New Sale Item</span>
       </template>
@@ -97,6 +232,7 @@ const saleItem = ref({
         <input
           v-model.number="saleItem.screenSizeInch"
           type="number"
+          step="0.1"
           class="ml-21 border rounded-md px-2 py-1 w-70"
           placeholder="Screen Size"
         />
@@ -127,10 +263,18 @@ const saleItem = ref({
         />
       </template>
       <template #button1>
-        <button type="submit" class="text-white">Add</button>
+        <button
+          type="submit"
+          :disabled="!isActive || !isUpdated || isSubmitted"
+          class="text-white"
+        >
+          Add
+        </button>
       </template>
       <template #button2>
-        <button class="text-white">Cancel</button>
+        <router-link :to="{ name: 'SaleItemHome' }">
+          <button class="text-white">Cancel</button>
+        </router-link>
       </template>
     </SaleItemDetailModel>
   </form>

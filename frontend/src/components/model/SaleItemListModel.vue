@@ -15,4 +15,7 @@ const props = defineProps({
       </li>
     </ul>
   </div>
+  <div v-show="items.length === 0 " class="flex justify-center mt-0">
+    <h2 class="text-3xl font-bold text-black itbms-*">no sale item</h2>
+  </div>
 </template>

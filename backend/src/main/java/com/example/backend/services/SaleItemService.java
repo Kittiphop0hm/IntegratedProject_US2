@@ -36,34 +36,34 @@ public class SaleItemService {
         return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
     }
 
-    public SaleItem checkValue(SaleItem saleItem) {
-        if (saleItem.getColor().contains("null")) {
-            saleItem.setColor(null);
-        } if (saleItem.getRamGb() == 0) {
-            saleItem.setRamGb(null);
-        } if (saleItem.getStorageGb() == 0) {
-            saleItem.setStorageGb(null);
-        } if (saleItem.getScreenSizeInch().doubleValue() <= 0) {
-            saleItem.setScreenSizeInch(null);
-        }
-        return saleItem;
-    }
+//    public SaleItem checkValue(SaleItem saleItem) {
+//        if (saleItem.getColor().contains("null")) {
+//            saleItem.setColor(null);
+//        } if (saleItem.getRamGb() == 0) {
+//            saleItem.setRamGb(null);
+//        } if (saleItem.getStorageGb() == 0) {
+//            saleItem.setStorageGb(null);
+//        } if (saleItem.getScreenSizeInch().doubleValue() <= 0) {
+//            saleItem.setScreenSizeInch(null);
+//        }
+//        return saleItem;
+//    }
 
-    public List<SaleItem> checkValues(List<SaleItem> saleItems) {
-        for (SaleItem item : saleItems) {
-            checkValue(item);
-        }
-        return saleItems;
-    }
+//    public List<SaleItem> checkValues(List<SaleItem> saleItems) {
+//        for (SaleItem item : saleItems) {
+//            checkValue(item);
+//        }
+//        return saleItems;
+//    }
 
     public SaleItemResponseDto createSaleItem(CreateSaleItemDto createSaleItemDto) {
-        Date date = new Date();
+//        Date date = new Date();
         Brand brand = brandRepository.findById(createSaleItemDto.getBrandId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrandId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
         saleItem.setBrand(brand);
-        saleItem.setCreatedOn(Instant.now());
-        saleItem.setUpdatedOn(Instant.now());
+//        saleItem.setCreatedOn(Instant.now());
+//        saleItem.setUpdatedOn(Instant.now());
         SaleItem savedSaleItem = repository.save(saleItem);
         SaleItemResponseDto responseDto = modelMapper.map(savedSaleItem, SaleItemResponseDto.class);
         responseDto.setBrandName(savedSaleItem.getBrand().getName());

@@ -2,6 +2,16 @@
 import Search from '../Search.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
+const props = defineProps({
+    isActive: {
+        type: Boolean ,
+        default: true
+    },
+    isUpdated: {
+        type: Boolean ,
+        default: true
+    }
+})
 </script>
 
 <template>
@@ -78,11 +88,14 @@ const router = useRouter();
             <slot name="quantity">Input Quantity</slot>
         </p>
         <div class="">
-        <button class="mr-3 itbms-save-button px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-3">
-          <slot name="button1">Input Name Button1</slot>
+        <button 
+        class="mr-3 itbms-save-button px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-3"
+        :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-blue-500 opacity-75': !isActive  || !isUpdated}"
+        >
+        <slot name="button1">Input Name Button1</slot>
         </button
         >
-          <button class="itbms-delete-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">
+          <button class="itbms-delete-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer">
           <slot name="button2">Input Name Button2</slot>
         </button>
         </div>
