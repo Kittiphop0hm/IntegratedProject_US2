@@ -57,13 +57,11 @@ public class SaleItemService {
 //    }
 
     public SaleItemResponseDto createSaleItem(CreateSaleItemDto createSaleItemDto) {
-//        Date date = new Date();
+//
         Brand brand = brandRepository.findById(createSaleItemDto.getBrandId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrandId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
         saleItem.setBrand(brand);
-//        saleItem.setCreatedOn(Instant.now());
-//        saleItem.setUpdatedOn(Instant.now());
         SaleItem savedSaleItem = repository.save(saleItem);
         SaleItemResponseDto responseDto = modelMapper.map(savedSaleItem, SaleItemResponseDto.class);
         responseDto.setBrandName(savedSaleItem.getBrand().getName());
@@ -92,9 +90,8 @@ public class SaleItemService {
         if (existing.getColor() != null && existing.getColor().toLowerCase().contains("null")) {
             existing.setColor(null);
         }
-        existing.setUpdatedOn(Instant.now());
         SaleItem updated = repository.save(existing);
-        SaleItemResponseDto response = modelMapper.map(updated, SaleItemResponseDto.class);
+        SaleItemResponseDto response = modelMapper.map(existing, SaleItemResponseDto.class);
         response.setBrandName(updated.getBrand().getName());
         return response;
     }

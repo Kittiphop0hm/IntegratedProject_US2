@@ -1,5 +1,7 @@
 package com.example.backend;
 
+import com.example.backend.dtos.UpdateSaleItemDto;
+import com.example.backend.entities.SaleItem;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +15,9 @@ public class BackendApplication {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper mapper = new ModelMapper();
+        mapper.typeMap(UpdateSaleItemDto.class, SaleItem.class)
+                .addMappings(m -> m.skip(SaleItem::setId)); // ข้ามการแมป id
+        return mapper;
     }
 }
