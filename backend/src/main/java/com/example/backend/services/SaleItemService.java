@@ -1,7 +1,5 @@
 package com.example.backend.services;
-import com.example.backend.dtos.UpdateSaleItemDto;
-import com.example.backend.dtos.CreateSaleItemDto;
-import com.example.backend.dtos.SaleItemResponseDto;
+import com.example.backend.dtos.*;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
@@ -27,13 +25,14 @@ public class SaleItemService {
     @Autowired
     private BrandRepository brandRepository;
 
-
-    public List<SaleItem> findAll() {
-        return repository.findAll();
+    public List<ListItemsDto> findAll() {
+        List<SaleItem> saleItems = repository.findAll();
+        return saleItems.stream().map(item -> modelMapper.map(item, ListItemsDto.class)).toList();
     }
 
-    public SaleItem findById(int id) {
-        return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
+    public GetItemDto findById(int id) {
+        SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
+        return modelMapper.map(saleItem, GetItemDto.class);
     }
 
 //    public SaleItem checkValue(SaleItem saleItem) {
@@ -57,7 +56,6 @@ public class SaleItemService {
 //    }
 
     public SaleItemResponseDto createSaleItem(CreateSaleItemDto createSaleItemDto) {
-//
         Brand brand = brandRepository.findById(createSaleItemDto.getBrandId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrandId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
