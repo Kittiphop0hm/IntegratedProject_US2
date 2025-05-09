@@ -27,17 +27,12 @@ public class SaleItemController {
 
     @GetMapping("")
     public ResponseEntity<List<ListItemsDto>> getAllSaleItems() {
-        List<SaleItem> saleItems = service.findAll();
-//        service.checkValues(saleItems);
-        List<ListItemsDto> listItemsDto = saleItems.stream().map(saleItem -> modelMapper.map(saleItem, ListItemsDto.class)).toList();
-        return ResponseEntity.ok(listItemsDto);
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("{id}")
     public ResponseEntity<GetItemDto> getSaleItemById(@PathVariable Integer id) {
-        SaleItem saleItem = service.findById(id);
-//        service.checkValue(saleItem);
-        return ResponseEntity.ok(modelMapper.map(saleItem, GetItemDto.class));
+        return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping("")
