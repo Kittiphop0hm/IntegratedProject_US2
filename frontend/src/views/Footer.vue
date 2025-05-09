@@ -6,7 +6,7 @@
 <template>
     <div class="w-full max-h-[504px]">
         <div class="w-full h-[504px] bg-black text-white flex flex-row justify-center items-center md:px-[100px] md:py-[100px] py-[48px] px-[32px] max-md:flex-col max-md:h-full">
-            <div class="grid grid-cols-3 gap-10 max-md:grid-cols-1">
+            <div class="grid grid-cols-4 gap-10 max-md:grid-cols-1">
                 <div class="w-[70%] max-md:w-full max-md:flex max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center">
                     <div class="max-md:w-[70%]">
                         <h1 class="font-bold text-lg">Cyber</h1>
@@ -34,6 +34,30 @@
                         </div>
                         <div class="my-2 hover:opacity-70">
                             <router-link to="/">Payment</router-link>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-md:flex max-md:flex-col max-md:justify-center max-md:items-center max-md:text-center">
+                    <h1 class="font-bold text-lg">Website page</h1>
+                    <div class="text-sm">
+                        <div class="my-2 hover:opacity-70">
+                            <router-link to="/">Home</router-link>
+                        </div>
+                        <div class="my-2 hover:opacity-70">
+                            <router-link to="/">Product</router-link>
+                        </div>
+                        <div class="my-2 hover:opacity-70">
+                            <router-link to="/">About</router-link>
+                        </div>
+                        <div class="my-2 hover:opacity-70">
+                            <router-link to="/">Contact</router-link>
+                        </div>
+                        <div class="my-2 hover:opacity-70">
+                            <router-link to="/">Cart</router-link>
+                        </div>
+                        <div class="my-2 hover:opacity-70">
+                            <router-link to="/">Profile</router-link>
                         </div>
                     </div>
                 </div>
