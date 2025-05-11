@@ -40,7 +40,7 @@ const deleteSaleItem = async () => {
     const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id) 
     if (deleteStatus === 204) {
       isDelete.value = false
-      router.push("/sale-items");
+      router.push({ name: "SaleItemHome", query: { alertDelete: "true" } });
     } 
   } catch (err) {
     console.error(err);
@@ -54,7 +54,7 @@ const deleteSaleItem = async () => {
     <div class="bg-black/20 shadow-xl rounded px-8 pt-6 pb-8">
       <h1 class=" text-2xl text-green-400">Successfully</h1>
       <br>
-      <p> The Sale Item has been successfully updated.</p>
+      <p>The Sale Item has been successfully <span class="text-green-400 underline">updated.</span></p>
     </div>
   </div>
   <SaleItemDetailModel>
@@ -63,7 +63,7 @@ const deleteSaleItem = async () => {
       <span class="itbms-ramGb font-semibold ml-1"
         >{{ item.ramGb }}<span class="itbms-ramGb-unit">/GB </span></span
       >
-      <span class="itbms-color font-semibold">{{ item.color }}</span>
+      <span class="itbms-color font-semibold">{{ item.color  ? item.color : "-" }}</span>
     </template>
     <template #brand>{{ item.brandName }}</template>
     <template #model>{{ item.model }}</template>

@@ -25,7 +25,7 @@ const props = defineProps({
           :to="{ name: 'SaleItemHome' }">
           <span class="itbms-home-button text-blue-600">Home</span>
         </router-link> &gt;
-        <span class="itbms-model font-semibold"> 
+        <span class="itbms-model itbms-color font-semibold"> 
             <slot name="path"></slot>
         </span>
       </p>

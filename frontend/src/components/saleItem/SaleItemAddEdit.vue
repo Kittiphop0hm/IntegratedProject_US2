@@ -41,7 +41,7 @@ onMounted(async () => {
       );
       if (data.status === 404) {
         alert("The requested sale item does not exist.");
-        router.push("/sale-items");
+        router.back();
       } else {
         const { id, ...rest } = data;
         saleItem.value = { ...rest };
@@ -115,7 +115,7 @@ async function submitForm() {
         saleItem.value
       );
       saleItem.value = { ...initSaleItem };
-      router.push({ name: "SaleItemHome", query: { alert: "true" } });
+      router.push({ name: "SaleItemHome", query: { alertAdd: "true" } });
     } catch (error) {
       console.log(error);
     }
@@ -171,13 +171,17 @@ async function submitForm() {
     <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
       <template #path>
         <span class="font-semibold" v-show="!Number(route.params.id)"
-          >New Sale Item</span
+          >New Sale Item
+        </span>
+        <span
+          class="itbms-back-button font-semibold"
+          v-if="Number(route.params.id)"
         >
-        <span class="itbms-back-button font-semibold" v-show="Number(route.params.id)">
-          <span class="itbms-model font-semibold">{{ saleItem.model }}</span>
-          <router-link
+        <router-link
             :to="{ name: 'SaleItemDetail', params: { id: route.params.id } }"
           >
+          <span class="itbms-model font-semibold">{{ saleItem.model }}</span>
+
             <span class="itbms-ramGb font-semibold ml-1"
               >{{ saleItem.ramGb
               }}<span class="itbms-ramGb-unit">/GB </span></span
@@ -281,7 +285,7 @@ async function submitForm() {
           :disabled="!isActive || !isUpdated || isSubmitted"
           class="itbms-save-button text-white"
         >
-          Add
+          Save
         </button>
       </template>
       <template #button2>

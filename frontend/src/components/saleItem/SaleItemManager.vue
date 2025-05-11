@@ -20,11 +20,11 @@ onMounted(async () => {
 
 </script>
 <template>
-  <div v-show="route.query.alert === 'true'" class=" p-10 pb-0">
+  <div v-show="route.query.alertAdd || route.query.alertDelete" class=" p-10 pb-0">
     <div class="itbms-message bg-black/20 shadow-xl rounded px-8 pt-6 pb-8">
       <h1 class=" text-2xl text-green-400">Successfully</h1>
       <br>
-      <p class="itbms-message"> The Sale Item has been successfully added.</p>
+      <p class="itbms-message"> The Sale Item has been successfully <span class="text-green-400 underline"> {{ route.query.alertAdd ? 'added.' : 'deleted.' }}</span></p>
     </div>
   </div>
     <div class="pl-10 pr-10 pt-10">

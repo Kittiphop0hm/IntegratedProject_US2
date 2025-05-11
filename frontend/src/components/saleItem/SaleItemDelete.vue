@@ -9,7 +9,7 @@ const emit = defineEmits(['deleteSaleItem', 'cancelDelete'])
                 <h1 class="font-black text-xl">Delete Confirmation</h1>
             </div>
             <div class="w-full">
-                <p class="itmbs-massage font-semibold">Do you want to delete this sale item?</p>
+                <p class="itbms-massage font-semibold">Do you want to delete this sale item?</p>
             </div>
             <div class="w-full text-right">
                 <button @click="$emit('cancelDelete')" class="itmbs-cancel-button bg-red-600 text-white mx-2 cursor-pointer w-[100px] h-[35px] rounded-lg hover:opacity-70">Cancel</button>
