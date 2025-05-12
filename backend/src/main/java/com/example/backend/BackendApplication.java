@@ -15,9 +15,7 @@ public class BackendApplication {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
-        mapper.typeMap(UpdateSaleItemDto.class, SaleItem.class)
-                .addMappings(m -> m.skip(SaleItem::setId)); // ข้ามการแมป id
-        return mapper;
+       return new ModelMapper();
     }
 }
+

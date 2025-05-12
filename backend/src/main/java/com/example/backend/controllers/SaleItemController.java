@@ -23,7 +23,8 @@ public class SaleItemController {
     private SaleItemService service;
     @Autowired
     private ModelMapper modelMapper;
-
+   @Autowired
+   private BrandService brandService;
 
     @GetMapping("")
     public ResponseEntity<List<ListItemsDto>> getAllSaleItems() {
@@ -37,17 +38,19 @@ public class SaleItemController {
 
     @PostMapping("")
     public ResponseEntity<SaleItemResponseDto> createSaleItem(
-            @Valid @RequestBody CreateSaleItemDto createSaleItemDto) {
+            @RequestBody CreateSaleItemDto createSaleItemDto) {
         SaleItemResponseDto responseDto = service.createSaleItem(createSaleItemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleItemResponseDto> updateSaleItem(
-            @PathVariable Integer id,
-            @Valid @RequestBody UpdateSaleItemDto updateSaleItemDto) {
-        SaleItemResponseDto responseDto = service.updateSaleItem(id, updateSaleItemDto);
-        return ResponseEntity.ok(responseDto);
+    public ResponseEntity<SaleItemResponseDto> updateSaleItem(@PathVariable String id, @RequestBody UpdateSaleItemDto req) {
+        SaleItem saleItem = modelMapper.map(req, SaleItem.class);
+        Brand brand = brandService.getBrand(req.getBrand().getId());
+        saleItem.setBrand(brand);
+
+        SaleItem updated = service.updateSaleItem(Integer.parseInt(id), saleItem);
+        return ResponseEntity.ok(modelMapper.map(updated, SaleItemResponseDto.class));
     }
 
    @DeleteMapping("/{id}")

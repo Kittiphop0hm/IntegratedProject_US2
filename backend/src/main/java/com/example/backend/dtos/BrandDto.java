@@ -6,10 +6,12 @@ import jakarta.validation.constraints.*;
 @Setter
 public class BrandDto {
 
-    @NotNull(message = "Brand ID is required")
-    private Integer brandId;
+    // @NotNull(message = "Brand ID is required")
+    private Integer id;
 
-    @NotBlank(message = "brand name is required")
-    private String brandName;
+    // @NotBlank(message = "brand name is required")
+    private String name;
+
+
 
 }
