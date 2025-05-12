@@ -44,13 +44,9 @@ public class SaleItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleItemResponseDto> updateSaleItem(@PathVariable String id, @RequestBody UpdateSaleItemDto req) {
-        SaleItem saleItem = modelMapper.map(req, SaleItem.class);
-        Brand brand = brandService.getBrand(req.getBrand().getId());
-        saleItem.setBrand(brand);
-
-        SaleItem updated = service.updateSaleItem(Integer.parseInt(id), saleItem);
-        return ResponseEntity.ok(modelMapper.map(updated, SaleItemResponseDto.class));
+    public ResponseEntity<SaleItemResponseDto> updateSaleItem(@PathVariable Integer id, @RequestBody UpdateSaleItemDto req) {
+        SaleItemResponseDto saleItemResponseDto = service.updateSaleItem(id, req);
+        return ResponseEntity.ok(saleItemResponseDto);
     }
 
    @DeleteMapping("/{id}")
