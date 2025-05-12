@@ -36,8 +36,7 @@ public class SaleItemController {
     }
 
     @PostMapping("")
-    public ResponseEntity<SaleItemResponseDto> createSaleItem(
-            @Valid @RequestBody CreateSaleItemDto createSaleItemDto) {
+    public ResponseEntity<SaleItemResponseDto> createSaleItem(@RequestBody CreateSaleItemDto createSaleItemDto) {
         SaleItemResponseDto responseDto = service.createSaleItem(createSaleItemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }

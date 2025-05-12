@@ -5,11 +5,6 @@ import jakarta.validation.constraints.*;
 @Getter
 @Setter
 public class BrandDto {
-
-    @NotNull(message = "Brand ID is required")
     private Integer brandId;
-
-    @NotBlank(message = "brand name is required")
     private String brandName;
-
 }

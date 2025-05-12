@@ -1,11 +1,10 @@
 package com.example.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -51,11 +50,9 @@ public class SaleItem {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false , insertable = false, updatable = false)
-    @Generated(value = GenerationTime.INSERT)
     private Instant createdOn;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false)
-    @Generated(value = GenerationTime.ALWAYS)
     private Instant updatedOn;
 }

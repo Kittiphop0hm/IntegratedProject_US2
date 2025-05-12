@@ -5,11 +5,17 @@ import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemRepository;
+import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 
+import javax.swing.text.html.parser.Entity;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
@@ -24,6 +30,8 @@ public class SaleItemService {
     private ModelMapper modelMapper;
     @Autowired
     private BrandRepository brandRepository;
+    @Autowired
+    private EntityManager entityManager;
 
     public List<ListItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAll();
@@ -34,6 +42,8 @@ public class SaleItemService {
         SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
         return modelMapper.map(saleItem, GetItemDto.class);
     }
+
+
 
 //    public SaleItem checkValue(SaleItem saleItem) {
 //        if (saleItem.getColor().contains("null")) {
@@ -47,7 +57,7 @@ public class SaleItemService {
 //        }
 //        return saleItem;
 //    }
-
+//
 //    public List<SaleItem> checkValues(List<SaleItem> saleItems) {
 //        for (SaleItem item : saleItems) {
 //            checkValue(item);
@@ -55,12 +65,23 @@ public class SaleItemService {
 //        return saleItems;
 //    }
 
+    @Transactional
     public SaleItemResponseDto createSaleItem(CreateSaleItemDto createSaleItemDto) {
+        if (createSaleItemDto.getModel() == null || createSaleItemDto.getDescription() == null) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Model and description cannot be null");
+        }
+        if (createSaleItemDto.getQuantity() == null || createSaleItemDto.getQuantity() < 0) {
+            createSaleItemDto.setQuantity(1);
+        }
+        createSaleItemDto.setModel(createSaleItemDto.getModel().trim());
+        createSaleItemDto.setDescription(createSaleItemDto.getDescription().trim());
+        createSaleItemDto.setColor(createSaleItemDto.getColor().trim());
         Brand brand = brandRepository.findById(createSaleItemDto.getBrandId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrandId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
         saleItem.setBrand(brand);
         SaleItem savedSaleItem = repository.save(saleItem);
+        entityManager.refresh(savedSaleItem);
         SaleItemResponseDto responseDto = modelMapper.map(savedSaleItem, SaleItemResponseDto.class);
         responseDto.setBrandName(savedSaleItem.getBrand().getName());
         return responseDto;
@@ -99,6 +120,4 @@ public class SaleItemService {
                 .orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
         repository.delete(saleItem);
     }
-
-
 }

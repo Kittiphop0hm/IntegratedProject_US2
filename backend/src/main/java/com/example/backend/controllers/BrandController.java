@@ -6,10 +6,7 @@ import com.example.backend.services.BrandService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
@@ -23,8 +20,11 @@ public class BrandController {
 
     @GetMapping("")
     public ResponseEntity<List<BrandDto>> getAllBrands() {
-        List<Brand> brands = brandService.getAllBrands();
-        List<BrandDto> brandDtoList = brands.stream().map(brand -> modelMapper.map(brand, BrandDto.class)).toList();
-        return ResponseEntity.ok(brandDtoList);
+        return ResponseEntity.ok(brandService.findAllBrands());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BrandDto> getBrandById(@PathVariable Integer id) {
+        return ResponseEntity.ok(brandService.findBrandById(id));
     }
 }
