@@ -5,11 +5,13 @@ import { getItemById,deleteItemById } from "../../libs/fetchUtil";
 import Navbar from "../../views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
 import SaleItemDelete from "./SaleItemDelete.vue";
+import AlertDelete from "./AlertDelete.vue";
 
 const route = useRoute();
 const router = useRouter();
 const item = ref([]);
 const isDelete = ref(false)
+const isNotDelete = ref(false)
 onMounted(async () => {
   try {
     const data = await getItemById(
@@ -35,9 +37,16 @@ const cancelDelete = () => {
   isDelete.value = false
 }
 
+const cancelNotDelete = () => {
+  setTimeout(() => {
+    isNotDelete.value = false
+  }, 3000)
+}
+
 const deleteSaleItem = async () => {
   try {
     const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id) 
+    
     if (deleteStatus === 204) {
       isDelete.value = false
       router.push({ name: "SaleItemHome", query: { alertDelete: "true" } });
@@ -84,8 +93,7 @@ const deleteSaleItem = async () => {
     <template #color>{{ item.color ? item.color : "-" }}</template>
     <template #quantity
       >{{ item.quantity }}
-      <span class="itbms-quantity-unit">units</span></template
-    >
+      <span class="itbms-quantity-unit">units</span></template>
         <template #button1>
           <router-link :to="{ name: 'SaleItemEdit'  }">
             <span class="itbms-edit-button text-white">Edit</span>
@@ -96,4 +104,5 @@ const deleteSaleItem = async () => {
     </template>
   </SaleItemDetailModel>
   <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
+  <AlertDelete v-show="isNotDelete" @cancel-not-delete="cancelNotDelete"/>
 </template>
