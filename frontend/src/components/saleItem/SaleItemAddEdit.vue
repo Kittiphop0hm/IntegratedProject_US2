@@ -88,8 +88,7 @@ const isActive = computed(() => {
     saleItem.value.brandId !== "" &&
     saleItem.value.model !== "" &&
     saleItem.value.price !== "" &&
-    saleItem.value.description !== "" &&
-    saleItem.value.quantity !== ""
+    saleItem.value.description !== ""
   );
 });
 
@@ -180,13 +179,13 @@ async function submitForm() {
         <router-link
             :to="{ name: 'SaleItemDetail', params: { id: route.params.id } }"
           >
-          <span class="itbms-model font-semibold">{{ saleItem.model }}</span>
+          <span class=" font-semibold">{{ saleItem.model }}</span>
 
-            <span class="itbms-ramGb font-semibold ml-1"
+            <span class=" font-semibold ml-1"
               >{{ saleItem.ramGb
               }}<span class="itbms-ramGb-unit">/GB </span></span
             >
-            <span class="itbms-color font-semibold">{{ saleItem.color }}</span>
+            <span class=" font-semibold">{{ saleItem.color }}</span>
           </router-link>
         </span>
       </template>
@@ -194,14 +193,14 @@ async function submitForm() {
         <select
           v-model="saleItem.brandId"
           id="brand"
-          class="max-h-40 overflow-y-auto bg-gray-400 ml-32 border rounded-md px-2 py-1 w-70"
+          class="itbms-brand max-h-40 overflow-y-auto bg-gray-400 ml-32 border rounded-md px-2 py-1 w-70"
           :required="true"
         >
           <option disabled value="">-- Select a brand --</option>
           <option
             v-for="(brand, index) in brands"
             :key="index"
-            class="itbms-brand flex"
+            class="flex"
             :value="brand.brandId"
           >
             {{ brand.brandName }}

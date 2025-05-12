@@ -25,7 +25,7 @@ const props = defineProps({
           :to="{ name: 'SaleItemHome' }">
           <span class="itbms-home-button text-blue-600">Home</span>
         </router-link> &gt;
-        <span class="itbms-model itbms-color font-semibold"> 
+        <span class=" font-semibold"> 
             <slot name="path"></slot>
         </span>
       </p>
@@ -56,46 +56,46 @@ const props = defineProps({
       </div>
 
       <div class="lg:w-1/2 mt-8 lg:mt-0">
-        <p class="itbms-brand text-lg mt-2">Brand: 
+        <p class="text-lg mt-2">Brand: 
             <slot name="brand">Input Brand Name</slot>
         </p>
-        <p class="itbms-model text-lg mt-2">Model: 
+        <p class=" text-lg mt-2">Model: 
             <slot name="model">input Model</slot>
         </p>
-        <p class="itbms-price text-lg text-blue-600 mt-2">
+        <p class="text-lg text-blue-600 mt-2">
             <slot name="price">Input Price</slot>
         </p>
-        <p class="itbms-description text-lg mt-2">
+        <p class=" text-lg mt-2">
           Description: <br />
           <slot name="desc">Input Description</slot>
         </p>
-        <p class="itbms-ramGb text-lg mt-2">RAM: 
+        <p class=" text-lg mt-2">RAM: 
             <slot name="ram">Input Ram and Unit</slot>
         </p>
-        <p class="itbms-screenSizeInch text-lg mt-2">
+        <p class=" text-lg mt-2">
           Screen size: 
             <slot name="screen">Input Screen Size</slot>
         </p>
-        <p class="itbms-storageGb text-lg mt-2">
+        <p class=" text-lg mt-2">
           Storage: 
             <slot name="storage">Input Storage</slot>
         </p>
-        <p class="itbms-color text-lg mt-2">Color:
+        <p class=" text-lg mt-2">Color:
             <slot name="color">Input Color</slot>   
         </p>
-        <p class="itbms-quantity text-lg mt-2">
+        <p class=" text-lg mt-2">
           Available quantity: 
             <slot name="quantity">Input Quantity</slot>
         </p>
         <div class="">
         <button 
-        class="mr-3 itbms-save-button px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-3"
+        class="mr-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-3"
         :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-blue-500 opacity-75': !isActive  || !isUpdated}"
         >
         <slot name="button1">Input Name Button1</slot>
         </button
         >
-          <button class="itbms-delete-button px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer">
+          <button class=" px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer">
           <slot name="button2">Input Name Button2</slot>
         </button>
         </div>

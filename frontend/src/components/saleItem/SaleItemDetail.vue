@@ -17,8 +17,7 @@ onMounted(async () => {
       route.params.id
     );
     if (data.status === 404) {
-      alert("The requested sale item does not exist.");
-      router.push("/sale-items");
+      router.push({ name: "SaleItemHome", query: { alert404: "true" } });
     } else {
       item.value = data;
     }
@@ -35,13 +34,18 @@ const cancelDelete = () => {
   isDelete.value = false
 }
 
+// const deleteStatus = ref(0)
 const deleteSaleItem = async () => {
   try {
     const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id) 
     if (deleteStatus === 204) {
       isDelete.value = false
       router.push({ name: "SaleItemHome", query: { alertDelete: "true" } });
-    } 
+    }
+    if (deleteStatus === 404) {
+      router.push({ name: "SaleItemHome", query: { alert404: "true" } });
+    }
+    
   } catch (err) {
     console.error(err);
   }
@@ -54,7 +58,7 @@ const deleteSaleItem = async () => {
     <div class="bg-black/20 shadow-xl rounded px-8 pt-6 pb-8">
       <h1 class=" text-2xl text-green-400">Successfully</h1>
       <br>
-      <p>The Sale Item has been successfully <span class="text-green-400 underline">updated.</span></p>
+      <p class="itbms-message">The sale item has been <span class="text-green-400">updated.</span></p>
     </div>
   </div>
   <SaleItemDetailModel>
@@ -65,25 +69,27 @@ const deleteSaleItem = async () => {
       >
       <span class="itbms-color font-semibold">{{ item.color  ? item.color : "-" }}</span>
     </template>
-    <template #brand>{{ item.brandName }}</template>
-    <template #model>{{ item.model }}</template>
-    <template #price>Price: ฿ {{ formattedPrice }} Baht</template>
-    <template #desc>{{ item.description }}</template>
-    <template #ram
-      >{{ item.ramGb ? item.ramGb : "-" }}
-      <span class="itbms-ramGb-unit"> GB</span></template
-    >
-    <template #screen
-      >{{ item.screenSizeInch ? item.screenSizeInch : "-" }}
-      <span class="itbms-screenSizeInch-unit">Inches</span></template
-    >
-    <template #storage
-      >{{ item.storageGb ? item.storageGb : "-" }}
+    <template #brand> <span class="itbms-brand">{{ item.brandName }}</span> </template>
+    <template #model> <span class="itbms-model">{{ item.model }}</span> </template>
+    <template #price> <span class="itbms-price">Price: ฿ {{ formattedPrice }} Baht</span> </template>
+    <template #desc> <span class="itbms-description">{{ item.description }} </span> </template>
+    <template #ram>
+      <span class="itbms-ramGb">{{ item.ramGb ? item.ramGb : "-" }}</span>
+      <span class="itbms-ramGb-unit"> GB</span>
+      </template>
+    <template #screen>
+      <span class="itbms-screenSizeInch">{{ item.screenSizeInch ? item.screenSizeInch : "-" }}</span>
+      <span class="itbms-screenSizeInch-unit">Inches</span></template>
+    <template #storage>
+      <span class="itbms-storageGb">{{ item.storageGb ? item.storageGb : "-" }}</span>
       <span class="itbms-storageGb-unit">GB</span></template
     >
-    <template #color>{{ item.color ? item.color : "-" }}</template>
+    <template #color>
+      <span class="itbms-color">{{ item.color ? item.color : "-" }}</span>    
+    </template>
     <template #quantity
-      >{{ item.quantity }}
+      >
+      <span class="itbms-quantity">{{ item.quantity ? item.quantity : "-" }}</span>
       <span class="itbms-quantity-unit">units</span></template
     >
         <template #button1>
@@ -92,8 +98,8 @@ const deleteSaleItem = async () => {
           </router-link>
     </template>
     <template #button2>
-      <span @click="isDelete = !isDelete" class="itbms-edit-button text-white">Delete</span>
+      <span @click="isDelete = !isDelete" class="itbms-delete-button text-white">Delete</span>
     </template>
   </SaleItemDetailModel>
-  <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
+  <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem" :status="deleteStatus"/>
 </template>
