@@ -51,11 +51,9 @@ public class SaleItem {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false , insertable = false, updatable = false)
-    @Generated(value = GenerationTime.INSERT)
     private Instant createdOn;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false)
-    @Generated(value = GenerationTime.ALWAYS)
+    @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false)
     private Instant updatedOn;
 }

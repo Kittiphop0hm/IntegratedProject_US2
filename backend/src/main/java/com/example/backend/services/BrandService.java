@@ -1,6 +1,8 @@
 package com.example.backend.services;
 
+import com.example.backend.dtos.BrandDto;
 import com.example.backend.entities.Brand;
+import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import org.modelmapper.ModelMapper;
@@ -25,10 +27,9 @@ public class BrandService {
         return brandRepository.findAllByOrderByNameAsc();
     }
 
-    public Brand getBrand(int id) {
-        return brandRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Brand not found")
-        );
+    public BrandDto getBrandById(int id) {
+        Brand brand  = brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
+        return modelMapper.map(brand, BrandDto.class);
     }
 
 }
