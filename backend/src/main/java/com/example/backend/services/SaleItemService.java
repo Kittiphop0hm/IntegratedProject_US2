@@ -56,8 +56,15 @@ public class SaleItemService {
 //    }
 
     public SaleItemResponseDto createSaleItem(CreateSaleItemDto createSaleItemDto) {
-        Brand brand = brandRepository.findById(createSaleItemDto.getBrandId())
-                .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrandId()));
+        createSaleItemDto.setModel(createSaleItemDto.getModel());
+        createSaleItemDto.setDescription(createSaleItemDto.getDescription());
+        createSaleItemDto.setColor(createSaleItemDto.getColor());
+
+        if (createSaleItemDto.getQuantity()==null||createSaleItemDto.getQuantity() < 0) {
+            createSaleItemDto.setQuantity(1);
+        }
+        Brand brand = brandRepository.findById(createSaleItemDto.getBrand().getId())
+                .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
         saleItem.setBrand(brand);
         SaleItem savedSaleItem = repository.save(saleItem);
@@ -66,32 +73,10 @@ public class SaleItemService {
         return responseDto;
     }
 
-    public SaleItemResponseDto updateSaleItem(Integer id, UpdateSaleItemDto dto) {
-        SaleItem existing = repository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
-        if (dto.getBrandId() != null) {
-            Brand brand = brandRepository.findById(dto.getBrandId())
-                    .orElseThrow(() -> new ItemNotFoundException("Brand not found for id: " + dto.getBrandId()));
-            existing.setBrand(brand);
-        }
-        modelMapper.map(dto, existing);
-        if (existing.getRamGb() != null && existing.getRamGb() == 0) {
-            existing.setRamGb(null);
-        }
-        if (existing.getStorageGb() != null && existing.getStorageGb() == 0) {
-            existing.setStorageGb(null);
-        }
-        if (existing.getScreenSizeInch() != null &&
-                existing.getScreenSizeInch().compareTo(BigDecimal.ZERO) <= 0) {
-            existing.setScreenSizeInch(null);
-        }
-        if (existing.getColor() != null && existing.getColor().toLowerCase().contains("null")) {
-            existing.setColor(null);
-        }
-        SaleItem updated = repository.save(existing);
-        SaleItemResponseDto response = modelMapper.map(existing, SaleItemResponseDto.class);
-        response.setBrandName(updated.getBrand().getName());
-        return response;
+
+    public SaleItem updateSaleItem(int id, SaleItem saleItem) {
+        saleItem.setId(id);
+        return repository.save(saleItem);
     }
 
     public void deleteSaleItem(Integer id) {
