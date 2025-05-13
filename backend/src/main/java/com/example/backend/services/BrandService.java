@@ -27,9 +27,12 @@ public class BrandService {
         return brandRepository.findAllByOrderByNameAsc();
     }
 
-    public BrandDto getBrandById(int id) {
-        Brand brand  = brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
+    public BrandDto getBrandDtoById(int id) {
+        Brand brand = getBrandById(id);
         return modelMapper.map(brand, BrandDto.class);
     }
 
+    public Brand getBrandById(int id) {
+        return brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
+    }
 }

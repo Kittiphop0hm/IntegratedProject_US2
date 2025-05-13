@@ -3,6 +3,7 @@ package com.example.backend.dtos;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -17,4 +18,6 @@ public class GetItemDto {
     private Integer ramGb;
     private Integer storageGb;
     private BigDecimal screenSizeInch;
+    private Instant createdOn;
+    private Instant updatedOn;
 }

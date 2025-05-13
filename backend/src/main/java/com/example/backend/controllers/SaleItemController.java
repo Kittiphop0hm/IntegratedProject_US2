@@ -1,18 +1,14 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dtos.*;
-import com.example.backend.entities.Brand;
-import com.example.backend.entities.SaleItem;
 import com.example.backend.services.BrandService;
 import com.example.backend.services.SaleItemService;
-import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 @RestController
@@ -38,13 +34,13 @@ public class SaleItemController {
 
     @PostMapping("")
     public ResponseEntity<SaleItemResponseDto> createSaleItem(
-            @RequestBody CreateSaleItemDto createSaleItemDto) {
+            @RequestBody AddUpdateSaleItemDto createSaleItemDto) {
         SaleItemResponseDto responseDto = service.createSaleItem(createSaleItemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleItemResponseDto> updateSaleItem(@PathVariable Integer id, @RequestBody UpdateSaleItemDto req) {
+    public ResponseEntity<SaleItemResponseDto> updateSaleItem(@PathVariable Integer id, @RequestBody AddUpdateSaleItemDto req) {
         SaleItemResponseDto saleItemResponseDto = service.updateSaleItem(id, req);
         return ResponseEntity.ok(saleItemResponseDto);
     }

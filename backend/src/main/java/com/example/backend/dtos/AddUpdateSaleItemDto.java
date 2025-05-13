@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class UpdateSaleItemDto {
+public class AddUpdateSaleItemDto {
     private BrandDto brand;
     private String model;
     private String description;
@@ -16,6 +16,8 @@ public class UpdateSaleItemDto {
     private Integer storageGb;
     private BigDecimal screenSizeInch;
     private String color;
+
+    @Min(value = 0)
     private Integer quantity;
 
     public void setModel(String model) {
@@ -28,10 +30,23 @@ public class UpdateSaleItemDto {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        if (description != null) {
+            description = description.trim();
+            this.description = description.isEmpty() ? null : description;
+        } else {
+            this.description = null;
+        }
     }
 
     public void setColor(String color) {
         this.color = (color == null || color.trim().isEmpty()) ? null : color.trim();
+    }
+
+    public void setQuantity(Integer quantity) {
+        if (quantity == null || quantity < 0) {
+            this.quantity = 1;
+            return;
+        }
+        this.quantity = quantity;
     }
 }
