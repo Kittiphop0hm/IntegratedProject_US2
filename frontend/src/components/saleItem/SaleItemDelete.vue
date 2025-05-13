@@ -1,12 +1,7 @@
 <script setup>
 const emit = defineEmits(['deleteSaleItem', 'cancelDelete'])
-// const props = defineProps({
-//     status: {
-//         type: Number ,
-//         required: true
-//     }
-// })
-// </script>
+
+</script>
 
 <template>
     <div class="fixed inset-0 flex justify-center items-center backdrop-blur-2xl overflow-auto z-50">

@@ -101,5 +101,5 @@ const deleteSaleItem = async () => {
       <span @click="isDelete = !isDelete" class="itbms-delete-button text-white">Delete</span>
     </template>
   </SaleItemDetailModel>
-  <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem" :status="deleteStatus"/>
+  <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
 </template>

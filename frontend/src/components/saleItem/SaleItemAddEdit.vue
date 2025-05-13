@@ -14,7 +14,9 @@ const route = useRoute();
 const brands = ref([]);
 
 const initSaleItem = {
-  brandId: "",
+  brand: {
+    id: "",
+  } , 
   model: "",
   price: "",
   description: "",
@@ -26,10 +28,14 @@ const initSaleItem = {
 };
 
 const saleItem = ref({ ...initSaleItem });
+console.log(saleItem.value);
 const saleItemForchecking = ref({ ...initSaleItem });
 onMounted(async () => {
   try {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
+    console.log("brands.value[1].id:", brands.value[1].id);
+    console.log("brands.value:", brands.value);
+    console.log("brands.value[0]:", brands.value[0]);
   } catch (err) {
     console.log(err);
   }
@@ -44,19 +50,26 @@ onMounted(async () => {
         router.back();
       } else {
         const { id, ...rest } = data;
-        saleItem.value = { ...rest };
-        // console.log("saleItem.value:", saleItem.value);
-        saleItemForchecking.value = { ...rest };
-        // console.log("saleItemForchecking.value:", saleItemForchecking.value);
+        console.log("data:", data);
+        console.log("rest:", rest);
+        saleItem.value = { ...initSaleItem ,  ...rest };
+        console.log("Test First");
+        console.log("saleItem.value:", saleItem.value);
+        saleItemForchecking.value = { ...initSaleItem , ...rest };
+        console.log("saleItemForchecking.value:", saleItemForchecking.value);
       }
     } catch (err) {
       console.error(err);
     }
     const brandsFilter = brands.value.find(
-      (brand) => brand.brandName === saleItem.value.brandName
+      (brand) => brand.name === saleItem.value.brandName
     );
-    saleItem.value.brandId = brandsFilter.brandId;
-    saleItemForchecking.value.brandId = brandsFilter.brandId;
+    console.log("brandsFilter:", brandsFilter);
+    console.log(Object.keys(saleItem.value));
+    console.log(saleItem.value.brand);
+
+    saleItem.value.brand.id = brandsFilter.id;
+    saleItemForchecking.value.brand.id = brandsFilter.id;
     console.log(JSON.stringify(saleItemForchecking.value));
     console.log(JSON.stringify(saleItem.value));
     console.log(Object.keys(saleItem.value));
@@ -66,7 +79,7 @@ onMounted(async () => {
 const isSubmitted = ref(false);
 const isUpdated = computed(() => {
   // return (
-  //   saleItem.value.brandId !== saleItemForchecking.value.brandId ||
+  //   saleItem.value.brand.id !== saleItemForchecking.value.brand.id ||
   //   saleItem.value.model !== saleItemForchecking.value.model ||
   //   saleItem.value.price !== saleItemForchecking.value.price ||
   //   saleItem.value.description !== saleItemForchecking.value.description ||
@@ -85,7 +98,7 @@ const isUpdated = computed(() => {
 // });
 const isActive = computed(() => {
   return (
-    saleItem.value.brandId !== "" &&
+    saleItem.value.brand.id !== "" &&
     saleItem.value.model !== "" &&
     saleItem.value.price !== "" &&
     saleItem.value.description !== ""
@@ -93,7 +106,6 @@ const isActive = computed(() => {
 });
 
 async function submitForm() {
-  console.log(Object.keys(saleItem.value));
   isSubmitted.value = true;
   if (Number(route.params.id)) {
     await editItem(
@@ -129,15 +141,16 @@ async function submitForm() {
   <h1>---------------------------------------------------------------------------</h1>
   <br>
   {{ brands }}
-  <h1>---------------------------------------------------------------------------</h1> -->
+  -------------- {{ brands[0] }} --------------
+  <h1>---------------------------------------------------------------------------</h1>
 
-  <!-- <br>
-  <h1>saleItemForchecking</h1> -->
+  <br>
+  <h1>saleItemForchecking</h1>
 
-  <!-- {{ saleItemForchecking }}
+  {{ saleItemForchecking }}
   <br>
   {{ saleItemForchecking.id }}
-  {{ saleItemForchecking.brandId }}
+  {{ saleItemForchecking.brand.id }}
   {{ saleItemForchecking.model }}
   {{ saleItemForchecking.price }}
   {{ saleItemForchecking.description }}
@@ -145,16 +158,16 @@ async function submitForm() {
   {{ saleItemForchecking.screenSizeInch }}
   {{ saleItemForchecking.storageGb }}
   {{ saleItemForchecking.color }}
-  {{ saleItemForchecking.quantity }} -->
-  <!-- <h1>---------------------------------------------------------------------------</h1> -->
-  <!-- <br>
+  {{ saleItemForchecking.quantity }}
+  <h1>---------------------------------------------------------------------------</h1>
+  <br>
   <br>
   <h1>saleItem</h1>
   {{ saleItem }}
   <br>
   <br>
   {{ saleItem.id }}
-  {{ saleItem.brandId }}
+  {{ saleItem.brand.id }}
   {{ saleItem.model }}
   {{ saleItem.price }}
   {{ saleItem.description }}
@@ -191,7 +204,7 @@ async function submitForm() {
       </template>
       <template #brand>
         <select
-          v-model="saleItem.brandId"
+          v-model="saleItem.brand.id"
           id="brand"
           class="itbms-brand max-h-40 overflow-y-auto bg-gray-400 ml-32 border rounded-md px-2 py-1 w-70"
           :required="true"
@@ -201,9 +214,9 @@ async function submitForm() {
             v-for="(brand, index) in brands"
             :key="index"
             class="flex"
-            :value="brand.brandId"
+            :value="brand.id"
           >
-            {{ brand.brandName }}
+          {{ brand.name }}
           </option>
         </select>
       </template>
@@ -275,7 +288,6 @@ async function submitForm() {
           type="number"
           class="itbms-quantity ml-7 border rounded-md px-2 py-1 w-70"
           placeholder="Quantity"
-          :required="true"
         />
       </template>
       <template #button1>
