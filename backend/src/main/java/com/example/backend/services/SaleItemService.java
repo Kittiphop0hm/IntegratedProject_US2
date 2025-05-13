@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 
@@ -37,7 +34,7 @@ public class SaleItemService {
     }
 
     public GetItemDto findById(int id) {
-        SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
+        SaleItem saleItem = getSaleItemById(id);
         return modelMapper.map(saleItem, GetItemDto.class);
     }
 
@@ -62,14 +59,7 @@ public class SaleItemService {
 //    }
 
     @Transactional
-    public SaleItemResponseDto createSaleItem(CreateSaleItemDto createSaleItemDto) {
-        createSaleItemDto.setModel(createSaleItemDto.getModel());
-        createSaleItemDto.setDescription(createSaleItemDto.getDescription());
-        createSaleItemDto.setColor(createSaleItemDto.getColor());
-
-        if (createSaleItemDto.getQuantity()==null||createSaleItemDto.getQuantity() < 0) {
-            createSaleItemDto.setQuantity(1);
-        }
+    public SaleItemResponseDto createSaleItem(AddUpdateSaleItemDto createSaleItemDto) {
         Brand brand = brandRepository.findById(createSaleItemDto.getBrand().getId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
@@ -82,24 +72,40 @@ public class SaleItemService {
     }
 
     @Transactional
-    public SaleItemResponseDto updateSaleItem(int id, UpdateSaleItemDto itemDto) {
-        if (!repository.existsById(id)) throw new ItemNotFoundException("SaleItem not found for this id :: " + id);
-        if (itemDto.getQuantity() == null || itemDto.getQuantity() <= 0) itemDto.setQuantity(1);
-        BrandDto brand = brandService.getBrandById(itemDto.getBrand().getId());
-        SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
-        itemDto.setModel(itemDto.getModel());
-        itemDto.setDescription(itemDto.getDescription());
-        itemDto.setColor(itemDto.getColor());
-        itemDto.setBrand(brand);
-        SaleItem mapItem = modelMapper.map(itemDto, saleItem.getClass());;
-        repository.save(mapItem);
-        entityManager.refresh(mapItem);
-        return modelMapper.map(mapItem, SaleItemResponseDto.class);
+    public SaleItemResponseDto updateSaleItem(int id, AddUpdateSaleItemDto updateSaleItemDto) {
+        SaleItem existing = getSaleItemById(id);
+
+        if (updateSaleItemDto.getBrand() == null && updateSaleItemDto.getBrand().getId() == null) {
+            throw new ItemNotFoundException("Brand not found for this id :: " + id);
+        }
+        Brand brand = brandRepository.findById(updateSaleItemDto.getBrand().getId())
+                .orElseThrow(() -> new ItemNotFoundException("Brand not found with id: " +
+                        updateSaleItemDto.getBrand().getId()));
+
+        existing.setBrand(brand);
+        existing.setModel(updateSaleItemDto.getModel());
+        existing.setDescription(updateSaleItemDto.getDescription());
+        existing.setPrice(updateSaleItemDto.getPrice());
+        existing.setQuantity(updateSaleItemDto.getQuantity());
+        existing.setRamGb(updateSaleItemDto.getRamGb());
+        existing.setScreenSizeInch(updateSaleItemDto.getScreenSizeInch());
+        existing.setStorageGb(updateSaleItemDto.getStorageGb());
+        existing.setColor(updateSaleItemDto.getColor());
+
+        SaleItem updated = repository.save(existing);
+        SaleItemResponseDto responseDto = modelMapper.map(updated, SaleItemResponseDto.class);
+        responseDto.setBrandName(brand.getName());
+        return responseDto;
     }
+
 
     public void deleteSaleItem(Integer id) {
         SaleItem saleItem = repository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
         repository.delete(saleItem);
+    }
+
+    public SaleItem getSaleItemById(int id) {
+        return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
     }
 }

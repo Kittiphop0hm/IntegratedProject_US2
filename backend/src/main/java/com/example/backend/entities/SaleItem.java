@@ -49,11 +49,9 @@ public class SaleItem {
     @Column(name = "color", length = 45)
     private String color;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false , insertable = false, updatable = false)
     private Instant createdOn;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false)
     private Instant updatedOn;
 }

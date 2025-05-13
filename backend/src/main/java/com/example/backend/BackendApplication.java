@@ -1,7 +1,5 @@
 package com.example.backend;
 
-import com.example.backend.dtos.UpdateSaleItemDto;
-import com.example.backend.entities.SaleItem;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
