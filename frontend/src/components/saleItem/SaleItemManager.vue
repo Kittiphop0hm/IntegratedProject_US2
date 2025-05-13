@@ -1,5 +1,4 @@
 <script setup>
-
 import SaleItemGallery from '../saleItem/SaleItemGallery.vue';
 import { ref, onMounted } from "vue";
 import { getItems } from "../../libs/fetchUtil.js";
@@ -12,6 +11,7 @@ onMounted(async () => {
     saleItem.value = await getItems(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`
     );
+    console.log(saleItem.value);
 
   } catch (err) {
     console.log(err);
