@@ -1,0 +1,13 @@
+package com.example.backend.dtos.brands;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class AddUpdateBrandDto {
+    private String name;
+    private String websiteUrl;
+    private String countryOfOrigin;
+    private Boolean isActive;
+}

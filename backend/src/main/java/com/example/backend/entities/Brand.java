@@ -1,5 +1,6 @@
 package com.example.backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,7 @@ public class Brand {
     @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false)
     private Instant updatedOn;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "brand")
     private Set<SaleItem> saleItems = new LinkedHashSet<>();
 

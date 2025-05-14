@@ -1,6 +1,9 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.*;
+import com.example.backend.dtos.saleItems.AddUpdateSaleItemDto;
+import com.example.backend.dtos.saleItems.GetSaleItemDto;
+import com.example.backend.dtos.saleItems.ListSaleItemsDto;
+import com.example.backend.dtos.saleItems.ResponseSaleItemsDto;
 import com.example.backend.services.BrandService;
 import com.example.backend.services.SaleItemService;
 import org.modelmapper.ModelMapper;
@@ -23,25 +26,25 @@ public class SaleItemController {
    private BrandService brandService;
 
     @GetMapping("")
-    public ResponseEntity<List<ListItemsDto>> getAllSaleItems() {
+    public ResponseEntity<List<ListSaleItemsDto>> getAllSaleItems() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<GetItemDto> getSaleItemById(@PathVariable Integer id) {
+    public ResponseEntity<GetSaleItemDto> getSaleItemById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping("")
-    public ResponseEntity<SaleItemResponseDto> createSaleItem(
+    public ResponseEntity<ResponseSaleItemsDto> createSaleItem(
             @RequestBody AddUpdateSaleItemDto createSaleItemDto) {
-        SaleItemResponseDto responseDto = service.createSaleItem(createSaleItemDto);
+        ResponseSaleItemsDto responseDto = service.createSaleItem(createSaleItemDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SaleItemResponseDto> updateSaleItem(@PathVariable Integer id, @RequestBody AddUpdateSaleItemDto req) {
-        SaleItemResponseDto saleItemResponseDto = service.updateSaleItem(id, req);
+    public ResponseEntity<ResponseSaleItemsDto> updateSaleItem(@PathVariable Integer id, @RequestBody AddUpdateSaleItemDto req) {
+        ResponseSaleItemsDto saleItemResponseDto = service.updateSaleItem(id, req);
         return ResponseEntity.ok(saleItemResponseDto);
     }
 

@@ -1,10 +1,10 @@
-package com.example.backend.dtos;
+package com.example.backend.dtos.brands;
 import lombok.Getter;
 import lombok.Setter;
-import jakarta.validation.constraints.*;
+
 @Getter
 @Setter
-public class BrandDto {
+public class ListBrandsDto {
     private Integer id;
     private String name;
 }

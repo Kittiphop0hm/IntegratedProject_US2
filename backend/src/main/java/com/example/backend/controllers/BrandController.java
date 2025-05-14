@@ -1,15 +1,14 @@
 package com.example.backend.controllers;
 
-import com.example.backend.dtos.BrandDto;
-import com.example.backend.entities.Brand;
+import com.example.backend.dtos.brands.AddUpdateBrandDto;
+import com.example.backend.dtos.brands.ResponseBrandsDto;
+import com.example.backend.dtos.brands.ListBrandsDto;
 import com.example.backend.services.BrandService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
@@ -22,9 +21,34 @@ public class BrandController {
     private ModelMapper modelMapper;
 
     @GetMapping("")
-    public ResponseEntity<List<BrandDto>> getAllBrands() {
-        List<Brand> brands = brandService.getAllBrands();
-        List<BrandDto> brandDtoList = brands.stream().map(brand -> modelMapper.map(brand, BrandDto.class)).toList();
-        return ResponseEntity.ok(brandDtoList);
+    public ResponseEntity<List<ListBrandsDto>> getAllBrands() {
+        List<ListBrandsDto> brands = brandService.getAllBrands();
+        return ResponseEntity.ok(brands);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseBrandsDto> getBrandById(@PathVariable Integer id) {
+        ResponseBrandsDto brands = brandService.getBrandById(id);
+        return ResponseEntity.ok(brands);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<ResponseBrandsDto> addBrand(@RequestBody AddUpdateBrandDto newBrandDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                brandService.createBrand(newBrandDto)
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseBrandsDto> updateBrand(@PathVariable Integer id ,@RequestBody AddUpdateBrandDto newBrandDto) {
+        return ResponseEntity.ok(
+                brandService.updateBrand(id,newBrandDto)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseBrandsDto> deleteBrand(@PathVariable Integer id ) {
+        brandService.deleteฺBrand(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

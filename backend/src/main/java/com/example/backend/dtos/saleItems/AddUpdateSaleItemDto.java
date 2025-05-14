@@ -1,5 +1,6 @@
-package com.example.backend.dtos;
+package com.example.backend.dtos.saleItems;
 
+import com.example.backend.dtos.brands.ListBrandsDto;
 import lombok.Getter;
 import lombok.Setter;
 import jakarta.validation.constraints.*;
@@ -8,7 +9,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class AddUpdateSaleItemDto {
-    private BrandDto brand;
+    private ListBrandsDto brand;
     private String model;
     private String description;
     private Integer price;
