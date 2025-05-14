@@ -35,7 +35,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `INT221_db`.`brand` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(30) NOT NULL,
+  `name` VARCHAR(30) UNIQUE NOT NULL,
   `countryOfOrigin` VARCHAR(80) NULL,
   `webSiteUrl` VARCHAR(40) NULL,
   `isActive` TINYINT NULL DEFAULT 0,
