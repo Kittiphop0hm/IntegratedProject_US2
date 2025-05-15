@@ -230,12 +230,12 @@ async function submitForm() {
         />
       </template>
       <template #price>
-        <span class="text-white">Price: </span>
+        <span class="">Price: </span>
 
         <input
           v-model.number="saleItem.price"
           type="number"
-          class="itbms-price ml-35 border text-white rounded-md px-2 py-1 w-70"
+          class="itbms-price ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="Price"
           :required="true"
         />
