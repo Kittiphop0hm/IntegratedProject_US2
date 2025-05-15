@@ -3,6 +3,8 @@ import HomeView from "../views/HomeView.vue";
 import LandingPage from "../views/LandingPage.vue";
 import SaleItemDetail from "../components/saleItem/SaleItemDetail.vue";
 import SaleItemAddEdit from "../components/saleItem/SaleItemAddEdit.vue";
+import SaleItemList from "../components/saleItem/SaleItemList.vue";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,6 +35,11 @@ const router = createRouter({
       name: "SaleItemEdit",
       component: SaleItemAddEdit,
     },
+ {
+    path: '/sale-items/list',
+    name: 'SaleItemList',
+    component: SaleItemList
+  }
   ],
 });
 
