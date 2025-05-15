@@ -28,7 +28,9 @@ const props = defineProps({
                         <tr v-for="(brand, index) in brands" :key="index">
                             <th>{{ brand.id }}</th>
                             <td>{{ brand.name }}</td>
-                            <td>{{ brand.webSiteUrl }}</td>
+                            <a :href="brand.websiteUrl" target="_blank" class="underline">
+                                <td>{{ brand.websiteUrl }}</td>
+                            </a>
                             <th>{{ brand.isActive }}</th>
                             <td>{{ brand.countryOfOrigin }}</td>
                             <td>{{ brand.createdOn }}</td>
