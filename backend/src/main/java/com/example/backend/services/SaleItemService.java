@@ -27,8 +27,6 @@ public class SaleItemService {
     @Autowired
     private BrandRepository brandRepository;
     @Autowired
-    private BrandService brandService;
-    @Autowired
     private EntityManager entityManager;
 
     public List<ListSaleItemsDto> findAll() {
@@ -44,10 +42,9 @@ public class SaleItemService {
 
     @Transactional
     public ResponseSaleItemsDto createSaleItem(AddUpdateSaleItemDto createSaleItemDto) {
-        Brand brand = brandRepository.findById(createSaleItemDto.getBrand().getId())
+        brandRepository.findById(createSaleItemDto.getBrand().getId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
-        saleItem.setBrand(brand);
         SaleItem savedSaleItem = repository.save(saleItem);
         entityManager.refresh(savedSaleItem);
         ResponseSaleItemsDto responseDto = modelMapper.map(savedSaleItem, ResponseSaleItemsDto.class);
@@ -55,18 +52,14 @@ public class SaleItemService {
         return responseDto;
     }
 
-    @Transactional
     public ResponseSaleItemsDto updateSaleItem(int id, AddUpdateSaleItemDto updateSaleItemDto) {
         SaleItem existing = getSaleItemById(id);
-
         if (updateSaleItemDto.getBrand() == null && updateSaleItemDto.getBrand().getId() == null) {
             throw new ItemNotFoundException("Brand not found for this id :: " + id);
         }
         Brand brand = brandRepository.findById(updateSaleItemDto.getBrand().getId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found with id: " +
                         updateSaleItemDto.getBrand().getId()));
-
-        existing.setBrand(brand);
         existing.setModel(updateSaleItemDto.getModel());
         existing.setDescription(updateSaleItemDto.getDescription());
         existing.setPrice(updateSaleItemDto.getPrice());
@@ -75,7 +68,6 @@ public class SaleItemService {
         existing.setScreenSizeInch(updateSaleItemDto.getScreenSizeInch());
         existing.setStorageGb(updateSaleItemDto.getStorageGb());
         existing.setColor(updateSaleItemDto.getColor());
-
         SaleItem updated = repository.save(existing);
         ResponseSaleItemsDto responseDto = modelMapper.map(updated, ResponseSaleItemsDto.class);
         responseDto.setBrandName(brand.getName());

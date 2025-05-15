@@ -50,10 +50,9 @@ public class BrandService {
 //        if (brandRepository.existsByName(updateBrandDto.getName())) {
 //            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is already exists");
 //        }
-        if (!brandRepository.existsById(id)) {
-            throw new ItemNotFoundException("Brand not found for this id :: " + id);
-        }
-        Brand brand = brandRepository.save(modelMapper.map(updateBrandDto, Brand.class));
+        Brand existBrand = brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
+        modelMapper.map(updateBrandDto, existBrand);
+        Brand brand = brandRepository.save(existBrand);
         return  modelMapper.map(brand, ResponseBrandsDto.class);
     }
 

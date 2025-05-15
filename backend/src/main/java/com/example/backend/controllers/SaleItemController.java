@@ -20,10 +20,6 @@ import java.util.List;
 public class SaleItemController {
     @Autowired
     private SaleItemService service;
-    @Autowired
-    private ModelMapper modelMapper;
-   @Autowired
-   private BrandService brandService;
 
     @GetMapping("")
     public ResponseEntity<List<ListSaleItemsDto>> getAllSaleItems() {
