@@ -1,9 +1,40 @@
 <script setup>
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
+import { computed, ref } from 'vue';
+import { addItem } from '@/libs/fetchUtil';
+
+const brand = ref({
+    name:'',
+    websiteUrl:'',
+    isActive:true,
+    countryOfOrigin:''
+})
+
+const enableButton = computed(() => {
+    return (
+        brand.value.name.trim() !== '' &&
+        brand.value.websiteUrl.trim() !== '' &&
+        brand.value.isActive !== '' &&
+        brand.value.countryOfOrigin.trim() !== ''
+    )
+})
+
+const addBrand = async () => {
+
+}
+
+console.log(enableButton.value);
+
+
 </script>
 
 <template>
+    <p>{{ brand.name }}</p>
+    <p>{{ brand.websiteUrl }}</p>
+    <p>{{ brand.isActive }}</p>
+    <p>{{ brand.countryOfOrigin }}</p>
+    <p>{{ enableButton }}</p>
     <Navbar/>
     <Search/>
     <div class="px-2 py-10 w-full max-h-[100vh]">
@@ -26,6 +57,7 @@ import Search from '../Search.vue';
                 <div class="flex flex-col">
                     <label for="brandName" class="text-sm font-medium mb-1">Brand Name:</label>
                     <input 
+                    v-model="brand.name"
                     id="brandName" 
                     type="text" 
                     placeholder="Enter brand name" 
@@ -36,6 +68,7 @@ import Search from '../Search.vue';
                 <div class="flex flex-col">
                     <label for="websiteUrl" class="text-sm font-medium mb-1">Website URL:</label>
                     <input 
+                    v-model="brand.websiteUrl"
                     id="websiteUrl" 
                     type="text" 
                     placeholder="Enter website URL" 
@@ -46,17 +79,19 @@ import Search from '../Search.vue';
                 <div class="flex flex-col">
                     <label for="isActive" class="text-sm font-medium mb-1">Is Active:</label>
                     <select 
+                    v-model="brand.isActive"
                     id="isActive" 
                     class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300"
                     >
                     <option value="true">Active</option>
-                    <option value="false">Inactive</option>
+                    <option value="false">Not Active</option>
                     </select>
                 </div>
 
                 <div class="flex flex-col">
                     <label for="country" class="text-sm font-medium mb-1">Country of Origin:</label>
                     <input 
+                    v-model="brand.countryOfOrigin"
                     id="country" 
                     type="text" 
                     placeholder="Enter country of origin" 
@@ -67,16 +102,18 @@ import Search from '../Search.vue';
                 <div class="flex justify-center mt-6">
                     <button 
                     type="submit" 
-                    class="px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+                    :class="!enableButton ? 'px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none' : 'cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
                     >
                     Save
                     </button>
-                    <button 
-                    type="button" 
-                    class="px-6 py-2 ml-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring focus:ring-gray-300"
-                    >
-                    Cancel
-                    </button>
+                    <router-link to="/brands">
+                        <button 
+                        type="button" 
+                        class="cursor-pointer px-6 py-2 ml-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring focus:ring-gray-300"
+                        >
+                        Cancel
+                        </button>
+                    </router-link>
                 </div>
                 </form>
             </div>
