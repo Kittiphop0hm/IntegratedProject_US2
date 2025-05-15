@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 public class ListSaleItemsDto {
     private Integer id;
     private String brandName;
-    private String color;
-    private String description;
-    private Integer quantity;
     private String model;
-    private Integer price;
     private Integer ramGb;
     private Integer storageGb;
+    private String color;
     private BigDecimal screenSizeInch;
+    private Integer price;
+    private Integer quantity;
+    private String description;
 }

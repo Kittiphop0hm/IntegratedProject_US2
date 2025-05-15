@@ -5,6 +5,9 @@ import SaleItemDetail from "../components/saleItem/SaleItemDetail.vue";
 import SaleItemAddEdit from "../components/saleItem/SaleItemAddEdit.vue";
 import SaleItemList from "../components/saleItem/SaleItemList.vue";
 
+import BrandManager from "@/components/brand/BrandManager.vue";
+import BrandAdd from "@/components/brand/BrandAdd.vue";
+import BrandEdit from "@/components/brand/BrandEdit.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,8 +41,23 @@ const router = createRouter({
  {
     path: '/sale-items/list',
     name: 'SaleItemList',
-    component: SaleItemList
-  }
+    component: SaleItemList,
+  },
+    {
+      path: "/brands",
+      name: "BrandList",
+      component: BrandManager,
+    },
+    {
+      path: "/brands/add",
+      name: "BrandAdd",
+      component: BrandAdd,
+    },
+    {
+      path: "/brands/:id/edit",
+      name: "BrandEdit",
+      component: BrandEdit,
+    },
   ],
 });
 
