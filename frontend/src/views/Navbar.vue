@@ -24,6 +24,9 @@ const isBurgerBar = ref(false)
           <router-link to="/">About</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
+          <router-link to="/sale-items/list">SaleItemList</router-link>
+        </div>
+        <div class="mx-3 hover:opacity-80">
           <router-link to="/">Contact</router-link>
         </div>
       </div>
@@ -58,6 +61,9 @@ const isBurgerBar = ref(false)
         </div>
         <div class="my-3 hover:opacity-80">
           <router-link to="/">About</router-link>
+        </div>
+        <div class="my-3 hover:opacity-80">
+          <router-link to="/sale-items/list">SaleItemList</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
           <router-link to="/">Contact</router-link>

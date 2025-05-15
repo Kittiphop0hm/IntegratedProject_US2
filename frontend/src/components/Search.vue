@@ -1,6 +1,6 @@
 <script setup></script>
 <template>
-      <div class="mt-16 flex items-center justify-center w-full">
+      <div class="mt-10 flex items-center justify-center w-full">
     <div class="flex items-center space-x-4 w-full max-w-4xl px-8">
       <h1 class="text-2xl font-bold text-gray-800 whitespace-nowrap">
         ITBMS Shop

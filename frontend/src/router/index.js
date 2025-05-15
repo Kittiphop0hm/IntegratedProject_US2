@@ -3,6 +3,8 @@ import HomeView from "../views/HomeView.vue";
 import LandingPage from "../views/LandingPage.vue";
 import SaleItemDetail from "../components/saleItem/SaleItemDetail.vue";
 import SaleItemAddEdit from "../components/saleItem/SaleItemAddEdit.vue";
+import SaleItemList from "../components/saleItem/SaleItemList.vue";
+
 import BrandManager from "@/components/brand/BrandManager.vue";
 import BrandAdd from "@/components/brand/BrandAdd.vue";
 import BrandEdit from "@/components/brand/BrandEdit.vue";
@@ -36,6 +38,11 @@ const router = createRouter({
       name: "SaleItemEdit",
       component: SaleItemAddEdit,
     },
+ {
+    path: '/sale-items/list',
+    name: 'SaleItemList',
+    component: SaleItemList,
+  },
     {
       path: "/brands",
       name: "BrandList",

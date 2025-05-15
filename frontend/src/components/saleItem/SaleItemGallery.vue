@@ -39,7 +39,7 @@ const props = defineProps({
               <span class="itbms-storageGb-unit">GB</span></span
             >
           </div>
-          <div class="text-blue-600 text-lg font-bold mt-2 itbms-price">
+          <div class=" text-lg font-bold mt-2 itbms-price">
             <span class="itbms-price-unit">Baht:</span
             >{{ yourItem.price.toLocaleString("en-US") }}
           </div>

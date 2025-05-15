@@ -37,6 +37,7 @@ public class BrandService {
         Brand brand = brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
         return modelMapper.map(brand, ResponseBrandsDto.class);
     }
+    
 
     public ResponseBrandsDto createBrand(AddUpdateBrandDto newBrandDto) {
         if (brandRepository.existsByName(newBrandDto.getName())) {

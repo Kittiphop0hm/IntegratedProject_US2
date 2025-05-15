@@ -62,7 +62,7 @@ const props = defineProps({
         <p class=" text-lg mt-2">Model: 
             <slot name="model">input Model</slot>
         </p>
-        <p class="text-lg text-blue-600 mt-2">
+        <p class="text-lg  mt-2">
             <slot name="price">Input Price</slot>
         </p>
         <p class=" text-lg mt-2">
