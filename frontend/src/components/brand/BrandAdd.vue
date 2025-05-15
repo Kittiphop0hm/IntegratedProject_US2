@@ -3,25 +3,38 @@ import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { computed, ref } from 'vue';
 import { addItem } from '@/libs/fetchUtil';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
 const brand = ref({
     name:'',
     websiteUrl:'',
-    isActive:true,
-    countryOfOrigin:''
+    countryOfOrigin:'',
+    isActive:true
 })
 
 const enableButton = computed(() => {
     return (
-        brand.value.name.trim() !== '' &&
-        brand.value.websiteUrl.trim() !== '' &&
+        brand.value.name !== '' &&
+        brand.value.websiteUrl !== '' &&
         brand.value.isActive !== '' &&
-        brand.value.countryOfOrigin.trim() !== ''
+        brand.value.countryOfOrigin !== ''
     )
 })
 
 const addBrand = async () => {
-
+    if (enableButton) { 
+        try {
+            const addBrandResponse = await addItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, brand.value)
+            if (addBrandResponse.status === 201 || addBrandResponse.status === 200) {
+                router.push({ path:'/brands', query: { alertBrandAdd: "true" } });
+            } else {
+                router.push({ path:'/brands', query: { alertBrandAddError: "false" } });
+            }
+        } catch (error) {
+            console.error('Error adding brand:', error);
+        }
+    }
 }
 
 console.log(enableButton.value);
@@ -30,11 +43,6 @@ console.log(enableButton.value);
 </script>
 
 <template>
-    <p>{{ brand.name }}</p>
-    <p>{{ brand.websiteUrl }}</p>
-    <p>{{ brand.isActive }}</p>
-    <p>{{ brand.countryOfOrigin }}</p>
-    <p>{{ enableButton }}</p>
     <Navbar/>
     <Search/>
     <div class="px-2 py-10 w-full max-h-[100vh]">
@@ -52,7 +60,7 @@ console.log(enableButton.value);
 
             <div class="w-full h-full flex justify-center">
             <div class="w-[50%] h-[80%] max-w-lg p-6 bg-white border border-gray-300 rounded-2xl shadow-md">
-                <form action="" class="flex flex-col justify-center gap-4">
+                <form @submit.prevent="addBrand" class="flex flex-col justify-center gap-4">
                 <h2 class="text-2xl font-semibold text-center mb-4">Add New Brand</h2>
                 <div class="flex flex-col">
                     <label for="brandName" class="text-sm font-medium mb-1">Brand Name:</label>

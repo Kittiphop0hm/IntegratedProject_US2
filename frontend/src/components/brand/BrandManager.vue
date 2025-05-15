@@ -4,23 +4,36 @@ import { getItems } from '@/libs/fetchUtil';
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import BrandList from './BrandList.vue';
+import { useRoute } from 'vue-router';
 
 const brands = ref([])
+const route = useRoute();
 onMounted(async () => {
     try {
         brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
-        console.log(brands.value);
-        
     } catch (error) {
         console.error('Error fetching brands:', error);
     }
 })
-
 </script>
 
 <template>
     <Navbar/>
     <Search/>
+    <div v-show="route.query.alertBrandAdd || route.query.alertBrandAddError" class="p-10 pb-0 mb-10">
+        <div class="bg-black/5 shadow-xl rounded px-8 pt-6 pb-8">
+            <div v-show="route.query.alertBrandAdd">
+                <h1 class=" text-2xl text-green-400">Successfully</h1>
+                <br>
+                <p class="itbms-message">The brand has been added</p>
+            </div>
+            <div v-show="route.query.alertBrandAddError">
+                <h1 class=" text-2xl text-red-400">Error</h1>
+                <br>
+                <p class="itbms-message">The status could not be added.</p>
+            </div>
+        </div>
+    </div>
     <router-link to="/brands/add" class="px-8">
         <button class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
     </router-link>

@@ -41,7 +41,10 @@ async function getItems(url) {
         })
       })
       const addedItem = await res.json()
-      return addedItem
+      return {
+        status: res.status,
+        data: addedItem
+      }
     } catch (error) {
       throw new Error('can not add your item')
     }
