@@ -21,9 +21,9 @@ onMounted(async () => {
 <template>
     <Navbar/>
     <Search/>
-    <div class="px-8">
+    <router-link to="/brands/add" class="px-8">
         <button class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
-    </div>
+    </router-link>
     <div>
         <BrandList :brands="brands"/>
     </div>

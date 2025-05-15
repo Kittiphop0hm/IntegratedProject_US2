@@ -11,7 +11,7 @@ const props = defineProps({
 <template>
     <div>
         <div>
-            <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+            <div class="overflow-x-auto rounded-box border border-base-content/10 bg-base-10">
                     <table class="table">
                         <thead>
                         <tr>
@@ -22,6 +22,7 @@ const props = defineProps({
                             <th>Country of Origin</th>
                             <th>Created On</th>
                             <th>Updated On</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -31,11 +32,14 @@ const props = defineProps({
                             <a :href="brand.websiteUrl" target="_blank" class="underline">
                                 <td>{{ brand.websiteUrl }}</td>
                             </a>
-                            <th>{{ brand.isActive }}</th>
+                            <td>{{ brand.isActive }}</td>
                             <td>{{ brand.countryOfOrigin }}</td>
                             <td>{{ brand.createdOn }}</td>
                             <td>{{ brand.updatedOn }}</td>
-                            
+                            <td>
+                                <button class="btn btn-info mr-2">Edit</button>
+                                <button class="btn btn-error ml-2">Delete</button>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
