@@ -10,8 +10,8 @@ public class ListBrandsDto {
     private Integer id;
     private String name;
     private String websiteUrl;
-    private String countryOfOrigin;
     private Boolean isActive;
+    private String countryOfOrigin;
     private Instant createdOn;
     private Instant updatedOn;
 }
