@@ -1,44 +1,49 @@
 <script setup>
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { getItemById,editItem } from '@/libs/fetchUtil';
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
-import { computed, ref } from 'vue';
-import { addItem } from '@/libs/fetchUtil';
-import { useRouter } from 'vue-router';
 
+const {params: {id}} = useRoute()
 const router = useRouter()
-const brand = ref({
-    name:'',
-    websiteUrl:'',
-    countryOfOrigin:'',
-    isActive:true
-})
-
+const selectBrand = ref({})
+const editObjectBrand = ref({})
 const enableButton = computed(() => {
     return (
-        brand.value.name !== '' &&
-        brand.value.websiteUrl !== '' &&
-        brand.value.isActive !== '' &&
-        brand.value.countryOfOrigin !== ''
+        selectBrand.value.name !== '' &&
+        selectBrand.value.websiteUrl !== '' &&  
+        selectBrand.value.isActive !== '' &&
+        selectBrand.value.countryOfOrigin !== '' &&
+        selectBrand.value.name !== editObjectBrand.value.name ||
+        selectBrand.value.websiteUrl !== editObjectBrand.value.websiteUrl ||
+        selectBrand.value.isActive !== editObjectBrand.value.isActive ||
+        selectBrand.value.countryOfOrigin !== editObjectBrand.value.countryOfOrigin
     )
 })
+onMounted(async () => {
+    try {
+        selectBrand.value = await getItemById(`${import.meta.env.VITE_APP_URL}/v1/brands`, id)
+        editObjectBrand.value = {...selectBrand.value}
+    } catch (error) {
+        console.error('Error fetching brand:', error);
+    }
+})
 
-const addBrand = async () => {
-    if (enableButton) { 
+const editBrand = async () => {
+    if (enableButton) {
         try {
-            const addBrandResponse = await addItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, brand.value)
-            if (addBrandResponse.status === 201 || addBrandResponse.status === 200) {
-                    router.push({ path:'/brands', query: { alertBrandAdd: "true" } });
+            const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, selectBrand.value.id, selectBrand.value)
+            if (editBrandResponse.status === 200) {
+                router.push({ path:'/brands', query: { alertBrandEdit: "true" } });
             } else {
-                    router.push({ path:'/brands', query: { alertBrandAddError: "false" } });
+                router.push({ path:'/brands', query: { alertBrandEditError: "false" } });
             }
-        } catch (error) {
+        } catch(error) {
             console.error('Error adding brand:', error);
         }
     }
 }
-
-console.log(enableButton.value);
-
 
 </script>
 
@@ -51,7 +56,7 @@ console.log(enableButton.value);
                 <div>
                     <p>
                     <router-link to="/brands" class="text-blue-500">Home</router-link>
-                    > Add Brand
+                    > Edit Brand
                     </p>
                 </div>
                 <div>
@@ -60,12 +65,12 @@ console.log(enableButton.value);
 
             <div class="w-full h-full flex justify-center">
             <div class="w-[50%] h-[80%] max-w-lg p-6 bg-white border border-gray-300 rounded-2xl shadow-md">
-                <form @submit.prevent="addBrand" class="flex flex-col justify-center gap-4">
+                <form @submit.prevent="editBrand" class="flex flex-col justify-center gap-4">
                 <h2 class="text-2xl font-semibold text-center mb-4">Add New Brand</h2>
                 <div class="flex flex-col">
                     <label for="brandName" class="text-sm font-medium mb-1">Brand Name:</label>
                     <input 
-                    v-model="brand.name"
+                    v-model="selectBrand.name"
                     id="brandName" 
                     type="text" 
                     placeholder="Enter brand name" 
@@ -76,7 +81,7 @@ console.log(enableButton.value);
                 <div class="flex flex-col">
                     <label for="websiteUrl" class="text-sm font-medium mb-1">Website URL:</label>
                     <input 
-                    v-model="brand.websiteUrl"
+                    v-model="selectBrand.websiteUrl"
                     id="websiteUrl" 
                     type="text" 
                     placeholder="Enter website URL" 
@@ -87,7 +92,7 @@ console.log(enableButton.value);
                 <div class="flex flex-col">
                     <label for="isActive" class="text-sm font-medium mb-1">Is Active:</label>
                     <select 
-                    v-model="brand.isActive"
+                    v-model="selectBrand.isActive"
                     id="isActive" 
                     class="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300"
                     >
@@ -99,7 +104,7 @@ console.log(enableButton.value);
                 <div class="flex flex-col">
                     <label for="country" class="text-sm font-medium mb-1">Country of Origin:</label>
                     <input 
-                    v-model="brand.countryOfOrigin"
+                    v-model="selectBrand.countryOfOrigin"
                     id="country" 
                     type="text" 
                     placeholder="Enter country of origin" 

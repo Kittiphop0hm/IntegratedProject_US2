@@ -37,8 +37,13 @@ const props = defineProps({
                             <td>{{ brand.createdOn }}</td>
                             <td>{{ brand.updatedOn }}</td>
                             <td>
-                                <button class="btn btn-info mr-2">Edit</button>
-                                <button class="btn btn-error ml-2">Delete</button>
+                                <router-link :to="{ name: 'BrandEdit', params: { id: brand.id } }">
+                                    <button class="btn btn-info mr-2">Edit</button>
+                                </router-link>
+
+                                <router-link>
+                                    <button class="btn btn-error ml-2">Delete</button>
+                                </router-link>
                             </td>
                         </tr>
                         </tbody>

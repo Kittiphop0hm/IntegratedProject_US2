@@ -34,6 +34,22 @@ onMounted(async () => {
             </div>
         </div>
     </div>
+
+    <div v-show="route.query.alertBrandEdit || route.query.alertBrandEditError" class="p-10 pb-0 mb-10">
+        <div class="bg-black/5 shadow-xl rounded px-8 pt-6 pb-8">
+            <div v-show="route.query.alertBrandEdit">
+                <h1 class=" text-2xl text-green-400">Successfully</h1>
+                <br>
+                <p class="itbms-message">The brand has been updated</p>
+            </div>
+            <div v-show="route.query.alertBrandEditError">
+                <h1 class=" text-2xl text-red-400">Error</h1>
+                <br>
+                <p class="itbms-message">The brand does not exist.</p>
+            </div>
+        </div>
+    </div>
+
     <router-link to="/brands/add" class="px-8">
         <button class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
     </router-link>
