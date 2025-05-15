@@ -12,6 +12,8 @@ onMounted(async () => {
     saleItem.value = await getItems(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`
     );
+    console.log(saleItem.value);
+    console.log("saleItem.value[0]", JSON.stringify(saleItem.value[0]));
 
   } catch (err) {
     console.log(err);
