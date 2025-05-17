@@ -8,4 +8,5 @@ import java.util.List;
 public interface BrandRepository extends JpaRepository<Brand, Integer> {
     List<Brand> findAllByOrderByNameAsc();
     Boolean existsByName(String name);
+    boolean existsByNameAndIdNot(String name, Integer id);
 }

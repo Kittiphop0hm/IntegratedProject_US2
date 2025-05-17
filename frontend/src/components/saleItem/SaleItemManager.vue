@@ -4,6 +4,7 @@ import SaleItemGallery from '../saleItem/SaleItemGallery.vue';
 import { ref, onMounted } from "vue";
 import { getItems } from "../../libs/fetchUtil.js";
 import { useRoute } from 'vue-router';
+import router from '@/router';
 const route = useRoute();
 const saleItem = ref([]);
 
@@ -19,6 +20,11 @@ onMounted(async () => {
     console.log(err);
   }
 });
+
+function savePreviousPath() {
+  const previousPath = route.fullPath;
+  localStorage.setItem("previousPath", previousPath);
+}
 
 </script>
 <template>
@@ -39,6 +45,7 @@ onMounted(async () => {
     <div class="pl-10 pr-10 pt-10">
     <router-link :to="{ name: 'SaleItemAdd'  }">
       <button
+      @click="savePreviousPath"
         class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
       >
         Add Sale Item

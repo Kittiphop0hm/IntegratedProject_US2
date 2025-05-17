@@ -1,6 +1,7 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dtos.brands.AddUpdateBrandDto;
+import com.example.backend.dtos.brands.GetBrandDto;
 import com.example.backend.dtos.brands.ResponseBrandsDto;
 import com.example.backend.dtos.brands.ListBrandsDto;
 import com.example.backend.services.BrandService;
@@ -27,8 +28,8 @@ public class BrandController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseBrandsDto> getBrandById(@PathVariable Integer id) {
-        ResponseBrandsDto brands = brandService.getBrandById(id);
+    public ResponseEntity<GetBrandDto> getBrandById(@PathVariable Integer id) {
+        GetBrandDto brands = brandService.getBrandById(id);
         return ResponseEntity.ok(brands);
     }
 

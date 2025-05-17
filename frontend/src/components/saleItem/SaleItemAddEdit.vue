@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from "@/views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
-import { computed, onMounted, ref, watchEffect } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   getItems,
@@ -126,13 +126,18 @@ async function submitForm() {
         saleItem.value
       );
       saleItem.value = { ...initSaleItem };
-      router.push({ name: "SaleItemHome", query: { alertAdd: "true" } });
+      router.push({ path: previousPath , query: { alertAdd: "true" } });
     } catch (error) {
       console.log(error);
     }
   }
 }
+
+const previousPath =   localStorage.getItem("previousPath");
+console.log("previousPath:", previousPath);
 </script>
+
+
 
 <template>
   <!-- <br>
@@ -300,7 +305,7 @@ async function submitForm() {
         </button>
       </template>
       <template #button2>
-        <router-link :to="{ name: 'SaleItemHome' }">
+        <router-link :to="{ path: previousPath }">
           <button class="itbms-cancel-button text-white">Cancel</button>
         </router-link>
       </template>

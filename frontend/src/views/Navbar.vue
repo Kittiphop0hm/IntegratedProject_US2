@@ -18,13 +18,13 @@ const isBurgerBar = ref(false)
           <router-link to="/" class="font-semibold">Home</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link to="/sale-items">Product</router-link>
+          <router-link :to="{ name: 'SaleItemHome'  }">Product</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link to="/">About</router-link>
+          <router-link :to="{ name: 'BrandList'  }">Manage Brand</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link to="/sale-items/list">SaleItemList</router-link>
+          <router-link :to="{ name: 'SaleItemList'  }">List SaleItem</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
           <router-link to="/">Contact</router-link>

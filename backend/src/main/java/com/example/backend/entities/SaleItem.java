@@ -1,11 +1,11 @@
 package com.example.backend.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -20,20 +20,27 @@ public class SaleItem {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "brandId", nullable = false)
     private Brand brand;
 
+    @Size(max = 60)
+    @NotNull
     @Column(name = "model", nullable = false, length = 60)
     private String model;
 
+    @Size(max = 400)
+    @NotNull
     @Column(name = "description", nullable = false, length = 400)
     private String description;
 
+    @NotNull
     @ColumnDefault("1")
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    @NotNull
     @Column(name = "price", nullable = false)
     private Integer price;
 
@@ -46,12 +53,16 @@ public class SaleItem {
     @Column(name = "storageGb")
     private Integer storageGb;
 
+    @Size(max = 45)
     @Column(name = "color", length = 45)
     private String color;
 
+    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false , insertable = false, updatable = false)
     private Instant createdOn;
 
-    @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false)
     private Instant updatedOn;
+
 }

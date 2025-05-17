@@ -50,18 +50,12 @@ onMounted(async () => {
         </div>
     </div>
 
-    <div class="px-8 flex items-center">
-        <router-link to="/sale-items">
-            <button class="itbms-item-list text-blue-400">Sale Item List </button>
-        </router-link>
-
-        <p class="px-1 font-bold text-gray-400">></p>
-
-        <router-link to="/brands/add">
-            <button class="itbms-add-button px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
-        </router-link>
+    <div class="pt-5 px-10">
+        <router-link :to="{ name: 'BrandAdd' }" >
+        <button class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
+    </router-link>
     </div>
-    <div>
+    <div class="pt-5">
         <BrandList :brands="brands"/>
     </div>
 </template>
