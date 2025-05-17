@@ -14,8 +14,5 @@ public class ListSaleItemsDto {
     private Integer ramGb;
     private Integer storageGb;
     private String color;
-    private BigDecimal screenSizeInch;
     private Integer price;
-    private Integer quantity;
-    private String description;
 }

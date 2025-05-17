@@ -50,10 +50,12 @@ onMounted(async () => {
         </div>
     </div>
 
-    <router-link to="/brands/add" class="px-8">
+    <div class="pt-5 px-10">
+        <router-link :to="{ name: 'BrandAdd' }" >
         <button class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
     </router-link>
-    <div>
+    </div>
+    <div class="pt-5">
         <BrandList :brands="brands"/>
     </div>
 </template>

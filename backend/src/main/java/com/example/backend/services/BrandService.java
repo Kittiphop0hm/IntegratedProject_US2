@@ -1,10 +1,10 @@
 package com.example.backend.services;
 
 import com.example.backend.dtos.brands.AddUpdateBrandDto;
+import com.example.backend.dtos.brands.GetBrandDto;
 import com.example.backend.dtos.brands.ResponseBrandsDto;
 import com.example.backend.dtos.brands.ListBrandsDto;
 import com.example.backend.entities.Brand;
-import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemRepository;
@@ -33,9 +33,9 @@ public class BrandService {
         return listMapper.mapList(brands, ListBrandsDto.class ,modelMapper);
     }
 
-    public ResponseBrandsDto getBrandById(Integer id) {
+    public GetBrandDto getBrandById(Integer id) {
         Brand brand = brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
-        return modelMapper.map(brand, ResponseBrandsDto.class);
+        return modelMapper.map(brand, GetBrandDto.class);
     }
     
 
@@ -48,9 +48,9 @@ public class BrandService {
     }
 
     public ResponseBrandsDto updateBrand(Integer id, AddUpdateBrandDto updateBrandDto) {
-//        if (brandRepository.existsByName(updateBrandDto.getName())) {
-//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is already exists");
-//        }
+        if (brandRepository.existsByNameAndIdNot(updateBrandDto.getName() , id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is already exists");
+        }
         Brand existBrand = brandRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + id));
         modelMapper.map(updateBrandDto, existBrand);
         Brand brand = brandRepository.save(existBrand);

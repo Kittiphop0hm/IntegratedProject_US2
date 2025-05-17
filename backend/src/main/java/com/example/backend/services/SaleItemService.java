@@ -30,7 +30,7 @@ public class SaleItemService {
     private EntityManager entityManager;
 
     public List<ListSaleItemsDto> findAll() {
-        List<SaleItem> saleItems = repository.findAll();
+        List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
         return saleItems.stream().map(item -> modelMapper.map(item, ListSaleItemsDto.class)).toList();
     }
 

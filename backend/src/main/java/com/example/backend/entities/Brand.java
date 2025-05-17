@@ -1,7 +1,8 @@
 package com.example.backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -20,12 +21,16 @@ public class Brand {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 30)
+    @NotNull
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
+    @Size(max = 80)
     @Column(name = "countryOfOrigin", length = 80)
     private String countryOfOrigin;
 
+    @Size(max = 40)
     @Column(name = "webSiteUrl", length = 40)
     private String webSiteUrl;
 
@@ -33,15 +38,17 @@ public class Brand {
     @Column(name = "isActive")
     private Byte isActive;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdOn", nullable = false , insertable = false, updatable = false)
-    private Instant createdOn;
+    @Column(name = "noOfSaleItems")
+    private Integer noOfSaleItems;
 
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "createdOn", nullable = false , insertable = false, updatable = false )
+    private Instant createdOn;
+    
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false)
     private Instant updatedOn;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "brand")
     private Set<SaleItem> saleItems = new LinkedHashSet<>();
 
