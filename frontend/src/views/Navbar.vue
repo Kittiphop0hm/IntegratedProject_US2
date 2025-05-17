@@ -23,7 +23,7 @@ const isBurgerBar = ref(false)
         <div class="mx-3 hover:opacity-80">
           <router-link :to="{ name: 'BrandList'  }">Manage Brand</router-link>
         </div>
-        <div class="mx-3 hover:opacity-80">
+        <div class="mx-3 hover:opacity-80 itbms-seller">
           <router-link :to="{ name: 'SaleItemList'  }">List SaleItem</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">

@@ -1,4 +1,4 @@
-<script setup>
+success<script setup>
 import { onMounted, ref } from 'vue';
 import { getItems } from '@/libs/fetchUtil';
 import Navbar from '@/views/Navbar.vue';
@@ -15,11 +15,20 @@ onMounted(async () => {
         console.error('Error fetching brands:', error);
     }
 })
+
+const fetchBrands = async () => {
+  try {
+    brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
+  } catch (error) {
+    console.error('Error fetching brands:', error);
+  }
+};
 </script>
 
 <template>
     <Navbar/>
     <Search/>
+    
     <div v-show="route.query.alertBrandAdd || route.query.alertBrandAddError" class="p-10 pb-0 mb-10">
         <div class="bg-black/5 shadow-xl rounded px-8 pt-6 pb-8">
             <div v-show="route.query.alertBrandAdd">
@@ -35,20 +44,6 @@ onMounted(async () => {
         </div>
     </div>
 
-    <div v-show="route.query.alertBrandEdit || route.query.alertBrandEditError" class="p-10 pb-0 mb-10">
-        <div class="bg-black/5 shadow-xl rounded px-8 pt-6 pb-8">
-            <div v-show="route.query.alertBrandEdit">
-                <h1 class=" text-2xl text-green-400">Successfully</h1>
-                <br>
-                <p class="itbms-message">The brand has been updated</p>
-            </div>
-            <div v-show="route.query.alertBrandEditError">
-                <h1 class=" text-2xl text-red-400">Error</h1>
-                <br>
-                <p class="itbms-message">The brand does not exist.</p>
-            </div>
-        </div>
-    </div>
 
     <div class="pt-5 px-10">
         <div class="flex items-center">
@@ -62,6 +57,6 @@ onMounted(async () => {
         </div>
     </div>
     <div class="pt-5">
-        <BrandList :brands="brands"/>
+        <BrandList :brands="brands" @delete-success="fetchBrands" />
     </div>
 </template>

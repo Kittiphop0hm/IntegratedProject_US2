@@ -92,15 +92,27 @@ function savePreviousPath() {
         </div>
       </div>
     </div>
+    
 
-    <router-link :to="{ name: 'SaleItemAdd' }">
-      <button
-        @click="savePreviousPath"
-        class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-5 mt-5"
-      >
-        Add Sale Item
-      </button>
-    </router-link>
+    <div class="flex justify-between items-center px-10">
+      <router-link :to="{ name: 'SaleItemAdd' }">
+        <button
+          @click="savePreviousPath"
+          class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mb-5 mt-5"
+        >
+          Add Sale Item
+        </button>
+      </router-link>
+
+      <router-link :to="{ name: 'BrandList' }">
+        <button
+          class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mb-5 mt-5"
+        >
+          Manage Brand
+        </button>
+      </router-link>
+    </div>
+
 
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">
