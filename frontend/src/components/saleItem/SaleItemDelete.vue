@@ -19,3 +19,4 @@ const emit = defineEmits(['deleteSaleItem', 'cancelDelete'])
         </div>
     </div>
 </template>
+
