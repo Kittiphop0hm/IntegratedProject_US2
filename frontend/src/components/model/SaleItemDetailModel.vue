@@ -16,27 +16,23 @@ const props = defineProps({
 
 <template>
     <Search/>
-  <!-- Detail Section -->
-  <div class=" container mx-auto px-6 mt-10 mb-10">
-    <!-- Breadcrumb -->
-    <div class="text-gray-800 bg-white bg-opacity-70 p-2 mb-4">
-      <p>
-        <router-link 
-          :to="{ name: 'SaleItemHome' }">
-          <span class="itbms-home-button text-blue-600">Home</span>
-        </router-link> &gt;
-        <span class=" font-semibold"> 
-            <slot name="path"></slot>
-        </span>
-      </p>
-    </div>
-
+    <div class=" container mx-auto px-6 mt-10 mb-10">
+      <div class="text-gray-800 bg-white bg-opacity-70 p-2 mb-4">
+        <p>
+          <router-link 
+            :to="{ name: 'SaleItemHome' }">
+            <span class="itbms-home-button text-blue-600">Home</span>
+          </router-link> &gt;
+          <span class=" font-semibold"> 
+              <slot name="path"></slot>
+          </span>
+        </p>
+      </div>
     
     <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
-     
       <div class="lg:w-1/2">
         <div class=" rounded-md p-2 bg-white">
-          <img src="/images/iPhone14ProMax.jpg" alt="main image" class="w-full " />
+          <img src="/images/iPhone14ProMax.jpg" alt="main image" class="w-full" />
         </div>
 
         <div class="grid grid-cols-4 gap-2 mt-4">
