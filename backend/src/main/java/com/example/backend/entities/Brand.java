@@ -38,9 +38,6 @@ public class Brand {
     @Column(name = "isActive")
     private Byte isActive;
 
-    @Column(name = "noOfSaleItems")
-    private Integer noOfSaleItems;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false , insertable = false, updatable = false )
     private Instant createdOn;
