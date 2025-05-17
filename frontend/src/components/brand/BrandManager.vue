@@ -46,9 +46,15 @@ const fetchBrands = async () => {
 
 
     <div class="pt-5 px-10">
-        <router-link :to="{ name: 'BrandAdd' }" >
-        <button class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
-    </router-link>
+        <div class="flex items-center">
+            <router-link to="/sale-items/list" class="itbms-item-list flex items-center mr-2 text-blue-500 hover:text-blue-300">
+                Sale item List
+            </router-link>
+            <p>></p>
+            <router-link :to="{ name: 'BrandAdd' }" class="flex items-center">
+                <button class="itbms-add-button ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer">Add Brand</button>
+            </router-link>
+        </div>
     </div>
     <div class="pt-5">
         <BrandList :brands="brands" @delete-success="fetchBrands" />

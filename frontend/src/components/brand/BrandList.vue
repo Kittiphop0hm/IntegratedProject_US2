@@ -1,5 +1,4 @@
 <script setup>
-import ViewBrandListModel from "../model/ViewBrandListModel.vue";
 import ListTableModel from "../model/ListTableModel.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -19,6 +18,7 @@ const alertDeleteError = ref(false);
 const confirmDelete = ref(false);
 const selectedBrandId = ref("");
 const selectedBrandName = ref("");
+
 
 const deleteBrand = async () => {
   try {
