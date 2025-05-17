@@ -43,7 +43,6 @@ console.log(enableButton.value);
 </script>
 
 <template>
-    {{ brand.isActive }}
     <Navbar/>
     <Search/>
     <div class="px-2 py-10 w-full max-h-[100vh]">

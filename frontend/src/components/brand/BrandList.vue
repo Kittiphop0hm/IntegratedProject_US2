@@ -1,5 +1,4 @@
 <script setup>
-import ViewBrandListModel from "../model/ViewBrandListModel.vue";
 import ListTableModel from "../model/ListTableModel.vue";
 import { ref } from "vue";
 const props = defineProps({
