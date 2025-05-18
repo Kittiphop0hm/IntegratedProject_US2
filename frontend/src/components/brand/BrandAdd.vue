@@ -7,9 +7,9 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter()
 const brand = ref({
-    name:'',
-    websiteUrl:'',
-    countryOfOrigin:'',
+    name:''.trim(),
+    websiteUrl:''.trim(),
+    countryOfOrigin:''.trim(),
     isActive:false
 })
 
