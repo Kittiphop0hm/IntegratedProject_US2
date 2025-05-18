@@ -102,8 +102,9 @@ const addBrand = async () => {
 
                 <div class="flex justify-center mt-6">
                     <button 
-                    type="submit" 
-                    :class="!enableButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
+                    type="submit"
+                    :disabled="!enableButton" 
+                    :class="!enableButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
                     >
                     Save
                     </button>
