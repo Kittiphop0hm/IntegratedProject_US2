@@ -138,4 +138,5 @@ VALUES
 (
 'Nothing', 'United Kingdom', 'https://nothing.tech', 1
 );
+-- delete FROM INT221_db.brand;
 SELECT * FROM INT221_db.brand;
