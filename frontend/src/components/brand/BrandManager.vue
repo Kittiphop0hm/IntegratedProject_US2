@@ -46,7 +46,7 @@ const alertMessage = computed(() => {
   if (route.query.alertAdd) return "successfully added.";
   if (route.query.alertUpdate) return "updated.";
   if (route.query.alertDelete) return "deleted.";
-  if (route.query.alert404) return "The brand does not exist.";
+  if (route.query.alert404) return "The brand could not be updated";
   if (route.query.alertErrors) return "The brand could not be added";
   if (route.query.alert400Delete)
     return (

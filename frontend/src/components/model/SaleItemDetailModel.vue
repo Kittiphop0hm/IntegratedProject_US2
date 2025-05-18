@@ -1,7 +1,6 @@
 <script setup>
 import Search from '../Search.vue';
-import { useRouter } from 'vue-router';
-const router = useRouter();
+
 const props = defineProps({
     isActive: {
         type: Boolean ,

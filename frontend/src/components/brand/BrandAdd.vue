@@ -7,9 +7,9 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter()
 const brand = ref({
-    name:'',
-    websiteUrl:'',
-    countryOfOrigin:'',
+    name:''.trim(),
+    websiteUrl:''.trim(),
+    countryOfOrigin:''.trim(),
     isActive:false
 })
 
@@ -37,10 +37,6 @@ const addBrand = async () => {
         }
     }
 }
-
-console.log(enableButton.value);
-
-
 </script>
 
 <template>
@@ -63,7 +59,7 @@ console.log(enableButton.value);
             </div>
 
             <div class="w-full h-full flex justify-center">
-            <div class="w-[50%] h-[80%] max-w-lg p-6 bg-white border border-gray-300 rounded-2xl shadow-md">
+            <div class="w-[50%] h-[80%] max-w-lg p-6 bg-white border border-gray-300 rounded-2xl shadow-md max-md:w-full">
                 <form @submit.prevent="addBrand" class="flex flex-col justify-center gap-4">
                 <h2 class="text-2xl font-semibold text-center mb-4">Add New Brand</h2>
                 <div class="flex flex-col">
@@ -106,8 +102,9 @@ console.log(enableButton.value);
 
                 <div class="flex justify-center mt-6">
                     <button 
-                    type="submit" 
-                    :class="!enableButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
+                    type="submit"
+                    :disabled="!enableButton" 
+                    :class="!enableButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
                     >
                     Save
                     </button>

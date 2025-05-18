@@ -10,16 +10,19 @@ const router = useRouter()
 const selectBrand = ref({})
 const editObjectBrand = ref({})
 const enableButton = computed(() => {
-    return (
+    const noEmptyFields = 
         selectBrand.value.name !== '' &&
         selectBrand.value.websiteUrl !== '' &&  
         selectBrand.value.isActive !== '' &&
-        selectBrand.value.countryOfOrigin !== '' &&
+        selectBrand.value.countryOfOrigin !== ''
+
+    const isModify =   
         selectBrand.value.name !== editObjectBrand.value.name ||
         selectBrand.value.websiteUrl !== editObjectBrand.value.websiteUrl ||
         selectBrand.value.isActive !== editObjectBrand.value.isActive ||
         selectBrand.value.countryOfOrigin !== editObjectBrand.value.countryOfOrigin
-    )
+
+    return noEmptyFields && isModify
 })
 onMounted(async () => {
     try {
@@ -33,6 +36,9 @@ onMounted(async () => {
 const editBrand = async () => {
     if (enableButton) {
         try {
+            selectBrand.value.name.trim()
+            selectBrand.value.websiteUrl.trim()
+            selectBrand.value.countryOfOrigin.trim()
             const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, selectBrand.value.id, selectBrand.value)
             if (editBrandResponse.status === 200) {
                 router.push({ path:'/brands', query: { alertUpdate: "true" } });
@@ -111,7 +117,8 @@ const editBrand = async () => {
                 <div class="flex justify-center mt-6">
                     <button 
                     type="submit" 
-                    :class="!enableButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
+                    :disabled="!enableButton"
+                    :class="!enableButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
                     >
                     Save
                     </button>
