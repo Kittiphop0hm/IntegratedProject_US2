@@ -81,7 +81,7 @@ const cancelDelete = () => {
     <ListTableModel :items="brands">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">{{ yourItem.id ?? "-" }}</td>
-        <td class="border px-2 py-1 itbms-brand">
+        <td class="border px-2 py-1 itbms-name">
           {{ yourItem.name ?? "-" }}
         </td>
       </template>
