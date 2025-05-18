@@ -37,10 +37,6 @@ const addBrand = async () => {
         }
     }
 }
-
-console.log(enableButton.value);
-
-
 </script>
 
 <template>
@@ -63,7 +59,7 @@ console.log(enableButton.value);
             </div>
 
             <div class="w-full h-full flex justify-center">
-            <div class="w-[50%] h-[80%] max-w-lg p-6 bg-white border border-gray-300 rounded-2xl shadow-md">
+            <div class="w-[50%] h-[80%] max-w-lg p-6 bg-white border border-gray-300 rounded-2xl shadow-md max-md:w-full">
                 <form @submit.prevent="addBrand" class="flex flex-col justify-center gap-4">
                 <h2 class="text-2xl font-semibold text-center mb-4">Add New Brand</h2>
                 <div class="flex flex-col">
