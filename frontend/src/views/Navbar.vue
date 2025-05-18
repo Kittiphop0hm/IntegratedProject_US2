@@ -21,7 +21,7 @@ const isBurgerBar = ref(false)
           <router-link :to="{ name: 'SaleItemHome'  }">Product</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link :to="{ name: 'BrandList'  }">Manage Brand</router-link>
+          <router-link :to="{ name: 'BrandManager'  }">Manage Brand</router-link>
         </div>
         <div class="mx-3 hover:opacity-80 itbms-seller">
           <router-link :to="{ name: 'SaleItemList'  }">List SaleItem</router-link>

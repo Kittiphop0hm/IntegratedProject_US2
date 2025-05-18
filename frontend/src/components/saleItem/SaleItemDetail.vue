@@ -1,15 +1,16 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
-import { getItemById,deleteItemById } from "../../libs/fetchUtil";
+import { getItemById, deleteItemById } from "../../libs/fetchUtil";
 import Navbar from "../../views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
-import SaleItemDelete from "./SaleItemDelete.vue";
+import DeletePopupModel from "../model/DeletePopupModel.vue";
+import AlertMessageModel from "../model/AlertMessageModel.vue";
 
 const route = useRoute();
 const router = useRouter();
 const item = ref([]);
-const isDelete = ref(false)
+const isDelete = ref(false);
 onMounted(async () => {
   try {
     const data = await getItemById(
@@ -31,35 +32,41 @@ const formattedPrice = computed(() =>
 );
 
 const cancelDelete = () => {
-  isDelete.value = false
-}
+  isDelete.value = false;
+};
 
 // const deleteStatus = ref(0)
 const deleteSaleItem = async () => {
   try {
-    const deleteStatus = await deleteItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.value.id) 
+    const deleteStatus = await deleteItemById(
+      `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+      item.value.id
+    );
     if (deleteStatus === 204) {
-      isDelete.value = false
+      isDelete.value = false;
       router.push({ name: "SaleItemHome", query: { alertDelete: "true" } });
     }
     if (deleteStatus === 404) {
       router.push({ name: "SaleItemHome", query: { alert404: "true" } });
     }
-    
   } catch (err) {
     console.error(err);
   }
-}
+};
+console.log(route.query.alert);
+console.log(typeof route.query.alert);
+console.log("typeof Boolean(route.query.alert)");
+console.log(typeof Boolean(route.query.alert));
 </script>
 
 <template>
   <Navbar />
-  <div v-show="route.query.alert === 'true'" class=" p-10 pb-0">
-    <div class="bg-black/20 shadow-xl rounded px-8 pt-6 pb-8">
-      <h1 class=" text-2xl text-green-400">Successfully</h1>
-      <br>
-      <p class="itbms-message">The sale item has been <span class="text-green-400">updated.</span></p>
-    </div>
+  <div v-show="route.query.alert === 'true'" class="p-10 pb-0">
+    <AlertMessageModel :isSuccess="Boolean(route.query.alert)">
+      <template #message>
+        The sale item has been <span class="text-green-400">updated.</span>
+      </template>
+    </AlertMessageModel>
   </div>
   <SaleItemDetailModel>
     <template #path>
@@ -67,39 +74,67 @@ const deleteSaleItem = async () => {
       <span class="itbms-ramGb font-semibold ml-1"
         >{{ item.ramGb }}<span class="itbms-ramGb-unit">/GB </span></span
       >
-      <span class="itbms-color font-semibold">{{ item.color  ? item.color : "-" }}</span>
+      <span class="itbms-color font-semibold">{{
+        item.color ? item.color : "-"
+      }}</span>
     </template>
-    <template #brand> <span class="itbms-brand">{{ item.brandName }}</span> </template>
-    <template #model> <span class="itbms-model">{{ item.model }}</span> </template>
-    <template #price> <span class="itbms-price">Price: ฿ {{ formattedPrice }} Baht</span> </template>
-    <template #desc> <span class="itbms-description">{{ item.description }} </span> </template>
+    <template #brand>
+      <span class="itbms-brand">{{ item.brandName }}</span>
+    </template>
+    <template #model>
+      <span class="itbms-model">{{ item.model }}</span>
+    </template>
+    <template #price>
+      <span class="itbms-price">Price: ฿ {{ formattedPrice }} Baht</span>
+    </template>
+    <template #desc>
+      <span class="itbms-description">{{ item.description }} </span>
+    </template>
     <template #ram>
       <span class="itbms-ramGb">{{ item.ramGb ? item.ramGb : "-" }}</span>
       <span class="itbms-ramGb-unit"> GB</span>
-      </template>
+    </template>
     <template #screen>
-      <span class="itbms-screenSizeInch">{{ item.screenSizeInch ? item.screenSizeInch : "-" }}</span>
-      <span class="itbms-screenSizeInch-unit">Inches</span></template>
+      <span class="itbms-screenSizeInch">{{
+        item.screenSizeInch ? item.screenSizeInch : "-"
+      }}</span>
+      <span class="itbms-screenSizeInch-unit">Inches</span></template
+    >
     <template #storage>
-      <span class="itbms-storageGb">{{ item.storageGb ? item.storageGb : "-" }}</span>
+      <span class="itbms-storageGb">{{
+        item.storageGb ? item.storageGb : "-"
+      }}</span>
       <span class="itbms-storageGb-unit">GB</span></template
     >
     <template #color>
-      <span class="itbms-color">{{ item.color ? item.color : "-" }}</span>    
+      <span class="itbms-color">{{ item.color ? item.color : "-" }}</span>
     </template>
-    <template #quantity
-      >
-      <span class="itbms-quantity">{{ item.quantity ? item.quantity : "-" }}</span>
+    <template #quantity>
+      <span class="itbms-quantity">{{
+        item.quantity ? item.quantity : "-"
+      }}</span>
       <span class="itbms-quantity-unit">units</span></template
     >
-        <template #button1>
-          <router-link :to="{ name: 'SaleItemEdit'  }">
-            <span class="itbms-edit-button text-white">Edit</span>
-          </router-link>
+    <template #button1>
+      <router-link :to="{ name: 'SaleItemEdit' }">
+        <span class="itbms-edit-button text-white">Edit</span>
+      </router-link>
     </template>
     <template #button2>
-      <span @click="isDelete = !isDelete" class="itbms-delete-button text-white">Delete</span>
+      <span @click="isDelete = !isDelete" class="itbms-delete-button text-white"
+        >Delete</span
+      >
     </template>
   </SaleItemDetailModel>
-  <SaleItemDelete v-show="isDelete" @cancel-delete="cancelDelete" @delete-sale-item="deleteSaleItem"/>
+  <DeletePopupModel
+    v-show="isDelete"
+    @cancel-delete="cancelDelete"
+    @delete-sale-item="deleteSaleItem"
+  >
+    <template #message>
+      <span class="itbms-message font-semibold">
+        Do you want to delete this saleItems
+      </span>
+    </template>
+  </DeletePopupModel>
 </template>

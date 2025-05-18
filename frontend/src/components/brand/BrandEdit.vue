@@ -35,9 +35,9 @@ const editBrand = async () => {
         try {
             const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, selectBrand.value.id, selectBrand.value)
             if (editBrandResponse.status === 200) {
-                router.push({ path:'/brands', query: { alertBrandEdit: "true" } });
+                router.push({ path:'/brands', query: { alertUpdate: "true" } });
             } else {
-                router.push({ path:'/brands', query: { alertBrandEditError: "false" } });
+                router.push({ path:'/brands', query: { alert404: "true" } });
             }
         } catch(error) {
             console.error('Error adding brand:', error);

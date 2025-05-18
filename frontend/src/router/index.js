@@ -45,7 +45,7 @@ const router = createRouter({
   },
     {
       path: "/brands",
-      name: "BrandList",
+      name: "BrandManager",
       component: BrandManager,
     },
     {

@@ -4,12 +4,13 @@ import { getItems, deleteItemById } from "../../libs/fetchUtil.js";
 import ListTableModel from "../model/ListTableModel.vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
-import SaleItemDelete from "./SaleItemDelete.vue";
+import SaleItemDelete from "../model/DeletePopupModel.vue";
 import { useRouter, useRoute } from "vue-router";
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
+import AlertMessageModel from "../model/AlertMessageModel.vue";
 
 // const props = defineProps({
 //   typePopup: {
@@ -59,6 +60,11 @@ function savePreviousPath() {
   const previousPath = route.fullPath;
   localStorage.setItem("previousPath", previousPath);
 }
+
+const isSuccess = ref(
+  Boolean(route.query.alertAdd || route.query.alertDelete) &&
+    !route.query.alert404
+);
 </script>
 
 <template>
@@ -72,11 +78,9 @@ function savePreviousPath() {
       "
       class="p-10 pb-0"
     >
-      <div class="bg-black/20 shadow-xl rounded px-8 pt-6 pb-8">
-        <div v-show="route.query.alertAdd || route.query.alertDelete">
-          <h1 class="text-2xl text-green-400">Successfully</h1>
-          <br />
-          <p class="itbms-message">
+      <AlertMessageModel :isSuccess="isSuccess">
+        <template #message>
+          <p class="itbms-message" v-show="isSuccess === true">
             The sale item has been
             <span class="text-green-400">
               {{
@@ -84,15 +88,12 @@ function savePreviousPath() {
               }}</span
             >
           </p>
-        </div>
-        <div v-show="route.query.alert404">
-          <h1 class="text-2xl text-red-400">Error</h1>
-          <br />
-          <p class="itbms-message">The requested sale item does not exist.</p>
-        </div>
-      </div>
+          <p class="itbms-message" v-show="isSuccess === false">
+            The requested sale item does not exist.
+          </p>
+        </template>
+      </AlertMessageModel>
     </div>
-    
 
     <div class="flex justify-between items-center px-10">
       <router-link :to="{ name: 'SaleItemAdd' }">
@@ -104,7 +105,7 @@ function savePreviousPath() {
         </button>
       </router-link>
 
-      <router-link :to="{ name: 'BrandList' }">
+      <router-link :to="{ name: 'BrandManager' }">
         <button
           class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mb-5 mt-5"
         >
@@ -112,7 +113,6 @@ function savePreviousPath() {
         </button>
       </router-link>
     </div>
-
 
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">

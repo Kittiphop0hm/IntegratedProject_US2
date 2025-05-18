@@ -1,7 +1,11 @@
 package com.example.backend.dtos.brands;
 
+import com.example.backend.entities.SaleItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 
 @Getter
@@ -12,5 +16,11 @@ public class ResponseBrandsDto {
     private String websiteUrl;
     private String countryOfOrigin;
     private Boolean isActive;
-//    private Set<SaleItem> saleItems;
+    private Integer noOfSaleItems;
+    @JsonIgnore
+    private Set<SaleItem> saleItems;
+
+    public Integer getNoOfSaleItems() {
+        return saleItems.size();
+    }
 }

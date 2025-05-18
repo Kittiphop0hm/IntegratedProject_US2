@@ -51,7 +51,7 @@ VALUES
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
 (
-16, 1, 'Galaxy S23 Ultra', 'Samsung Galaxy S23 Ultra 512GB สีดำปีศาจ สภาพนางฟ้า 99% ไร้รอย แถมเคสแท้ แบตอึดสุดๆ รองรับปากกา S-Pen อุปกรณ์ครบกล่อง ประกันศูนย์เหลือ 6 เดือน ส่งฟรี', 6, 39600, 6.8, 0, 512, '<null>'
+16, 1, 'Galaxy S23 Ultra', 'Samsung Galaxy S23 Ultra 512GB สีดำปีศาจ สภาพนางฟ้า 99% ไร้รอย แถมเคสแท้ แบตอึดสุดๆ รองรับปากกา S-Pen อุปกรณ์ครบกล่อง ประกันศูนย์เหลือ 6 เดือน ส่งฟรี', 6, 39600, 6.8, 0, 512, null
 );
 INSERT INTO sale_items(id, brandId, model, description, quantity, price, screenSizeInch, ramGb, storageGb, color)
 VALUES
@@ -298,4 +298,7 @@ VALUES
 (
 85, 10, 'Reno6 Pro', 'Classic premium', 7, 16500, 6.55, 12, 256, 'Arctic Blue'
 );
+-- SET SQL_SAFE_UPDATES = 0;
+-- delete FROM INT221_db.sale_items;
+use INT221_db;
 SELECT * FROM INT221_db.sale_items;
