@@ -131,7 +131,7 @@ const cancelDelete = () => {
     </ListTableModel>
     
     <DeletePopupModel
-      v-show="confirmDelete"
+      v-if="confirmDelete"
       @cancel-delete="cancelDelete"
       @delete-sale-item="deleteBrand"
     >
@@ -142,7 +142,7 @@ const cancelDelete = () => {
       </template>
     </DeletePopupModel>
 
-    <NotAllowDeletePopup v-show="isBrandInUse" @cancel-delete="cancelDelete">
+    <NotAllowDeletePopup v-if="isBrandInUse" @cancel-delete="cancelDelete">
       <template #message>
         <span class="itbms-message font-semibold">
           Delete {{ selectedBrandName }} is not allowed. There are sale items with {{ selectedBrandName }} brand.
