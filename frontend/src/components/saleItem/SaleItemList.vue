@@ -107,16 +107,18 @@ const isSuccess = ref(
 
       <router-link :to="{ name: 'BrandManager' }">
         <button
-          class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mb-5 mt-5"
+          class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 mb-5 mt-5 itbms-manage-brand"
         >
           Manage Brand
         </button>
       </router-link>
     </div>
 
+    <div class="itbms-row">
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">
-        <td class="border px-2 py-1 itbms-id">{{ yourItem.id ?? "-" }}</td>
+        <td class="border px-2 py-1 itbms-id">
+          {{ yourItem.id ?? "-" }}</td>
         <td class="border px-2 py-1 itbms-brand">
           {{ yourItem.brandName ?? "-" }}
         </td>
@@ -136,18 +138,17 @@ const isSuccess = ref(
           {{ yourItem.price.toLocaleString() ?? "-" }}
         </td>
       </template>
+
       <template #action="{ yourItem }">
         <td class="border px-2 py-1 text-center">
           <router-link
             :to="{ name: 'SaleItemEdit', params: { id: yourItem.id } }"
-            class="bg-yellow-400 text-white px-2 py-1 rounded mr-2"
-            data-testid="itbms-edit-button"
+            class="bg-yellow-400 text-white px-2 py-1 rounded mr-2 itbms-edit-button"
           >
             Edit
           </router-link>
           <button
-            class="bg-red-500 text-white px-2 py-1 rounded"
-            data-testid="itbms-delete-button"
+            class="bg-red-500 text-white px-2 py-1 rounded itbms-delete-button"
             @click="isDelete = true"
           >
             Delete
@@ -160,5 +161,6 @@ const isSuccess = ref(
         />
       </template>
     </ListTableModel>
+    </div>
   </div>
 </template>
