@@ -6,6 +6,7 @@ import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
 import SaleItemDelete from "../model/DeletePopupModel.vue";
 import { useRouter, useRoute } from "vue-router";
+import DeletePopupModel from "../model/DeletePopupModel.vue";
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
@@ -159,11 +160,18 @@ const isSuccess = ref(
             Delete
           </button>
         </td>
-        <SaleItemDelete
+
+        <DeletePopupModel
           v-show="isDelete"
           @cancel-delete="cancelDelete"
           @delete-sale-item="deleteSaleItem(yourItem.id)"
-        />
+        >
+        <template #message>
+        <span class="itbms-message font-semibold">
+          Do you want to delete this sale item?
+        </span>
+      </template>
+      </DeletePopupModel>
       </template>
     </ListTableModel>
     </div>
