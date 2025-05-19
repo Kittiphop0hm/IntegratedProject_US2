@@ -166,12 +166,12 @@ const isSuccess = ref(
           @cancel-delete="cancelDelete"
           @delete-sale-item="deleteSaleItem(yourItem.id)"
         >
-        <template #message>
-        <span class="itbms-message font-semibold">
-          Do you want to delete this sale item?
-        </span>
-      </template>
-      </DeletePopupModel>
+          <template #message>
+            <span class="itbms-message font-semibold">
+              Do you want to delete this sale item?
+            </span>
+          </template>
+        </DeletePopupModel>
       </template>
     </ListTableModel>
     </div>
