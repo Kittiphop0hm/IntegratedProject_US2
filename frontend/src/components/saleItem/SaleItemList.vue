@@ -119,7 +119,7 @@ const isSuccess = ref(
       </router-link>
     </div>
 
-    <div class="itbms-row">
+    <div>
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">
