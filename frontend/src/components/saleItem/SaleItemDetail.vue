@@ -78,6 +78,7 @@ console.log(typeof Boolean(route.query.alert));
         item.color ? item.color : "-"
       }}</span>
     </template>
+    
     <template #brand>
       <span class="itbms-brand">{{ item.brandName }}</span>
     </template>

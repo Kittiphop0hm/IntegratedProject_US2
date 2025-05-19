@@ -43,6 +43,11 @@ const router = createRouter({
     name: 'SaleItemList',
     component: SaleItemList,
   },
+  {
+    path: '/sale-items/list/:id',
+    name: 'SaleItemListById',
+    component: SaleItemDetail,
+  },
     {
       path: "/brands",
       name: "BrandManager",
