@@ -30,8 +30,7 @@ const isSuccess = ref(Boolean(route.query.alertAdd || route.query.alertDelete) &
 </script>
 <template>
   <div v-show="route.query.alertAdd || route.query.alertDelete || route.query.alert404" class=" p-10 pb-0">
-        <AlertMessageModel :isSuccess="isSuccess"
-         >
+        <AlertMessageModel :isSuccess="isSuccess">
           <template #message>
             <p class="itbms-message" v-show="isSuccess === true"> The sale item has been <span class="text-green-400 "> {{ route.query.alertAdd ? 'successfully added.' : 'deleted.' }}</span></p>
             <p class="itbms-message" v-show="isSuccess === false">The requested sale item does not exist.</p>

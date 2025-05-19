@@ -1,11 +1,12 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { getItems, deleteItemById } from "../../libs/fetchUtil.js";
 import ListTableModel from "../model/ListTableModel.vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
 import SaleItemDelete from "../model/DeletePopupModel.vue";
 import { useRouter, useRoute } from "vue-router";
+import DeletePopupModel from "../model/DeletePopupModel.vue";
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
@@ -24,9 +25,10 @@ import AlertMessageModel from "../model/AlertMessageModel.vue";
 
 onMounted(async () => {
   try {
-    saleItems.value = await getItems(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`
-    );
+    saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+    console.log(saleItems.value);
+    
+    
   } catch (err) {
     console.error("Error fetching sale items:", err);
   }
@@ -65,6 +67,10 @@ const isSuccess = ref(
   Boolean(route.query.alertAdd || route.query.alertDelete) &&
     !route.query.alert404
 );
+
+// const formattedPrice = computed(() =>
+//   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
+// );
 </script>
 
 <template>
@@ -114,7 +120,7 @@ const isSuccess = ref(
       </router-link>
     </div>
 
-    <div class="itbms-row">
+    <div>
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">
@@ -154,11 +160,18 @@ const isSuccess = ref(
             Delete
           </button>
         </td>
-        <SaleItemDelete
+
+        <DeletePopupModel
           v-show="isDelete"
           @cancel-delete="cancelDelete"
           @delete-sale-item="deleteSaleItem(yourItem.id)"
-        />
+        >
+          <template #message>
+            <span class="itbms-message font-semibold">
+              Do you want to delete this sale item?
+            </span>
+          </template>
+        </DeletePopupModel>
       </template>
     </ListTableModel>
     </div>

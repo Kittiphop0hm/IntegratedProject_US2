@@ -14,6 +14,8 @@ const data400 = ref();
 onMounted(async () => {
   try {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
+    console.log(brands.value);
+    
   } catch (error) {
     console.error("Error fetching brands:", error);
   }
@@ -43,7 +45,7 @@ const isSuccess = computed(() => {
 });
 
 const alertMessage = computed(() => {
-  if (route.query.alertAdd) return "successfully added.";
+  if (route.query.alertAdd) return "added.";
   if (route.query.alertUpdate) return "updated.";
   if (route.query.alertDelete) return "deleted.";
   if (route.query.alert404) return "The brand could not be updated";
@@ -87,7 +89,7 @@ console.log(data400.value);
     <AlertMessageModel :isSuccess="isSuccess">
       <template #message>
         <p class="itbms-message" v-show="isSuccess === true">
-          The sale item has been
+          The brand has been
           <span class="text-green-400">{{ alertMessage }} </span>
         </p>
         <p class="itbms-message" v-show="isSuccess === false">

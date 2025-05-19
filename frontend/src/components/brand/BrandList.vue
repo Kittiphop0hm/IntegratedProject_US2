@@ -1,8 +1,10 @@
 <script setup>
 import ListTableModel from "../model/ListTableModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
-import { ref } from "vue";
+import NotAllowDeletePopup from "../model/NotAllowDeletePopup.vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { getItems } from "@/libs/fetchUtil";
 const router = useRouter()
 const props = defineProps({
   brands: {
@@ -10,6 +12,17 @@ const props = defineProps({
     required: true,
   },
 });
+
+const itemBrands = ref([])
+onMounted(async () => {
+  try {
+    const saleItems = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
+    itemBrands.value = saleItems.map(item => item.brandName);
+    itemBrands.value = [...new Set(itemBrands.value)];
+  } catch(error) {
+    console.error("Error fetching brands:", error);
+  }
+})
 
 const emit = defineEmits(["delete-success", "send-data"]);
 
@@ -48,36 +61,28 @@ const deleteBrand = async () => {
     confirmDelete.value = false;
   }
 };
-const showDeleteConfirm = (item) => {
 
+const isBrandInUse = ref(false)
+
+const showDeleteConfirm = (item) => {
   selectedBrandId.value = item.id;
   selectedBrandName.value = item.name;
-  console.log(selectedBrandName.value);
-  emit( "send-data" , selectedBrandName.value);
-  confirmDelete.value = true;
+  if (itemBrands.value.includes(item.name)) {
+    isBrandInUse.value = true;
+  } else {
+    console.log(selectedBrandName.value);
+    emit( "send-data" , selectedBrandName.value);
+    confirmDelete.value = true;
+  }
 };
 const cancelDelete = () => {
+  isBrandInUse.value = false
   confirmDelete.value = false;
 };
 </script>
 
 <template>
   <div class="px-10">
-    <!-- <div v-show="alertDeleteSuccess || alertDeleteError" class="mb-5">
-      <div class="bg-black/5 shadow-xl rounded px-8 pt-6 pb-8">
-        <div v-show="alertDeleteSuccess">
-          <h1 class="text-2xl text-green-400">Successfully</h1>
-          <br />
-          <p class="itbms-message">The brand has been deleted.</p>
-        </div>
-        <div v-show="alertDeleteError">
-          <h1 class="text-2xl text-red-400">Error</h1>
-          <br />
-          <p class="itbms-message">The brand could not be deleted.</p>
-        </div>
-      </div>
-    </div> -->
-
     <ListTableModel :items="brands">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">{{ yourItem.id ?? "-" }}</td>
@@ -89,7 +94,7 @@ const cancelDelete = () => {
       <template #action="{ yourItem }">
         <div class="w-full py-2 flex justify-center">
           <router-link :to="{ name: 'BrandEdit', params: { id: yourItem.id } }">
-            <button class="btn btn-info mr-2">
+            <button class="itbms-edit-button btn btn-info mr-2">
               <svg
                 class="fill-current"
                 xmlns="http://www.w3.org/2000/svg"
@@ -122,44 +127,29 @@ const cancelDelete = () => {
             </svg>
           </button>
         </div>
-
-        <!-- <div
-          v-show="confirmDelete"
-          class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
-        >
-          <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
-            <p class="text-lg mb-4 itbms-message">
-              Do you want to delete "{{ selectedBrandName }}" brand?
-            </p>
-            <div class="flex justify-center gap-6">
-              <button
-                class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 itbms-cancel-button"
-                @click="confirmDelete = false"
-              >
-                Cancel
-              </button>
-
-              <button
-                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 itms-confirm-button"
-                @click="deleteBrand"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-        </div> -->
       </template>
     </ListTableModel>
+    
     <DeletePopupModel
-      v-show="confirmDelete"
+      v-if="confirmDelete"
       @cancel-delete="cancelDelete"
       @delete-sale-item="deleteBrand"
     >
       <template #message>
         <span class="itbms-message font-semibold">
-          Do you want to delete "{{ selectedBrandName }}" brand?
+          Do you want to delete {{ selectedBrandName }} brand?
         </span>
       </template>
     </DeletePopupModel>
+
+    <NotAllowDeletePopup v-if="isBrandInUse" @cancel-delete="cancelDelete">
+      <template #message>
+        <span class="itbms-message font-semibold">
+          Delete {{ selectedBrandName }} is not allowed. There are sale items with {{ selectedBrandName }} brand.
+        </span>
+      </template>
+    </NotAllowDeletePopup>
+
+
   </div>
 </template>

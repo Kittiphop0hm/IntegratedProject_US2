@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(['deleteSaleItem', 'cancelDelete'])
+const emit = defineEmits(['cancelDelete'])
 
 </script>
 
@@ -14,7 +14,6 @@ const emit = defineEmits(['deleteSaleItem', 'cancelDelete'])
             </div>
             <div class="w-full text-right">
                 <button @click="$emit('cancelDelete')" class="itbms-cancel-button bg-red-600 text-white mx-2 cursor-pointer w-[100px] h-[35px] rounded-lg hover:opacity-70">Cancel</button>
-                <button @click="$emit('deleteSaleItem')" class="itbms-confirm-button bg-green-600 text-white mx-2 cursor-pointer w-[100px] h-[35px] rounded-lg hover:opacity-70">Confirm</button>
             </div>
         </div>
     </div>
