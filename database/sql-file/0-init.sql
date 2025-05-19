@@ -35,13 +35,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `INT221_db`.`brand` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(30) NOT NULL CHECK (name <> TRIM(name) = ''),
-  `countryOfOrigin` VARCHAR(80) NULL CHECK (countryOfOrigin <> TRIM(countryOfOrigin) = ''),
-  `webSiteUrl` VARCHAR(40) NULL CHECK (webSiteUrl <> TRIM(webSiteUrl) = ''),
-  `isActive` TINYINT NULL DEFAULT 1,
+  `name` VARCHAR(30) NOT NULL ,
+  `countryOfOrigin` VARCHAR(80) NULL ,
+  `webSiteUrl` VARCHAR(40) NULL ,
+  `isActive` TINYINT NULL, 
   `noOfSaleItems` INT NULL,
-  `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdOn` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedOn` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB;
@@ -53,16 +53,16 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `INT221_db`.`sale_items` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `brandId` INT NOT NULL,
-  `model` VARCHAR(60) NOT NULL CHECK (model <> TRIM(model) = ''),
-  `description` VARCHAR(400) NOT NULL CHECK (description <> TRIM(description) = ''),
+  `model` VARCHAR(60) NOT NULL ,
+  `description` VARCHAR(400) NOT NULL ,
   `quantity` INT NOT NULL DEFAULT 1,
   `price` INT NOT NULL,
   `screenSizeInch` DECIMAL(7,2) NULL,
   `ramGb` INT NULL,
   `storageGb` INT NULL,
   `color` VARCHAR(45) NULL CHECK (color <> TRIM(color) = ''),
-  `createdOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updatedOn` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `createdOn` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedOn` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX `fk_saleItem_brand1_idx` (`brandId` ASC) VISIBLE,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_saleItem_brand1`
