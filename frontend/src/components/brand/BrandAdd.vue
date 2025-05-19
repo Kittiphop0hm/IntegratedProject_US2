@@ -15,10 +15,7 @@ const brand = ref({
 
 const enableButton = computed(() => {
     return (
-        brand.value.name !== '' &&
-        brand.value.websiteUrl !== '' &&
-        brand.value.isActive !== '' &&
-        brand.value.countryOfOrigin !== ''
+        brand.value.name !== ''
     )
 })
 
@@ -65,7 +62,7 @@ const addBrand = async () => {
                 <div class="flex flex-col">
                     <label for="brandName" class="text-sm font-medium mb-1">Brand Name:</label>
                     <input 
-                    v-model="brand.name"
+                    v-model.trim="brand.name"
                     id="brandName" 
                     type="text" 
                     placeholder="Enter brand name" 
@@ -76,7 +73,7 @@ const addBrand = async () => {
                 <div class="flex flex-col">
                     <label for="websiteUrl" class="text-sm font-medium mb-1">Website URL:</label>
                     <input 
-                    v-model="brand.websiteUrl"
+                    v-model.trim="brand.websiteUrl"
                     id="websiteUrl" 
                     type="text" 
                     placeholder="Enter website URL" 
@@ -86,13 +83,13 @@ const addBrand = async () => {
 
                 <div class="flex flex-col">
                     <label for="isActive" class="text-sm font-medium mb-1">Is Active:</label>
-                    <input v-model="brand.isActive" type="checkbox" checked="checked" class="itbms-isActive toggle" />
+                    <input v-model.trim="brand.isActive" type="checkbox" checked="checked" class="itbms-isActive toggle" />
                 </div>
 
                 <div class="flex flex-col">
                     <label for="country" class="text-sm font-medium mb-1">Country of Origin:</label>
                     <input 
-                    v-model="brand.countryOfOrigin"
+                    v-model.trim="brand.countryOfOrigin"
                     id="country" 
                     type="text" 
                     placeholder="Enter country of origin" 
@@ -108,7 +105,7 @@ const addBrand = async () => {
                     >
                     Save
                     </button>
-                    <router-link to="/brands">
+                    <router-link :to="{ name: BrandManager }">
                         <button 
                         type="button" 
                         class="itbms-cancel-button cursor-pointer px-6 py-2 ml-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring focus:ring-gray-300"

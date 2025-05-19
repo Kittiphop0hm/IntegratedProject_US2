@@ -11,11 +11,7 @@ const selectBrand = ref({})
 const editObjectBrand = ref({})
 const enableButton = computed(() => {
     const noEmptyFields = 
-        selectBrand.value.name !== '' &&
-        selectBrand.value.websiteUrl !== '' &&  
-        selectBrand.value.isActive !== '' &&
-        selectBrand.value.countryOfOrigin !== ''
-
+        selectBrand.value.name !== ''
     const isModify =   
         selectBrand.value.name !== editObjectBrand.value.name ||
         selectBrand.value.websiteUrl !== editObjectBrand.value.websiteUrl ||
@@ -36,9 +32,6 @@ onMounted(async () => {
 const editBrand = async () => {
     if (enableButton) {
         try {
-            selectBrand.value.name.trim()
-            selectBrand.value.websiteUrl.trim()
-            selectBrand.value.countryOfOrigin.trim()
             const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, selectBrand.value.id, selectBrand.value)
             if (editBrandResponse.status === 200) {
                 router.push({ path:'/brands', query: { alertUpdate: "true" } });
@@ -79,7 +72,7 @@ const editBrand = async () => {
                 <div class="flex flex-col">
                     <label for="brandName" class="text-sm font-medium mb-1">Brand Name:</label>
                     <input 
-                    v-model="selectBrand.name"
+                    v-model.trim="selectBrand.name"
                     id="brandName" 
                     type="text" 
                     placeholder="Enter brand name" 
@@ -90,7 +83,7 @@ const editBrand = async () => {
                 <div class="flex flex-col">
                     <label for="websiteUrl" class="text-sm font-medium mb-1">Website URL:</label>
                     <input 
-                    v-model="selectBrand.websiteUrl"
+                    v-model.trim="selectBrand.websiteUrl"
                     id="websiteUrl" 
                     type="text" 
                     placeholder="Enter website URL" 
@@ -100,13 +93,13 @@ const editBrand = async () => {
 
                 <div class="flex flex-col">
                     <label for="isActive" class="text-sm font-medium mb-1">Is Active:</label>
-                    <input v-model="selectBrand.isActive" type="checkbox" checked="checked" class="itbms-isActive toggle" />
+                    <input v-model.trim="selectBrand.isActive" type="checkbox" checked="checked" class="itbms-isActive toggle" />
                 </div>
 
                 <div class="flex flex-col">
                     <label for="country" class="text-sm font-medium mb-1">Country of Origin:</label>
                     <input 
-                    v-model="selectBrand.countryOfOrigin"
+                    v-model.trim="selectBrand.countryOfOrigin"
                     id="country" 
                     type="text" 
                     placeholder="Enter country of origin" 

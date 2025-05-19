@@ -1,7 +1,7 @@
 <script setup>
 import ListTableModel from "../model/ListTableModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter()
 const props = defineProps({
@@ -10,6 +10,7 @@ const props = defineProps({
     required: true,
   },
 });
+
 
 const emit = defineEmits(["delete-success", "send-data"]);
 
@@ -63,21 +64,6 @@ const cancelDelete = () => {
 
 <template>
   <div class="px-10">
-    <!-- <div v-show="alertDeleteSuccess || alertDeleteError" class="mb-5">
-      <div class="bg-black/5 shadow-xl rounded px-8 pt-6 pb-8">
-        <div v-show="alertDeleteSuccess">
-          <h1 class="text-2xl text-green-400">Successfully</h1>
-          <br />
-          <p class="itbms-message">The brand has been deleted.</p>
-        </div>
-        <div v-show="alertDeleteError">
-          <h1 class="text-2xl text-red-400">Error</h1>
-          <br />
-          <p class="itbms-message">The brand could not be deleted.</p>
-        </div>
-      </div>
-    </div> -->
-
     <ListTableModel :items="brands">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">{{ yourItem.id ?? "-" }}</td>
@@ -89,7 +75,7 @@ const cancelDelete = () => {
       <template #action="{ yourItem }">
         <div class="w-full py-2 flex justify-center">
           <router-link :to="{ name: 'BrandEdit', params: { id: yourItem.id } }">
-            <button class="btn btn-info mr-2">
+            <button class="itbms-edit-button btn btn-info mr-2">
               <svg
                 class="fill-current"
                 xmlns="http://www.w3.org/2000/svg"

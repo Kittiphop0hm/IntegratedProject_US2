@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { getItems, deleteItemById } from "../../libs/fetchUtil.js";
 import ListTableModel from "../model/ListTableModel.vue";
 import Navbar from "../../views/Navbar.vue";
@@ -24,9 +24,10 @@ import AlertMessageModel from "../model/AlertMessageModel.vue";
 
 onMounted(async () => {
   try {
-    saleItems.value = await getItems(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`
-    );
+    saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+    console.log(saleItems.value);
+    
+    
   } catch (err) {
     console.error("Error fetching sale items:", err);
   }
@@ -65,6 +66,10 @@ const isSuccess = ref(
   Boolean(route.query.alertAdd || route.query.alertDelete) &&
     !route.query.alert404
 );
+
+// const formattedPrice = computed(() =>
+//   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
+// );
 </script>
 
 <template>
