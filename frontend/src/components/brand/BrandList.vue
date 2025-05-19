@@ -143,7 +143,7 @@ const cancelDelete = () => {
     >
       <template #message>
         <span class="itbms-message font-semibold">
-          Do you want to delete "{{ selectedBrandName }}" brand?
+          Do you want to delete {{ selectedBrandName }} brand?
         </span>
       </template>
     </DeletePopupModel>
