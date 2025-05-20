@@ -16,11 +16,12 @@ const brand = ref({
 const enableButton = computed(() => {
     return (
         brand.value.name !== ''
-    )
+    )   
 })
 
 const addBrand = async () => {
     if (enableButton) { 
+        enableButton.value = false;
         try {
             const addBrandResponse = await addItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, brand.value)
             if (addBrandResponse.status === 201 || addBrandResponse.status === 200) {
@@ -105,7 +106,7 @@ const addBrand = async () => {
                     >
                     Save
                     </button>
-                    <router-link :to="{ name: BrandManager }">
+                    <router-link :to="{ name: 'BrandManager' }">
                         <button 
                         type="button" 
                         class="itbms-cancel-button cursor-pointer px-6 py-2 ml-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring focus:ring-gray-300"
