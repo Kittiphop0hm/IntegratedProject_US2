@@ -36,7 +36,7 @@ const props = defineProps({
       </tr>
       <tr v-if="items.length === 0">
         <td colspan="10" class="text-center text-gray-400 py-4">
-          No sale item.
+          no sale item
         </td>
       </tr>
     </tbody>
