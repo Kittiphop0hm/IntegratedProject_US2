@@ -128,9 +128,9 @@ const handledelete = (id) => {
       </router-link>
     </div>
 
-    <div>
-      <tr v-if="items.length === 0">
-        <td colspan="10" class="text-center text-gray-400 py-4">
+    <div >
+      <tr v-if="saleItems.length === 0"  class="w-full border flex justify-center items-center">
+        <td  class="text-center w-4/5 text-gray-400 py-4">
           no sale item
         </td>
       </tr>
