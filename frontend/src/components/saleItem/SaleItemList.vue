@@ -129,6 +129,11 @@ const handledelete = (id) => {
     </div>
 
     <div>
+      <tr v-if="items.length === 0">
+        <td colspan="10" class="text-center text-gray-400 py-4">
+          no sale item
+        </td>
+      </tr>
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">
