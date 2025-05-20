@@ -34,11 +34,6 @@ const props = defineProps({
           </td> -->
         <!-- <td><slot name="action" >Enter Action</slot></td> -->
       </tr>
-      <tr v-if="items.length === 0">
-        <td colspan="10" class="text-center text-gray-400 py-4">
-          No sale items.
-        </td>
-      </tr>
     </tbody>
   </table>
 </template>
