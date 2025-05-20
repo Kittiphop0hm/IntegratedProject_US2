@@ -129,7 +129,7 @@ const handledelete = (id) => {
     </div>
 
     <div >
-      <tr v-if="saleItems.length === 0"  class="w-full border flex justify-center items-center">
+      <tr v-show="saleItems.length === 0"  class="w-full border flex justify-center items-center">
         <td  class="text-center w-4/5 text-gray-400 py-4">
           no sale item
         </td>
