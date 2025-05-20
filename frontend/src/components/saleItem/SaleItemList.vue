@@ -68,6 +68,14 @@ const isSuccess = ref(
     !route.query.alert404
 );
 
+const deleteId = ref(null);
+const handledelete = (id) => {
+  isDelete.value = true;
+  deleteId.value = id;
+  // selectedBrandId.value = id;
+  // selectedBrandName.value = brandName;
+  // console.log("selectedBrandId.value", selectedBrandId.value);
+};  
 // const formattedPrice = computed(() =>
 //   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
 // );
@@ -155,25 +163,25 @@ const isSuccess = ref(
           </router-link>
           <button
             class="bg-red-500 text-white px-2 py-1 rounded itbms-delete-button"
-            @click="isDelete = true"
+            @click="handledelete(yourItem.id)"
           >
             Delete
           </button>
         </td>
-
-        <DeletePopupModel
-          v-show="isDelete"
-          @cancel-delete="cancelDelete"
-          @delete-sale-item="deleteSaleItem(yourItem.id)"
-        >
-          <template #message>
-            <span class="itbms-message font-semibold">
-              Do you want to delete this sale item?
-            </span>
-          </template>
-        </DeletePopupModel>
+        
       </template>
     </ListTableModel>
+    <DeletePopupModel
+      v-if="isDelete"
+      @cancel-delete="cancelDelete"
+      @delete-sale-item="deleteSaleItem(deleteId)"
+    >
+      <template #message>
+        <span class="itbms-message font-semibold">
+          Do you want to delete this sale item?
+        </span>
+      </template>
+    </DeletePopupModel>
     </div>
   </div>
 </template>

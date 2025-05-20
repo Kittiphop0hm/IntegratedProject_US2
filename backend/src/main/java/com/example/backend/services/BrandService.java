@@ -41,7 +41,7 @@ public class BrandService {
 
     public ResponseBrandsDto createBrand(AddUpdateBrandDto newBrandDto) {
         if (brandRepository.existsByName(newBrandDto.getName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name is already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nam  e is already exists");
         }
         Brand brand = brandRepository.save(modelMapper.map(newBrandDto, Brand.class));
         return modelMapper.map(brand, ResponseBrandsDto.class);
