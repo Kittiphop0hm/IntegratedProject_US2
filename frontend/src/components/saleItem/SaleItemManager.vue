@@ -8,6 +8,7 @@ import router from '@/router';
 const route = useRoute();
 const saleItem = ref([]);
 import AlertMessageModel from '../model/AlertMessageModel.vue';
+import FilterSaleItem from './FilterSaleItem.vue';
 
 onMounted(async () => {
   try {
@@ -27,6 +28,20 @@ function savePreviousPath() {
   localStorage.setItem("previousPath", previousPath);
 }
 const isSuccess = ref(Boolean(route.query.alertAdd || route.query.alertDelete) && !route.query.alert404 );
+
+const filterSaleItemByBrand = async (filterBrand) => {
+  try {
+    if (!filterBrand || filterBrand.length === 0) {
+      saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+    } else {
+    saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items/filter?filterBrands=${filterBrand}`)
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
 </script>
 <template>
   <div v-show="route.query.alertAdd || route.query.alertDelete || route.query.alert404" class=" p-10 pb-0">
@@ -48,6 +63,7 @@ const isSuccess = ref(Boolean(route.query.alertAdd || route.query.alertDelete) &
       </button>
     </router-link>
   </div>
+  <FilterSaleItem @filter-sale-item-by-brand="filterSaleItemByBrand"></FilterSaleItem>
   <SaleItemGallery :saleItems="saleItem"></SaleItemGallery>
 </template>
 <style scoped></style>
