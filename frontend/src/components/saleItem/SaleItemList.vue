@@ -129,11 +129,11 @@ const handledelete = (id) => {
     </div>
 
     <div >
-      <tr v-if="saleItems.length === 0"  class="w-full border flex justify-center items-center">
-        <td  class="text-center w-4/5 text-gray-400 py-4">
+      
+      <div v-show="saleItems.length === 0"  class="p-5 w-full border flex justify-center items-center">
           no sale item
-        </td>
-      </tr>
+
+      </div>
     <ListTableModel :items="saleItems">
       <template #listItem="{ yourItem }">
         <td class="border px-2 py-1 itbms-id">
