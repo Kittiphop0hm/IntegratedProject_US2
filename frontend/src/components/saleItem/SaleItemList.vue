@@ -78,7 +78,7 @@ const filterSaleItemByBrand = async (filterBrand) => {
     if (!filterBrand || filterBrand.length === 0) {
       saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
     } else {
-      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items/filter?filterBrands=${filterBrand}`)
+      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}`)
     }
   } catch (err) {
     console.error("Error filtering sale items:", err);
