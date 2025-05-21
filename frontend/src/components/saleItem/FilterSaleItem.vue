@@ -56,7 +56,7 @@ const deleteBrand = (index) => {
         <div 
             v-show="isDropFilterBrand" 
             class="w-full flex flex-col items-center rounded-lg p-4 shadow-md space-y-4">
-                <div 
+            <div 
                 v-for="brand in brands" 
                 :key="brand.id" 
                 class="flex flex-row items-center space-x-3 w-[90%] max-w-sm p-2 bg-white rounded-lg shadow-sm border border-gray-200">
@@ -67,7 +67,7 @@ const deleteBrand = (index) => {
                     v-model="filterBrand" 
                     class="h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-300">
                     <label class="text-gray-700 text-sm font-medium">{{ brand.name }}</label>
-                </div>
             </div>
+        </div>
     </div>
 </template>
