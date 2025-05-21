@@ -89,11 +89,11 @@ public class SaleItemService {
     public void checkValues(SaleItem item) {
         if (item.getRamGb() == null || item.getRamGb() <= 0) {
             item.setRamGb(null);
-        } if (item.getRamGb() == null || item.getStorageGb() <= 0) {
+        } if (item.getStorageGb() == null || item.getStorageGb() <= 0) {
             item.setStorageGb(null);
-        } if (item.getRamGb() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
+        } if (item.getColor() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
             item.setColor(null);
-        } if (item.getRamGb() == null || item.getScreenSizeInch().doubleValue() <= 0) {
+        } if (item.getScreenSizeInch() == null || item.getScreenSizeInch().doubleValue() <= 0) {
             item.setScreenSizeInch(null);
         }
     }
