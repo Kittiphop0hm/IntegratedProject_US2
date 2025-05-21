@@ -98,18 +98,18 @@ public class SaleItemService {
         }
     }
 
-    public List<GetSaleItemDto> filterSaleItemsByBrandName(List<String> filterBrands) {
+    public List<ListSaleItemsDto> filterSaleItemsByBrandName(List<String> filterBrands) {
         if (filterBrands == null || filterBrands.isEmpty()) {
             List<SaleItem> saleItems = repository.findAll();
             return saleItems.stream().map(item -> {
                 checkValues(item);
-                return modelMapper.map(item, GetSaleItemDto.class);
+                return modelMapper.map(item, ListSaleItemsDto.class);
             }).toList();
         } else {
             List<SaleItem> filterSaleItems = repository.findByBrandName(filterBrands);
             return filterSaleItems.stream().map(filterItem -> {
                 checkValues(filterItem);
-                return modelMapper.map(filterItem, GetSaleItemDto.class);
+                return modelMapper.map(filterItem, ListSaleItemsDto.class);
             }).toList();
         }
     }

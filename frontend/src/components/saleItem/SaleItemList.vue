@@ -7,21 +7,14 @@ import Search from "../Search.vue";
 import SaleItemDelete from "../model/DeletePopupModel.vue";
 import { useRouter, useRoute } from "vue-router";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
+import AlertMessageModel from "../model/AlertMessageModel.vue";
+import FilterSaleItem from "./FilterSaleItem.vue";
+
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
-import AlertMessageModel from "../model/AlertMessageModel.vue";
 
-// const props = defineProps({
-//   typePopup: {
-//     validator(value) {
-//       return ["sale-items", "brands"].includes(value);
-//     },
-//     type: String,
-//     default:'Sale-items'
-//   },
-// });
 
 onMounted(async () => {
   try {
@@ -79,12 +72,24 @@ const handledelete = (id) => {
 // const formattedPrice = computed(() =>
 //   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
 // );
+
+const filterSaleItemByBrand = async (filterBrand) => {
+  try {
+    if (!filterBrand || filterBrand.length === 0) {
+      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
+    } else {
+      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items/filter?filterBrands=${filterBrand}`)
+    }
+  } catch (err) {
+    console.error("Error filtering sale items:", err);
+  }
+}
 </script>
 
 <template>
   <Navbar />
   <Search />
-
+  <FilterSaleItem @filter-sale-item-by-brand="filterSaleItemByBrand"></FilterSaleItem>
   <div class="p-10 pt-0">
     <div
       v-show="
