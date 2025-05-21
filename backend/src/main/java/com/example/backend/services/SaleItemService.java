@@ -10,6 +10,7 @@ import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,5 +84,33 @@ public class SaleItemService {
 
     public SaleItem getSaleItemById(int id) {
         return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
+    }
+
+    public void checkValues(SaleItem item) {
+        if (item.getRamGb() == null || item.getRamGb() <= 0) {
+            item.setRamGb(null);
+        } if (item.getRamGb() == null || item.getStorageGb() <= 0) {
+            item.setStorageGb(null);
+        } if (item.getRamGb() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
+            item.setColor(null);
+        } if (item.getRamGb() == null || item.getScreenSizeInch().doubleValue() <= 0) {
+            item.setScreenSizeInch(null);
+        }
+    }
+
+    public List<GetSaleItemDto> filterSaleItemsByBrandName(List<String> filterBrands) {
+        if (filterBrands == null || filterBrands.isEmpty()) {
+            List<SaleItem> saleItems = repository.findAll();
+            return saleItems.stream().map(item -> {
+                checkValues(item);
+                return modelMapper.map(item, GetSaleItemDto.class);
+            }).toList();
+        } else {
+            List<SaleItem> filterSaleItems = repository.findByBrandName(filterBrands);
+            return filterSaleItems.stream().map(filterItem -> {
+                checkValues(filterItem);
+                return modelMapper.map(filterItem, GetSaleItemDto.class);
+            }).toList();
+        }
     }
 }
