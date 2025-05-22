@@ -29,45 +29,73 @@ const deleteBrand = (index) => {
 </script>
 
 <template>
-    <div class="p-10">
-        <div class="w-full h-[80px] flex justify-center items-center">
-            <button class="flex justify-start items-center border border-gray-300 w-[80%] h-full rounded-lg overflow-x-auto cursor-pointer hover:border-gray-500">
-                <div class="flex flex-row space-x-3 px-2">
-                    <div v-for="(brand, index) in filterBrand" :key="index" class="itbms-brand-filter flex flex-row items-center bg-gray-100 border border-gray-300 rounded-lg px-2 py-1 space-x-2">
-                        <span class="itbms-filter-item text-sm text-gray-700">{{ brand }}</span>
-                        <button @click="deleteBrand(index)" class="itbms-brand-filter-clear">
-                            <svg xmlns="http://www.w3.org/2000/svg" 
-                                class="cursor-pointer text-red-500 hover:text-red-700" 
-                                width="16" height="16" viewBox="0 0 24 24">
-                                <path fill="currentColor" d="M19 7L17.59 5.59L12 11.17L6.41 5.59L5 7l5.59 5.59L5 18.17l1.41 1.42L12 13.83l5.59 5.59L19 18.17l-5.59-5.59z"></path>
-                            </svg>
-                        </button>
-                    </div>
+        <div class="p-2 mt-5 bg-gray-50 rounded-lg shadow-md">
+            <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                <div class="flex flex-wrap items-center gap-2 w-full h-[90px] sm:w-[75%] p-2 border border-gray-300 bg-white rounded-lg shadow-sm">
+                <div
+                    v-for="(brand, index) in filterBrand"
+                    :key="index"
+                    class="flex items-center bg-gray-100 border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700">
+                    <span>{{ brand }}</span>
+                    <button
+                    @click="deleteBrand(index)"
+                    class="ml-2 text-gray-400 hover:text-red-500 focus:outline-none">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        viewBox="0 0 24 24">
+                        <path
+                        d="M19 7L17.59 5.59L12 11.17L6.41 5.59L5 7l5.59 5.59L5 18.17l1.41 1.42L12 13.83l5.59 5.59L19 18.17l-5.59-5.59z"></path>
+                    </svg>
+                    </button>
                 </div>
-            </button>
-            <button @click="isDropFilterBrand = !isDropFilterBrand" class="itbms-brand-filter-button bg-gray-400 rounded-lg h-[40px] ml-3 cursor-pointer hover:opacity-80">
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="m12 15l-5-5h10z"/></svg>
-            </button>
-            <button @click="clearFilterBramd" class="itbms-brand-filter-clear bg-gray-400 rounded-lg w-[10%] h-full ml-3 cursor-pointer hover:opacity-80">
-                Clear
-            </button>
-        </div>
+                </div>
 
-        <div 
-            v-show="isDropFilterBrand" 
-            class="w-full flex flex-col items-center rounded-lg p-4 shadow-md space-y-4">
-            <div 
-                v-for="brand in brands" 
-                :key="brand.id" 
-                class="flex flex-row items-center space-x-3 w-[90%] max-w-sm p-2 bg-white rounded-lg shadow-sm border border-gray-200">
-                    <input 
-                    @change="$emit('filterSaleItemByBrand', filterBrand)" 
-                    type="checkbox" 
-                    :value="brand.name" 
-                    v-model="filterBrand" 
+                <!-- Dropdown and Clear Buttons -->
+                <div class="flex items-center gap-4">
+                <button
+                    @click="isDropFilterBrand = !isDropFilterBrand"
+                    class="flex items-center justify-center bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none">
+                    <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    class="inline">
+                    <path
+                        fill="currentColor"
+                        d="m12 15l-5-5h10z"></path>
+                    </svg>
+                    <span class="ml-2">Filter</span>
+                </button>
+                <button
+                    @click="clearFilterBrand"
+                    class="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 focus:outline-none">
+                    Clear
+                </button>
+                </div>
+            </div>
+
+            <!-- Dropdown List -->
+            <div
+                v-show="isDropFilterBrand"
+                class="bg-white border border-gray-300 rounded-lg p-4 shadow-md">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div
+                    v-for="brand in brands"
+                    :key="brand.id"
+                    class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm">
+                    <input
+                    @change="$emit('filterSaleItemByBrand', filterBrand)"
+                    type="checkbox"
+                    :value="brand.name"
+                    v-model="filterBrand"
                     class="h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-300">
                     <label class="text-gray-700 text-sm font-medium">{{ brand.name }}</label>
+                </div>
+                </div>
             </div>
         </div>
-    </div>
 </template>
