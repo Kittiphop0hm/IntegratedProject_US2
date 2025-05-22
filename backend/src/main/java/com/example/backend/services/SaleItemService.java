@@ -41,7 +41,6 @@ public class SaleItemService {
         return modelMapper.map(saleItem, GetSaleItemDto.class);
     }
 
-
     @Transactional
     public ResponseSaleItemsDto createSaleItem(AddUpdateSaleItemDto createSaleItemDto) {
         brandRepository.findById(createSaleItemDto.getBrand().getId())
@@ -75,7 +74,6 @@ public class SaleItemService {
         responseDto.setBrandName(brand.getName());
         return responseDto;
     }
-
 
     public void deleteSaleItem(Integer id) {
         SaleItem saleItem = repository.findById(id)
@@ -121,52 +119,21 @@ public class SaleItemService {
 
     public List<GetSaleItemDto> sortSaleItemsByBrand(String sortField, String sortDirection) {
         List<SaleItem> sortedItems ;
-        System.out.println(sortField);
         System.out.println(sortDirection);
-        if  (sortDirection.equalsIgnoreCase("desc")) {
-            sortedItems = repository.sortByBrandNameDesc();
-
+        System.out.println((sortDirection.isEmpty()) ? "is Empty" : "Is not empty");
+        if ( sortField.isEmpty() || sortDirection.isBlank()) {
+            sortedItems = repository.findAllByOrderByCreatedOn();
         }else if (sortDirection.equalsIgnoreCase("asc")) {
             sortedItems = repository.sortByBrandNameAsc();
 
         } else {
-            sortedItems = repository.findAllByOrderByCreatedOn();
-            System.out.println(sortField + "string");
-            System.out.println(sortedItems);
+            sortedItems = repository.sortByBrandNameDesc();
         }
-
         System.out.println("-----------------------------------------------");
         return sortedItems.stream().map(item -> {
             checkValues(item);
             return modelMapper.map(item, GetSaleItemDto.class);
         }).toList();
-
     }
 
-//    List<SaleItem> sortedItems;
-//
-//    // เคลียร์ค่าพารามิเตอร์
-//    String field = (sortField != null) ? sortField.trim().toLowerCase() : "";
-//    String dir = (direction != null) ? direction.trim().toLowerCase() : "";
-//
-//    // ตรวจเงื่อนไข
-//        if (!"brand.name".equalsIgnoreCase(field)) {
-//        // ไม่ส่ง field หรือส่งผิด → เรียง createdOn ASC (default)
-//        sortedItems = repository.findAllByOrderByCreatedOn();
-//        System.out.println("Default: sort by createdOn ASC");
-//    } else {
-//        if ("desc".equalsIgnoreCase(dir)) {
-//            sortedItems = repository.sortByBrandNameDesc();
-//            System.out.println("Sorting by brand name DESC");
-//        } else {
-//            sortedItems = repository.sortByBrandNameAsc();
-//            System.out.println("Sorting by brand name ASC");
-//        }
-//    }
-//
-//        return sortedItems.stream().map(item -> {
-//        checkValues(item);
-//        return modelMapper.map(item, GetSaleItemDto.class);
-//    }).toList();
-//}
 }

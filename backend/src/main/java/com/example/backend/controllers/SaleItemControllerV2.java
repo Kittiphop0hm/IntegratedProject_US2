@@ -26,8 +26,10 @@ public class SaleItemControllerV2 {
     @GetMapping("")
     public ResponseEntity<List<GetSaleItemDto>> sortSaleItems(
             @RequestParam(defaultValue = "") String sortField,
-            @RequestParam(defaultValue = "") String sortDirection) {
+            @RequestParam(defaultValue = "asc") String sortDirection) {
         return ResponseEntity.ok(service.sortSaleItemsByBrand(sortField, sortDirection));
     }
 
+
 }
+
