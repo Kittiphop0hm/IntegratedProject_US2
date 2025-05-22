@@ -1,84 +1,16 @@
 <script setup>
 import ListTableModel from "../model/ListTableModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
-import NotAllowDeletePopup from "../model/NotAllowDeletePopup.vue";
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getItems } from "@/libs/fetchUtil";
-const router = useRouter()
+defineEmits(['deleteProduct'])
 const props = defineProps({
   brands: {
     type: Array,
     required: true,
   },
 });
-
-const itemBrands = ref([])
-onMounted(async () => {
-  try {
-    const saleItems = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
-    itemBrands.value = saleItems.map(item => item.brandName);
-    itemBrands.value = [...new Set(itemBrands.value)];
-  } catch(error) {
-    console.error("Error fetching brands:", error);
-  }
-})
-
-const emit = defineEmits(["delete-success", "send-data"]);
-
-const alertDeleteSuccess = ref(false);
-const alertDeleteError = ref(false);
-
-const confirmDelete = ref(false);
-const selectedBrandId = ref("");
-const selectedBrandName = ref("");
-
-const deleteBrand = async () => {
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_APP_URL}/v1/brands/${selectedBrandId.value}`,
-      { method: "DELETE" }
-    );
-    if (res.status === 204) {
-      alertDeleteSuccess.value = true;
-      emit("delete-success");
-      router.push({ path:'/brands', query: { alertDelete: "true" } });
-      // setTimeout(() => (alertDeleteSuccess.value = false), 5000);
-    }  
-    if (res.status === 404) {
-      alertDeleteError.value = true;
-      router.push({ path:'/brands', query: { alert404: "true" } });
-      // setTimeout(() => (alertDeleteError.value = false), 5000);
-    }
-    if (res.status === 400) {
-      alertDeleteError.value = true;
-      router.push({ path:'/brands', query: { alert400Delete: "true" } });
-      // setTimeout(() => (alertDeleteError.value = false), 5000);
-    }
-  } catch (err) {
-    console.error(error);
-  } finally {
-    confirmDelete.value = false;
-  }
-};
-
-const isBrandInUse = ref(false)
-
-const showDeleteConfirm = (item) => {
-  selectedBrandId.value = item.id;
-  selectedBrandName.value = item.name;
-  if (itemBrands.value.includes(item.name)) {
-    isBrandInUse.value = true;
-  } else {
-    console.log(selectedBrandName.value);
-    emit( "send-data" , selectedBrandName.value);
-    confirmDelete.value = true;
-  }
-};
-const cancelDelete = () => {
-  isBrandInUse.value = false
-  confirmDelete.value = false;
-};
 </script>
 
 <template>
@@ -111,8 +43,9 @@ const cancelDelete = () => {
           </router-link>
           <button
             class="btn btn-error ml-2 itbms-delete-button"
-            @click="showDeleteConfirm(yourItem)"
+            @click="$emit('deleteProduct',yourItem)"
           >
+          <!-- @click="showDeleteConfirm(yourItem)" -->
             <svg
               class="fill-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +63,7 @@ const cancelDelete = () => {
       </template>
     </ListTableModel>
     
-    <DeletePopupModel
+    <!-- <DeletePopupModel
       v-if="confirmDelete"
       @cancel-delete="cancelDelete"
       @delete-sale-item="deleteBrand"
@@ -140,15 +73,9 @@ const cancelDelete = () => {
           Do you want to delete {{ selectedBrandName }} brand?
         </span>
       </template>
-    </DeletePopupModel>
+    </DeletePopupModel> -->
 
-    <NotAllowDeletePopup v-if="isBrandInUse" @cancel-delete="cancelDelete">
-      <template #message>
-        <span class="itbms-message font-semibold">
-          Delete {{ selectedBrandName }} is not allowed. There are sale items with {{ selectedBrandName }} brand.
-        </span>
-      </template>
-    </NotAllowDeletePopup>
+
 
 
   </div>
