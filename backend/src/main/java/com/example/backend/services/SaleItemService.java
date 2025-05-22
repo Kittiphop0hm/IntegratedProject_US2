@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,11 +90,14 @@ public class SaleItemService {
     public void checkValues(SaleItem item) {
         if (item.getRamGb() == null || item.getRamGb() <= 0) {
             item.setRamGb(null);
-        } if (item.getRamGb() == null || item.getStorageGb() <= 0) {
+        }
+        if (item.getStorageGb() == null || item.getStorageGb() <= 0) {
             item.setStorageGb(null);
-        } if (item.getRamGb() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
+        }
+        if (item.getColor() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
             item.setColor(null);
-        } if (item.getRamGb() == null || item.getScreenSizeInch().doubleValue() <= 0) {
+        }
+        if (item.getScreenSizeInch() == null || item.getScreenSizeInch().doubleValue() <= 0) {
             item.setScreenSizeInch(null);
         }
     }
@@ -113,4 +117,56 @@ public class SaleItemService {
             }).toList();
         }
     }
+
+
+    public List<GetSaleItemDto> sortSaleItemsByBrand(String sortField, String sortDirection) {
+        List<SaleItem> sortedItems ;
+        System.out.println(sortField);
+        System.out.println(sortDirection);
+        if  (sortDirection.equalsIgnoreCase("desc")) {
+            sortedItems = repository.sortByBrandNameDesc();
+
+        }else if (sortDirection.equalsIgnoreCase("asc")) {
+            sortedItems = repository.sortByBrandNameAsc();
+
+        } else {
+            sortedItems = repository.findAllByOrderByCreatedOn();
+            System.out.println(sortField + "string");
+            System.out.println(sortedItems);
+        }
+
+        System.out.println("-----------------------------------------------");
+        return sortedItems.stream().map(item -> {
+            checkValues(item);
+            return modelMapper.map(item, GetSaleItemDto.class);
+        }).toList();
+
+    }
+
+//    List<SaleItem> sortedItems;
+//
+//    // เคลียร์ค่าพารามิเตอร์
+//    String field = (sortField != null) ? sortField.trim().toLowerCase() : "";
+//    String dir = (direction != null) ? direction.trim().toLowerCase() : "";
+//
+//    // ตรวจเงื่อนไข
+//        if (!"brand.name".equalsIgnoreCase(field)) {
+//        // ไม่ส่ง field หรือส่งผิด → เรียง createdOn ASC (default)
+//        sortedItems = repository.findAllByOrderByCreatedOn();
+//        System.out.println("Default: sort by createdOn ASC");
+//    } else {
+//        if ("desc".equalsIgnoreCase(dir)) {
+//            sortedItems = repository.sortByBrandNameDesc();
+//            System.out.println("Sorting by brand name DESC");
+//        } else {
+//            sortedItems = repository.sortByBrandNameAsc();
+//            System.out.println("Sorting by brand name ASC");
+//        }
+//    }
+//
+//        return sortedItems.stream().map(item -> {
+//        checkValues(item);
+//        return modelMapper.map(item, GetSaleItemDto.class);
+//    }).toList();
+//}
 }
