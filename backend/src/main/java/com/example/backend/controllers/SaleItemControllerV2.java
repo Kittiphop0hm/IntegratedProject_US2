@@ -18,7 +18,7 @@ public class SaleItemControllerV2 {
     private SaleItemService service;
 
 
-//    @GetMapping("filter")
+//    @GetMapping("")
 //    public ResponseEntity<List<GetSaleItemDto>> filterSaleItemsByBrandName(@RequestParam(defaultValue = "") List<String> filterBrands) {
 //        return ResponseEntity.ok(service.filterSaleItemsByBrandName(filterBrands));
 //    }
