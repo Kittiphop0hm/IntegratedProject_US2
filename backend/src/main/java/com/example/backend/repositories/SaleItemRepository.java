@@ -9,17 +9,11 @@ import java.util.List;
 public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
     List<SaleItem> findAllByOrderByCreatedOn();
 
-    @Query("SELECT s FROM SaleItem s JOIN Brand b ON s.brand.id = b.id WHERE b.name IN (:filterBrands)")
-    List<SaleItem> findByBrandName(List<String> filterBrands);
+    List<SaleItem> findByBrand_NameInOrderByBrand_NameAsc(List<String> brands);
 
+    List<SaleItem> findByBrand_NameInOrderByBrand_NameDesc(List<String> brands);
 
-    @Query("SELECT s FROM SaleItem s JOIN FETCH s.brand b ORDER BY b.name ASC")
-    List<SaleItem> sortByBrandNameAsc();
+    List<SaleItem> findAllByOrderByBrandNameAsc();
 
-    @Query("SELECT s FROM SaleItem s JOIN FETCH s.brand b ORDER BY b.name DESC")
-    List<SaleItem> sortByBrandNameDesc();
-
-
-
-
+    List<SaleItem> findAllByOrderByBrandNameDesc();
 }
