@@ -1,0 +1,35 @@
+package com.example.backend.controllers;
+
+import com.example.backend.dtos.saleItems.GetSaleItemDto;
+import com.example.backend.entities.SaleItem;
+import com.example.backend.repositories.SaleItemRepository;
+import com.example.backend.services.SaleItemService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/v2/sale-items")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
+public class SaleItemControllerV2 {
+    @Autowired
+    private SaleItemService service;
+
+
+//    @GetMapping("")
+//    public ResponseEntity<List<GetSaleItemDto>> filterSaleItemsByBrandName(@RequestParam(defaultValue = "") List<String> filterBrands) {
+//        return ResponseEntity.ok(service.filterSaleItemsByBrandName(filterBrands));
+//    }
+
+    @GetMapping("")
+    public ResponseEntity<List<GetSaleItemDto>> sortSaleItems(
+            @RequestParam(defaultValue = "") String sortField,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+        return ResponseEntity.ok(service.sortSaleItemsByBrand(sortField, sortDirection));
+    }
+
+
+}
+

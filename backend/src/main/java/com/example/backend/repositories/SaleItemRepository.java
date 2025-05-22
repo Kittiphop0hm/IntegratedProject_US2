@@ -11,4 +11,15 @@ public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
 
     @Query("SELECT s FROM SaleItem s  WHERE s.brand.name IN (:filterBrands)")
     List<SaleItem> findByBrandName(List<String> filterBrands);
+
+
+    @Query("SELECT s FROM SaleItem s JOIN FETCH s.brand b ORDER BY b.name ASC")
+    List<SaleItem> sortByBrandNameAsc();
+
+    @Query("SELECT s FROM SaleItem s JOIN FETCH s.brand b ORDER BY b.name DESC")
+    List<SaleItem> sortByBrandNameDesc();
+
+
+
+
 }
