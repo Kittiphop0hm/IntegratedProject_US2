@@ -16,7 +16,7 @@ onMounted(async () => {
     }
 })
 
-const clearFilterBramd = () => {
+const clearFilterBrand = () => {
     filterBrand.value = []
     isDropFilterBrand.value = false
     emit('filterSaleItemByBrand', filterBrand.value)
