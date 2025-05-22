@@ -12,6 +12,7 @@ import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +40,6 @@ public class SaleItemService {
         SaleItem saleItem = getSaleItemById(id);
         return modelMapper.map(saleItem, GetSaleItemDto.class);
     }
-
 
     @Transactional
     public ResponseSaleItemsDto createSaleItem(AddUpdateSaleItemDto createSaleItemDto) {
@@ -75,7 +75,6 @@ public class SaleItemService {
         return responseDto;
     }
 
-
     public void deleteSaleItem(Integer id) {
         SaleItem saleItem = repository.findById(id)
                 .orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
@@ -89,11 +88,14 @@ public class SaleItemService {
     public void checkValues(SaleItem item) {
         if (item.getRamGb() == null || item.getRamGb() <= 0) {
             item.setRamGb(null);
-        } if (item.getStorageGb() == null || item.getStorageGb() <= 0) {
+        }
+        if (item.getStorageGb() == null || item.getStorageGb() <= 0) {
             item.setStorageGb(null);
-        } if (item.getColor() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
+        }
+        if (item.getColor() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
             item.setColor(null);
-        } if (item.getScreenSizeInch() == null || item.getScreenSizeInch().doubleValue() <= 0) {
+        }
+        if (item.getScreenSizeInch() == null || item.getScreenSizeInch().doubleValue() <= 0) {
             item.setScreenSizeInch(null);
         }
     }
@@ -113,4 +115,25 @@ public class SaleItemService {
             }).toList();
         }
     }
+
+
+    public List<GetSaleItemDto> sortSaleItemsByBrand(String sortField, String sortDirection) {
+        List<SaleItem> sortedItems ;
+        System.out.println(sortDirection);
+        System.out.println((sortDirection.isEmpty()) ? "is Empty" : "Is not empty");
+        if ( sortField.isEmpty() || sortDirection.isBlank()) {
+            sortedItems = repository.findAllByOrderByCreatedOn();
+        }else if (sortDirection.equalsIgnoreCase("asc")) {
+            sortedItems = repository.sortByBrandNameAsc();
+
+        } else {
+            sortedItems = repository.sortByBrandNameDesc();
+        }
+        System.out.println("-----------------------------------------------");
+        return sortedItems.stream().map(item -> {
+            checkValues(item);
+            return modelMapper.map(item, GetSaleItemDto.class);
+        }).toList();
+    }
+
 }
