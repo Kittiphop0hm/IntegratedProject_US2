@@ -8,6 +8,7 @@ import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemRepository;
+import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
@@ -30,6 +31,8 @@ public class SaleItemService {
     private BrandRepository brandRepository;
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private ListMapper listMapper;
 
     public List<ListSaleItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
@@ -100,40 +103,27 @@ public class SaleItemService {
         }
     }
 
-    public List<ListSaleItemsDto> filterSaleItemsByBrandName(List<String> filterBrands) {
-        if (filterBrands == null || filterBrands.isEmpty()) {
-            List<SaleItem> saleItems = repository.findAll();
+    public List<ListSaleItemsDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
+        List<SaleItem> saleItems;
+        if (filterBrands.isEmpty()) {
+            if (sortField.isEmpty()) {
+                saleItems = repository.findAllByOrderByCreatedOn();
+            }   else if (sortDirection.equalsIgnoreCase("asc")) {
+                saleItems = repository.findAllByOrderByBrandNameAsc();
+            }   else {
+                saleItems = repository.findAllByOrderByBrandNameDesc();
+            }
             return saleItems.stream().map(item -> {
                 checkValues(item);
                 return modelMapper.map(item, ListSaleItemsDto.class);
             }).toList();
         } else {
-            List<SaleItem> filterSaleItems = repository.findByBrandName(filterBrands);
-            return filterSaleItems.stream().map(filterItem -> {
-                checkValues(filterItem);
-                return modelMapper.map(filterItem, ListSaleItemsDto.class);
-            }).toList();
+            if (sortDirection.equalsIgnoreCase("asc")) {
+                saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
+            } else {
+                saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
+            }
         }
+        return listMapper.mapList(saleItems, ListSaleItemsDto.class, modelMapper);
     }
-
-
-    public List<GetSaleItemDto> sortSaleItemsByBrand(String sortField, String sortDirection) {
-        List<SaleItem> sortedItems ;
-        System.out.println(sortDirection);
-        System.out.println((sortDirection.isEmpty()) ? "is Empty" : "Is not empty");
-        if ( sortField.isEmpty() || sortDirection.isBlank()) {
-            sortedItems = repository.findAllByOrderByCreatedOn();
-        }else if (sortDirection.equalsIgnoreCase("asc")) {
-            sortedItems = repository.sortByBrandNameAsc();
-
-        } else {
-            sortedItems = repository.sortByBrandNameDesc();
-        }
-        System.out.println("-----------------------------------------------");
-        return sortedItems.stream().map(item -> {
-            checkValues(item);
-            return modelMapper.map(item, GetSaleItemDto.class);
-        }).toList();
-    }
-
 }
