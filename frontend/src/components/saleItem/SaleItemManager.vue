@@ -9,6 +9,9 @@ const route = useRoute();
 const saleItem = ref([]);
 import AlertMessageModel from '../model/AlertMessageModel.vue';
 import FilterSaleItem from './FilterSaleItem.vue';
+import SortSaleItemByBrandname from './SortSaleItemByBrandname.vue'
+
+const sortDirection = ref('default')
 
 onMounted(async () => {
   try {
@@ -40,6 +43,26 @@ const filterSaleItemByBrand = async (filterBrand) => {
     console.log(err);
   }
 }
+
+const sortSaleItemByBrand = async (direction) => {
+  try {
+    sortDirection.value = direction;
+
+    if (direction === 'default') {
+     
+      saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+    } else {
+    
+      saleItem.value = await getItems(
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items?sortField=brand.name&sortDirection=${direction}`
+      );
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+
 </script>
 <template>
   <div v-show="route.query.alertAdd || route.query.alertDelete || route.query.alert404" class=" p-10 pb-0">
@@ -59,6 +82,7 @@ const filterSaleItemByBrand = async (filterBrand) => {
         Add Sale Item
       </button>
     </router-link>
+    <SortSaleItemByBrandname @sortSaleItemByBrand="sortSaleItemByBrand" />
   </div>
   <FilterSaleItem @filter-sale-item-by-brand="filterSaleItemByBrand"></FilterSaleItem>
   <SaleItemGallery :saleItems="saleItem"></SaleItemGallery>
