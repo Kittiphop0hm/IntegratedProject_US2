@@ -103,7 +103,7 @@ public class SaleItemService {
         }
     }
 
-    public List<ListSaleItemsDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
+    public List<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
         List<SaleItem> saleItems;
         if (filterBrands.isEmpty()) {
             if (sortField.isEmpty()) {
@@ -113,10 +113,7 @@ public class SaleItemService {
             }   else {
                 saleItems = repository.findAllByOrderByBrandNameDesc();
             }
-            return saleItems.stream().map(item -> {
-                checkValues(item);
-                return modelMapper.map(item, ListSaleItemsDto.class);
-            }).toList();
+            return listMapper.mapList(saleItems, GetSaleItemDto.class, modelMapper);
         } else {
             if (sortDirection.equalsIgnoreCase("asc")) {
                 saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
@@ -124,6 +121,6 @@ public class SaleItemService {
                 saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
             }
         }
-        return listMapper.mapList(saleItems, ListSaleItemsDto.class, modelMapper);
+        return listMapper.mapList(saleItems, GetSaleItemDto.class, modelMapper);
     }
 }
