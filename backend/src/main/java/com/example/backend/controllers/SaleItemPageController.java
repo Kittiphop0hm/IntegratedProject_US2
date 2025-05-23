@@ -1,5 +1,6 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dtos.saleItems.GetSaleItemDto;
 import com.example.backend.dtos.saleItems.ListSaleItemsDto;
 import com.example.backend.services.SaleItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class SaleItemPageController {
     private SaleItemService service;
 
     @GetMapping("")
-    public ResponseEntity<List<ListSaleItemsDto>> filterSaleItemsByBrandName(
+    public ResponseEntity<List<GetSaleItemDto>> filterSaleItemsByBrandName(
             @RequestParam(defaultValue = "") List<String> filterBrands,
             @RequestParam(defaultValue = "") String sortField,
             @RequestParam(defaultValue = "asc") String sortDirection
