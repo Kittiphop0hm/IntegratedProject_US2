@@ -5,7 +5,6 @@ import { getItems } from "../../libs/fetchUtil.js";
 import { useRoute } from 'vue-router';
 import AlertMessageModel from '../model/AlertMessageModel.vue';
 import FilterSaleItem from './FilterSaleItem.vue';
-import SortSaleItemByBrandname from './SortSaleItemByBrandName.vue'
 
 const route = useRoute();
 const saleItem = ref([]);
