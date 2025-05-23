@@ -77,8 +77,6 @@ const filterAndSortSaleItem = async(filterBrand, direction) => {
     console.log(err);
   }
 }
-
-
 </script>
 <template>
   <div v-show="route.query.alertAdd || route.query.alertDelete || route.query.alert404" class=" p-10 pb-0">
