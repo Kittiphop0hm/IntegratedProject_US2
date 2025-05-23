@@ -59,12 +59,20 @@ const isSuccess = ref(Boolean(route.query.alertAdd || route.query.alertDelete) &
 
 const filterAndSortSaleItem = async(filterBrand, direction) => {
   console.log(filterBrand);
-  console.log(direction);
+  console.log(!direction ? "empty" : "not empty");
   try {
     if (filterBrand || filterBrand.length >= 0) {
-      saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&sortField=brand.name&sortDirection=${direction}`);
+      if (direction === 'default') {
+          saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}`);
+      } else {
+          saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&sortField=brand.name&sortDirection=${direction}`);
+      }
     } else {
-      saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?sortField=brand.name&sortDirection=${direction}`);
+      if (direction === 'default') {
+          saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items`); 
+      } else {
+          saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?sortField=brand.name&sortDirection=${direction}`); 
+      }
     }
   } catch (err) {
     console.log(err);
