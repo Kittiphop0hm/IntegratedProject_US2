@@ -1,6 +1,8 @@
 package com.example.backend.utils;
 
+import com.example.backend.dtos.saleItems.PageDto;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,9 +21,11 @@ public class ListMapper {
         return listMapper;
     }
 
-//    public <S, T> PageDto<T> toPageDTO(Page<S> source, Class<T> targetClass, ModelMapper modelMapper) {
-//        PageDto<T> page = modelMapper.map(source, PageDto.class);
-//        page.setContent(mapList(source.getContent(), targetClass, modelMapper));
-//        return page;
-//    }
+    public <S, T> PageDto<T> toPageDTO(Page<S> source, Class<T> targetClass, ModelMapper modelMapper , String sortFiled) {
+        PageDto<T> page = modelMapper.map(source, PageDto.class);
+        page.setSort(sortFiled);
+        page.setContent(mapList(source.getContent(), targetClass, modelMapper));
+
+        return page;
+    }
 }

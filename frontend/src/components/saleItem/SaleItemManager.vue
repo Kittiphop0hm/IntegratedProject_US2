@@ -9,7 +9,7 @@ const route = useRoute();
 const saleItem = ref([]);
 import AlertMessageModel from '../model/AlertMessageModel.vue';
 import FilterSaleItem from './FilterSaleItem.vue';
-import SortSaleItemByBrandname from './SortSaleItemByBrandname.vue'
+import SortSaleItemByBrandname from './SortSaleItemByBrandName.vue'
 
 const sortDirection = ref('default')
 
@@ -50,7 +50,7 @@ const sortSaleItemByBrand = async (direction) => {
 
     if (direction === 'default') {
      
-      saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+      saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items`);
     } else {
     
       saleItem.value = await getItems(
