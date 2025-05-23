@@ -1,18 +1,18 @@
 package com.example.backend.services;
-import com.example.backend.dtos.saleItems.AddUpdateSaleItemDto;
-import com.example.backend.dtos.saleItems.GetSaleItemDto;
-import com.example.backend.dtos.saleItems.ListSaleItemsDto;
-import com.example.backend.dtos.saleItems.ResponseSaleItemsDto;
+import com.example.backend.dtos.saleItems.*;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
+import com.example.backend.repositories.SaleItemPageRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +33,8 @@ public class SaleItemService {
     private EntityManager entityManager;
     @Autowired
     private ListMapper listMapper;
+    @Autowired
+    private SaleItemPageRepository pageRepository;
 
     public List<ListSaleItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
@@ -103,27 +105,29 @@ public class SaleItemService {
         }
     }
 
-    public List<ListSaleItemsDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
-        List<SaleItem> saleItems;
+    public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection , Integer page , Integer size ) {
+        Page<SaleItem> saleItems;
         if (filterBrands.isEmpty()) {
             if (sortField.isEmpty()) {
-                saleItems = repository.findAllByOrderByCreatedOn();
+                saleItems = pageRepository.findAllByOrderByCreatedOn(PageRequest.of(page,size));
             }   else if (sortDirection.equalsIgnoreCase("asc")) {
-                saleItems = repository.findAllByOrderByBrandNameAsc();
+                saleItems = pageRepository.findAllByOrderByBrandNameAsc(PageRequest.of(page,size));
             }   else {
-                saleItems = repository.findAllByOrderByBrandNameDesc();
+                saleItems = pageRepository.findAllByOrderByBrandNameDesc(PageRequest.of(page,size));
             }
-            return saleItems.stream().map(item -> {
-                checkValues(item);
-                return modelMapper.map(item, ListSaleItemsDto.class);
-            }).toList();
+//            return saleItems.stream().map(item -> {
+//                checkValues(item);
+//                return modelMapper.map(item, GetSaleItemDto.class);
+//            }).toList();
         } else {
             if (sortDirection.equalsIgnoreCase("asc")) {
-                saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
+                saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands , PageRequest.of(page,size));
             } else {
-                saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
+                saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands , PageRequest.of(page,size));
             }
         }
-        return listMapper.mapList(saleItems, ListSaleItemsDto.class, modelMapper);
+
+        return listMapper.toPageDTO(saleItems , GetSaleItemDto.class , modelMapper , sortField);
+//        return listMapper.mapList(saleItems, GetSaleItemDto.class, modelMapper);
     }
 }
