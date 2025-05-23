@@ -4,7 +4,7 @@ import SaleItemGallery from '../saleItem/SaleItemGallery.vue';
 import { ref, onMounted } from "vue";
 import { getItems } from "../../libs/fetchUtil.js";
 import { useRoute } from 'vue-router';
-import router from '@/router';
+
 const route = useRoute();
 const saleItem = ref([]);
 import AlertMessageModel from '../model/AlertMessageModel.vue';
