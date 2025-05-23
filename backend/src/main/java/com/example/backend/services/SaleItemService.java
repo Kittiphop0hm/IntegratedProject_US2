@@ -105,7 +105,7 @@ public class SaleItemService {
         }
     }
 
-    public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection , Integer page , Integer size ) {
+    public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection , Integer page , Integer size) {
         Page<SaleItem> saleItems;
         if (filterBrands.isEmpty()) {
             if (sortField.isEmpty()) {
@@ -115,10 +115,6 @@ public class SaleItemService {
             }   else {
                 saleItems = pageRepository.findAllByOrderByBrandNameDesc(PageRequest.of(page,size));
             }
-//            return saleItems.stream().map(item -> {
-//                checkValues(item);
-//                return modelMapper.map(item, GetSaleItemDto.class);
-//            }).toList();
         } else {
             if (sortDirection.equalsIgnoreCase("asc")) {
                 saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands , PageRequest.of(page,size));
@@ -126,8 +122,26 @@ public class SaleItemService {
                 saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands , PageRequest.of(page,size));
             }
         }
-
         return listMapper.toPageDTO(saleItems , GetSaleItemDto.class , modelMapper , sortField);
-//        return listMapper.mapList(saleItems, GetSaleItemDto.class, modelMapper);
+    }
+
+    public List<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
+        List<SaleItem> saleItems;
+        if (filterBrands.isEmpty()) {
+            if (sortField.isEmpty()) {
+                saleItems = repository.findAllByOrderByCreatedOn();
+            } else if (sortDirection.equalsIgnoreCase("asc")) {
+                saleItems = repository.findAllByOrderByBrandNameAsc();
+            } else {
+                saleItems = repository.findAllByOrderByBrandNameDesc();
+            }
+        } else {
+            if (sortDirection.equalsIgnoreCase("asc")) {
+                saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
+            } else {
+                saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
+            }
+        }
+        return listMapper.mapList(saleItems , GetSaleItemDto.class , modelMapper);
     }
 }
