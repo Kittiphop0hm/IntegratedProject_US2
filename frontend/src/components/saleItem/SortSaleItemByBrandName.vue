@@ -18,7 +18,7 @@ const setSort = (direction) => {
       class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
     >
       <button
-        @click="setSort('default')"
+        @click="setSort('')"
         class="itbms-brand-none px-3 py-2 hover:bg-blue-100 transition"
         :class="
           sortDirection === 'default'

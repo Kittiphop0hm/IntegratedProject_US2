@@ -10,4 +10,12 @@ import java.util.List;
 
 public interface SaleItemRepository extends JpaRepository<SaleItem, Integer> {
     List<SaleItem> findAllByOrderByCreatedOn();
+
+    List<SaleItem> findByBrand_NameInOrderByBrand_NameAsc(List<String> brands);
+
+    List<SaleItem> findByBrand_NameInOrderByBrand_NameDesc(List<String> brands);
+
+    List<SaleItem> findAllByOrderByBrandNameAsc();
+
+    List<SaleItem> findAllByOrderByBrandNameDesc();
 }
