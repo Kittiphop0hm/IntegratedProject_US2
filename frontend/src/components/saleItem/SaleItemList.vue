@@ -75,42 +75,11 @@ const handledelete = (id) => {
 // const formattedPrice = computed(() =>
 //   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
 // );
-
-const filterSaleItemByBrand = async (filterBrand) => {
-  try {
-    if (!filterBrand || filterBrand.length === 0) {
-      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`)
-    } else {
-      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}`)
-    }
-  } catch (err) {
-    console.error("Error filtering sale items:", err);
-  }
-}
-const sortSaleItemByBrand = async (direction) => {
-  try {
-    sortDirection.value = direction;
-
-    if (direction === 'default') {
-     
-      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items`);
-    } else {
-    
-      saleItems.value = await getItems(
-        `${import.meta.env.VITE_APP_URL}/v2/sale-items?sortField=brand.name&sortDirection=${direction}`
-      );
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
 </script>
 
 <template>
   <Navbar />
   <Search />
-  <FilterSaleItem @filter-sale-item-by-brand="filterSaleItemByBrand"></FilterSaleItem>
-   <SortSaleItemByBrandname @sortSaleItemByBrand="sortSaleItemByBrand" />
   <div class="p-10 pt-0">
     <div
       v-show="
