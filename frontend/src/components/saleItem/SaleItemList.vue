@@ -9,14 +9,14 @@ import { useRouter, useRoute } from "vue-router";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSaleItem.vue";
-import SortSaleItemByBrandname from "./SortSaleItemByBrandname.vue";
+import SortSaleItemByBrandname from "./SortSaleItemByBrandName.vue";
 
 const sortDirection = ref('default')
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
-const saleitem =
+
 
 
 onMounted(async () => {
@@ -93,7 +93,7 @@ const sortSaleItemByBrand = async (direction) => {
 
     if (direction === 'default') {
      
-      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+      saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items`);
     } else {
     
       saleItems.value = await getItems(
