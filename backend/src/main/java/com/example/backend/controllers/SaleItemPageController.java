@@ -25,24 +25,24 @@ public class SaleItemPageController {
     @Autowired
     private ModelMapper modelMapper;
 
-//    @GetMapping("")
-//    public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
-//            @RequestParam(defaultValue = "") List<String> filterBrands,
-//            @RequestParam(defaultValue = "") String sortField,
-//            @RequestParam(defaultValue = "asc") String sortDirection,
-//            @RequestParam Integer page ,
-//            @RequestParam Integer size
-//    ) {
-//        return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection , page , size));
-//    }
-
     @GetMapping("")
-    public ResponseEntity<List<GetSaleItemDto>> filterSaleItemsByBrandName(
+    public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
             @RequestParam(defaultValue = "") List<String> filterBrands,
             @RequestParam(defaultValue = "") String sortField,
-            @RequestParam(defaultValue = "asc") String sortDirection
+            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam Integer page ,
+            @RequestParam(defaultValue = "10")  Integer size
     ) {
-        return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection));
+        return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection , page , size));
     }
+
+//    @GetMapping("")
+//    public ResponseEntity<List<GetSaleItemDto>> filterSaleItemsByBrandName(
+//            @RequestParam(defaultValue = "") List<String> filterBrands,
+//            @RequestParam(defaultValue = "") String sortField,
+//            @RequestParam(defaultValue = "asc") String sortDirection
+//    ) {
+//        return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection));
+//    }
 }
 

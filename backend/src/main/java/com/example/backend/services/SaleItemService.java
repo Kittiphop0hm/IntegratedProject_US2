@@ -125,23 +125,23 @@ public class SaleItemService {
         return listMapper.toPageDTO(saleItems , GetSaleItemDto.class , modelMapper , sortField);
     }
 
-    public List<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
-        List<SaleItem> saleItems;
-        if (filterBrands.isEmpty()) {
-            if (sortField.isEmpty()) {
-                saleItems = repository.findAllByOrderByCreatedOn();
-            } else if (sortDirection.equalsIgnoreCase("asc")) {
-                saleItems = repository.findAllByOrderByBrandNameAsc();
-            } else {
-                saleItems = repository.findAllByOrderByBrandNameDesc();
-            }
-        } else {
-            if (sortDirection.equalsIgnoreCase("asc")) {
-                saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
-            } else {
-                saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
-            }
-        }
-        return listMapper.mapList(saleItems , GetSaleItemDto.class , modelMapper);
-    }
+//    public List<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
+//        List<SaleItem> saleItems;
+//        if (filterBrands.isEmpty()) {
+//            if (sortField.isEmpty()) {
+//                saleItems = repository.findAllByOrderByCreatedOn();
+//            } else if (sortDirection.equalsIgnoreCase("asc")) {
+//                saleItems = repository.findAllByOrderByBrandNameAsc();
+//            } else {
+//                saleItems = repository.findAllByOrderByBrandNameDesc();
+//            }
+//        } else {
+//            if (sortDirection.equalsIgnoreCase("asc")) {
+//                saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
+//            } else {
+//                saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
+//            }
+//        }
+//        return listMapper.mapList(saleItems , GetSaleItemDto.class , modelMapper);
+//    }
 }

@@ -64,6 +64,17 @@ const router = createRouter({
   ],
 });
 
+// router.beforeEach( (to,form) => {
+
+//   if (form.name === "HomeView" && to.name == "SaleItemDetail") {
+//     localStorage.setItem("pageSize", pageSize.value);
+//     localStorage.setItem("pageNumber", pageNumber.value);
+//   }else {
+//     localStorage.removeItem("pageSize");
+//     localStorage.removeItem("pageNumber");
+//   }
+// } )
+
 
 
 export default router;

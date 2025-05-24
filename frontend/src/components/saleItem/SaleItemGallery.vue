@@ -1,11 +1,16 @@
 <script setup>
 import SaleItemListModel from "../model/SaleItemListModel.vue";
+import { useRoute } from "vue-router";
+const route = useRoute();
 const props = defineProps({
     saleItems: {
         type: Array ,
         required: true
     }
 })
+function savePreviousPath() {
+  localStorage.setItem("isDetail", true);
+}
 </script>
 
 <template>
@@ -15,6 +20,7 @@ const props = defineProps({
       <router-link
         :to="{ name: 'SaleItemDetail', params: { id: yourItem.id } }"
         class="block"
+        @click="savePreviousPath"
       >
         <div
           class="itbms-row border rounded-xl shadow hover:shadow-md p-4 transition duration-300 ease-in-out cursor-pointer"
@@ -24,10 +30,11 @@ const props = defineProps({
             alt="phone image"
             class="w-full h-36 object-cover rounded-md mb-4"
           />
-          <div class="text-sm text-gray-900 itbms-brand">
+          <div class="text-sm text-red-500 itbms-brand">
+            <!-- text-gray-900 -->
             {{ yourItem.brandName }}
           </div>
-          <div class="text-lg font-semibold text-gray-800 itbms-model">
+          <div class="text-lg font-semibold text-red-500 itbms-model">
             {{ yourItem.model }}
           </div>
           <div class="text-sm mt-1">
