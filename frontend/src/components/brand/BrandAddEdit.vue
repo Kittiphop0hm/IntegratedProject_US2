@@ -45,18 +45,6 @@ const enableAddButton = computed(() => {
     )   
 })
 
-const enableEditButton = computed(() => {
-    const noEmptyFields = 
-        brand.value.name !== ''
-    const isModify =   
-        brand.value.name !== editObjectBrand.value.name ||
-        brand.value.websiteUrl !== editObjectBrand.value.websiteUrl ||
-        brand.value.isActive !== editObjectBrand.value.isActive ||
-        brand.value.countryOfOrigin !== editObjectBrand.value.countryOfOrigin
-
-    return noEmptyFields && isModify
-})
-
 const addBrand = async () => {
     if (enableAddButton) { 
         try {
@@ -100,6 +88,21 @@ const validateInputMassage = (brandNameMassage, brandUrlMassage, brandCountryMas
     validateBrandUrlMassage.value = brandUrlMassage
     validateBrandCountryMassage.value = brandCountryMassage
 }
+
+const enableEditButton = computed(() => {
+    const noEmptyFields = 
+        brand.value.name !== ''
+    const isModify =   
+        brand.value.name !== editObjectBrand.value.name ||
+        brand.value.websiteUrl !== editObjectBrand.value.websiteUrl ||
+        brand.value.isActive !== editObjectBrand.value.isActive ||
+        brand.value.countryOfOrigin !== editObjectBrand.value.countryOfOrigin
+    const noValidateInputMassage = 
+        validateBrandNameMassage.value.length === 0 &&
+        validateBrandCountryMassage.value.length === 0 &&
+        validateBrandUrlMassage.value.length === 0
+    return noValidateInputMassage && noEmptyFields && isModify
+})
 </script>
 
 <template>

@@ -60,8 +60,8 @@ watch(() => props.brandName, (brandName) => {
 
 watch(() => props.brandUrl, (brandUrl) => {
     // console.log(brandUrl);
-    if (!brandUrl.toLowerCase().startsWith('http') && !brandUrl.toLowerCase().startsWith('https')) {
-        brandUrlErrorMassage.value = 'Brand URL must be a valid be 1-80 character long or not specified.'
+    if (!brandUrl.toLowerCase().includes('www')) {
+        brandUrlErrorMassage.value = 'Brand URL must be a valid URL or not specified.'
         // console.log(brandUrlErrorMassage.value);
         emit('massageValidate', brandNameErrorMassage.value, brandUrlErrorMassage.value, brandCountryErrorMassage.value) 
     } else {
@@ -83,8 +83,6 @@ watch(() => props.brandCountry, (brandCountry) => {
     }
     
 })
-
-
 </script>
 
 <template>
