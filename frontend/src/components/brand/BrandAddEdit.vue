@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import { addItem } from '@/libs/fetchUtil';
 import { useRoute, useRouter } from 'vue-router';
 import { getItemById, editItem } from '@/libs/fetchUtil';
@@ -39,55 +39,65 @@ onMounted(async () => {
     }
 })
 
-const enableAddButton = computed(() => {
-    return (
-        brand.value.name !== ''
-    )   
-})
-
-const addBrand = async () => {
-    if (enableAddButton) { 
-        try {
-            const addBrandResponse = await addItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, brand.value)
-            if (addBrandResponse.status === 201 || addBrandResponse.status === 200) {
-                router.push({ path:'/brands', query: { alertAdd: "true" } });
-            } 
-            if (addBrandResponse.status === 400 || addBrandResponse.status === 500) {
-                router.push({ path:'/brands', query: { alertErrors: "true" } });
-            }
-        } catch (error) {
-            console.error('Error adding brand:', error);
-        }
-    }
-}
-
-const editBrand = async () => {
-    if (enableEditButton) {
-        try {
-            const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, editObjectBrand.value.id, brand.value)
-            if (editBrandResponse.status === 200) {
-                router.push({ path:'/brands', query: { alertUpdate: "true" } });
-            } else {
-                router.push({ path:'/brands', query: { alert404: "true" } });
-            }
-        } catch(error) {
-            console.error('Error adding brand:', error);
-        }
-    }
-}
-
 const validateBrandNameMassage = ref("")
 const validateBrandUrlMassage = ref("")
 const validateBrandCountryMassage = ref("")
 
-const validateInputMassage = (brandNameMassage, brandUrlMassage, brandCountryMassage) => {
-    console.log(brandNameMassage);
-    console.log(brandUrlMassage);
-    console.log(brandCountryMassage);
-    validateBrandNameMassage.value = brandNameMassage
-    validateBrandUrlMassage.value = brandUrlMassage
-    validateBrandCountryMassage.value = brandCountryMassage
+const validateBrandName = () => {
+    if (brand.value.name.length < 1 || brand.value.name.length > 30) {
+        validateBrandNameMassage.value = 'Brand name must be 1-30 characters long.'
+    } else {
+        validateBrandNameMassage.value = ''
+    }
 }
+
+const validateBrandUrl = () => {
+    if (!brand.value.websiteUrl.toLowerCase().includes('www')) {
+        validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
+    } else {
+        validateBrandUrlMassage.value = ''
+    }
+}
+
+
+const validateBrandCountry = () => {
+    if (brand.value.countryOfOrigin.length < 1 || brand.value.countryOfOrigin.length > 80) {
+        validateBrandCountryMassage.value = 'Brand country of origin must be 1-80 characters long or not specified.'
+    } else {
+        validateBrandCountryMassage.value = ''
+    }
+}
+
+const checkValidateSubmitForm = () => {
+    if (brand.value.name.length < 1 || brand.value.name.length > 30) {
+        validateBrandNameMassage.value = 'Brand name must be 1-30 characters long.'
+    } 
+    if (!brand.value.websiteUrl.toLowerCase().includes('www')) {
+        validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
+    } 
+    if (brand.value.countryOfOrigin.length < 1 || brand.value.countryOfOrigin.length > 80) {
+        validateBrandCountryMassage.value = 'Brand country of origin must be 1-80 characters long or not specified.'
+    }
+}
+
+// const validateInputMassage = (brandNameMassage, brandUrlMassage, brandCountryMassage) => {
+//     console.log(brandNameMassage);
+//     console.log(brandUrlMassage);
+//     console.log(brandCountryMassage);
+//     validateBrandNameMassage.value = brandNameMassage
+//     validateBrandUrlMassage.value = brandUrlMassage
+//     validateBrandCountryMassage.value = brandCountryMassage
+// }
+
+const enableAddButton = computed(() => {
+    const noEmptyFields = 
+        brand.value.name !== '' 
+    const noValidateInputMassage = 
+        validateBrandNameMassage.value.length === 0 &&
+        validateBrandCountryMassage.value.length === 0 &&
+        validateBrandUrlMassage.value.length === 0
+    return noEmptyFields && noValidateInputMassage
+})
 
 const enableEditButton = computed(() => {
     const noEmptyFields = 
@@ -101,14 +111,47 @@ const enableEditButton = computed(() => {
         validateBrandNameMassage.value.length === 0 &&
         validateBrandCountryMassage.value.length === 0 &&
         validateBrandUrlMassage.value.length === 0
-    return noValidateInputMassage && noEmptyFields && isModify
+    return noEmptyFields && noValidateInputMassage && isModify
 })
+
+const addBrand = async () => {
+    checkValidateSubmitForm()
+    if (enableAddButton.value) { 
+        try {
+            const addBrandResponse = await addItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, brand.value)
+            if (addBrandResponse.status === 201 || addBrandResponse.status === 200) {
+                router.push({ path:'/brands', query: { alertAdd: "true" } });
+            } 
+            if (addBrandResponse.status === 400 || addBrandResponse.status === 500) {
+                router.push({ path:'/brands', query: { alertErrors: "true" } });
+            }
+        } catch (error) {
+            console.error('Error adding brand:', error);
+        }
+    } 
+}
+
+const editBrand = async () => {
+    checkValidateSubmitForm()
+    if (enableEditButton.value) {
+        try {
+            const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, editObjectBrand.value.id, brand.value)
+            if (editBrandResponse.status === 200) {
+                router.push({ path:'/brands', query: { alertUpdate: "true" } });
+            } else {
+                router.push({ path:'/brands', query: { alert404: "true" } });
+            }
+        } catch(error) {
+            console.error('Error adding brand:', error);
+        }
+    }
+}
 </script>
 
 <template>
     <Navbar/>
     <Search/>
-    <ValidationInput :brand-name="brand.name" :brand-url="brand.websiteUrl" :brand-country="brand.countryOfOrigin" @massage-validate="validateInputMassage"></ValidationInput>
+    <!-- <ValidationInput :brand-name="brand.name" :brand-url="brand.websiteUrl" :brand-country="brand.countryOfOrigin" @massage-validate="validateInputMassage"></ValidationInput> -->
         <div class="px-2 py-10 w-full max-h-[100vh]">
             <div class="w-full h-[80vh] flex flex-col items-center justify-center">
                 <div class="w-full flex justify-around items-center py-5">
@@ -134,23 +177,25 @@ const enableEditButton = computed(() => {
                             <input 
                             v-model.trim="brand.name"
                             id="brandName" 
+                            @blur="validateBrandName"
                             type="text" 
                             placeholder="Enter brand name" 
                             class="itbms-name input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
                             />
-                            <p class="text-red-500">{{ validateBrandNameMassage }}</p>
+                            <p class="text-red-500" v-if="validateBrandNameMassage">{{ validateBrandNameMassage }}</p>
                         </div>
 
                         <div class="flex flex-col">
                             <label for="websiteUrl" class="text-sm font-medium mb-1">Website URL:</label>
                             <input 
                             v-model.trim="brand.websiteUrl"
+                            @blur="validateBrandUrl"
                             id="websiteUrl" 
                             type="text" 
                             placeholder="Enter website URL" 
                             class="itbms-websiteUrl input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
                             />
-                            <p class="text-red-500">{{ validateBrandUrlMassage }}</p>
+                            <p class="text-red-500" v-if="validateBrandUrlMassage">{{ validateBrandUrlMassage }}</p>
                         </div>
 
                         <div class="flex flex-col">
@@ -162,12 +207,13 @@ const enableEditButton = computed(() => {
                             <label for="country" class="text-sm font-medium mb-1">Country of Origin:</label>
                             <input 
                             v-model.trim="brand.countryOfOrigin"
+                            @blur="validateBrandCountry"
                             id="country" 
                             type="text" 
                             placeholder="Enter country of origin" 
                             class="itbms-countryOfOrigin input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
                             />
-                            <p class="text-red-500">{{ validateBrandCountryMassage }}</p>
+                            <p class="text-red-500" v-if="validateBrandCountryMassage">{{ validateBrandCountryMassage }}</p>
                         </div>
 
                         <div class="flex justify-center mt-6">
