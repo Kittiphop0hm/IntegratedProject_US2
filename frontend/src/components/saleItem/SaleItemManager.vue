@@ -84,15 +84,13 @@ watch([pageSize, pageNumber], () => {
   console.log(pageNumber.value);
   fetchData();
 });
-const filterBrandR = ref(null);
-const directionR = ref(null);
+const filterBrandR = ref("");
+const directionR = ref("");
 watch([filterBrandR, directionR], () => {
-  if(initialLoadDone.value){
   console.log("reset");
   pageNumber.value = 0;
   // // sessionStorage.setItem("pageSize")
   // sessionStorage.setItem("pageNumber", 0);
-  }
 });
 watch(pageSize,() => {
   if (!pageSizeWatchInitialized) {
@@ -275,9 +273,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
     </div>
   </div>
 
-  <FilterSaleItem
-    @filterAndSortSaleItem="filterAndSortSaleItem"
-  ></FilterSaleItem>
+  <FilterSaleItem @filterAndSortSaleItem="filterAndSortSaleItem"></FilterSaleItem>
   <SaleItemGallery :saleItems="saleItem"></SaleItemGallery>
 
   <div class="p-10 pt-0" v-show="pageObj.totalPages > 1">

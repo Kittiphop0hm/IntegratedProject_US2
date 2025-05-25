@@ -41,8 +41,8 @@ const setFilterSortSaleItems = (brands, direction) => {
 </script>
 
 <template>
-  <div class="flex items-center justify-between w-full px-10 pt-5">
-    <div class="w-[100%] rounded-lg shadow-md mr-2">
+  <div class="relative flex items-center justify-between px-10 pt-5">
+    <div class="w-[80%] rounded-lg shadow-md mr-2">
       <div
         class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0"
       >
@@ -74,7 +74,7 @@ const setFilterSortSaleItems = (brands, direction) => {
           </div>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 mr-5">
           <button
             @click="isDropFilterBrand = !isDropFilterBrand"
             class="flex items-center justify-center bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none"
@@ -124,7 +124,7 @@ const setFilterSortSaleItems = (brands, direction) => {
       </div>
     </div>
 
-    <div class="flex items-center space-x-2 justify-end">
+    <div class="absolute right-0 top-10 flex items-center space-x-2 justify-end">
       <!-- <span class="text-sm font-medium text-gray-700">Sort Brand : </span> -->
       <div
         class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
