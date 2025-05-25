@@ -64,16 +64,15 @@ const router = createRouter({
   ],
 });
 
-// router.beforeEach( (to,form) => {
-
-//   if (form.name === "HomeView" && to.name == "SaleItemDetail") {
-//     localStorage.setItem("pageSize", pageSize.value);
-//     localStorage.setItem("pageNumber", pageNumber.value);
-//   }else {
-//     localStorage.removeItem("pageSize");
-//     localStorage.removeItem("pageNumber");
-//   }
-// } )
+router.beforeEach( (to,form) => {
+  console.log("form.name: " + form.name);
+  console.log("to.name: " + to.name);
+  if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
+    console.log("router.beforeEach");
+    sessionStorage.removeItem("pageSize");
+    sessionStorage.removeItem("pageNumber");
+  }
+} )
 
 
 

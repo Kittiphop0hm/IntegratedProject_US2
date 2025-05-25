@@ -11,6 +11,7 @@ const saleItem = ref([]);
 const pageObj = ref({});
 const sortDirection = ref("default");
 // const valueSelected = ref(1);
+let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
 
@@ -18,19 +19,12 @@ const pageNumber = ref();
 //   return 10 / valueSelected.value;
 // });
 onMounted(() => {
-  const pageNumberLocal = localStorage.getItem("pageNumber");
-  const pageSizeLocal = localStorage.getItem("pageSize");
-  if (pageNumberLocal !== null && pageSizeLocal !== null) {
-    console.log("local Set");
-    pageSize.value = Number(pageSizeLocal);
-    pageNumber.value = Number(pageNumberLocal);
+  const pageNumberSession = sessionStorage.getItem("pageNumber");
+  const pageSizeSession = sessionStorage.getItem("pageSize");
+    pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
+    pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
     console.log(pageSize.value);
     console.log(pageNumber.value);
-  } else {
-    pageSize.value = 10
-    pageNumber.value = 0
-  }
-
   fetchData();
 });
 const isFirst = computed(() => {
@@ -84,26 +78,34 @@ const fetchData = async () => {
 };
 
 watch([pageSize, pageNumber], () => {
-  localStorage.setItem("pageSize", pageSize.value);
-  localStorage.setItem("pageNumber", pageNumber.value);
-  console.log(pageSize.value)
-  console.log(pageNumber.value)
+  sessionStorage.setItem("pageSize", pageSize.value);
+  sessionStorage.setItem("pageNumber", pageNumber.value);
+  console.log(pageSize.value);
+  console.log(pageNumber.value);
   fetchData();
 });
 const filterBrandR = ref(null);
 const directionR = ref(null);
-watch([filterBrandR, directionR , pageSize], () => {
-
+watch([filterBrandR, directionR], () => {
+  if(initialLoadDone.value){
   console.log("reset");
   pageNumber.value = 0;
-  localStorage.removeItem("pageSize")
-  localStorage.removeItem("pageNumber")
-  // localStorage.setItem("pageSize" , 10);
-  // localStorage.setItem("pageNumber", 0);
-  // fetchData();
+  // // sessionStorage.setItem("pageSize")
+  // sessionStorage.setItem("pageNumber", 0);
+  }
 });
-
-
+watch(pageSize,() => {
+  if (!pageSizeWatchInitialized) {
+    pageSizeWatchInitialized = true;
+    return;
+  }
+  console.log('watch pageSize')
+  // if (newVal !== oldVal) {
+  //   console.log("newVal: " + newVal)
+  //   console.log("oldVal: " + oldVal)
+    pageNumber.value = 0;
+  // }
+});
 
 // onMounted(async () => {
 //   try {
@@ -125,10 +127,10 @@ watch([filterBrandR, directionR , pageSize], () => {
 watchEffect(() => {
   // console.log("pageNumber.value:", pageNumber.value);
   // console.log("computedPageNumberArr:", computedPageNumberArr.value);
-  const pageNumberLocal = localStorage.getItem("pageNumber");
-  const pageSizeLocal = localStorage.getItem("pageSize");
-  console.log("pageSizeLocal: " + pageSizeLocal);
-  console.log("pageNumberLocal: " + pageNumberLocal);
+  const pageNumberSession = sessionStorage.getItem("pageNumber");
+  const pageSizeSession = sessionStorage.getItem("pageSize");
+  console.log("pageNumberSession: " + pageNumberSession);
+  console.log("pageSizeSession: " + pageSizeSession);
 });
 
 const isSuccess = ref(
@@ -252,7 +254,6 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
   <div class="pl-10 pr-10 pt-10 flex justify-between">
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
-        @click="savePreviousPath"
         class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
       >
         Add Sale Item
@@ -264,7 +265,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
       <span class="ml-2">
         <select
           class="bg-gray-500 p-2 border itbms-page-size"
-          v-model="pageSize"
+          v-model.number="pageSize"
         >
           <option :value="5">5</option>
           <option :value="10">10</option>
