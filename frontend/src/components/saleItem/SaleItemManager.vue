@@ -136,36 +136,6 @@ const isSuccess = ref(
     !route.query.alert404
 );
 
-// const filterSaleItemByBrand = async (filterBrand) => {
-//   try {
-//     if (!filterBrand || filterBrand.length === 0) {
-//       saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
-//     } else {
-//     saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}`)
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
-// const sortSaleItemByBrand = async (direction) => {
-//   try {
-//     sortDirection.value = direction;
-
-//     if (direction === 'default') {
-
-//       saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items`);
-//     } else {
-
-//       saleItem.value = await getItems(
-//         `${import.meta.env.VITE_APP_URL}/v2/sale-items?sortField=brand.name&sortDirection=${direction}`
-//       );
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
 const filterAndSortSaleItem = async (filterBrand, direction) => {
   filterBrandR.value = filterBrand;
   directionR.value = direction;
