@@ -249,7 +249,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
       </template>
     </AlertMessageModel>
   </div>
-  <div class="pl-10 pr-10 pt-10 flex justify-between">
+  <div class="pl-10 pr-10 pt-10 m-0 flex justify-between">
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
         class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"

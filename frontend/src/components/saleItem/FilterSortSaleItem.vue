@@ -41,13 +41,13 @@ const setFilterSortSaleItems = (brands, direction) => {
 </script>
 
 <template>
-  <div class="relative top-10 flex items-center justify-between px-10 pt-5">
-    <div class="w-[70%] rounded-lg shadow-md mr-2">
+  <div class="relative top-10 flex items-center justify-between px-10 mb-5">
+    <div class="w-[70%] h-full rounded-lg mr-2">
       <div
-        class="w-full flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0"
+        class="w-full flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0"
       >
         <div
-          class="flex flex-wrap items-center gap-2 w-full h-[90px] sm:w-[75%] p-2 border border-gray-300 bg-white rounded-lg shadow-sm"
+          class="flex flex-wrap items-center gap-2 w-full sm:w-[75%] p-2 py-5 border border-gray-300 bg-white rounded-l-lg"
         >
           <div
             v-for="(brand, index) in filterBrand"
@@ -74,10 +74,10 @@ const setFilterSortSaleItems = (brands, direction) => {
           </div>
         </div>
 
-        <div class="flex items-center gap-4 mr-5">
+        <div class="flex">
           <button
             @click="isDropFilterBrand = !isDropFilterBrand"
-            class="flex items-center justify-center bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 focus:outline-none"
+            class="flex items-center justify-center bg-blue-500 border border-gray-300 text-white px-4 py-2 hover:bg-blue-600 focus:outline-none"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -88,11 +88,11 @@ const setFilterSortSaleItems = (brands, direction) => {
             >
               <path fill="currentColor" d="m12 15l-5-5h10z"></path>
             </svg>
-            <span class="ml-2">Filter</span>
+            <span class="">Filter</span>
           </button>
           <button
             @click="clearFilterBrand"
-            class="bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 focus:outline-none"
+            class="bg-red-500 text-white px-4 py-2 border border-gray-300 hover:bg-red-600 focus:outline-none rounded-r-lg"
           >
             Clear
           </button>
@@ -101,7 +101,7 @@ const setFilterSortSaleItems = (brands, direction) => {
 
       <div
         v-show="isDropFilterBrand"
-        class="w-[67%] absolute bg-white border border-gray-300 rounded-lg p-5 shadow-md"
+        class="w-[50.3%] absolute bg-white border border-gray-300 p-5 shadow-md"
       >
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div
@@ -124,7 +124,7 @@ const setFilterSortSaleItems = (brands, direction) => {
       </div>
     </div>
 
-    <div class="absolute right-20 top-10 flex items-center space-x-2 justify-end">
+    <div class="absolute right-10 top- flex items-center space-x-2 justify-end">
       <!-- <span class="text-sm font-medium text-gray-700">Sort Brand : </span> -->
       <div
         class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
