@@ -41,10 +41,10 @@ const setFilterSortSaleItems = (brands, direction) => {
 </script>
 
 <template>
-  <div class="relative flex items-center justify-between px-10 pt-5">
+  <div class="relative top-10 flex items-center justify-between px-10 pt-5">
     <div class="w-[80%] rounded-lg shadow-md mr-2">
       <div
-        class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0"
+        class="w-full flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0"
       >
         <div
           class="flex flex-wrap items-center gap-2 w-full h-[90px] sm:w-[75%] p-2 border border-gray-300 bg-white rounded-lg shadow-sm"
@@ -101,7 +101,7 @@ const setFilterSortSaleItems = (brands, direction) => {
 
       <div
         v-show="isDropFilterBrand"
-        class="bg-white border border-gray-300 rounded-lg p-4 shadow-md"
+        class="w-[77%] absolute bg-white border border-gray-300 rounded-lg p-5 shadow-md"
       >
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div
