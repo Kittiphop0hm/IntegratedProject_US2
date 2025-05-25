@@ -178,6 +178,7 @@ const editBrand = async () => {
                             v-model.trim="brand.name"
                             id="brandName" 
                             @blur="validateBrandName"
+            
                             type="text" 
                             placeholder="Enter brand name" 
                             class="itbms-name input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
@@ -190,6 +191,7 @@ const editBrand = async () => {
                             <input 
                             v-model.trim="brand.websiteUrl"
                             @blur="validateBrandUrl"
+                    
                             id="websiteUrl" 
                             type="text" 
                             placeholder="Enter website URL" 
@@ -208,6 +210,7 @@ const editBrand = async () => {
                             <input 
                             v-model.trim="brand.countryOfOrigin"
                             @blur="validateBrandCountry"
+                            
                             id="country" 
                             type="text" 
                             placeholder="Enter country of origin" 
@@ -221,7 +224,7 @@ const editBrand = async () => {
                                 v-show="isAdd"
                                 type="submit"
                                 :disabled="!enableAddButton" 
-                                :class="!enableAddButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
+                                :class="!enableAddButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg cursor-not-allowed' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
                                 >
                                 Save
                             </button>

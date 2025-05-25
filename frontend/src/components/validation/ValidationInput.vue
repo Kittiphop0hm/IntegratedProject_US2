@@ -82,6 +82,7 @@ watch(() => props.brandCountry, (brandCountry) => {
         emit('massageValidate', brandNameErrorMassage.value, brandUrlErrorMassage.value, brandCountryErrorMassage.value)
     }
 })
+
 </script>
 
 <template>
