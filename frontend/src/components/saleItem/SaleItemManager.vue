@@ -191,6 +191,8 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
         saleItem.value = res.content;
       }
     }
+    console.log(saleItem.value);
+    
   } catch (err) {
     console.log(err);
   }
