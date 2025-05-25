@@ -8,23 +8,21 @@ import SaleItemDelete from "../model/DeletePopupModel.vue";
 import { useRouter, useRoute } from "vue-router";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
-import FilterSaleItem from "./FilterSaleItem.vue";
+import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SortSaleItemByBrandname from "./SortSaleItemByBrandName.vue";
 
-const sortDirection = ref('default')
+const sortDirection = ref("default");
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
 
-
-
 onMounted(async () => {
   try {
-    saleItems.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
+    saleItems.value = await getItems(
+      `${import.meta.env.VITE_APP_URL}/v1/sale-items`
+    );
     console.log(saleItems.value);
-    
-    
   } catch (err) {
     console.error("Error fetching sale items:", err);
   }
@@ -71,7 +69,7 @@ const handledelete = (id) => {
   // selectedBrandId.value = id;
   // selectedBrandName.value = brandName;
   // console.log("selectedBrandId.value", selectedBrandId.value);
-};  
+};
 // const formattedPrice = computed(() =>
 //   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
 // );
@@ -123,65 +121,66 @@ const handledelete = (id) => {
       </router-link>
     </div>
 
-    <div >
-      
-      <div v-show="saleItems.length === 0"  class="p-5 w-full border flex justify-center items-center">
-          no sale item
-
+    <div>
+      <div
+        v-show="saleItems.length === 0"
+        class="p-5 w-full border flex justify-center items-center"
+      >
+        no sale item
       </div>
-    <ListTableModel :items="saleItems">
-      <template #listItem="{ yourItem }">
-        <td class="border px-2 py-1 itbms-id">
-          {{ yourItem.id ?? "-" }}</td>
-        <td class="border px-2 py-1 itbms-brand">
-          {{ yourItem.brandName ?? "-" }}
-        </td>
-        <td class="border px-2 py-1 itbms-model">
-          {{ yourItem.model ?? "-" }}
-        </td>
-        <td class="border px-2 py-1 itbms-ramGb">
-          {{ yourItem.ramGb ?? "-" }}
-        </td>
-        <td class="border px-2 py-1 itbms-storageGb">
-          {{ yourItem.storageGb ?? "-" }}
-        </td>
-        <td class="border px-2 py-1 itbms-color">
-          {{ yourItem.color ?? "-" }}
-        </td>
-        <td class="border px-2 py-1 itbms-price">
-          {{ yourItem.price.toLocaleString() ?? "-" }}
-        </td>
-      </template>
+      <ListTableModel :items="saleItems">
+        <template #listItem="{ yourItem }">
+          <td class="border px-2 py-1 itbms-id">
+            {{ yourItem.id ?? "-" }}
+          </td>
+          <td class="border px-2 py-1 itbms-brand">
+            {{ yourItem.brandName ?? "-" }}
+          </td>
+          <td class="border px-2 py-1 itbms-model">
+            {{ yourItem.model ?? "-" }}
+          </td>
+          <td class="border px-2 py-1 itbms-ramGb">
+            {{ yourItem.ramGb ?? "-" }}
+          </td>
+          <td class="border px-2 py-1 itbms-storageGb">
+            {{ yourItem.storageGb ?? "-" }}
+          </td>
+          <td class="border px-2 py-1 itbms-color">
+            {{ yourItem.color ?? "-" }}
+          </td>
+          <td class="border px-2 py-1 itbms-price">
+            {{ yourItem.price.toLocaleString() ?? "-" }}
+          </td>
+        </template>
 
-      <template #action="{ yourItem }">
-        <td class="border px-2 py-1 text-center">
-          <router-link
-            :to="{ name: 'SaleItemEdit', params: { id: yourItem.id } }"
-            class="bg-yellow-400 text-white px-2 py-1 rounded mr-2 itbms-edit-button"
-          >
-            Edit
-          </router-link>
-          <button
-            class="bg-red-500 text-white px-2 py-1 rounded itbms-delete-button"
-            @click="handledelete(yourItem.id)"
-          >
-            Delete
-          </button>
-        </td>
-        
-      </template>
-    </ListTableModel>
-    <DeletePopupModel
-      v-if="isDelete"
-      @cancel-delete="cancelDelete"
-      @delete-sale-item="deleteSaleItem(deleteId)"
-    >
-      <template #message>
-        <span class="itbms-message font-semibold">
-          Do you want to delete this sale item?
-        </span>
-      </template>
-    </DeletePopupModel>
+        <template #action="{ yourItem }">
+          <td class="border px-2 py-1 text-center">
+            <router-link
+              :to="{ name: 'SaleItemEdit', params: { id: yourItem.id } }"
+              class="bg-yellow-400 text-white px-2 py-1 rounded mr-2 itbms-edit-button"
+            >
+              Edit
+            </router-link>
+            <button
+              class="bg-red-500 text-white px-2 py-1 rounded itbms-delete-button"
+              @click="handledelete(yourItem.id)"
+            >
+              Delete
+            </button>
+          </td>
+        </template>
+      </ListTableModel>
+      <DeletePopupModel
+        v-if="isDelete"
+        @cancel-delete="cancelDelete"
+        @delete-sale-item="deleteSaleItem(deleteId)"
+      >
+        <template #message>
+          <span class="itbms-message font-semibold">
+            Do you want to delete this sale item?
+          </span>
+        </template>
+      </DeletePopupModel>
     </div>
   </div>
 </template>

@@ -4,7 +4,7 @@ import { ref, onMounted, computed, watchEffect, watch } from "vue";
 import { getItems } from "../../libs/fetchUtil.js";
 import { useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
-import FilterSaleItem from "./FilterSaleItem.vue";
+import FilterSaleItem from "./FilterSortSaleItem.vue";
 
 const route = useRoute();
 const saleItem = ref([]);
@@ -21,10 +21,10 @@ const pageNumber = ref();
 onMounted(() => {
   const pageNumberSession = sessionStorage.getItem("pageNumber");
   const pageSizeSession = sessionStorage.getItem("pageSize");
-    pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
-    pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
-    console.log(pageSize.value);
-    console.log(pageNumber.value);
+  pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
+  pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
+  console.log(pageSize.value);
+  console.log(pageNumber.value);
   fetchData();
 });
 const isFirst = computed(() => {
@@ -87,23 +87,23 @@ watch([pageSize, pageNumber], () => {
 const filterBrandR = ref(null);
 const directionR = ref(null);
 watch([filterBrandR, directionR], () => {
-  if(initialLoadDone.value){
-  console.log("reset");
-  pageNumber.value = 0;
-  // // sessionStorage.setItem("pageSize")
-  // sessionStorage.setItem("pageNumber", 0);
+  if (initialLoadDone.value) {
+    console.log("reset");
+    pageNumber.value = 0;
+    // // sessionStorage.setItem("pageSize")
+    // sessionStorage.setItem("pageNumber", 0);
   }
 });
-watch(pageSize,() => {
+watch(pageSize, () => {
   if (!pageSizeWatchInitialized) {
     pageSizeWatchInitialized = true;
     return;
   }
-  console.log('watch pageSize')
+  console.log("watch pageSize");
   // if (newVal !== oldVal) {
   //   console.log("newVal: " + newVal)
   //   console.log("oldVal: " + oldVal)
-    pageNumber.value = 0;
+  pageNumber.value = 0;
   // }
 });
 
