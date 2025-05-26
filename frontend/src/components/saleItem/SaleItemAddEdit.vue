@@ -128,7 +128,7 @@ async function submitForm() {
       );
       isStatus.value = true
       saleItem.value = { ...initSaleItem };
-      router.push({ path: previousPath , query: { alertAdd: "true" } });
+      router.push({ path: '/sale-items' , query: { alertAdd: "true" } });
     } catch (error) {
       console.log(error);
     }
@@ -183,7 +183,7 @@ console.log("previousPath:", previousPath);
   {{ saleItem.storageGb }}
   {{ saleItem.color }}
   {{ saleItem.quantity }} -->
-  <p v-show="isStatus" class="itbms-message">The sale item has been successfully added.</p>
+  <!-- <p v-show="isStatus" class="itbms-message">The sale item has been successfully added.</p> -->
   <Navbar />
   <!-- {{ brands ? brands: "Nothing in brandList" }} -->
   <form @submit.prevent="submitForm">
