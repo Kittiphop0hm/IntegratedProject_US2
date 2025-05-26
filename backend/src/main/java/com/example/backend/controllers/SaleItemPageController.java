@@ -29,7 +29,7 @@ public class SaleItemPageController {
     public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
             @RequestParam(defaultValue = "") List<String> filterBrands,
             @RequestParam(defaultValue = "") String sortField,
-            @RequestParam(defaultValue = "asc") String sortDirection,
+            @RequestParam(defaultValue = "") String sortDirection,
             @RequestParam Integer page ,
             @RequestParam(defaultValue = "10")  Integer size
     ) {

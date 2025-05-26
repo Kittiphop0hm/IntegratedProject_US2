@@ -105,6 +105,7 @@ const isActive = computed(() => {
   );
 });
 
+const isStatus = ref(false)
 async function submitForm() {
   isSubmitted.value = true;
   if (Number(route.params.id)) {
@@ -125,6 +126,7 @@ async function submitForm() {
         `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
         saleItem.value
       );
+      isStatus.value = true
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath , query: { alertAdd: "true" } });
     } catch (error) {
@@ -181,7 +183,7 @@ console.log("previousPath:", previousPath);
   {{ saleItem.storageGb }}
   {{ saleItem.color }}
   {{ saleItem.quantity }} -->
-
+  <p v-show="isStatus" class="itbms-message">The sale item has been successfully added.</p>
   <Navbar />
   <!-- {{ brands ? brands: "Nothing in brandList" }} -->
   <form @submit.prevent="submitForm">

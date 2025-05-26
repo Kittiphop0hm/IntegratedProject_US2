@@ -108,15 +108,23 @@ public class SaleItemService {
     public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection , Integer page , Integer size) {
         Page<SaleItem> saleItems;
         if (filterBrands.isEmpty()) {
-            if (sortField.isEmpty()) {
+            System.out.println(sortDirection);
+            if (sortField.isEmpty() && sortDirection.isEmpty()) {
                 saleItems = pageRepository.findAllByOrderByCreatedOn(PageRequest.of(page,size));
-            }   else if (sortDirection.equalsIgnoreCase("asc")) {
+                System.out.println("no filter createOn");
+            }   else if (sortDirection.equalsIgnoreCase("asc") || sortDirection.isEmpty()) {
+                System.out.println("no filter Asc");
                 saleItems = pageRepository.findAllByOrderByBrandNameAsc(PageRequest.of(page,size));
             }   else {
                 saleItems = pageRepository.findAllByOrderByBrandNameDesc(PageRequest.of(page,size));
             }
         } else {
-            if (sortDirection.equalsIgnoreCase("asc")) {
+            System.out.println(sortDirection);
+            if (sortField.isEmpty() && sortDirection.isEmpty()) {
+                System.out.println("filter createOn");
+                saleItems = pageRepository.findByBrand_NameInOrderByBrand_CreatedOn(filterBrands, PageRequest.of(page,size));
+            } else if (sortDirection.equalsIgnoreCase("asc") || sortDirection.isEmpty()) {
+                System.out.println("filter Asc");
                 saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands , PageRequest.of(page,size));
             } else {
                 saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands , PageRequest.of(page,size));

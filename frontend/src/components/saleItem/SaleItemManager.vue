@@ -165,17 +165,16 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
   console.log(!direction ? "empty" : "not empty");
   console.log(pageSize.value);
   try {
-    // const res = await getItems(
-    //   `${
-    //     import.meta.env.VITE_APP_URL
-    //   }/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`
-    // );
-    // saleItem.value = res.content;
-    // console.log(res.content);
-    // console.log(saleItem.value);
-    // console.log(res);
-    if (filterBrand || filterBrand.length >= 0) {
-      if (direction === "default") {
+    if (filterBrand.length > 0) {
+      console.log("filterBrand is not empty");
+      
+      if (!direction || direction.length === 0) {
+        const res = await getItems(
+          `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`
+        );
+        saleItem.value = res.content; 
+      }
+      else if (direction === "default") {
         const res = await getItems(
           `${
             import.meta.env.VITE_APP_URL
@@ -197,7 +196,9 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
 
       }
     } else {
+      console.log("filterBrand is empty");
       if (direction === "default") {
+        console.log("no filter Default");
         const res = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${
             pageNumber.value
@@ -206,17 +207,17 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
         saleItem.value = res.content;
 
       } else {
-        const res = await getItems(
-          `${
-            import.meta.env.VITE_APP_URL
-          }/v2/sale-items?sortField=brand.name&sortDirection=${direction}&page=${
-            pageNumber.value
-          }&size=${pageSize.value}`
-        );
+        console.log("no filter ASC DESC");
+        console.log(direction);
+        console.log(directionR.value);
+        
+        const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortDirection=${direction}`);
         saleItem.value = res.content;
 
       }
     }
+    console.log(saleItem.value);
+    
   } catch (err) {
     console.log(err);
   }
