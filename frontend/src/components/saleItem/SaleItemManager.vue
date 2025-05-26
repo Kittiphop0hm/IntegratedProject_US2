@@ -4,7 +4,7 @@ import { ref, onMounted, computed, watchEffect, watch } from "vue";
 import { getItems } from "../../libs/fetchUtil.js";
 import { useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
-import FilterSaleItem from "./FilterSaleItem.vue";
+import FilterSaleItem from "./FilterSortSaleItem.vue";
 
 const route = useRoute();
 const saleItem = ref([]);
@@ -21,10 +21,10 @@ const pageNumber = ref();
 onMounted(() => {
   const pageNumberSession = sessionStorage.getItem("pageNumber");
   const pageSizeSession = sessionStorage.getItem("pageSize");
-    pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
-    pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
-    console.log(pageSize.value);
-    console.log(pageNumber.value);
+  pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
+  pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
+  console.log(pageSize.value);
+  console.log(pageNumber.value);
   fetchData();
 });
 const isFirst = computed(() => {
@@ -85,26 +85,24 @@ watch([pageSize, pageNumber], () => {
   fetchData();
   
 });
-const filterBrandR = ref(null);
-const directionR = ref(null);
+const filterBrandR = ref("");
+const directionR = ref("");
 watch([filterBrandR, directionR], () => {
-  if(initialLoadDone.value){
   console.log("reset");
   pageNumber.value = 0;
   // // sessionStorage.setItem("pageSize")
   // sessionStorage.setItem("pageNumber", 0);
-  }
 });
-watch(pageSize,() => {
+watch(pageSize, () => {
   if (!pageSizeWatchInitialized) {
     pageSizeWatchInitialized = true;
     return;
   }
-  console.log('watch pageSize')
+  console.log("watch pageSize");
   // if (newVal !== oldVal) {
   //   console.log("newVal: " + newVal)
   //   console.log("oldVal: " + oldVal)
-    pageNumber.value = 0;
+  pageNumber.value = 0;
   // }
 });
 
@@ -138,36 +136,6 @@ const isSuccess = ref(
   Boolean(route.query.alertAdd || route.query.alertDelete) &&
     !route.query.alert404
 );
-
-// const filterSaleItemByBrand = async (filterBrand) => {
-//   try {
-//     if (!filterBrand || filterBrand.length === 0) {
-//       saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/sale-items`);
-//     } else {
-//     saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}`)
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-
-// const sortSaleItemByBrand = async (direction) => {
-//   try {
-//     sortDirection.value = direction;
-
-//     if (direction === 'default') {
-
-//       saleItem.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items`);
-//     } else {
-
-//       saleItem.value = await getItems(
-//         `${import.meta.env.VITE_APP_URL}/v2/sale-items?sortField=brand.name&sortDirection=${direction}`
-//       );
-//     }
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
 
 const filterAndSortSaleItem = async (filterBrand, direction) => {
   filterBrandR.value = filterBrand;
@@ -252,7 +220,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
       </template>
     </AlertMessageModel>
   </div>
-  <div class="pl-10 pr-10 pt-10 flex justify-between">
+  <div class="pl-10 pr-10 pt-10 m-0 flex justify-between">
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
         class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
