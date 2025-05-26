@@ -15,7 +15,9 @@ public interface SaleItemPageRepository extends JpaRepository<SaleItem, Integer>
 
     Page<SaleItem> findByBrand_NameInOrderByBrand_NameDesc(List<String> brands , Pageable pageable);
 
-    Page<SaleItem> findByBrand_NameInOrderByCreatedOnAsc(List<String> brands, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInOrderByCreatedOn(List<String> brands, Pageable pageable);
+
+    Page<SaleItem> findByBrand_NameInOrderByBrand_CreatedOn(List<String> brands, Pageable pageable);
 
     Page<SaleItem> findAllByOrderByBrandNameAsc(Pageable pageable);
 
