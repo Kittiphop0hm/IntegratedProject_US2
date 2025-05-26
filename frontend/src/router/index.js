@@ -65,10 +65,10 @@ const router = createRouter({
 });
 
 router.beforeEach( (to,form) => {
-  console.log("form.name: " + form.name);
-  console.log("to.name: " + to.name);
+  // console.log("form.name: " + form.name);
+  // console.log("to.name: " + to.name);
   if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
-    console.log("router.beforeEach");
+    // console.log("router.beforeEach");
     sessionStorage.removeItem("pageSize");
     sessionStorage.removeItem("pageNumber");
   }
