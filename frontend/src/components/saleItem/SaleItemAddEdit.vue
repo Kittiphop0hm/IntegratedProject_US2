@@ -128,14 +128,14 @@ async function submitForm() {
       );
       isStatus.value = true
       saleItem.value = { ...initSaleItem };
-      router.push({ path: '/sale-items' , query: { alertAdd: "true" } });
+      router.push({ path: previousPath , query: { alertAdd: "true" } });
     } catch (error) {
       console.log(error);
     }
   }
 }
 
-const previousPath =   localStorage.getItem("previousPath");
+const previousPath = localStorage.getItem("previousPath");
 console.log("previousPath:", previousPath);
 </script>
 
