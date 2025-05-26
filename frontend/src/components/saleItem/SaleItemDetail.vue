@@ -117,9 +117,12 @@ console.log(typeof Boolean(route.query.alert));
       <span class="itbms-quantity-unit">units</span></template
     >
     <template #button1>
-      <router-link :to="{ name: 'SaleItemEdit' }">
-        <span class="itbms-edit-button text-white">Edit</span>
-      </router-link>
+     <router-link :to="{ name: 'SaleItemEdit' }">
+  <span class="itbms-edit-button text-white bg-blue-500 hover:bg-blue-700  px-7 py-3 rounded-xl ">
+    Edit
+  </span>
+</router-link>
+
     </template>
     <template #button2>
       <span @click="isDelete = !isDelete" class="itbms-delete-button text-white"

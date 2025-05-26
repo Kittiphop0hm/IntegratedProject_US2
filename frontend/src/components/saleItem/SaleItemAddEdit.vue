@@ -100,7 +100,7 @@ if (field === 'color') {
 if (field === 'quantity') {
   validationMessages.value.quantity =
     value !== null && value !== '' && (
-      !Number.isInteger(value) || value < 0
+      !Number.isInteger(value) || value <= 0
     )
       ? 'Quantity must be a non-negative integer.'
       : '';
@@ -430,7 +430,7 @@ console.log("previousPath:", previousPath);
           type="text"
           class="itbms-color ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="Color"
-           @input="validateField('color')"
+            @blur="validateField('color')"
         />
         <p v-if="validationMessages.color" class="text-red-500 text-sm ml-35" >
     {{ validationMessages.color }}
@@ -442,17 +442,18 @@ console.log("previousPath:", previousPath);
           type="number"
           class="itbms-quantity ml-7 border rounded-md px-2 py-1 w-70"
           placeholder="Quantity"
-          @input="validateField('quantity')"
+           @blur="validateField('quantity')"
         />
           <p v-if="validationMessages.quantity" class="text-red-500 text-sm ml-7" >
     {{ validationMessages.quantity }}
   </p>
       </template>
       <template #button1>
+        
         <button
           type="submit"
           :disabled="!isActive || !isUpdated || isSubmitted"
-          class="itbms-save-button text-white "
+          class="itbms-save-button text-white  rounded-md px-4 py-2 "
         >
           Save
         </button>

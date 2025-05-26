@@ -89,8 +89,8 @@ const props = defineProps({
         </p>
         <div class="">
         <button 
-        class="mr-3 px-4 py-2 text-white rounded-md mt-3"
-        :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-gray-500 cursor-not-allowed opacity-75': !isActive  || !isUpdated}"
+        class="mr-3 rounded-md mt-3 text-white"
+        :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-gray-500 opacity-75 cursor-not-allowed': !isActive  || !isUpdated}"
         >
         <slot name="button1">Input Name Button1</slot>
         </button
