@@ -9,9 +9,6 @@ const props = defineProps({
         required: true
     }
 })
-function savePreviousPath() {
-  localStorage.setItem("isDetail", true);
-}
 </script>
 
 <template>

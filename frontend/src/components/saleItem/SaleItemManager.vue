@@ -154,6 +154,8 @@ const isSuccess = ref(
     !route.query.alert404
 );
 
+
+
 const filterAndSortSaleItem = async (filterBrand, direction) => {
   // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
   // let newDirection = directionSession ? directionSession : direction;
@@ -222,6 +224,11 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
     console.log(err);
   }
 };
+
+function savePreviousPath() {
+  const previousPath = route.fullPath;
+  localStorage.setItem("previousPath", previousPath);
+}
 </script>
 <template>
   <div
@@ -249,6 +256,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
   <div class="pl-10 pr-10 pt-10 m-0 flex justify-between">
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
+      @click="savePreviousPath"
         class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
       >
         Add Sale Item
