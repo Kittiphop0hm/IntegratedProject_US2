@@ -18,14 +18,26 @@ const pageNumber = ref();
 // const pageSize = computed(() => {
 //   return 10 / valueSelected.value;
 // });
+const filterBrandSession = sessionStorage.getItem("filterBrand");
+const directionSession = sessionStorage.getItem("direction");
+const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
+const directionR = ref(directionSession ? directionSession : '');
 onMounted(() => {
   const pageNumberSession = sessionStorage.getItem("pageNumber");
   const pageSizeSession = sessionStorage.getItem("pageSize");
+  // const filterBrandSession = sessionStorage.getItem("filterBrand");
+  // sessionStorage.getItem("direction");
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
   pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
-  console.log(pageSize.value);
-  console.log(pageNumber.value);
-  fetchData();
+  // filterBrandR.value = filterBrandSession ? JSON.parse(filterBrandSession) : [];
+  // directionR.value = directionSession ? directionSession : '';
+  // console.log(pageSize.value);
+  // console.log(pageNumber.value);
+  console.log("-------------- OnMounted OnMounted OnMounted -------------- ");
+  console.log("filterBrandR.value: " + filterBrandR.value);
+  console.log("directionR.value: " + directionR.value);
+  console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
+  // fetchData();
 });
 const isFirst = computed(() => {
   return pageNumber.value === 0;
@@ -65,10 +77,12 @@ const computedPageNumberArr = computed(() => {
 const fetchData = async () => {
   try {
     const res = await getItems(
-      `${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${
-        pageNumber.value
-      }&size=${pageSize.value}`
-    );
+          `${
+            import.meta.env.VITE_APP_URL
+          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortField=brand.name&sortDirection=${directionR.value}&page=${
+            pageNumber.value
+          }&size=${pageSize.value}`
+        );
     pageObj.value = res;
     // console.log("pageObj.value:", pageObj.value);
     saleItem.value = res.content;
@@ -80,14 +94,14 @@ const fetchData = async () => {
 watch([pageSize, pageNumber], () => {
   sessionStorage.setItem("pageSize", pageSize.value);
   sessionStorage.setItem("pageNumber", pageNumber.value);
-  console.log(pageSize.value);
-  console.log(pageNumber.value);
+  // console.log(pageSize.value);
+  // console.log(pageNumber.value);
   fetchData();
   
 });
-const filterBrandR = ref("");
-const directionR = ref("");
 watch([filterBrandR, directionR], () => {
+  sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
+  sessionStorage.setItem("direction", directionR.value);
   console.log("reset");
   pageNumber.value = 0;
   // // sessionStorage.setItem("pageSize")
@@ -126,10 +140,14 @@ watch(pageSize, () => {
 watchEffect(() => {
   // console.log("pageNumber.value:", pageNumber.value);
   // console.log("computedPageNumberArr:", computedPageNumberArr.value);
+  const filterBrandSession = sessionStorage.getItem("filterBrand");
+  const directionSession = sessionStorage.getItem("direction");
   const pageNumberSession = sessionStorage.getItem("pageNumber");
   const pageSizeSession = sessionStorage.getItem("pageSize");
-  console.log("pageNumberSession: " + pageNumberSession);
-  console.log("pageSizeSession: " + pageSizeSession);
+  // console.log("pageNumberSession: " + pageNumberSession);
+  // console.log("pageSizeSession: " + pageSizeSession);
+  console.log("filterBrandSession: " + filterBrandSession);
+  console.log("directionSession: " + directionSession);
 });
 
 const isSuccess = ref(
@@ -138,9 +156,13 @@ const isSuccess = ref(
 );
 
 const filterAndSortSaleItem = async (filterBrand, direction) => {
+  // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
+  // let newDirection = directionSession ? directionSession : direction;
   filterBrandR.value = filterBrand;
-  directionR.value = direction;
-  console.log(filterBrand);
+  directionR.value =direction;
+  console.log("---------------- filterAndSortSaleItem In Manager.vue ----------------")   
+  console.log("filterBrand: " + filterBrand);
+  console.log("direction: " + direction);
   console.log(!direction ? "empty" : "not empty");
   console.log(pageSize.value);
   try {
@@ -163,6 +185,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
           }&size=${pageSize.value}`
         );
         saleItem.value = res.content;
+
       } else {
         const res = await getItems(
           `${
@@ -172,6 +195,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
           }&size=${pageSize.value}`
         );
         saleItem.value = res.content;
+
       }
     } else {
       if (direction === "default") {
@@ -181,6 +205,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
           }&size=${pageSize.value}`
         );
         saleItem.value = res.content;
+
       } else {
         const res = await getItems(
           `${
@@ -190,6 +215,7 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
           }&size=${pageSize.value}`
         );
         saleItem.value = res.content;
+
       }
     }
   } catch (err) {
@@ -244,7 +270,9 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
     </div>
   </div>
 
-  <FilterSaleItem
+  <FilterSaleItem 
+    :brands="filterBrandR"
+    :sortDirection="directionR"
     @filterAndSortSaleItem="filterAndSortSaleItem"
   ></FilterSaleItem>
   <SaleItemGallery :saleItems="saleItem"></SaleItemGallery>
