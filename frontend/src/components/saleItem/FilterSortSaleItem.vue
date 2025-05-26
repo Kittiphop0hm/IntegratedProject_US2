@@ -1,17 +1,39 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref , watch } from "vue";
 import { getItems } from "@/libs/fetchUtil";
+
+const props = defineProps({
+  brands: Array,
+  sortDirection: String
+});
+const filterBrand = ref(props.brands);
+const sortDirection = ref(props.sortDirection);
+console.log("FilterSortSaleItem.vue - props.brands:", props.brands);
+console.log("FilterSortSaleItem.vue - props.sortDirection:", props.sortDirection);
+console.log("FilterSortSaleItem.vue - filterBrand:", filterBrand.value);
+console.log("FilterSortSaleItem.vue - sortDirection:", sortDirection.value);
+// watch(
+//   () => [props.brands, props.sortDirection],
+//   ([newBrands, newSortDirection]) => {
+//     console.log('FilterSortSaleItem.vue - watch triggered');
+//     console.log('New brands:', newBrands);
+//     console.log('New sortDirection:', newSortDirection);
+
+//     filterBrand.value = [...newBrands];
+//     sortDirection.value = newSortDirection;
+//   },
+//   { immediate: true }
+// );
+
+
 
 const emit = defineEmits([
   "filterSaleItemByBrand",
   "sortSaleItemByBrand",
   "filterAndSortSaleItem",
 ]);
-const filterBrand = ref([]);
 const isDropFilterBrand = ref(false);
 const brands = ref([]);
-const sortDirection = ref("");
-
 onMounted(async () => {
   try {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
@@ -32,10 +54,18 @@ const deleteBrand = (index) => {
   emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value);
 };
 
+// const setFilterSortSaleItems = (brands, direction) => {
+//   sortDirection.value = direction;
+//   console.log("FilterSortItems");
+//   console.log(sortDirection.value);
+//   console.log(brands);
+//   emit("filterAndSortSaleItem", brands, direction);
+// };
 const setFilterSortSaleItems = (brands, direction) => {
   sortDirection.value = direction;
-  console.log(sortDirection.value);
-  console.log(brands);
+  console.log("----------- FilterSortItems -----------");
+  console.log("Brands:", brands);
+  console.log("Direction:", direction);
   emit("filterAndSortSaleItem", brands, direction);
 };
 </script>
