@@ -83,6 +83,7 @@ watch([pageSize, pageNumber], () => {
   console.log(pageSize.value);
   console.log(pageNumber.value);
   fetchData();
+  
 });
 const filterBrandR = ref(null);
 const directionR = ref(null);
