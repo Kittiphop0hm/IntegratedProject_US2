@@ -67,7 +67,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
   console.log("----------- FilterSortItems -----------");
   console.log("Brands:", brands);
   console.log("Direction:", direction);
-  emit("filterAndSortSaleItem", brands, sortDirection.value, field);
+  emit("filterAndSortSaleItem", brands, direction, field);
 };
 </script>
 
@@ -141,7 +141,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
             class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm"
           >
             <input
-              @change="setFilterSortSaleItems(filterBrand, sortDirection, 'brand.name')"
+              @change="setFilterSortSaleItems(filterBrand, '', '')"
               :id="brand.name"
               type="checkbox"
               :value="brand.name"
