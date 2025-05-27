@@ -67,7 +67,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
   console.log("----------- FilterSortItems -----------");
   console.log("Brands:", brands);
   console.log("Direction:", direction);
-  emit("filterAndSortSaleItem", brands, direction, field);
+  emit("filterAndSortSaleItem", brands, sortDirection.value, field);
 };
 </script>
 
@@ -160,10 +160,10 @@ const setFilterSortSaleItems = (brands, direction, field) => {
         class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
       >
         <button
-          @click="setFilterSortSaleItems(filterBrand, 'default', 'brand.name')"
+          @click="setFilterSortSaleItems(filterBrand, '', '')"
           class="itbms-brand-none px-3 py-2 hover:bg-blue-100 transition"
           :class="
-            sortDirection === 'default'
+            sortDirection === ''
               ? 'bg-blue-500 text-white'
               : 'bg-white text-gray-800'
           "

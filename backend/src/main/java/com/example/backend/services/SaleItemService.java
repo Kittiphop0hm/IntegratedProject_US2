@@ -109,7 +109,7 @@ public class SaleItemService {
         Page<SaleItem> saleItems;
         if (filterBrands.isEmpty()) {
             System.out.println(sortDirection);
-            if (sortField.isEmpty() && sortDirection.isEmpty() ) {
+            if (sortField.isEmpty() && sortDirection.isEmpty()) {
                 saleItems = pageRepository.findAllByOrderByCreatedOn(PageRequest.of(page,size));
                 System.out.println("no filter createOn");
             }   else if (sortDirection.equalsIgnoreCase("asc") || sortDirection.isEmpty()) {
