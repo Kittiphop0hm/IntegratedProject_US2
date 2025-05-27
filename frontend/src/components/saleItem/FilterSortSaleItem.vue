@@ -62,8 +62,12 @@ const deleteBrand = (index) => {
 //   console.log(brands);
 //   emit("filterAndSortSaleItem", brands, direction);
 // };
+const directionActive = ref("");
 const setFilterSortSaleItems = (brands, direction, field) => {
-  sortDirection.value = direction;
+  const directionSession = sessionStorage.getItem("direction");
+  sortDirection.value = directionSession ? directionSession : direction;
+  // sortDirection.value = direction;
+  // directionActive.value = direction;
   console.log("----------- FilterSortItems -----------");
   console.log("Brands:", brands);
   console.log("Direction:", direction);
@@ -141,7 +145,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
             class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm"
           >
             <input
-              @change="setFilterSortSaleItems(filterBrand, '', '')"
+              @change="setFilterSortSaleItems(filterBrand, sortDirection , '')"
               :id="brand.name"
               type="checkbox"
               :value="brand.name"

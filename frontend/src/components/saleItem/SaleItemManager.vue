@@ -166,7 +166,7 @@ watchEffect(() => {
   // console.log("pageNumberSession: " + pageNumberSession);
   // console.log("pageSizeSession: " + pageSizeSession);
   // console.log("filterBrandSession: " + filterBrandSession);
-  // console.log("directionSession: " + directionSession);
+  console.log("directionSession: " + directionSession);
 });
 
 const isSuccess = ref(
@@ -177,6 +177,9 @@ const isSuccess = ref(
 
 
 const filterAndSortSaleItem = async (filterBrand, direction, field) => {
+  console.log("filterAndSortSaleItem called");
+  // console.log("filterBrand: " + filterBrand);
+  console.log("direction: " + direction);
   // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
   // let newDirection = directionSession ? directionSession : direction;
   filterBrandR.value = filterBrand;
@@ -188,11 +191,11 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
   // console.log(!direction ? "empty" : "not empty");
   // console.log(pageSize.value);
   // console.log(field);
-  console.log(filterBrand);
-  console.log(direction);
-  console.log(field);
-  console.log("number" + pageNumber.value);
-  console.log("size" +pageSize.value);
+  // console.log(filterBrand);
+  // console.log(direction);
+  // console.log(field);
+  // console.log("number" + pageNumber.value);
+  // console.log("size" +pageSize.value);
     
   try {
     if (!filterBrand || filterBrand.length === 0) {
@@ -200,16 +203,19 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
         console.log("no filter createTime");
         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}`);
         saleItem.value = res.content;
+        pageObj.value = res;
         // fetchData();
       } else if(direction.toLowerCase() === "asc" || !direction) {
         console.log("no filter ASC");
         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=asc`);
         saleItem.value = res.content;
+        pageObj.value = res;
         // fetchData();
       } else {
         console.log("no filter DESC");
         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=${direction}`);
         saleItem.value = res.content;
+        pageObj.value = res;
         // fetchData();
       }
     } else {
@@ -217,16 +223,19 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
           console.log("filter createTime");
           const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`);
           saleItem.value = res.content;
+          pageObj.value = res;
           // fetchData();
         } else if (direction.toLowerCase() === "asc" || !direction) {
           console.log("filter asc");
           const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=asc`);
           saleItem.value = res.content;
+          pageObj.value = res;
           // fetchData();
         } else {
           console.log("filter DESC");
           const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=${direction}`);
           saleItem.value = res.content;
+          pageObj.value = res;
           // fetchData();
         }
     }
