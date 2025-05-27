@@ -39,6 +39,12 @@ onMounted(() => {
   console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
   // fetchData();
 });
+
+function savePreviousPath() {
+  const previousPath = route.fullPath;
+  localStorage.setItem("previousPath", previousPath);
+}
+
 const isFirst = computed(() => {
   return pageNumber.value === 0;
 });
@@ -156,7 +162,7 @@ const isSuccess = ref(
 
 
 
-const filterAndSortSaleItem = async (filterBrand, direction) => {
+const filterAndSortSaleItem = async (filterBrand, direction, field) => {
   // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
   // let newDirection = directionSession ? directionSession : direction;
   filterBrandR.value = filterBrand;
@@ -166,17 +172,20 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
   console.log("direction: " + direction);
   console.log(!direction ? "empty" : "not empty");
   console.log(pageSize.value);
+  console.log(field);
   try {
     if (filterBrand.length > 0) {
-      console.log("filterBrand is not empty");
-      
-      if (!direction || direction.length === 0) {
+      if (!direction || direction.length === 0 && !field) {
         const res = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`
         );
         saleItem.value = res.content; 
-      }
-      else if (direction === "default") {
+      } else if (!direction && field) {
+        const res = await getItems(
+          `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name`
+        );
+        saleItem.value = res.content; 
+      } else if (direction === "default") {
         const res = await getItems(
           `${
             import.meta.env.VITE_APP_URL
@@ -224,11 +233,6 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
     console.log(err);
   }
 };
-
-function savePreviousPath() {
-  const previousPath = route.fullPath;
-  localStorage.setItem("previousPath", previousPath);
-}
 </script>
 <template>
   <div
