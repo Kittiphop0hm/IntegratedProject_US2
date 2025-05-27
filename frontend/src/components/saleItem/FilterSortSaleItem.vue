@@ -61,7 +61,7 @@ const deleteBrand = (index) => {
 //   console.log(brands);
 //   emit("filterAndSortSaleItem", brands, direction);
 // };
-const setFilterSortSaleItems = (brands, direction) => {
+const setFilterSortSaleItems = (brands, direction, field) => {
   sortDirection.value = direction;
   console.log("----------- FilterSortItems -----------");
   console.log("Brands:", brands);
@@ -140,7 +140,7 @@ const setFilterSortSaleItems = (brands, direction) => {
             class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm"
           >
             <input
-              @change="setFilterSortSaleItems(filterBrand, sortDirection)"
+              @change="setFilterSortSaleItems(filterBrand, sortDirection, 'brand.name')"
               :id="brand.name"
               type="checkbox"
               :value="brand.name"
@@ -159,7 +159,7 @@ const setFilterSortSaleItems = (brands, direction) => {
         class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
       >
         <button
-          @click="setFilterSortSaleItems(filterBrand, 'default')"
+          @click="setFilterSortSaleItems(filterBrand, 'default', 'brand.name')"
           class="itbms-brand-none px-3 py-2 hover:bg-blue-100 transition"
           :class="
             sortDirection === 'default'
@@ -184,7 +184,7 @@ const setFilterSortSaleItems = (brands, direction) => {
           </svg>
         </button>
         <button
-          @click="setFilterSortSaleItems(filterBrand, 'asc')"
+          @click="setFilterSortSaleItems(filterBrand, 'asc', 'brand.name')"
           class="itbms-brand-asc px-3 py-2 hover:bg-blue-100 transition"
           :class="
             sortDirection === 'asc'
@@ -210,7 +210,7 @@ const setFilterSortSaleItems = (brands, direction) => {
         </button>
 
         <button
-          @click="setFilterSortSaleItems(filterBrand, 'desc')"
+          @click="setFilterSortSaleItems(filterBrand, 'desc', 'brand.name')"
           class="itbms-brand-desc px-3 py-2 hover:bg-blue-100 transition"
           :class="
             sortDirection === 'desc'
