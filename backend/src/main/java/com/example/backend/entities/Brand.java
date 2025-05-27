@@ -38,12 +38,14 @@ public class Brand {
     @Column(name = "isActive")
     private Byte isActive;
 
+    @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdOn", nullable = false, insertable = false, updatable = false )
+    @Column(name = "createdOn", nullable = false,insertable = false, updatable = false)
     private Instant createdOn;
 
+    @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false )
+    @Column(name = "updatedOn", nullable = false,insertable = false, updatable = false)
     private Instant updatedOn;
 
     @OneToMany(mappedBy = "brand")

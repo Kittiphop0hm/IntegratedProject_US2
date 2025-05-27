@@ -381,6 +381,7 @@ console.log("previousPath:", previousPath);
           type="text"
           class="itbms-description mt-1 border rounded-md px-2 py-1 w-118"
           placeholder="Description"
+          
            :required="true"
            @blur="validateField('description')"
         ></textarea>
