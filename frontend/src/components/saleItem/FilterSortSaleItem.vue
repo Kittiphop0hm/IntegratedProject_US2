@@ -135,7 +135,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
       </div>
 
       <div
-        v-show="!isDropFilterBrand"
+        v-show="isDropFilterBrand"
         class="w-[50.3%] bg-white border border-gray-300 p-5 shadow-md"
       >
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

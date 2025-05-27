@@ -52,9 +52,9 @@ const validateBrandName = () => {
 }
 
 const validateBrandUrl = () => {
-    if (!brand.value.websiteUrl || brand.value.websiteUrl.toLowerCase().includes('www') || brand.value.websiteUrl.toLowerCase().includes('http') || brand.value.websiteUrl.toLowerCase().includes('https')) {
+    if (!brand.value.websiteUrl || brand.value.websiteUrl.toLowerCase().includes('www')) {
         validateBrandUrlMassage.value = ''
-    } else if(!brand.value.countryOfOrigin) {
+    } else {
         validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
     }
 }
@@ -223,7 +223,7 @@ const editBrand = async () => {
 
                         <div class="flex justify-center mt-6">
                             <button 
-                                v-show="isAdd"
+                                v-if="isAdd"
                                 type="submit"
                                 :disabled="!enableAddButton" 
                                 :class="!enableAddButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg cursor-not-allowed' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
@@ -231,7 +231,7 @@ const editBrand = async () => {
                                 Save
                             </button>
                             <button 
-                                v-show="isEdit"
+                                v-if="isEdit"
                                 type="submit"
                                 :disabled="!enableEditButton" 
                                 :class="!enableEditButton ? 'itbms-save-button px-6 py-2 mr-2 bg-gray-400 text-white rounded-lg' : 'itbms-save-button cursor-pointer px-6 py-2 mr-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300'"
