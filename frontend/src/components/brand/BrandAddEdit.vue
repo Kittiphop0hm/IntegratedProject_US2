@@ -184,7 +184,7 @@ const editBrand = async () => {
                             placeholder="Enter brand name" 
                             class="itbms-name input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
                             />
-                            <p class="text-red-500" v-if="validateBrandNameMassage">{{ validateBrandNameMassage }}</p>
+                            <p class="text-red-500 itbms-message" v-if="validateBrandNameMassage">{{ validateBrandNameMassage }}</p>
                         </div>
 
                         <div class="flex flex-col">
@@ -199,7 +199,7 @@ const editBrand = async () => {
                             placeholder="Enter website URL" 
                             class="itbms-websiteUrl input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
                             />
-                            <p class="text-red-500" v-if="validateBrandUrlMassage">{{ validateBrandUrlMassage }}</p>
+                            <p class="text-red-500 itbms-message" v-if="validateBrandUrlMassage">{{ validateBrandUrlMassage }}</p>
                         </div>
 
                         <div class="flex flex-col">
@@ -218,7 +218,7 @@ const editBrand = async () => {
                             placeholder="Enter country of origin" 
                             class="itbms-countryOfOrigin input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
                             />
-                            <p class="text-red-500" v-if="validateBrandCountryMassage">{{ validateBrandCountryMassage }}</p>
+                            <p class="text-red-500 itbms-message" v-if="validateBrandCountryMassage">{{ validateBrandCountryMassage }}</p>
                         </div>
 
                         <div class="flex justify-center mt-6">

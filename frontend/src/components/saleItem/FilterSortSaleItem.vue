@@ -62,12 +62,16 @@ const deleteBrand = (index) => {
 //   console.log(brands);
 //   emit("filterAndSortSaleItem", brands, direction);
 // };
+const directionActive = ref("");
 const setFilterSortSaleItems = (brands, direction, field) => {
-  sortDirection.value = direction;
+  const directionSession = sessionStorage.getItem("direction");
+  sortDirection.value = directionSession ? directionSession : direction;
+  // sortDirection.value = direction;
+  // directionActive.value = direction;
   console.log("----------- FilterSortItems -----------");
   console.log("Brands:", brands);
   console.log("Direction:", direction);
-  emit("filterAndSortSaleItem", brands, direction);
+  emit("filterAndSortSaleItem", brands, direction, field);
 };
 </script>
 
@@ -141,7 +145,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
             class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm"
           >
             <input
-              @change="setFilterSortSaleItems(filterBrand, sortDirection, 'brand.name')"
+              @change="setFilterSortSaleItems(filterBrand, sortDirection , '')"
               :id="brand.name"
               type="checkbox"
               :value="brand.name"
@@ -160,10 +164,10 @@ const setFilterSortSaleItems = (brands, direction, field) => {
         class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
       >
         <button
-          @click="setFilterSortSaleItems(filterBrand, 'default', 'brand.name')"
+          @click="setFilterSortSaleItems(filterBrand, '', '')"
           class="itbms-brand-none px-3 py-2 hover:bg-blue-100 transition"
           :class="
-            sortDirection === 'default'
+            sortDirection === ''
               ? 'bg-blue-500 text-white'
               : 'bg-white text-gray-800'
           "
