@@ -117,6 +117,7 @@ watch([pageSize, pageNumber], () => {
   // console.log(pageSize.value);
   // console.log(pageNumber.value);
   fetchData();
+  
 });
 watch([filterBrandR, directionR], () => {
   sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));

@@ -9,7 +9,9 @@ const props = defineProps({
     isUpdated: {
         type: Boolean ,
         default: true
-    }
+    },
+   
+    
 })
 </script>
 
@@ -84,8 +86,8 @@ const props = defineProps({
         </p>
         <div class="">
         <button 
-        class="mr-3 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-3"
-        :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-blue-500 opacity-75': !isActive  || !isUpdated}"
+        class="mr-3 rounded-md mt-3 text-white"
+        :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-gray-500 opacity-75 cursor-not-allowed': !isActive  || !isUpdated}"
         >
         <slot name="button1">Input Name Button1</slot>
         </button

@@ -1,14 +1,11 @@
 package com.example.backend.controllers;
 
 import com.example.backend.dtos.saleItems.GetSaleItemDto;
-import com.example.backend.dtos.saleItems.ListSaleItemsDto;
 import com.example.backend.dtos.saleItems.PageDto;
-import com.example.backend.entities.SaleItem;
 import com.example.backend.services.SaleItemService;
 import com.example.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
