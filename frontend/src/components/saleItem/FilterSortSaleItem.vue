@@ -66,7 +66,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
   console.log("----------- FilterSortItems -----------");
   console.log("Brands:", brands);
   console.log("Direction:", direction);
-  emit("filterAndSortSaleItem", brands, direction);
+  emit("filterAndSortSaleItem", brands, direction, field);
 };
 </script>
 

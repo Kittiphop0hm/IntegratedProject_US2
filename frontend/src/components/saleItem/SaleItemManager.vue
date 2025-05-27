@@ -165,22 +165,28 @@ const isSuccess = ref(
 const filterAndSortSaleItem = async (filterBrand, direction, field) => {
   // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
   // let newDirection = directionSession ? directionSession : direction;
-  filterBrandR.value = filterBrand;
-  directionR.value =direction;
+  // filterBrandR.value = filterBrand;
+  // directionR.value =direction;
   console.log("---------------- filterAndSortSaleItem In Manager.vue ----------------")   
-  console.log("filterBrand: " + filterBrand);
-  console.log("direction: " + direction);
-  console.log(!direction ? "empty" : "not empty");
-  console.log(pageSize.value);
+  // console.log("filterBrand: " + filterBrand);
+  // console.log("direction: " + direction);
+  // console.log(!direction ? "empty" : "not empty");
+  // console.log(pageSize.value);
+  // console.log(field);
+  console.log(direction);
   console.log(field);
+  
+  
   try {
     if (filterBrand.length > 0) {
-      if (!direction || direction.length === 0 && !field) {
+      if (!direction && !field) {
+        console.log("createTime");
         const res = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`
         );
         saleItem.value = res.content; 
       } else if (!direction && field) {
+        console.log('filter by field');
         const res = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name`
         );
