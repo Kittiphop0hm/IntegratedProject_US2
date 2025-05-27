@@ -33,10 +33,10 @@ onMounted(() => {
   // directionR.value = directionSession ? directionSession : '';
   // console.log(pageSize.value);
   // console.log(pageNumber.value);
-  console.log("-------------- OnMounted OnMounted OnMounted -------------- ");
-  console.log("filterBrandR.value: " + filterBrandR.value);
-  console.log("directionR.value: " + directionR.value);
-  console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
+  // console.log("-------------- OnMounted OnMounted OnMounted -------------- ");
+  // console.log("filterBrandR.value: " + filterBrandR.value);
+  // console.log("directionR.value: " + directionR.value);
+  // console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
   // fetchData();
 });
 
@@ -85,7 +85,7 @@ const fetchData = async () => {
     const res = await getItems(
           `${
             import.meta.env.VITE_APP_URL
-          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortField=brand.name&sortDirection=${directionR.value}&page=${
+          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortDirection=${directionR.value}&page=${
             pageNumber.value
           }&size=${pageSize.value}`
         );
@@ -151,8 +151,8 @@ watchEffect(() => {
   const pageSizeSession = sessionStorage.getItem("pageSize");
   // console.log("pageNumberSession: " + pageNumberSession);
   // console.log("pageSizeSession: " + pageSizeSession);
-  console.log("filterBrandSession: " + filterBrandSession);
-  console.log("directionSession: " + directionSession);
+  // console.log("filterBrandSession: " + filterBrandSession);
+  // console.log("directionSession: " + directionSession);
 });
 
 const isSuccess = ref(

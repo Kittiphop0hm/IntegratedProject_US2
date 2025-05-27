@@ -8,10 +8,10 @@ const props = defineProps({
 });
 const filterBrand = ref(props.brands);
 const sortDirection = ref(props.sortDirection);
-console.log("FilterSortSaleItem.vue - props.brands:", props.brands);
-console.log("FilterSortSaleItem.vue - props.sortDirection:", props.sortDirection);
-console.log("FilterSortSaleItem.vue - filterBrand:", filterBrand.value);
-console.log("FilterSortSaleItem.vue - sortDirection:", sortDirection.value);
+// console.log("FilterSortSaleItem.vue - props.brands:", props.brands);
+// console.log("FilterSortSaleItem.vue - props.sortDirection:", props.sortDirection);
+// console.log("FilterSortSaleItem.vue - filterBrand:", filterBrand.value);
+// console.log("FilterSortSaleItem.vue - sortDirection:", sortDirection.value);
 // watch(
 //   () => [props.brands, props.sortDirection],
 //   ([newBrands, newSortDirection]) => {
@@ -51,6 +51,7 @@ const clearFilterBrand = () => {
 
 const deleteBrand = (index) => {
   filterBrand.value.splice(index, 1);
+  sessionStorage.setItem("filterBrand", JSON.stringify(filterBrand.value));
   emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value);
 };
 
