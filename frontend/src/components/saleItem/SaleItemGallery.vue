@@ -1,4 +1,5 @@
 <script setup>
+import { watch } from "vue";
 import SaleItemListModel from "../model/SaleItemListModel.vue";
 import { useRoute } from "vue-router";
 const route = useRoute();
@@ -8,9 +9,6 @@ const props = defineProps({
         required: true
     }
 })
-function savePreviousPath() {
-  localStorage.setItem("isDetail", true);
-}
 </script>
 
 <template>
@@ -30,7 +28,7 @@ function savePreviousPath() {
             alt="phone image"
             class="w-full h-36 object-cover rounded-md mb-4"
           />
-          <div class="text-sm text-red-500 itbms-brand">
+          <div class="itbms-brand text-sm text-red-500">
             <!-- text-gray-900 -->
             {{ yourItem.brandName }}
           </div>

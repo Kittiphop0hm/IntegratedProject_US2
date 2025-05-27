@@ -72,13 +72,13 @@ const setFilterSortSaleItems = (brands, direction) => {
 
 <template>
   <div class="relative top-10 flex items-center justify-between px-10 mb-5">
-    <div class="w-[70%] h-full rounded-lg mr-2">
+    <div class="itbms-brand-filter w-[70%] h-full rounded-lg mr-2">
       <div
         class="w-full flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0"
-      >
+        >
         <div
           class="flex flex-wrap items-center gap-2 w-full sm:w-[75%] p-2 py-5 border border-gray-300 bg-white rounded-l-lg"
-        >
+          >
           <div
             v-for="(brand, index) in filterBrand"
             :key="index"
@@ -87,7 +87,7 @@ const setFilterSortSaleItems = (brands, direction) => {
             <span>{{ brand }}</span>
             <button
               @click="deleteBrand(index)"
-              class="ml-2 text-gray-400 hover:text-red-500 focus:outline-none"
+              class="itbms-filter-item-clear ml-2 text-gray-400 hover:text-red-500 focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +107,7 @@ const setFilterSortSaleItems = (brands, direction) => {
         <div class="flex">
           <button
             @click="isDropFilterBrand = !isDropFilterBrand"
-            class="flex items-center justify-center bg-blue-500 border border-gray-300 text-white px-4 py-2 hover:bg-blue-600 focus:outline-none"
+            class="itbms-brand-filter-button flex items-center justify-center bg-blue-500 border border-gray-300 text-white px-4 py-2 hover:bg-blue-600 focus:outline-none"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -118,11 +118,11 @@ const setFilterSortSaleItems = (brands, direction) => {
             >
               <path fill="currentColor" d="m12 15l-5-5h10z"></path>
             </svg>
-            <span class="">Filter</span>
+            <span>Filter</span>
           </button>
           <button
             @click="clearFilterBrand"
-            class="bg-red-500 text-white px-4 py-2 border border-gray-300 hover:bg-red-600 focus:outline-none rounded-r-lg"
+            class="itbms-brand-filter-clear bg-red-500 text-white px-4 py-2 border border-gray-300 hover:bg-red-600 focus:outline-none rounded-r-lg"
           >
             Clear
           </button>
@@ -130,8 +130,8 @@ const setFilterSortSaleItems = (brands, direction) => {
       </div>
 
       <div
-        v-show="isDropFilterBrand"
-        class="w-[50.3%] absolute bg-white border border-gray-300 p-5 shadow-md"
+        v-show="!isDropFilterBrand"
+        class="w-[50.3%] bg-white border border-gray-300 p-5 shadow-md"
       >
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div
@@ -141,14 +141,13 @@ const setFilterSortSaleItems = (brands, direction) => {
           >
             <input
               @change="setFilterSortSaleItems(filterBrand, sortDirection)"
+              :id="brand.name"
               type="checkbox"
               :value="brand.name"
               v-model="filterBrand"
-              class="h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-300"
+              class="itbms-brand h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-300"
             />
-            <label class="text-gray-700 text-sm font-medium">{{
-              brand.name
-            }}</label>
+            <label :for="brand.name" class="text-gray-700 text-sm font-medium itbms-filter-item">{{brand.name}}</label>
           </div>
         </div>
       </div>

@@ -137,7 +137,7 @@ console.log(typeof Boolean(route.query.alert));
   >
     <template #message>
       <span class="itbms-message font-semibold">
-        Do you want to delete this saleItems
+        Do you want to delete this sale item?
       </span>
     </template>
   </DeletePopupModel>

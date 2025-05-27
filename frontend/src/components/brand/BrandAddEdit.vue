@@ -44,41 +44,41 @@ const validateBrandUrlMassage = ref("")
 const validateBrandCountryMassage = ref("")
 
 const validateBrandName = () => {
-    if (brand.value.name.length < 1 || brand.value.name.length > 30) {
-        validateBrandNameMassage.value = 'Brand name must be 1-30 characters long.'
-    } else {
+    if (brand.value.name.length >= 1 && brand.value.name.length <= 30) {
         validateBrandNameMassage.value = ''
+    } else {
+        validateBrandNameMassage.value = 'Brand name must be 1-30 characters long.'
     }
 }
 
 const validateBrandUrl = () => {
-    if (!brand.value.websiteUrl.toLowerCase().includes('www')) {
-        validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
-    } else {
+    if (!brand.value.websiteUrl || brand.value.websiteUrl.toLowerCase().includes('www') || brand.value.websiteUrl.toLowerCase().includes('http') || brand.value.websiteUrl.toLowerCase().includes('https')) {
         validateBrandUrlMassage.value = ''
+    } else if(!brand.value.countryOfOrigin) {
+        validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
     }
 }
 
 
 const validateBrandCountry = () => {
-    if (brand.value.countryOfOrigin.length < 1 || brand.value.countryOfOrigin.length > 80) {
-        validateBrandCountryMassage.value = 'Brand country of origin must be 1-80 characters long or not specified.'
-    } else {
+    if (!brand.value.countryOfOrigin || brand.value.countryOfOrigin.length >= 1 && brand.value.countryOfOrigin.length <= 80) {
         validateBrandCountryMassage.value = ''
+    } else {
+        validateBrandCountryMassage.value = 'Brand country of origin must be 1-80 characters long or not specified.'
     }
 }
 
-const checkValidateSubmitForm = () => {
-    if (brand.value.name.length < 1 || brand.value.name.length > 30) {
-        validateBrandNameMassage.value = 'Brand name must be 1-30 characters long.'
-    } 
-    if (!brand.value.websiteUrl.toLowerCase().includes('www')) {
-        validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
-    } 
-    if (brand.value.countryOfOrigin.length < 1 || brand.value.countryOfOrigin.length > 80) {
-        validateBrandCountryMassage.value = 'Brand country of origin must be 1-80 characters long or not specified.'
-    }
-}
+// const checkValidateSubmitForm = () => {
+//     if (brand.value.name.length < 1 || brand.value.name.length > 30) {
+//         validateBrandNameMassage.value = 'Brand name must be 1-30 characters long.'
+//     } 
+//     if (!brand.value.websiteUrl.toLowerCase().includes('www')) {
+//         validateBrandUrlMassage.value = 'Brand URL must be a valid URL or not specified.'
+//     } 
+//     if (brand.value.countryOfOrigin.length < 1 || brand.value.countryOfOrigin.length > 80) {
+//         validateBrandCountryMassage.value = 'Brand country of origin must be 1-80 characters long or not specified.'
+//     }
+// }
 
 // const validateInputMassage = (brandNameMassage, brandUrlMassage, brandCountryMassage) => {
 //     console.log(brandNameMassage);
@@ -115,7 +115,7 @@ const enableEditButton = computed(() => {
 })
 
 const addBrand = async () => {
-    checkValidateSubmitForm()
+    // checkValidateSubmitForm()
     if (enableAddButton.value) { 
         try {
             const addBrandResponse = await addItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, brand.value)
@@ -132,7 +132,7 @@ const addBrand = async () => {
 }
 
 const editBrand = async () => {
-    checkValidateSubmitForm()
+    // checkValidateSubmitForm()
     if (enableEditButton.value) {
         try {
             const editBrandResponse = await editItem(`${import.meta.env.VITE_APP_URL}/v1/brands`, editObjectBrand.value.id, brand.value)
@@ -179,6 +179,7 @@ const editBrand = async () => {
                             id="brandName" 
                             @blur="validateBrandName"
             
+                
                             type="text" 
                             placeholder="Enter brand name" 
                             class="itbms-name input w-full max-w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-blue-300" 
@@ -192,6 +193,7 @@ const editBrand = async () => {
                             v-model.trim="brand.websiteUrl"
                             @blur="validateBrandUrl"
                     
+                            
                             id="websiteUrl" 
                             type="text" 
                             placeholder="Enter website URL" 
