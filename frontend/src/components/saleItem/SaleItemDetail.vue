@@ -112,7 +112,7 @@ console.log(typeof Boolean(route.query.alert));
     </template>
     <template #quantity>
       <span class="itbms-quantity">{{
-        item.quantity ? item.quantity : "-"
+        item.quantity 
       }}</span>
       <span class="itbms-quantity-unit">units</span></template
     >

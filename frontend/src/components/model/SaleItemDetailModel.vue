@@ -10,10 +10,7 @@ const props = defineProps({
         type: Boolean ,
         default: true
     },
-    isSubmitted: {
-        type: Boolean ,
-        default: true
-    }
+   
     
 })
 </script>

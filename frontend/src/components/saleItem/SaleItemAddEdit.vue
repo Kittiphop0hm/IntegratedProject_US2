@@ -45,15 +45,15 @@ if (field === 'brand') {
 
 if (field === 'price') {
   validationMessages.value.price =
-    value === '' || value <= 0 || !Number.isInteger(value)
-      ? 'Price must be a positive integer.'
+    value === '' || value < 0 || !Number.isInteger(value)
+      ? 'Price must be non-negative integer.'
       : '';
 }
 
 
   if (field === 'description') {
     validationMessages.value.description =
-      value === '' || value.length < 1 || value.length > 65535
+      value === '' || value.length < 1 || value.length > 16384
         ? 'Description must be 1-65,535 characters long.'
         : '';
   }
@@ -63,7 +63,7 @@ if (field === 'ramGb') {
     saleItem.value.ramGb === null || saleItem.value.ramGb === undefined || saleItem.value.ramGb === ''
       ? ''
       : (!Number.isInteger(saleItem.value.ramGb) || saleItem.value.ramGb <= 0)
-        ? 'RAM size must be a positive integer or not specified.'
+        ? 'RAM size must be positive integer or not specified.'
         : '';
 }
 
@@ -72,10 +72,9 @@ if (field === 'ramGb') {
 if (field === 'screenSizeInch') {
   validationMessages.value.screenSizeInch =
     value !== '' && value !== null && (
-      value <= 0 ||
-      !/^\d+(\.\d{1,2})?$/.test(value)
+      value <= 0 || !/^\d+(\.\d{1,2})?$/.test(value)
     )
-      ? 'Screen Size must be positive number with at most 2 decimal points or not specified.'
+      ? 'Screen size must be positive number with at most 2 decimal points or not specified.'
       : '';
 }
 
@@ -85,7 +84,7 @@ if (field === 'storageGb') {
     saleItem.value.storageGb === null || saleItem.value.storageGb === undefined || saleItem.value.storageGb === ''
       ? ''
       : (!Number.isInteger(saleItem.value.storageGb) || saleItem.value.storageGb <= 0)
-        ? 'Storage size must be a positive integer or not specified.'
+        ? 'Storage size must be positive integer or not specified.'
         : '';
 }
 
@@ -99,10 +98,10 @@ if (field === 'color') {
 
 if (field === 'quantity') {
   validationMessages.value.quantity =
-    value !== null && value !== '' && (
-      !Number.isInteger(value) || value <= 0
+      value !== '' && (
+      !Number.isInteger(value) || value < 0
     )
-      ? 'Quantity must be a non-negative integer.'
+      ? 'Quantity must be non-negative integer.'
       : '';
 }
 }
@@ -207,7 +206,8 @@ const isActive = computed(() => {
     saleItem.value.brand.id !== "" &&
     saleItem.value.model !== "" &&
     saleItem.value.price !== "" &&
-    saleItem.value.description !== ""
+    saleItem.value.description !== ""&&
+    isFormValid()
   );
 });
 
@@ -328,7 +328,7 @@ console.log("previousPath:", previousPath);
        @blur="validateField('brand')"
           
         >
-          <option disabled value="">-- Select a brand --</option>
+          <option value="" >-- Select a brand --</option>
           <option
             v-for="(brand, index) in brands"
             :key="index"
@@ -340,7 +340,7 @@ console.log("previousPath:", previousPath);
           {{ brand.name }}
           </option>
         </select>
-         <p v-if="validationMessages.brand" class="text-red-500 text-sm ml-32" >
+         <p v-if="validationMessages.brand" class="text-red-500 text-sm ml-32 itbms-message" >
     {{ validationMessages.brand }}
         </p>
       </template>
@@ -355,7 +355,7 @@ console.log("previousPath:", previousPath);
           @blur="validateField('model')"
         
         />
-         <p v-if="validationMessages.model" class="text-red-500 text-sm ml-32" >
+         <p v-if="validationMessages.model" class="text-red-500 text-sm ml-32 itbms-message" >
     {{ validationMessages.model }}
   </p>
       </template>
@@ -371,7 +371,7 @@ console.log("previousPath:", previousPath);
            @blur="validateField('price')"
         
         />
-         <p v-if="validationMessages.price" class="text-red-500 text-sm ml-35" >
+         <p v-if="validationMessages.price" class="text-red-500 text-sm ml-35 itbms-message" >
     {{ validationMessages.price }}
   </p>
       </template>
@@ -384,7 +384,7 @@ console.log("previousPath:", previousPath);
            :required="true"
            @blur="validateField('description')"
         ></textarea>
-         <p v-if="validationMessages.description" class="text-red-500 text-sm mt-1" >
+         <p v-if="validationMessages.description" class="text-red-500 text-sm mt-1 itbms-message" >
     {{ validationMessages.description }}
   </p>
       </template>
@@ -396,7 +396,7 @@ console.log("previousPath:", previousPath);
           placeholder="RAM"
             @blur="validateField('ramGb')"
         />
-        <p v-if="validationMessages.ramGb" class="text-red-500 text-sm ml-35" >
+        <p v-if="validationMessages.ramGb" class="text-red-500 text-sm ml-35 itbms-message" >
     {{ validationMessages.ramGb }}
   </p>
       </template>
@@ -404,13 +404,13 @@ console.log("previousPath:", previousPath);
         <input
           v-model.number="saleItem.screenSizeInch"
           type="number"
-          step="0.1"
-          class="itbms-screenSizeInch ml-21 border rounded-md px-2 py-1 w-70"
+          step="0.01"
+          class="itbms-screenSizeInch ml-21 border rounded-md px-2 py-1 w-70 itbms-message"
           placeholder="Screen Size"
-             @blur="validateField('screenSizeInch')"
+          @blur="validateField('screenSizeInch')"
             
         />
-        <p v-if="validationMessages.screenSizeInch" class="text-red-500 text-sm ml-21" >
+        <p v-if="validationMessages.screenSizeInch" class="text-red-500 text-sm ml-21 itbms-message" >
     {{ validationMessages.screenSizeInch }}
   </p>
       </template>
@@ -422,7 +422,7 @@ console.log("previousPath:", previousPath);
           placeholder="Storage"
           @blur="validateField('storageGb')"
         />
-         <p v-if="validationMessages.storageGb" class="text-red-500 text-sm ml-29" >
+         <p v-if="validationMessages.storageGb" class="text-red-500 text-sm ml-29 itbms-message" >
     {{ validationMessages.storageGb }}
   </p>
       </template>
@@ -434,7 +434,7 @@ console.log("previousPath:", previousPath);
           placeholder="Color"
             @blur="validateField('color')"
         />
-        <p v-if="validationMessages.color" class="text-red-500 text-sm ml-35" >
+        <p v-if="validationMessages.color" class="text-red-500 text-sm ml-35 itbms-message" >
     {{ validationMessages.color }}
   </p>
       </template>
@@ -446,7 +446,7 @@ console.log("previousPath:", previousPath);
           placeholder="Quantity"
            @blur="validateField('quantity')"
         />
-          <p v-if="validationMessages.quantity" class="text-red-500 text-sm ml-7" >
+          <p v-if="validationMessages.quantity" class="text-red-500 text-sm ml-7 itbms-message" >
     {{ validationMessages.quantity }}
   </p>
       </template>

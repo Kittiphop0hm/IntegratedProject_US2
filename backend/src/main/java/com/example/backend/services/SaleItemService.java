@@ -9,11 +9,9 @@ import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
-import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
