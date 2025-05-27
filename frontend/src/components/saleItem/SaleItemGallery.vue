@@ -18,7 +18,6 @@ const props = defineProps({
       <router-link
         :to="{ name: 'SaleItemDetail', params: { id: yourItem.id } }"
         class="block"
-        @click="savePreviousPath"
       >
         <div
           class="itbms-row border rounded-xl shadow hover:shadow-md p-4 transition duration-300 ease-in-out cursor-pointer"

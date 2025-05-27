@@ -33,12 +33,18 @@ onMounted(() => {
   // directionR.value = directionSession ? directionSession : '';
   // console.log(pageSize.value);
   // console.log(pageNumber.value);
-  console.log("-------------- OnMounted OnMounted OnMounted -------------- ");
-  console.log("filterBrandR.value: " + filterBrandR.value);
-  console.log("directionR.value: " + directionR.value);
-  console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
+  // console.log("-------------- OnMounted OnMounted OnMounted -------------- ");
+  // console.log("filterBrandR.value: " + filterBrandR.value);
+  // console.log("directionR.value: " + directionR.value);
+  // console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
   // fetchData();
 });
+
+function savePreviousPath() {
+  const previousPath = route.fullPath;
+  localStorage.setItem("previousPath", previousPath);
+}
+
 const isFirst = computed(() => {
   return pageNumber.value === 0;
 });
@@ -79,7 +85,7 @@ const fetchData = async () => {
     const res = await getItems(
           `${
             import.meta.env.VITE_APP_URL
-          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortField=brand.name&sortDirection=${directionR.value}&page=${
+          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortDirection=${directionR.value}&page=${
             pageNumber.value
           }&size=${pageSize.value}`
         );
@@ -146,8 +152,8 @@ watchEffect(() => {
   const pageSizeSession = sessionStorage.getItem("pageSize");
   // console.log("pageNumberSession: " + pageNumberSession);
   // console.log("pageSizeSession: " + pageSizeSession);
-  console.log("filterBrandSession: " + filterBrandSession);
-  console.log("directionSession: " + directionSession);
+  // console.log("filterBrandSession: " + filterBrandSession);
+  // console.log("directionSession: " + directionSession);
 });
 
 const isSuccess = ref(
@@ -157,7 +163,7 @@ const isSuccess = ref(
 
 
 
-const filterAndSortSaleItem = async (filterBrand, direction) => {
+const filterAndSortSaleItem = async (filterBrand, direction, field) => {
   // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
   // let newDirection = directionSession ? directionSession : direction;
   filterBrandR.value = filterBrand;
@@ -167,17 +173,20 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
   console.log("direction: " + direction);
   console.log(!direction ? "empty" : "not empty");
   console.log(pageSize.value);
+  console.log(field);
   try {
     if (filterBrand.length > 0) {
-      console.log("filterBrand is not empty");
-      
-      if (!direction || direction.length === 0) {
+      if (!direction || direction.length === 0 && !field) {
         const res = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`
         );
         saleItem.value = res.content; 
-      }
-      else if (direction === "default") {
+      } else if (!direction && field) {
+        const res = await getItems(
+          `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name`
+        );
+        saleItem.value = res.content; 
+      } else if (direction === "default") {
         const res = await getItems(
           `${
             import.meta.env.VITE_APP_URL
@@ -225,11 +234,6 @@ const filterAndSortSaleItem = async (filterBrand, direction) => {
     console.log(err);
   }
 };
-
-function savePreviousPath() {
-  const previousPath = route.fullPath;
-  localStorage.setItem("previousPath", previousPath);
-}
 </script>
 <template>
   <div
