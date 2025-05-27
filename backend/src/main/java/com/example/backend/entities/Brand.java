@@ -34,18 +34,19 @@ public class Brand {
     @Column(name = "webSiteUrl", length = 40)
     private String webSiteUrl;
 
-    @ColumnDefault("0")
+    @ColumnDefault("1")
     @Column(name = "isActive")
     private Byte isActive;
 
-    @NotNull
+    @Column(name = "noOfSaleItems")
+    private Integer noOfSaleItems;
+
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdOn", nullable = false,insertable = false, updatable = false)
+    @Column(name = "createdOn", nullable = false , insertable = false, updatable = false )
     private Instant createdOn;
 
-    @NotNull
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updatedOn", nullable = false,insertable = false, updatable = false)
+    @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false )
     private Instant updatedOn;
 
     @OneToMany(mappedBy = "brand")
