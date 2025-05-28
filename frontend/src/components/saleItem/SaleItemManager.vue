@@ -47,7 +47,9 @@ function savePreviousPath() {
 }
 
 const isFirst = computed(() => {
+  // fetchData()
   return pageNumber.value === 0;
+    // fetchData()
 });
 const isLast = computed(() => {
   return pageNumber.value === pageObj.value.totalPages - 1;
@@ -309,6 +311,10 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
 // }
 // ; 
 } 
+const fecthItemFromPage = async(index) => {
+  await fetchData()
+  pageNumber.value = index - 1
+}
 </script>
 <template>
   <div
@@ -385,7 +391,7 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
     <span
       v-for="index in computedPageNumberArr"
       :key="index"
-      @click="pageNumber = index - 1"
+      @click="fecthItemFromPage(index)"
       :class="`itbms-page-${index - 1} `"
     >
       <button
