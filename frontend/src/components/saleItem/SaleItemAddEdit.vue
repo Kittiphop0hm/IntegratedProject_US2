@@ -54,7 +54,7 @@ if (field === 'price') {
   if (field === 'description') {
     validationMessages.value.description =
       value === '' || value.length < 1 || value.length > 16384
-        ? 'Description must be 1-65,535 characters long.'
+        ? 'Description must be 1-16,384 characters long.'
         : '';
   }
 
