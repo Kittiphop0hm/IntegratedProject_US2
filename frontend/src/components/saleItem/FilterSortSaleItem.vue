@@ -158,7 +158,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
       </div>
     </div>
 
-    <div class="absolute right-10 top- flex items-center space-x-2 justify-end">
+    <div class="absolute right-10 top-3 flex items-center space-x-2 justify-end">
       <!-- <span class="text-sm font-medium text-gray-700">Sort Brand : </span> -->
       <div
         class="itbms-brand-sort flex border border-gray-300 rounded-lg overflow-hidden"
