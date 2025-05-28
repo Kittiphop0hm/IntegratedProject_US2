@@ -9,15 +9,10 @@ import FilterSaleItem from "./FilterSortSaleItem.vue";
 const route = useRoute();
 const saleItem = ref([]);
 const pageObj = ref({});
-const sortDirection = ref("default");
-// const valueSelected = ref(1);
 let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
 
-// const pageSize = computed(() => {
-//   return 10 / valueSelected.value;
-// });
 const filterBrandSession = sessionStorage.getItem("filterBrand");
 const directionSession = sessionStorage.getItem("direction");
 const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
@@ -26,19 +21,8 @@ const fieldR = ref('')
 onMounted(() => {
   const pageNumberSession = sessionStorage.getItem("pageNumber");
   const pageSizeSession = sessionStorage.getItem("pageSize");
-  // const filterBrandSession = sessionStorage.getItem("filterBrand");
-  // sessionStorage.getItem("direction");
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
   pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
-  // filterBrandR.value = filterBrandSession ? JSON.parse(filterBrandSession) : [];
-  // directionR.value = directionSession ? directionSession : '';
-  // console.log(pageSize.value);
-  // console.log(pageNumber.value);
-  // console.log("-------------- OnMounted OnMounted OnMounted -------------- ");
-  // console.log("filterBrandR.value: " + filterBrandR.value);
-  // console.log("directionR.value: " + directionR.value);
-  // console.log("type of filterBrandR.value: " + typeof filterBrandR.value);
-  // fetchData();
 });
 
 function savePreviousPath() {
@@ -49,6 +33,7 @@ function savePreviousPath() {
 const isFirst = computed(() => {
   return pageNumber.value === 0;
 });
+
 const isLast = computed(() => {
   return pageNumber.value === pageObj.value.totalPages - 1;
 });
@@ -70,9 +55,6 @@ const computedPageNumberArr = computed(() => {
         arr.splice(0, Math.abs(difference - maxDisplay));
       }
     } else {
-      console.log("difference is less than 10");
-      console.log("difference:", difference);
-      console.log(Math.abs(difference - 10));
       while (arr.length !== maxDisplay) {
         arr.shift();
       }
@@ -114,60 +96,27 @@ const fetchData = async () => {
 watch([pageSize, pageNumber], () => {
   sessionStorage.setItem("pageSize", pageSize.value);
   sessionStorage.setItem("pageNumber", pageNumber.value);
-  // console.log(pageSize.value);
-  // console.log(pageNumber.value);
   fetchData();
-  
 });
 watch([filterBrandR, directionR], () => {
   sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
   sessionStorage.setItem("direction", directionR.value);
   console.log("reset");
   pageNumber.value = 0;
-  // // sessionStorage.setItem("pageSize")
-  // sessionStorage.setItem("pageNumber", 0);
 });
 watch(pageSize, () => {
   if (!pageSizeWatchInitialized) {
     pageSizeWatchInitialized = true;
     return;
   }
-  console.log("watch pageSize");
-  // if (newVal !== oldVal) {
-  //   console.log("newVal: " + newVal)
-  //   console.log("oldVal: " + oldVal)
   pageNumber.value = 0;
-  // }
 });
 
-// onMounted(async () => {
-//   try {
-//     // saleItem.value = await getItems(
-//     //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`
-//     // );
-//     const res = await getItems(
-//       `${
-//         import.meta.env.VITE_APP_URL
-//       }/v2/sale-items?page=0&size=${pageSize.value}`
-//     );
-
-//     saleItem.value = res.content;
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
-
 watchEffect(() => {
-  // console.log("pageNumber.value:", pageNumber.value);
-  // console.log("computedPageNumberArr:", computedPageNumberArr.value);
   const filterBrandSession = sessionStorage.getItem("filterBrand");
   const directionSession = sessionStorage.getItem("direction");
   const pageNumberSession = sessionStorage.getItem("pageNumber");
   const pageSizeSession = sessionStorage.getItem("pageSize");
-  // console.log("pageNumberSession: " + pageNumberSession);
-  // console.log("pageSizeSession: " + pageSizeSession);
-  // console.log("filterBrandSession: " + filterBrandSession);
-  console.log("directionSession: " + directionSession);
 });
 
 const isSuccess = ref(
@@ -175,29 +124,10 @@ const isSuccess = ref(
     !route.query.alert404
 );
 
-
-
 const filterAndSortSaleItem = async (filterBrand, direction, field) => {
-  console.log("filterAndSortSaleItem called");
-  // console.log("filterBrand: " + filterBrand);
-  console.log("direction: " + direction);
-  // let newFilterBrand = filterBrandSession ? JSON.parse(filterBrandSession): filterBr 
-  // let newDirection = directionSession ? directionSession : direction;
   filterBrandR.value = filterBrand;
   directionR.value =direction;
   fieldR.value = field;
-  console.log("---------------- filterAndSortSaleItem In Manager.vue ----------------")   
-  // console.log("filterBrand: " + filterBrand);
-  // console.log("direction: " + direction);
-  // console.log(!direction ? "empty" : "not empty");
-  // console.log(pageSize.value);
-  // console.log(field);
-  // console.log(filterBrand);
-  // console.log(direction);
-  // console.log(field);
-  // console.log("number" + pageNumber.value);
-  // console.log("size" +pageSize.value);
-    
   try {
     if (!filterBrand || filterBrand.length === 0) {
       if (!direction && !field) {
@@ -205,19 +135,16 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}`);
         saleItem.value = res.content;
         pageObj.value = res;
-        // fetchData();
       } else if(direction.toLowerCase() === "asc" || !direction) {
         console.log("no filter ASC");
         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=asc`);
         saleItem.value = res.content;
         pageObj.value = res;
-        // fetchData();
       } else {
         console.log("no filter DESC");
         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=${direction}`);
         saleItem.value = res.content;
         pageObj.value = res;
-        // fetchData();
       }
     } else {
         if (!direction && !field) {
@@ -225,89 +152,21 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
           const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`);
           saleItem.value = res.content;
           pageObj.value = res;
-          // fetchData();
         } else if (direction.toLowerCase() === "asc" || !direction) {
           console.log("filter asc");
           const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=asc`);
           saleItem.value = res.content;
           pageObj.value = res;
-          // fetchData();
         } else {
           console.log("filter DESC");
           const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=${direction}`);
           saleItem.value = res.content;
           pageObj.value = res;
-          // fetchData();
         }
     }
   } catch(err) {
     console.log(err);
   }
-
-  
-  
-//   try {
-//     if (filterBrand.length > 0) {
-//       if (!direction && !field) {
-//         console.log("createTime");
-//         const res = await getItems(
-//           `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`
-//         );
-//         saleItem.value = res.content; 
-//       } else if (!direction && field) {
-//         console.log('filter by field');
-//         const res = await getItems(
-//           `${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name`
-//         );
-//         saleItem.value = res.content; 
-//       } else if (direction === "default") {
-//         const res = await getItems(
-//           `${
-//             import.meta.env.VITE_APP_URL
-//           }/v2/sale-items?filterBrands=${filterBrand}&page=${
-//             pageNumber.value
-//           }&size=${pageSize.value}`
-//         );
-//         saleItem.value = res.content;
-
-//       } else {
-//         const res = await getItems(
-//           `${
-//             import.meta.env.VITE_APP_URL
-//           }/v2/sale-items?filterBrands=${filterBrand}&sortField=brand.name&sortDirection=${direction}&page=${
-//             pageNumber.value
-//           }&size=${pageSize.value}`
-//         );
-//         saleItem.value = res.content;
-
-//       }
-//     } else {
-//       console.log("filterBrand is empty");
-//       if (direction === "default") {
-//         console.log("no filter Default");
-//         const res = await getItems(
-//           `${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${
-//             pageNumber.value
-//           }&size=${pageSize.value}`
-//         );
-//         saleItem.value = res.content;
-
-//       } else {
-//         console.log("no filter ASC DESC");
-//         console.log(direction);
-//         console.log(directionR.value);
-//         const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortDirection=${direction}&sortField=brand.name`);
-//         saleItem.value = res.content;
-
-//       }
-//     }
-//     console.log(saleItem.value);
-    
-//   } catch (err) {
-//     console.log(err);
-//   }
-// }
-// ; 
 } 
 </script>
 <template>
@@ -342,7 +201,6 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
         Add Sale Item
       </button>
     </router-link>
-    <!-- <SortSaleItemByBrandname @sortSaleItemByBrand="filterAndSortSaleItem" /> -->
     <div>
       <span>Show</span>
       <span class="ml-2">

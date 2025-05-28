@@ -5,7 +5,6 @@ import { computed, onMounted, ref, watchEffect } from 'vue';
 import { addItem } from '@/libs/fetchUtil';
 import { useRoute, useRouter } from 'vue-router';
 import { getItemById, editItem } from '@/libs/fetchUtil';
-import ValidationInput from '../validation/ValidationInput.vue';
 
 const router = useRouter()
 const {params: {id}} = useRoute()
