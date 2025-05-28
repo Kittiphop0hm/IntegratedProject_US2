@@ -30,9 +30,9 @@ public class SaleItem {
     @Column(name = "model", nullable = false, length = 60)
     private String model;
 
-    @Size(max = 400)
     @NotNull
-    @Column(name = "description", nullable = false, length = 400)
+    @Lob
+    @Column(name = "description", nullable = false)
     private String description;
 
     @NotNull
@@ -58,11 +58,12 @@ public class SaleItem {
     private String color;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "createdOn", nullable = false , insertable = false, updatable = false )
+    @Column(name = "createdOn", nullable = false, insertable = false, updatable = false )
     private Instant createdOn;
 
+
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updatedOn", nullable = false , insertable = false, updatable = false )
+    @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false )
     private Instant updatedOn;
 
 }
