@@ -11,7 +11,6 @@ import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SortSaleItemByBrandname from "./SortSaleItemByBrandName.vue";
 
-const sortDirection = ref("default");
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
