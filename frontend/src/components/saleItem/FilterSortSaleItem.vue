@@ -1,10 +1,10 @@
 <script setup>
-import { onMounted, ref , watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getItems } from "@/libs/fetchUtil";
 
 const props = defineProps({
   brands: Array,
-  sortDirection: String
+  sortDirection: String,
 });
 const filterBrand = ref(props.brands);
 const sortDirection = ref(props.sortDirection);
@@ -50,17 +50,19 @@ const setFilterSortSaleItems = (brands, direction, field) => {
     <div class="itbms-brand-filter w-[70%] h-full rounded-lg mr-2">
       <div
         class="w-full flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0"
-        >
+      >
         <div
           class="flex flex-wrap items-center gap-2 w-full sm:w-[75%] p-2 py-5 border border-gray-300 bg-white rounded-l-lg"
-          >
+        >
           <div
-            v-for="(brand, index) in filterBrand"
-            :key="index"
-            class="flex items-center bg-gray-100 border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
+            class="flex items-center"
           >
-            <span>{{ brand }}</span>
-            <button
+            <span
+              v-for="(brand, index) in filterBrand"
+              :key="index"
+              class="itbms-filter-item bg-gray-100 border border-gray-300 rounded-full px-3 py-1 text-sm text-gray-700"
+              >{{ brand }}
+              <button
               @click="deleteBrand(index)"
               class="itbms-filter-item-clear ml-2 text-gray-400 hover:text-red-500 focus:outline-none"
             >
@@ -75,7 +77,10 @@ const setFilterSortSaleItems = (brands, direction, field) => {
                   d="M19 7L17.59 5.59L12 11.17L6.41 5.59L5 7l5.59 5.59L5 18.17l1.41 1.42L12 13.83l5.59 5.59L19 18.17l-5.59-5.59z"
                 ></path>
               </svg>
-            </button>
+            </button>  
+            </span
+            >
+
           </div>
         </div>
 
@@ -105,7 +110,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
       </div>
 
       <div
-        v-show="isDropFilterBrand"
+        v-if="isDropFilterBrand"
         class="w-[50.3%] bg-white border border-gray-300 p-5 shadow-md"
       >
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -115,14 +120,18 @@ const setFilterSortSaleItems = (brands, direction, field) => {
             class="flex items-center space-x-3 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm"
           >
             <input
-              @change="setFilterSortSaleItems(filterBrand, sortDirection , '')"
+              @change="setFilterSortSaleItems(filterBrand, sortDirection, '')"
               :id="brand.name"
               type="checkbox"
               :value="brand.name"
               v-model="filterBrand"
               class="itbms-brand h-5 w-5 text-blue-500 border-gray-300 rounded focus:ring-2 focus:ring-blue-300"
             />
-            <label :for="brand.name" class="text-gray-700 text-sm font-medium itbms-filter-item">{{brand.name}}</label>
+            <label
+              :for="brand.name"
+              class="text-gray-700 text-sm font-medium itbms-filter-item"
+              >{{ brand.name }}</label
+            >
           </div>
         </div>
       </div>

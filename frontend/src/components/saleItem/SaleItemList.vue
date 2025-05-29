@@ -21,7 +21,6 @@ onMounted(async () => {
     saleItems.value = await getItems(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`
     );
-    console.log(saleItems.value);
   } catch (err) {
     console.error("Error fetching sale items:", err);
   }
@@ -31,7 +30,6 @@ const cancelDelete = () => {
   isDelete.value = false;
 };
 
-// const deleteStatus = ref(0)
 const deleteSaleItem = async (id) => {
   try {
     const deleteStatus = await deleteItemById(
@@ -65,13 +63,8 @@ const deleteId = ref(null);
 const handledelete = (id) => {
   isDelete.value = true;
   deleteId.value = id;
-  // selectedBrandId.value = id;
-  // selectedBrandName.value = brandName;
-  // console.log("selectedBrandId.value", selectedBrandId.value);
 };
-// const formattedPrice = computed(() =>
-//   saleItems.value.price != null ? saleItems.value.price.toLocaleString() : "-"
-// );
+
 </script>
 
 <template>

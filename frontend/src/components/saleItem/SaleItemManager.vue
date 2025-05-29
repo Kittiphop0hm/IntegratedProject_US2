@@ -9,6 +9,8 @@ import FilterSaleItem from "./FilterSortSaleItem.vue";
 const route = useRoute();
 const saleItem = ref([]);
 const pageObj = ref({});
+
+
 let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
@@ -31,7 +33,9 @@ function savePreviousPath() {
 }
 
 const isFirst = computed(() => {
+  // fetchData()
   return pageNumber.value === 0;
+    // fetchData()
 });
 
 const isLast = computed(() => {
@@ -45,14 +49,14 @@ const computedPageNumberArr = computed(() => {
     arr.push(i + 1);
   }
   if (arr.length > maxDisplay) {
-    let difference = Math.abs(arr.length - pageNumber.value);
+    let difference = arr.length - pageNumber.value;
     if (difference > maxDisplay) {
       arr.splice(
-        arr.length - Math.abs(difference - maxDisplay),
+        arr.length - (difference - maxDisplay),
         Math.abs(difference - maxDisplay)
       );
       if (pageNumber.value !== 0) {
-        arr.splice(0, Math.abs(difference - maxDisplay));
+        arr.splice(0, difference - maxDisplay);
       }
     } else {
       while (arr.length !== maxDisplay) {
@@ -109,15 +113,13 @@ watch(pageSize, () => {
     pageSizeWatchInitialized = true;
     return;
   }
+
   pageNumber.value = 0;
+
 });
 
-watchEffect(() => {
-  const filterBrandSession = sessionStorage.getItem("filterBrand");
-  const directionSession = sessionStorage.getItem("direction");
-  const pageNumberSession = sessionStorage.getItem("pageNumber");
-  const pageSizeSession = sessionStorage.getItem("pageSize");
-});
+
+
 
 const isSuccess = ref(
   Boolean(route.query.alertAdd || route.query.alertDelete) &&
@@ -168,6 +170,10 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
     console.log(err);
   }
 } 
+const fecthItemFromPage = async(index) => {
+  await fetchData()
+  pageNumber.value = index - 1
+}
 </script>
 <template>
   <div
@@ -243,7 +249,7 @@ const filterAndSortSaleItem = async (filterBrand, direction, field) => {
     <span
       v-for="index in computedPageNumberArr"
       :key="index"
-      @click="pageNumber = index - 1"
+      @click="fecthItemFromPage(index)"
       :class="`itbms-page-${index - 1} `"
     >
       <button
