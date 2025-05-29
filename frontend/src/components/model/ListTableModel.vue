@@ -29,11 +29,25 @@ const props = defineProps({
       >
         <slot name="listItem" :yourItem="item"></slot>
         <slot name="action" :yourItem="item">Enter Action</slot>
-        <!-- <td v-for="(value, key) in item" :key="key" class="border px-2 py-1">
-            {{ value ?? "-" }}
-          </td> -->
-        <!-- <td><slot name="action" >Enter Action</slot></td> -->
+
       </tr>
     </tbody>
   </table>
 </template>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- <td v-for="(value, key) in item" :key="key" class="border px-2 py-1">
+            {{ value ?? "-" }}
+          </td> -->
+        <!-- <td><slot name="action" >Enter Action</slot></td> -->

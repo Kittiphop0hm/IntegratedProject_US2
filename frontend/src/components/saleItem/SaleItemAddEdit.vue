@@ -138,9 +138,6 @@ const saleItemForchecking = ref({ ...initSaleItem });
 onMounted(async () => {
   try {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
-    console.log("brands.value[1].id:", brands.value[1].id);
-    console.log("brands.value:", brands.value);
-    console.log("brands.value[0]:", brands.value[0]);
   } catch (err) {
     console.log(err);
   }
@@ -155,13 +152,13 @@ onMounted(async () => {
         router.back();
       } else {
         const { id, ...rest } = data;
-        console.log("data:", data);
+        // console.log("data:", data);
         console.log("rest:", rest);
         saleItem.value = { ...initSaleItem ,  ...rest };
-        console.log("Test First");
-        console.log("saleItem.value:", saleItem.value);
+        // console.log("Test First");
+        // console.log("saleItem.value:", saleItem.value);
         saleItemForchecking.value = { ...initSaleItem , ...rest };
-        console.log("saleItemForchecking.value:", saleItemForchecking.value);
+        // console.log("saleItemForchecking.value:", saleItemForchecking.value);
       }
     } catch (err) {
       console.error(err);
@@ -169,38 +166,18 @@ onMounted(async () => {
     const brandsFilter = brands.value.find(
       (brand) => brand.name === saleItem.value.brandName
     );
-    console.log("brandsFilter:", brandsFilter);
-    console.log(Object.keys(saleItem.value));
-    console.log(saleItem.value.brand);
 
     saleItem.value.brand.id = brandsFilter.id;
     saleItemForchecking.value.brand.id = brandsFilter.id;
-    console.log(JSON.stringify(saleItemForchecking.value));
-    console.log(JSON.stringify(saleItem.value));
-    console.log(Object.keys(saleItem.value));
   }
 });
 
 const isSubmitted = ref(false);
 const isUpdated = computed(() => {
-  // return (
-  //   saleItem.value.brand.id !== saleItemForchecking.value.brand.id ||
-  //   saleItem.value.model !== saleItemForchecking.value.model ||
-  //   saleItem.value.price !== saleItemForchecking.value.price ||
-  //   saleItem.value.description !== saleItemForchecking.value.description ||
-  //   saleItem.value.ramGb !== saleItemForchecking.value.ramGb ||
-  //   saleItem.value.screenSizeInch !== saleItemForchecking.value.screenSizeInch ||
-  //   saleItem.value.storageGb !== saleItemForchecking.value.storageGb ||
-  //   saleItem.value.color !== saleItemForchecking.value.color ||
-  //   saleItem.value.quantity !== saleItemForchecking.value.quantity
-  //  )
   return (
     JSON.stringify(saleItem.value) !== JSON.stringify(saleItemForchecking.value)
   );
 });
-// watchEffect(() => {
-//   console.log('isUpdated:', isUpdated.value);
-// });
 const isActive = computed(() => {
   return (
     saleItem.value.brand.id !== "" &&
@@ -211,7 +188,6 @@ const isActive = computed(() => {
   );
 });
 
-const isStatus = ref(false)
 async function submitForm() {
   isSubmitted.value = true
 if (!isFormValid()) {
@@ -237,7 +213,6 @@ if (!isFormValid()) {
         `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
         saleItem.value
       );
-      isStatus.value = true
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath , query: { alertAdd: "true" } });
     } catch (error) {
@@ -247,56 +222,13 @@ if (!isFormValid()) {
 }
 
 const previousPath = localStorage.getItem("previousPath");
-console.log("previousPath:", previousPath);
 </script>
 
 
 
 <template>
-  <!-- <br>
-  {{ saleItem }}
-  <br>
-  <h1>---------------------------------------------------------------------------</h1>
-  <br>
-  {{ brands }}
-  -------------- {{ brands[0] }} --------------
-  <h1>---------------------------------------------------------------------------</h1>
 
-  <br>
-  <h1>saleItemForchecking</h1>
-
-  {{ saleItemForchecking }}
-  <br>
-  {{ saleItemForchecking.id }}
-  {{ saleItemForchecking.brand.id }}
-  {{ saleItemForchecking.model }}
-  {{ saleItemForchecking.price }}
-  {{ saleItemForchecking.description }}
-  {{ saleItemForchecking.ramGb }}
-  {{ saleItemForchecking.screenSizeInch }}
-  {{ saleItemForchecking.storageGb }}
-  {{ saleItemForchecking.color }}
-  {{ saleItemForchecking.quantity }}
-  <h1>---------------------------------------------------------------------------</h1>
-  <br>
-  <br>
-  <h1>saleItem</h1>
-  {{ saleItem }}
-  <br>
-  <br>
-  {{ saleItem.id }}
-  {{ saleItem.brand.id }}
-  {{ saleItem.model }}
-  {{ saleItem.price }}
-  {{ saleItem.description }}
-  {{ saleItem.ramGb }}
-  {{ saleItem.screenSizeInch }}
-  {{ saleItem.storageGb }}
-  {{ saleItem.color }}
-  {{ saleItem.quantity }} -->
-  <!-- <p v-show="isStatus" class="itbms-message">The sale item has been successfully added.</p> -->
   <Navbar />
-  <!-- {{ brands ? brands: "Nothing in brandList" }} -->
   <form @submit.prevent="submitForm">
     <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
       <template #path>
