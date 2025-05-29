@@ -58,7 +58,7 @@ public class SaleItemService {
 
     public ResponseSaleItemsDto updateSaleItem(int id, AddUpdateSaleItemDto updateSaleItemDto) {
         SaleItem existing = getSaleItemById(id);
-        if (updateSaleItemDto.getBrand() == null && updateSaleItemDto.getBrand().getId() == null) {
+        if (updateSaleItemDto.getBrand() == null || updateSaleItemDto.getBrand().getId() == null) {
             throw new ItemNotFoundException("Brand not found for this id :: " + id);
         }
         Brand brand = brandRepository.findById(updateSaleItemDto.getBrand().getId())
