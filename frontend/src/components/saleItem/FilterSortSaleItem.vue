@@ -8,28 +8,13 @@ const props = defineProps({
 });
 const filterBrand = ref(props.brands);
 const sortDirection = ref(props.sortDirection);
-// console.log("FilterSortSaleItem.vue - props.brands:", props.brands);
-// console.log("FilterSortSaleItem.vue - props.sortDirection:", props.sortDirection);
-// console.log("FilterSortSaleItem.vue - filterBrand:", filterBrand.value);
-// console.log("FilterSortSaleItem.vue - sortDirection:", sortDirection.value);
-// watch(
-//   () => [props.brands, props.sortDirection],
-//   ([newBrands, newSortDirection]) => {
-//     console.log('FilterSortSaleItem.vue - watch triggered');
-//     console.log('New brands:', newBrands);
-//     console.log('New sortDirection:', newSortDirection);
-
-//     filterBrand.value = [...newBrands];
-//     sortDirection.value = newSortDirection;
-//   },
-//   { immediate: true }
-// );
 
 const emit = defineEmits([
   "filterSaleItemByBrand",
   "sortSaleItemByBrand",
   "filterAndSortSaleItem",
 ]);
+
 const isDropFilterBrand = ref(false);
 const brands = ref([]);
 onMounted(async () => {
@@ -53,22 +38,9 @@ const deleteBrand = (index) => {
   emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value);
 };
 
-// const setFilterSortSaleItems = (brands, direction) => {
-//   sortDirection.value = direction;
-//   console.log("FilterSortItems");
-//   console.log(sortDirection.value);
-//   console.log(brands);
-//   emit("filterAndSortSaleItem", brands, direction);
-// };
-const directionActive = ref("");
 const setFilterSortSaleItems = (brands, direction, field) => {
   const directionSession = sessionStorage.getItem("direction");
   sortDirection.value = directionSession ? directionSession : direction;
-  // sortDirection.value = direction;
-  // directionActive.value = direction;
-  console.log("----------- FilterSortItems -----------");
-  console.log("Brands:", brands);
-  console.log("Direction:", direction);
   emit("filterAndSortSaleItem", brands, direction, field);
 };
 </script>

@@ -58,7 +58,7 @@ public class SaleItemService {
 
     public ResponseSaleItemsDto updateSaleItem(int id, AddUpdateSaleItemDto updateSaleItemDto) {
         SaleItem existing = getSaleItemById(id);
-        if (updateSaleItemDto.getBrand() == null && updateSaleItemDto.getBrand().getId() == null) {
+        if (updateSaleItemDto.getBrand() == null || updateSaleItemDto.getBrand().getId() == null) {
             throw new ItemNotFoundException("Brand not found for this id :: " + id);
         }
         Brand brand = brandRepository.findById(updateSaleItemDto.getBrand().getId())
@@ -130,24 +130,4 @@ public class SaleItemService {
         }
         return listMapper.toPageDTO(saleItems , GetSaleItemDto.class , modelMapper , sortField);
     }
-
-//    public List<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection) {
-//        List<SaleItem> saleItems;
-//        if (filterBrands.isEmpty()) {
-//            if (sortField.isEmpty()) {
-//                saleItems = repository.findAllByOrderByCreatedOn();
-//            } else if (sortDirection.equalsIgnoreCase("asc")) {
-//                saleItems = repository.findAllByOrderByBrandNameAsc();
-//            } else {
-//                saleItems = repository.findAllByOrderByBrandNameDesc();
-//            }
-//        } else {
-//            if (sortDirection.equalsIgnoreCase("asc")) {
-//                saleItems = repository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands);
-//            } else {
-//                saleItems = repository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands);
-//            }
-//        }
-//        return listMapper.mapList(saleItems , GetSaleItemDto.class , modelMapper);
-//    }
 }
