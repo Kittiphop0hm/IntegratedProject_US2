@@ -115,12 +115,10 @@ public class SaleItemService {
             Integer page,
             Integer size) {
 
-        // แปลง List<String> เป็น List<Integer> และเช็ค "Not specified"
+        // แปลง List<String> เป็น List<Integer>
         List<Integer> filterStorageSizes = List.of();
-        boolean includeNotSpecified = false;
         if (filterStorageSizesStr != null && !filterStorageSizesStr.isEmpty()) {
             filterStorageSizes = filterStorageSizesStr.stream()
-                    .filter(s -> !s.equalsIgnoreCase("Not specified"))
                     .map(s -> {
                         try {
                             return Integer.parseInt(s);
@@ -176,6 +174,7 @@ public class SaleItemService {
                     saleItems = pageRepository.findByPriceBetweenOrderByBrand_NameDesc(minPriceValue, maxPriceValue, pageable);
                 }
             } else {
+                // กรอง price + brand
                 if (direction == Sort.Direction.ASC) {
                     saleItems = pageRepository.findByBrand_NameInAndPriceBetweenOrderByBrand_NameAsc(
                             filterBrands, minPriceValue, maxPriceValue, pageable);

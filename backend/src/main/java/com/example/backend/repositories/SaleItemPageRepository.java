@@ -52,7 +52,6 @@ public interface SaleItemPageRepository extends JpaRepository<SaleItem, Integer>
             Integer maxPrice,
             Pageable pageable
     );
-
     Page<SaleItem> findByPriceBetweenOrderByBrand_NameAsc(Integer minPrice, Integer maxPrice, Pageable pageable);
 
     Page<SaleItem> findByPriceBetweenOrderByBrand_NameDesc(Integer minPrice, Integer maxPrice, Pageable pageable);
