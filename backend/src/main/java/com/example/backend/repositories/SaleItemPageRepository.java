@@ -22,4 +22,50 @@ public interface SaleItemPageRepository extends JpaRepository<SaleItem, Integer>
     Page<SaleItem> findAllByOrderByBrandNameAsc(Pageable pageable);
 
     Page<SaleItem> findAllByOrderByBrandNameDesc(Pageable pageable);
+
+    Page<SaleItem> findByBrand_NameInAndPriceBetweenAndStorageGbInOrderByBrand_NameAsc(
+            List<String> brands,
+            Integer minPrice,
+            Integer maxPrice,
+            List<Integer> storageGb,
+            Pageable pageable);
+
+    Page<SaleItem> findByBrand_NameInAndPriceBetweenAndStorageGbInOrderByBrand_NameDesc(
+            List<String> brands,
+            Integer minPrice,
+            Integer maxPrice,
+            List<Integer> storageGb,
+            Pageable pageable);
+
+    Page<SaleItem> findByBrand_NameInAndPriceBetweenOrderByBrand_NameAsc(
+            List<String> brands,
+            Integer minPrice,
+            Integer maxPrice,
+            Pageable pageable
+    );
+
+    Page<SaleItem> findByBrand_NameInAndPriceBetweenOrderByBrand_NameDesc(
+            List<String> brands,
+            Integer minPrice,
+            Integer maxPrice,
+            Pageable pageable
+    );
+    Page<SaleItem> findByPriceBetweenOrderByBrand_NameAsc(Integer minPrice, Integer maxPrice, Pageable pageable);
+
+    Page<SaleItem> findByPriceBetweenOrderByBrand_NameDesc(Integer minPrice, Integer maxPrice, Pageable pageable);
+
+    Page<SaleItem> findByPriceBetweenAndStorageGbInOrderByBrand_NameAsc(
+            Integer minPrice,
+            Integer maxPrice,
+            List<Integer> storageGb,
+            Pageable pageable);
+
+    Page<SaleItem> findByPriceBetweenAndStorageGbInOrderByBrand_NameDesc(
+            Integer minPrice,
+            Integer maxPrice,
+            List<Integer> storageGb,
+            Pageable pageable);
+    Page<SaleItem> findByStorageGbInOrderByBrand_NameAsc(List<Integer> storageGb, Pageable pageable);
+
+    Page<SaleItem> findByStorageGbInOrderByBrand_NameDesc(List<Integer> storageGb, Pageable pageable);
 }

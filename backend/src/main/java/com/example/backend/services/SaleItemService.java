@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,31 +105,117 @@ public class SaleItemService {
         }
     }
 
-    public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(List<String> filterBrands, String sortField, String sortDirection , Integer page , Integer size) {
+    public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(
+            List<String> filterBrands,
+            Integer minPrice,
+            Integer maxPrice,
+            List<String> filterStorageSizesStr,
+            String sortField,
+            String sortDirection,
+            Integer page,
+            Integer size) {
+
+        // แปลง List<String> เป็น List<Integer>
+        List<Integer> filterStorageSizes = List.of();
+        if (filterStorageSizesStr != null && !filterStorageSizesStr.isEmpty()) {
+            filterStorageSizes = filterStorageSizesStr.stream()
+                    .map(s -> {
+                        try {
+                            return Integer.parseInt(s);
+                        } catch (NumberFormatException e) {
+                            return null;
+                        }
+                    })
+                    .filter(i -> i != null)
+                    .toList();
+        }
+
+        String sortBy = (sortField == null || sortField.isEmpty()) ? "createdOn" : sortField;
+        boolean hasBrandFilter = filterBrands != null && !filterBrands.isEmpty();
+        boolean hasStorageFilter = filterStorageSizes != null && !filterStorageSizes.isEmpty();
+        boolean hasPriceFilter = minPrice != null || maxPrice != null;
+
+        int minPriceValue = (minPrice != null) ? minPrice : 0;
+        int maxPriceValue = (maxPrice != null) ? maxPrice : Integer.MAX_VALUE;
+
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortDirection) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+
         Page<SaleItem> saleItems;
-        if (filterBrands.isEmpty()) {
-            System.out.println(sortDirection);
-            if (sortField.isEmpty() && sortDirection.isEmpty()) {
-                saleItems = pageRepository.findAllByOrderByCreatedOn(PageRequest.of(page,size));
-                System.out.println("no filter createOn");
-            }   else if (sortDirection.equalsIgnoreCase("asc") || sortDirection.isEmpty()) {
-                System.out.println("no filter Asc");
-                saleItems = pageRepository.findAllByOrderByBrandNameAsc(PageRequest.of(page,size));
-            }   else {
-                saleItems = pageRepository.findAllByOrderByBrandNameDesc(PageRequest.of(page,size));
+
+        if (!hasPriceFilter && !hasStorageFilter) {
+            // กรองเฉพาะ brand + sort
+            if (!hasBrandFilter) {
+                if ((sortField == null || sortField.isEmpty()) && (sortDirection == null || sortDirection.isEmpty())) {
+                    saleItems = pageRepository.findAllByOrderByCreatedOn(pageable);
+                } else if ("asc".equalsIgnoreCase(sortDirection) || (sortDirection == null || sortDirection.isEmpty())) {
+                    saleItems = pageRepository.findAllByOrderByBrandNameAsc(pageable);
+                } else {
+                    saleItems = pageRepository.findAllByOrderByBrandNameDesc(pageable);
+                }
+            } else {
+                if ((sortField == null || sortField.isEmpty()) && (sortDirection == null || sortDirection.isEmpty())) {
+                    saleItems = pageRepository.findByBrand_NameInOrderByBrand_CreatedOn(filterBrands, pageable);
+                } else if ("asc".equalsIgnoreCase(sortDirection) || (sortDirection == null || sortDirection.isEmpty())) {
+                    saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands, pageable);
+                } else {
+                    saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands, pageable);
+                }
+            }
+        } else if (hasPriceFilter && !hasStorageFilter) {
+            // กรอง price + brand แต่ไม่มี storage
+            if (!hasBrandFilter) {
+                // กรอง price อย่างเดียว ไม่กรอง brand
+                if (direction == Sort.Direction.ASC) {
+                    saleItems = pageRepository.findByPriceBetweenOrderByBrand_NameAsc(minPriceValue, maxPriceValue, pageable);
+                } else {
+                    saleItems = pageRepository.findByPriceBetweenOrderByBrand_NameDesc(minPriceValue, maxPriceValue, pageable);
+                }
+            } else {
+                // กรอง price + brand
+                if (direction == Sort.Direction.ASC) {
+                    saleItems = pageRepository.findByBrand_NameInAndPriceBetweenOrderByBrand_NameAsc(
+                            filterBrands, minPriceValue, maxPriceValue, pageable);
+                } else {
+                    saleItems = pageRepository.findByBrand_NameInAndPriceBetweenOrderByBrand_NameDesc(
+                            filterBrands, minPriceValue, maxPriceValue, pageable);
+                }
+            }
+        } else if (!hasBrandFilter && !hasPriceFilter && hasStorageFilter) {
+            // กรอง storage อย่างเดียว (ไม่มี brand, ไม่มี price)
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByStorageGbInOrderByBrand_NameAsc(filterStorageSizes, pageable);
+            } else {
+                saleItems = pageRepository.findByStorageGbInOrderByBrand_NameDesc(filterStorageSizes, pageable);
+            }
+        } else if (!hasBrandFilter && hasPriceFilter && hasStorageFilter) {
+            // กรอง price + storage แต่ไม่มี brand
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByPriceBetweenAndStorageGbInOrderByBrand_NameAsc(
+                        minPriceValue, maxPriceValue, filterStorageSizes, pageable);
+            } else {
+                saleItems = pageRepository.findByPriceBetweenAndStorageGbInOrderByBrand_NameDesc(
+                        minPriceValue, maxPriceValue, filterStorageSizes, pageable);
             }
         } else {
-            System.out.println(sortDirection);
-            if (sortField.isEmpty() && sortDirection.isEmpty() ) {
-                System.out.println("filter createOn");
-                saleItems = pageRepository.findByBrand_NameInOrderByBrand_CreatedOn(filterBrands, PageRequest.of(page,size));
-            } else if (sortDirection.equalsIgnoreCase("asc") || sortDirection.isEmpty()) {
-                System.out.println("filter Asc");
-                saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameAsc(filterBrands , PageRequest.of(page,size));
+            // กรอง price + brand + storage
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByBrand_NameInAndPriceBetweenAndStorageGbInOrderByBrand_NameAsc(
+                        hasBrandFilter ? filterBrands : List.of(),
+                        minPriceValue,
+                        maxPriceValue,
+                        filterStorageSizes,
+                        pageable);
             } else {
-                saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands , PageRequest.of(page,size));
+                saleItems = pageRepository.findByBrand_NameInAndPriceBetweenAndStorageGbInOrderByBrand_NameDesc(
+                        hasBrandFilter ? filterBrands : List.of(),
+                        minPriceValue,
+                        maxPriceValue,
+                        filterStorageSizes,
+                        pageable);
             }
         }
-        return listMapper.toPageDTO(saleItems , GetSaleItemDto.class , modelMapper , sortField);
+
+        return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortBy);
     }
 }
