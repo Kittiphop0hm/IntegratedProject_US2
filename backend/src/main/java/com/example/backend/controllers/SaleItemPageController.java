@@ -17,10 +17,6 @@ import java.util.List;
 public class SaleItemPageController {
     @Autowired
     private SaleItemService service;
-    @Autowired
-    private ListMapper listMapper;
-    @Autowired
-    private ModelMapper modelMapper;
 
     @GetMapping("")
     public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
@@ -32,14 +28,5 @@ public class SaleItemPageController {
     ) {
         return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection , page , size));
     }
-
-//    @GetMapping("")
-//    public ResponseEntity<List<GetSaleItemDto>> filterSaleItemsByBrandName(
-//            @RequestParam(defaultValue = "") List<String> filterBrands,
-//            @RequestParam(defaultValue = "") String sortField,
-//            @RequestParam(defaultValue = "asc") String sortDirection
-//    ) {
-//        return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection));
-//    }
 }
 
