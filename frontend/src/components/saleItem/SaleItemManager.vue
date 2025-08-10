@@ -9,7 +9,6 @@ import FilterSaleItem from "./FilterSortSaleItem.vue";
 const route = useRoute();
 const saleItem = ref([]);
 const pageObj = ref({});
-const sortDirection = ref("default");
 
 let pageSizeWatchInitialized = false;
 const pageSize = ref();
@@ -20,9 +19,10 @@ const directionSession = sessionStorage.getItem("direction");
 const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
 const directionR = ref(directionSession ? directionSession : '');
 const fieldR = ref('')
+const pageNumberSession = sessionStorage.getItem("pageNumber");
+const pageSizeSession = sessionStorage.getItem("pageSize");
 onMounted(() => {
-  const pageNumberSession = sessionStorage.getItem("pageNumber");
-  const pageSizeSession = sessionStorage.getItem("pageSize");
+
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
   pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
 });
