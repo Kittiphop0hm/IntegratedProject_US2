@@ -1,11 +1,15 @@
 package com.example.backend;
 
+import com.example.backend.utils.FileStorageProperties;
 import com.example.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-
+@EnableConfigurationProperties({
+        FileStorageProperties.class
+})
 @SpringBootApplication
 public class BackendApplication {
     public static void main(String[] args) {
