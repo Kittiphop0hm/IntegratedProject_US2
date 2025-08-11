@@ -568,7 +568,7 @@ const deleteImg = (index) => {
         <ul v-for="(img, index) in images" :key="index" class="flex">
           <li class="bg-gray-200 my-1 py-2 px-6 rounded-lg relative">
             {{ img }}
-            <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-4 h-4 rounded-full bg-red-400 cursor-pointer hover:opacity-80">X</button>
+            <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-4 h-4 rounded-full bg-red-400 cursor-pointer">X</button>
           </li>
         </ul>
       </div>
