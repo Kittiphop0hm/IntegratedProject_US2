@@ -76,12 +76,11 @@ async function getItems(url) {
       const formdata = new FormData()
       formdata.append("file", file)
       formdata.append("saleId", saleId)
-
       const res = await fetch(`${url}`, {
         method: "POST",
         body: formdata
       })
-      const data = res.text()
+      const data = await res.text()
       return {
         data: data,
         status: res.status

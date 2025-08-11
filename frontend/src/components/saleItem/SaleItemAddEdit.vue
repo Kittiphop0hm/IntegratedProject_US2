@@ -232,9 +232,12 @@ const showFilename = (e) => {
   filenames.forEach((file) => {
       const imageObj = {
       name: file.name,
-      url: URL.createObjectURL(file)
+      url: URL.createObjectURL(file),
+      file
     }
     images.value.push(imageObj)
+    // console.log(images.value[0].file);
+    
   })
 }
 
@@ -248,17 +251,16 @@ const uploadPicture = async () => {
   console.log(images.value);
   console.log("upload");
 
-  images.value.forEach(async(file) => {
-    console.log(file.name);
-    console.log(route.params.id);
+  images.value.forEach(async(image) => {
     try {
-      const upload = await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, file.name, route.params.id)
+      console.log(image.file);
+      const upload = await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, image.file, route.params.id)
+      console.log(upload.status);
+      
     } catch(err) {
-      console.log(err);
+      console.error(err);
     }
   })
-  
-
 }
 </script>
 
