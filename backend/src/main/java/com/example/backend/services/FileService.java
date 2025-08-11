@@ -1,7 +1,10 @@
 package com.example.backend.services;
 
+import com.example.backend.entities.Picture;
+import com.example.backend.entities.SaleItem;
+import com.example.backend.repositories.PictureRepository;
+import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.FileStorageProperties;
-import org.hibernate.ResourceClosedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -12,7 +15,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -22,11 +24,18 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class FileService {
     private final Path fileStorageLocation;
     private final FileStorageProperties fileStorageProperties;
+
+    @Autowired
+    private SaleItemRepository saleItemRepository;
+    @Autowired
+    private PictureRepository pictureRepository;
+
     @Autowired
     public FileService(FileStorageProperties fileStorageProperties){
         this.fileStorageProperties = fileStorageProperties;
@@ -40,17 +49,28 @@ public class FileService {
         }
     }
 
-    public String store(MultipartFile file){
+    public String store(MultipartFile file , Integer saleId){
+
+        SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
+
         if(!isSupportedContentType(file)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The content type of the file is not supported." + file.getContentType());
         }
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originalName = StringUtils.cleanPath(file.getOriginalFilename());
+
+        String extension = originalName.substring(originalName.lastIndexOf("."));
+        String realName = UUID.randomUUID() + extension;
         try {
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetLocation = this.fileStorageLocation.resolve(realName);
+            Picture picture = new Picture();
+            picture.setOriginalName(originalName);
+            picture.setRealName(realName);
+            picture.setSales(saleItem);
             Files.copy(file.getInputStream() , targetLocation , StandardCopyOption.REPLACE_EXISTING);
-            return fileName;
+            pictureRepository.save(picture);
+            return originalName;
         } catch (IOException e) {
-            throw new RuntimeException("Could not store file " + fileName, e);
+            throw new RuntimeException("Could not store file " + originalName, e);
         }
     }
 
@@ -68,6 +88,20 @@ public class FileService {
         }
     }
 
+//    public List<Resource> loadFileAsResources(Integer saleId) {
+//
+//        try {
+//            SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
+//            List<Picture> pictures = pictureRepository.findAllBySales(saleItem);
+//            List<Resource> resources = new ArrayList<>();
+//            pictures.forEach(p -> resources.add(loadFileAsResource(p.getRealName())));
+//            return resources;
+//        } catch (ResourceNotFoundException e) {
+//            throw new RuntimeException("Could not load Resources " + e);
+//        }
+//    }
+
+
     public String getFileType(Resource resource){
         try{
             String type = Files.probeContentType(resource.getFile().toPath());
@@ -77,18 +111,18 @@ public class FileService {
         }
     }
 
-
     private boolean isSupportedContentType(MultipartFile file){
         String contentType = file.getContentType();
         List<String> supportFileTypes = Arrays.stream(fileStorageProperties.getSupportFileTypes()).toList();
         return supportFileTypes.contains(contentType);
     }
 
-    public List<String> store(List<MultipartFile> files){
+    public List<String> store(List<MultipartFile> files , Integer id){
         List<String> fileNames = new ArrayList<>(files.size());
-        files.forEach(file -> fileNames.add(store(file)));
+        files.forEach(file -> fileNames.add(store(file , id)));
         return fileNames;
     }
+
 
     public void removeFile(String filename) {
         try {
