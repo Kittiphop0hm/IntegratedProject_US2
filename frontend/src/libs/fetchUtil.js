@@ -70,4 +70,24 @@ async function getItems(url) {
       throw new Error('can not edit your item')
     }
   }
-  export { getItems, getItemById, deleteItemById, addItem, editItem }
+
+  async function addImage(url, file, saleId) {
+    try {
+      const formdata = new FormData()
+      formdata.append("file", file)
+      formdata.append("saleId", saleId)
+
+      const res = await fetch(`${url}`, {
+        method: "POST",
+        body: formdata
+      })
+      const data = res.text()
+      return {
+        data: data,
+        status: res.status
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+  export { getItems, getItemById, deleteItemById, addItem, editItem, addImage }

@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/files")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class FileController {
     @Autowired
     private FileService fileService;
@@ -38,7 +39,7 @@ public class FileController {
 //    }
 
     @PostMapping("")
-    public ResponseEntity<String> uploadFiles(@RequestParam("files") List<MultipartFile> files ,@RequestParam("saleId") Integer saleId) {
+    public ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> files ,@RequestParam("saleId") Integer saleId) {
         fileService.store(files , saleId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Files are uploaded. " + files);
     }

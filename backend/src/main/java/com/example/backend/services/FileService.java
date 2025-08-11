@@ -123,11 +123,12 @@ public class FileService {
         return fileNames;
     }
 
-
     public void removeFile(String filename) {
         try {
             Path filePath = this.fileStorageLocation.resolve(filename).normalize();
             if (Files.exists(filePath)) {
+                Picture picture = pictureRepository.findPictureByRealName(filename);
+                pictureRepository.deleteById(picture.getId());
                 Files.delete(filePath);
             } else {
                 throw new RuntimeException("File: " + filename + " not found!");
@@ -135,7 +136,6 @@ public class FileService {
         } catch (IOException ex) {
             throw new RuntimeException("Can't remove file: " + filename + ex);
         }
-
     }
 
 }
