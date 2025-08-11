@@ -226,8 +226,9 @@ const previousPath = localStorage.getItem("previousPath");
 const images = ref([])
 
 const uploadFilename = (e) => {
-  const filenames = e.target.files
-  images.value = Array.from(filenames).map((filename) => filename.name)
+  const filenames = Array.from(e.target.files)
+  console.log(filenames);
+  images.value = filenames.map((file) => file.name)
   console.log(images.value);
 }
 
