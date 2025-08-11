@@ -426,6 +426,7 @@ const deleteImg = (index) => {
             <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-4 h-4 rounded-full bg-red-400 cursor-pointer">X</button>
           </li>
         </ul>
+        <button @click="images.length = 0" v-if="images.length > 0" class="cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80">Clear</button>
       </div>
 </template>
 <style scoped></style>
