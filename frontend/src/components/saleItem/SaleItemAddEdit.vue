@@ -8,6 +8,7 @@ import {
   addItem,
   getItemById,
   editItem,
+  addImage
 } from "../../libs/fetchUtil.js";
 const router = useRouter();
 const route = useRoute();
@@ -225,17 +226,39 @@ const previousPath = localStorage.getItem("previousPath");
 
 const images = ref([])
 
-const uploadFilename = (e) => {
+const showFilename = (e) => {
   const filenames = Array.from(e.target.files)
   console.log(filenames);
-  images.value = filenames.map((file) => file.name)
-  console.log(images.value);
+  filenames.forEach((file) => {
+      const imageObj = {
+      name: file.name,
+      url: URL.createObjectURL(file)
+    }
+    images.value.push(imageObj)
+  })
 }
 
 const deleteImg = (index) => {
   if (images.value.length > 0) {
     images.value.splice(index, 1)
   }
+}
+
+const uploadPicture = async () => {
+  console.log(images.value);
+  console.log("upload");
+
+  images.value.forEach(async(file) => {
+    console.log(file.name);
+    console.log(route.params.id);
+    try {
+      const upload = await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, file.name, route.params.id)
+    } catch(err) {
+      console.log(err);
+    }
+  })
+  
+
 }
 </script>
 
@@ -416,17 +439,24 @@ const deleteImg = (index) => {
   </form>
       <div class="w-fit ml-[51px]">
         <label for="file" class="cursor-pointer p-3 bg-amber-400 rounded-lg hover:opacity-80">Upload picture</label>
-        <input @change="uploadFilename" id="file" type="file" multiple class="cursor-pointer hidden">
+        <input @change="showFilename" id="file" type="file" multiple class="cursor-pointer hidden">
       </div>
 
       <div class="ml-[51px] my-4">
-        <ul v-for="(img, index) in images" :key="index" class="flex">
-          <li class="bg-gray-200 my-1 py-2 px-6 rounded-lg relative">
-            {{ img }}
-            <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-4 h-4 rounded-full bg-red-400 cursor-pointer hover:opacity-80">X</button>
-          </li>
-        </ul>
-        <button @click="images.length = 0" v-if="images.length > 0" class="cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80">Clear</button>
+        <div class="flex flex-col space-x-4">
+          <ul v-for="(img, index) in images" :key="index" class="flex">
+            <li class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative">
+              <img :src="img.url" :alt="`image${index}`" width="200" height="200" class="rounded-lg">
+              <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
+              <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-6 h-6 rounded-full bg-red-400 cursor-pointer hover:opacity-80">X</button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="space-x-1">
+          <button @click="uploadPicture" v-if="images.length > 0" class="cursor-pointer py-2 px-3 bg-green-300 rounded-lg hover:opacity-80">Upload</button>
+          <button @click="images.length = 0" v-if="images.length > 0" class="cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80">Clear</button>
+        </div>
       </div>
 </template>
 <style scoped></style>
