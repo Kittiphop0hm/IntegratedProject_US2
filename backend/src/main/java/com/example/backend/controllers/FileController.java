@@ -49,5 +49,4 @@ public class FileController {
         fileService.removeFile(filename);
         return ResponseEntity.ok("File: " + filename + " removed");
     }
-
 }
