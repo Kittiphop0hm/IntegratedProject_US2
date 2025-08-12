@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface PictureRepository extends JpaRepository<Picture, Integer> {
     List<Picture> findAllBySales(SaleItem saleItem);
+    Picture findPictureByRealName(String realName);
 }

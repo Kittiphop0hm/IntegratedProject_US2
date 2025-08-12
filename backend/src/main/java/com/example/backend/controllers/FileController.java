@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/files")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class FileController {
     @Autowired
     private FileService fileService;
@@ -48,5 +49,4 @@ public class FileController {
         fileService.removeFile(filename);
         return ResponseEntity.ok("File: " + filename + " removed");
     }
-
 }
