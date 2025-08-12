@@ -71,10 +71,10 @@ async function getItems(url) {
     }
   }
 
-  async function addImage(url, file, saleId) {
+  async function addImage(url, fileImages, saleId) {
     try {
       const formdata = new FormData()
-      formdata.append("file", file)
+      formdata.append("file", fileImages)
       formdata.append("saleId", saleId)
       const res = await fetch(`${url}`, {
         method: "POST",

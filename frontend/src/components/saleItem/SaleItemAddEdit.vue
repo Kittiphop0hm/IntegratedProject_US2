@@ -180,6 +180,70 @@ const isUpdated = computed(() => {
    return checkUpdate || isNewImages.value
 });
 
+const previousPath = localStorage.getItem("previousPath");
+
+const images = ref([]);
+const imageFile = ref([])
+
+const showFilename = (e) => {
+  const filenames = Array.from(e.target.files);
+  filenames.forEach((file) => {
+    const imageObj = {
+      name: file.name,
+      url: URL.createObjectURL(file),
+      file: file,
+    };
+    images.value.push(imageObj);
+    imageFile.value.push(file)
+  });
+    e.target.value = null
+    console.log(images.value);
+    console.log(imageFile.value);
+};
+
+const isNewImages = computed(() => images.value.length > 0)
+
+const isActive = computed(() => {
+  const isUpdatedField = 
+      saleItem.value.brand.id !== "" &&
+      saleItem.value.model !== "" &&
+      saleItem.value.price !== "" &&
+      saleItem.value.description !== "" &&
+      isFormValid()
+   return isUpdatedField || isNewImages.value
+});
+
+const isUploadSuccess = ref(false);
+
+const deleteImg = (index) => {
+  if (images.value.length > 0) {
+    URL.revokeObjectURL(images.value[index].url)
+    images.value.splice(index, 1);
+  }
+};
+
+// const uploadPicture = async () => {
+//   images.value.forEach(async (image) => {
+//     try {
+//       console.log(image.file);
+//       const upload = await addImage(
+//         `${import.meta.env.VITE_APP_URL}/api/files`,
+//         image.file,
+//         route.params.id
+//       );
+//       if (upload.status === 201) {
+//         isUploadSuccess.value = true;
+//         setTimeout(() => {
+//           isUploadSuccess.value = false;
+//         }, 3000);
+//       }
+//       console.log(upload.status);
+//     } catch (err) {
+//       console.error(err);
+//     }
+//   });
+// };
+
 async function submitForm() {
   isSubmitted.value = true;
   if (!isFormValid()) {
@@ -201,10 +265,14 @@ async function submitForm() {
     });
   } else {
     try {
-      await addItem(
+      const item = await addItem(
         `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
         saleItem.value
       );
+      console.log(item.data.id);
+      imageFile.value.forEach(async (file) => {
+          await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, file, item.data.id)
+      })
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {
@@ -212,65 +280,6 @@ async function submitForm() {
     }
   }
 }
-
-const previousPath = localStorage.getItem("previousPath");
-
-const images = ref([]);
-
-const showFilename = (e) => {
-  const filenames = Array.from(e.target.files);
-  console.log(filenames);
-  filenames.forEach((file) => {
-    const imageObj = {
-      name: file.name,
-      url: URL.createObjectURL(file),
-      file,
-    };
-    images.value.push(imageObj);
-  });
-};
-
-const isNewImages = computed(() => images.value.length > 0)
-
-const isActive = computed(() => {
-  const isUpdatedField = 
-      saleItem.value.brand.id !== "" &&
-      saleItem.value.model !== "" &&
-      saleItem.value.price !== "" &&
-      saleItem.value.description !== "" &&
-      isFormValid()
-   return isUpdatedField || isNewImages.value
-});
-
-const isUploadSuccess = ref(false);
-
-const deleteImg = (index) => {
-  if (images.value.length > 0) {
-    images.value.splice(index, 1);
-  }
-};
-
-const uploadPicture = async () => {
-  images.value.forEach(async (image) => {
-    try {
-      console.log(image.file);
-      const upload = await addImage(
-        `${import.meta.env.VITE_APP_URL}/api/files`,
-        image.file,
-        route.params.id
-      );
-      if (upload.status === 201) {
-        isUploadSuccess.value = true;
-        setTimeout(() => {
-          isUploadSuccess.value = false;
-        }, 3000);
-      }
-      console.log(upload.status);
-    } catch (err) {
-      console.error(err);
-    }
-  });
-};
 </script>
 
 <template>
