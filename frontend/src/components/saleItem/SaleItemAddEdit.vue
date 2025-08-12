@@ -276,8 +276,9 @@ const moveDown = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0]
   arr.splice(index + 1, 0, deleteElement)
   console.log(arr);
-  
 }
+
+// Edit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
 </script>
 
 <template>
