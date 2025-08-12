@@ -184,6 +184,7 @@ const previousPath = localStorage.getItem("previousPath");
 
 const images = ref([]);
 const imageFile = ref([])
+const isImageFull = ref(false)
 
 const showFilename = (e) => {
   const filenames = Array.from(e.target.files);
@@ -193,8 +194,15 @@ const showFilename = (e) => {
       url: URL.createObjectURL(file),
       file: file,
     };
-    images.value.push(imageObj);
-    imageFile.value.push(file)
+    if (images.value.length < 4) {
+        images.value.push(imageObj);
+        imageFile.value.push(file) 
+    } else {
+      isImageFull.value = true
+      setTimeout(() => {
+        isImageFull.value = false
+      }, 3000)
+    }
   });
     e.target.value = null
     console.log(images.value);
@@ -213,36 +221,12 @@ const isActive = computed(() => {
    return isUpdatedField || isNewImages.value
 });
 
-const isUploadSuccess = ref(false);
-
 const deleteImg = (index) => {
   if (images.value.length > 0) {
     URL.revokeObjectURL(images.value[index].url)
     images.value.splice(index, 1);
   }
 };
-
-// const uploadPicture = async () => {
-//   images.value.forEach(async (image) => {
-//     try {
-//       console.log(image.file);
-//       const upload = await addImage(
-//         `${import.meta.env.VITE_APP_URL}/api/files`,
-//         image.file,
-//         route.params.id
-//       );
-//       if (upload.status === 201) {
-//         isUploadSuccess.value = true;
-//         setTimeout(() => {
-//           isUploadSuccess.value = false;
-//         }, 3000);
-//       }
-//       console.log(upload.status);
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   });
-// };
 
 async function submitForm() {
   isSubmitted.value = true;
@@ -284,22 +268,6 @@ async function submitForm() {
 
 <template>
   <Navbar />
-  <div v-if="isUploadSuccess" role="alert" class="alert alert-success">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      class="h-6 w-6 shrink-0 stroke-current"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-    <span>Your purchase has been confirmed!</span>
-  </div>
   <form @submit.prevent="submitForm">
     <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
       <template #path>
@@ -505,38 +473,38 @@ async function submitForm() {
     />
   </div>
 
-  <div class="ml-[51px] my-4">
-    <div class="flex flex-col space-x-4">
-      <ul v-for="(img, index) in images" :key="index" class="flex">
-        <li
-          class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
-        >
-          <img
-            :src="img.url"
-            :alt="`image${index}`"
-            width="200"
-            height="200"
-            class="rounded-lg"
-          />
-          <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
-          <button
-            @click="deleteImg(index)"
-            class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-6 h-6 rounded-full bg-red-400 cursor-pointer hover:opacity-80"
-          >
-            X
-          </button>
-        </li>
-      </ul>
+    <div v-if="isImageFull" role="alert" class="alert alert-warning mx-[51px] my-5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+      </svg>
+      <span>You can upload up to 4 images only.</span>
     </div>
 
+    <div class="ml-[51px] my-4">
+      <div class="flex flex-col space-x-4">
+        <ul v-for="(img, index) in images" :key="index" class="flex">
+          <li
+            class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
+          >
+            <img
+              :src="img.url"
+              :alt="`image${index}`"
+              width="200"
+              height="200"
+              class="rounded-lg"
+            />
+            <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
+            <button
+              @click="deleteImg(index)"
+              class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-6 h-6 rounded-full bg-red-400 cursor-pointer hover:opacity-80"
+            >
+              X
+            </button>
+          </li>
+        </ul>
+      </div>
+
     <div class="space-x-1">
-      <button
-        @click="uploadPicture"
-        v-if="images.length > 0"
-        class="cursor-pointer py-2 px-3 bg-green-300 rounded-lg hover:opacity-80"
-      >
-        Upload
-      </button>
       <button
         @click="images.length = 0"
         v-if="images.length > 0"

@@ -37,16 +37,20 @@ const props = defineProps({
         </div>
 
         <div class="grid grid-cols-4 gap-2 mt-4">
-          <div class="border border-gray-300 rounded p-1">
+          <div class="relative border border-gray-300 rounded p-1">
+            <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
             <img src="/images/iPhone14ProMax.jpg" alt="thumb 1" class="w-30 mx-auto" />
           </div>
-          <div class="border border-gray-300 rounded p-1">
+          <div class="relative border border-gray-300 rounded p-1">
+            <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
             <img src="/images/iPhone14ProMax.jpg" alt="thumb 2" class="w-30 mx-auto" />
           </div>
-          <div class="border border-gray-300 rounded p-1">
+          <div class="relative border border-gray-300 rounded p-1">
+            <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
             <img src="/images/iPhone14ProMax.jpg" alt="thumb 3" class="w-30 mx-auto" />
           </div>
-          <div class="border border-gray-300 rounded p-1">
+          <div class="relative border border-gray-300 rounded p-1">
+            <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
             <img src="/images/iPhone14ProMax.jpg" alt="thumb 4" class="w-30 mx-auto" />
           </div>
         </div>
