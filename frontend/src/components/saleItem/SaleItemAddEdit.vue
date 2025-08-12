@@ -278,11 +278,6 @@ const moveDown = (arr, index) => {
   console.log(arr);
   
 }
-
-watchEffect(() => {
-  console.log(images.value);
-})
-
 </script>
 
 <template>
