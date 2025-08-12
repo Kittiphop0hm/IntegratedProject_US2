@@ -264,6 +264,25 @@ async function submitForm() {
     }
   }
 }
+
+const moveUp = (arr, index) => {
+  const deleteElement = arr.splice(index, 1)[0]
+  arr.splice(index - 1, 0, deleteElement)
+  console.log(arr);
+  
+}
+
+const moveDown = (arr, index) => {
+  const deleteElement = arr.splice(index, 1)[0]
+  arr.splice(index + 1, 0, deleteElement)
+  console.log(arr);
+  
+}
+
+watchEffect(() => {
+  console.log(images.value);
+})
+
 </script>
 
 <template>
@@ -496,11 +515,27 @@ async function submitForm() {
             <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
             <button
               @click="deleteImg(index)"
-              class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-6 h-6 rounded-full bg-red-400 cursor-pointer hover:opacity-80"
+              class="absolute flex justify
+              -center items-center top-0 right-1 text-[12px] rounded-full font-black text-red-400 cursor-pointer hover:opacity-80"
             >
               X
             </button>
           </li>
+          <div class="flex flex-col justify-center space-y-2 ml-2">
+            <button @click="moveUp(images, index)" v-if="index > 0" class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer">
+              <svg  xmlns="http://www.w3.org/2000/svg" width="25" height="25"  
+                fill="currentColor" viewBox="0 0 24 24" >
+                <path d="M13 18V9.91l3.29 3.3 1.42-1.42L12 6.09l-5.71 5.7 1.42 1.42L11 9.91V18z"></path>
+              </svg>
+            </button>
+
+            <button @click="moveDown(images, index)" v-if="index < images.length -1" class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer">
+              <svg  xmlns="http://www.w3.org/2000/svg" width="25" height="25"  
+                fill="currentColor" viewBox="0 0 24 24" >
+                <path d="M16.29 10.79 13 14.09V6h-2v8.09l-3.29-3.3-1.42 1.42 5.71 5.7 5.71-5.7z"></path>
+              </svg>
+            </button>
+          </div>
         </ul>
       </div>
 
