@@ -1,128 +1,129 @@
 <script setup>
 import Navbar from "@/views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   getItems,
   addItem,
   getItemById,
   editItem,
-  addImage
+  addImage,
 } from "../../libs/fetchUtil.js";
 const router = useRouter();
 const route = useRoute();
 const brands = ref([]);
 const validationMessages = ref({
-  brand: '',
-  model: '',
-  price: '',
-  description: '',
-  ramGb: '',
-  screenSizeInch: '',
-  storageGb: '',
-  color: '',
-  quantity: '',
+  brand: "",
+  model: "",
+  price: "",
+  description: "",
+  ramGb: "",
+  screenSizeInch: "",
+  storageGb: "",
+  color: "",
+  quantity: "",
 });
-
-
 
 function validateField(field) {
   const value = saleItem.value[field];
 
-if (field === 'brand') {
-  validationMessages.value.brand = !saleItem.value.brand.id
-    ? 'Brand must be selected.'
-    : '';
-}
-
-
-  if (field === 'model') {
-  validationMessages.value.model =
-     value.length < 1 || value.length > 60
-      ? 'Model must be 1-60 characters long.'
-      : '';
-}
-
-if (field === 'price') {
-  validationMessages.value.price =
-    value === '' || value < 0 || !Number.isInteger(value)
-      ? 'Price must be non-negative integer.'
-      : '';
-}
-
-
-  if (field === 'description') {
-    validationMessages.value.description =
-      value === '' || value.length < 1 || value.length > 16384
-        ? 'Description must be 1-16,384 characters long.'
-        : '';
+  if (field === "brand") {
+    validationMessages.value.brand = !saleItem.value.brand.id
+      ? "Brand must be selected."
+      : "";
   }
 
-if (field === 'ramGb') {
-  validationMessages.value.ramGb =
-    saleItem.value.ramGb === null || saleItem.value.ramGb === undefined || saleItem.value.ramGb === ''
-      ? ''
-      : (!Number.isInteger(saleItem.value.ramGb) || saleItem.value.ramGb <= 0)
-        ? 'RAM size must be positive integer or not specified.'
-        : '';
-}
+  if (field === "model") {
+    validationMessages.value.model =
+      value.length < 1 || value.length > 60
+        ? "Model must be 1-60 characters long."
+        : "";
+  }
 
+  if (field === "price") {
+    validationMessages.value.price =
+      value === "" || value < 0 || !Number.isInteger(value)
+        ? "Price must be non-negative integer."
+        : "";
+  }
 
+  if (field === "description") {
+    validationMessages.value.description =
+      value === "" || value.length < 1 || value.length > 16384
+        ? "Description must be 1-16,384 characters long."
+        : "";
+  }
 
-if (field === 'screenSizeInch') {
-  validationMessages.value.screenSizeInch =
-    value !== '' && value !== null && (
-      value <= 0 || !/^\d+(\.\d{1,2})?$/.test(value)
-    )
-      ? 'Screen size must be positive number with at most 2 decimal points or not specified.'
-      : '';
-}
+  if (field === "ramGb") {
+    validationMessages.value.ramGb =
+      saleItem.value.ramGb === null ||
+      saleItem.value.ramGb === undefined ||
+      saleItem.value.ramGb === ""
+        ? ""
+        : !Number.isInteger(saleItem.value.ramGb) || saleItem.value.ramGb <= 0
+        ? "RAM size must be positive integer or not specified."
+        : "";
+  }
 
+  if (field === "screenSizeInch") {
+    validationMessages.value.screenSizeInch =
+      value !== "" &&
+      value !== null &&
+      (value <= 0 || !/^\d+(\.\d{1,2})?$/.test(value))
+        ? "Screen size must be positive number with at most 2 decimal points or not specified."
+        : "";
+  }
 
-if (field === 'storageGb') {
-  validationMessages.value.storageGb =
-    saleItem.value.storageGb === null || saleItem.value.storageGb === undefined || saleItem.value.storageGb === ''
-      ? ''
-      : (!Number.isInteger(saleItem.value.storageGb) || saleItem.value.storageGb <= 0)
-        ? 'Storage size must be positive integer or not specified.'
-        : '';
-}
+  if (field === "storageGb") {
+    validationMessages.value.storageGb =
+      saleItem.value.storageGb === null ||
+      saleItem.value.storageGb === undefined ||
+      saleItem.value.storageGb === ""
+        ? ""
+        : !Number.isInteger(saleItem.value.storageGb) ||
+          saleItem.value.storageGb <= 0
+        ? "Storage size must be positive integer or not specified."
+        : "";
+  }
 
+  if (field === "color") {
+    validationMessages.value.color =
+      value && (value.length < 1 || value.length > 40)
+        ? "Color must be 1-40 characters long or not specified."
+        : "";
+  }
 
-if (field === 'color') {
-  validationMessages.value.color =
-    value && (value.length < 1 || value.length > 40)
-      ? 'Color must be 1-40 characters long or not specified.'
-      : '';
-}
-
-if (field === 'quantity') {
-  validationMessages.value.quantity =
-      value !== '' && (
-      !Number.isInteger(value) || value < 0
-    )
-      ? 'Quantity must be non-negative integer.'
-      : '';
-}
+  if (field === "quantity") {
+    validationMessages.value.quantity =
+      value !== "" && (!Number.isInteger(value) || value < 0)
+        ? "Quantity must be non-negative integer."
+        : "";
+  }
 }
 
 function isFormValid() {
   const fields = [
-    'brand', 'model', 'price', 'description',
-    'ramGb', 'screenSizeInch', 'storageGb', 'color', 'quantity'
+    "brand",
+    "model",
+    "price",
+    "description",
+    "ramGb",
+    "screenSizeInch",
+    "storageGb",
+    "color",
+    "quantity",
   ];
 
   fields.forEach((field) => validateField(field));
 
-  return Object.values(validationMessages.value).every(msg => msg === '');
+  return Object.values(validationMessages.value).every((msg) => msg === "");
 }
-
 
 const initSaleItem = {
   brand: {
     id: "",
-  } , 
+  },
   model: "",
   price: "",
   description: "",
@@ -155,10 +156,10 @@ onMounted(async () => {
         const { id, ...rest } = data;
         // console.log("data:", data);
         console.log("rest:", rest);
-        saleItem.value = { ...initSaleItem ,  ...rest };
+        saleItem.value = { ...initSaleItem, ...rest };
         // console.log("Test First");
         // console.log("saleItem.value:", saleItem.value);
-        saleItemForchecking.value = { ...initSaleItem , ...rest };
+        saleItemForchecking.value = { ...initSaleItem, ...rest };
         // console.log("saleItemForchecking.value:", saleItemForchecking.value);
       }
     } catch (err) {
@@ -175,27 +176,17 @@ onMounted(async () => {
 
 const isSubmitted = ref(false);
 const isUpdated = computed(() => {
-  return (
-    JSON.stringify(saleItem.value) !== JSON.stringify(saleItemForchecking.value)
-  );
-});
-const isActive = computed(() => {
-  return (
-    saleItem.value.brand.id !== "" &&
-    saleItem.value.model !== "" &&
-    saleItem.value.price !== "" &&
-    saleItem.value.description !== ""&&
-    isFormValid()
-  );
+   const checkUpdate = JSON.stringify(saleItem.value) !== JSON.stringify(saleItemForchecking.value)
+   return checkUpdate || isNewImages.value
 });
 
 async function submitForm() {
-  isSubmitted.value = true
-if (!isFormValid()) {
+  isSubmitted.value = true;
+  if (!isFormValid()) {
     isSubmitted.value = false;
-    return; 
+    return;
   }
- 
+
   if (Number(route.params.id)) {
     await editItem(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
@@ -215,7 +206,7 @@ if (!isFormValid()) {
         saleItem.value
       );
       saleItem.value = { ...initSaleItem };
-      router.push({ path: previousPath , query: { alertAdd: "true" } });
+      router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {
       console.log(error);
     }
@@ -224,51 +215,82 @@ if (!isFormValid()) {
 
 const previousPath = localStorage.getItem("previousPath");
 
-const images = ref([])
+const images = ref([]);
 
 const showFilename = (e) => {
-  const filenames = Array.from(e.target.files)
+  const filenames = Array.from(e.target.files);
   console.log(filenames);
   filenames.forEach((file) => {
-      const imageObj = {
+    const imageObj = {
       name: file.name,
       url: URL.createObjectURL(file),
-      file
-    }
-    images.value.push(imageObj)
-    // console.log(images.value[0].file);
-    
-  })
-}
+      file,
+    };
+    images.value.push(imageObj);
+  });
+};
+
+const isNewImages = computed(() => images.value.length > 0)
+
+const isActive = computed(() => {
+  const isUpdatedField = 
+      saleItem.value.brand.id !== "" &&
+      saleItem.value.model !== "" &&
+      saleItem.value.price !== "" &&
+      saleItem.value.description !== "" &&
+      isFormValid()
+   return isUpdatedField || isNewImages.value
+});
+
+const isUploadSuccess = ref(false);
 
 const deleteImg = (index) => {
   if (images.value.length > 0) {
-    images.value.splice(index, 1)
+    images.value.splice(index, 1);
   }
-}
+};
 
 const uploadPicture = async () => {
-  console.log(images.value);
-  console.log("upload");
-
-  images.value.forEach(async(image) => {
+  images.value.forEach(async (image) => {
     try {
       console.log(image.file);
-      const upload = await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, image.file, route.params.id)
+      const upload = await addImage(
+        `${import.meta.env.VITE_APP_URL}/api/files`,
+        image.file,
+        route.params.id
+      );
+      if (upload.status === 201) {
+        isUploadSuccess.value = true;
+        setTimeout(() => {
+          isUploadSuccess.value = false;
+        }, 3000);
+      }
       console.log(upload.status);
-      
-    } catch(err) {
+    } catch (err) {
       console.error(err);
     }
-  })
-}
+  });
+};
 </script>
 
-
-
 <template>
-
   <Navbar />
+  <div v-if="isUploadSuccess" role="alert" class="alert alert-success">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+    <span>Your purchase has been confirmed!</span>
+  </div>
   <form @submit.prevent="submitForm">
     <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
       <template #path>
@@ -279,16 +301,16 @@ const uploadPicture = async () => {
           class="itbms-back-button font-semibold"
           v-if="Number(route.params.id)"
         >
-        <router-link
+          <router-link
             :to="{ name: 'SaleItemDetail', params: { id: route.params.id } }"
           >
-          <span class=" font-semibold">{{ saleItem.model }}</span>
+            <span class="font-semibold">{{ saleItem.model }}</span>
 
-            <span class=" font-semibold ml-1"
+            <span class="font-semibold ml-1"
               >{{ saleItem.ramGb
               }}<span class="itbms-ramGb-unit">/GB </span></span
             >
-            <span class=" font-semibold">{{ saleItem.color }}</span>
+            <span class="font-semibold">{{ saleItem.color }}</span>
           </router-link>
         </span>
       </template>
@@ -297,23 +319,24 @@ const uploadPicture = async () => {
           v-model="saleItem.brand.id"
           id="brand"
           class="itbms-brand max-h-40 overflow-y-auto bg-gray-400 ml-32 border rounded-md px-2 py-1 w-70"
-       @blur="validateField('brand')"
-          
+          @blur="validateField('brand')"
         >
-          <option value="" >-- Select a brand --</option>
+          <option value="">-- Select a brand --</option>
           <option
             v-for="(brand, index) in brands"
             :key="index"
             class="flex"
             :value="brand.id"
             :required="true"
-           
           >
-          {{ brand.name }}
+            {{ brand.name }}
           </option>
         </select>
-         <p v-if="validationMessages.brand" class="text-red-500 text-sm ml-32 itbms-message" >
-    {{ validationMessages.brand }}
+        <p
+          v-if="validationMessages.brand"
+          class="text-red-500 text-sm ml-32 itbms-message"
+        >
+          {{ validationMessages.brand }}
         </p>
       </template>
       <template #model>
@@ -322,14 +345,15 @@ const uploadPicture = async () => {
           type="text"
           class="itbms-model ml-32 border rounded-md px-2 py-1 w-70"
           placeholder="Model Name"
-           :required="true"
-           
+          :required="true"
           @blur="validateField('model')"
-        
         />
-         <p v-if="validationMessages.model" class="text-red-500 text-sm ml-32 itbms-message" >
-    {{ validationMessages.model }}
-  </p>
+        <p
+          v-if="validationMessages.model"
+          class="text-red-500 text-sm ml-32 itbms-message"
+        >
+          {{ validationMessages.model }}
+        </p>
       </template>
       <template #price>
         <span class="">Price: </span>
@@ -339,13 +363,15 @@ const uploadPicture = async () => {
           type="number"
           class="itbms-price ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="Price"
-           :required="true"
-           @blur="validateField('price')"
-        
+          :required="true"
+          @blur="validateField('price')"
         />
-         <p v-if="validationMessages.price" class="text-red-500 text-sm ml-35 itbms-message" >
-    {{ validationMessages.price }}
-  </p>
+        <p
+          v-if="validationMessages.price"
+          class="text-red-500 text-sm ml-35 itbms-message"
+        >
+          {{ validationMessages.price }}
+        </p>
       </template>
       <template #desc>
         <textarea
@@ -353,13 +379,15 @@ const uploadPicture = async () => {
           type="text"
           class="itbms-description mt-1 border rounded-md px-2 py-1 w-118"
           placeholder="Description"
-          
-           :required="true"
-           @blur="validateField('description')"
+          :required="true"
+          @blur="validateField('description')"
         ></textarea>
-         <p v-if="validationMessages.description" class="text-red-500 text-sm mt-1 itbms-message" >
-    {{ validationMessages.description }}
-  </p>
+        <p
+          v-if="validationMessages.description"
+          class="text-red-500 text-sm mt-1 itbms-message"
+        >
+          {{ validationMessages.description }}
+        </p>
       </template>
       <template #ram>
         <input
@@ -367,11 +395,14 @@ const uploadPicture = async () => {
           type="number"
           class="itbms-ramGb ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="RAM"
-            @blur="validateField('ramGb')"
+          @blur="validateField('ramGb')"
         />
-        <p v-if="validationMessages.ramGb" class="text-red-500 text-sm ml-35 itbms-message" >
-    {{ validationMessages.ramGb }}
-  </p>
+        <p
+          v-if="validationMessages.ramGb"
+          class="text-red-500 text-sm ml-35 itbms-message"
+        >
+          {{ validationMessages.ramGb }}
+        </p>
       </template>
       <template #screen>
         <input
@@ -381,11 +412,13 @@ const uploadPicture = async () => {
           class="itbms-screenSizeInch ml-21 border rounded-md px-2 py-1 w-70 itbms-message"
           placeholder="Screen Size"
           @blur="validateField('screenSizeInch')"
-            
         />
-        <p v-if="validationMessages.screenSizeInch" class="text-red-500 text-sm ml-21 itbms-message" >
-    {{ validationMessages.screenSizeInch }}
-  </p>
+        <p
+          v-if="validationMessages.screenSizeInch"
+          class="text-red-500 text-sm ml-21 itbms-message"
+        >
+          {{ validationMessages.screenSizeInch }}
+        </p>
       </template>
       <template #storage>
         <input
@@ -395,9 +428,12 @@ const uploadPicture = async () => {
           placeholder="Storage"
           @blur="validateField('storageGb')"
         />
-         <p v-if="validationMessages.storageGb" class="text-red-500 text-sm ml-29 itbms-message" >
-    {{ validationMessages.storageGb }}
-  </p>
+        <p
+          v-if="validationMessages.storageGb"
+          class="text-red-500 text-sm ml-29 itbms-message"
+        >
+          {{ validationMessages.storageGb }}
+        </p>
       </template>
       <template #color>
         <input
@@ -405,11 +441,14 @@ const uploadPicture = async () => {
           type="text"
           class="itbms-color ml-35 border rounded-md px-2 py-1 w-70"
           placeholder="Color"
-            @blur="validateField('color')"
+          @blur="validateField('color')"
         />
-        <p v-if="validationMessages.color" class="text-red-500 text-sm ml-35 itbms-message" >
-    {{ validationMessages.color }}
-  </p>
+        <p
+          v-if="validationMessages.color"
+          class="text-red-500 text-sm ml-35 itbms-message"
+        >
+          {{ validationMessages.color }}
+        </p>
       </template>
       <template #quantity>
         <input
@@ -417,17 +456,20 @@ const uploadPicture = async () => {
           type="number"
           class="itbms-quantity ml-7 border rounded-md px-2 py-1 w-70"
           placeholder="Quantity"
-           @blur="validateField('quantity')"
+          @blur="validateField('quantity')"
         />
-          <p v-if="validationMessages.quantity" class="text-red-500 text-sm ml-7 itbms-message" >
-    {{ validationMessages.quantity }}
-  </p>
+        <p
+          v-if="validationMessages.quantity"
+          class="text-red-500 text-sm ml-7 itbms-message"
+        >
+          {{ validationMessages.quantity }}
+        </p>
       </template>
       <template #button1>
         <button
           type="submit"
           :disabled="!isActive || !isUpdated || isSubmitted"
-          class="itbms-save-button text-white  rounded-md px-4 py-2 "
+          class="itbms-save-button text-white rounded-md px-4 py-2"
         >
           Save
         </button>
@@ -439,26 +481,61 @@ const uploadPicture = async () => {
       </template>
     </SaleItemDetailModel>
   </form>
-      <div class="w-fit ml-[51px]">
-        <label for="file" class="cursor-pointer p-3 bg-amber-400 rounded-lg hover:opacity-80">Upload picture</label>
-        <input @change="showFilename" id="file" type="file" multiple class="cursor-pointer hidden">
-      </div>
+  <div class="w-fit ml-[51px]">
+    <label
+      for="file"
+      class="cursor-pointer p-3 bg-amber-400 rounded-lg hover:opacity-80"
+      >Upload picture</label
+    >
+    <input
+      @change="showFilename"
+      id="file"
+      type="file"
+      multiple
+      class="cursor-pointer hidden"
+    />
+  </div>
 
-      <div class="ml-[51px] my-4">
-        <div class="flex flex-col space-x-4">
-          <ul v-for="(img, index) in images" :key="index" class="flex">
-            <li class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative">
-              <img :src="img.url" :alt="`image${index}`" width="200" height="200" class="rounded-lg">
-              <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
-              <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-6 h-6 rounded-full bg-red-400 cursor-pointer hover:opacity-80">X</button>
-            </li>
-          </ul>
-        </div>
+  <div class="ml-[51px] my-4">
+    <div class="flex flex-col space-x-4">
+      <ul v-for="(img, index) in images" :key="index" class="flex">
+        <li
+          class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
+        >
+          <img
+            :src="img.url"
+            :alt="`image${index}`"
+            width="200"
+            height="200"
+            class="rounded-lg"
+          />
+          <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
+          <button
+            @click="deleteImg(index)"
+            class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-6 h-6 rounded-full bg-red-400 cursor-pointer hover:opacity-80"
+          >
+            X
+          </button>
+        </li>
+      </ul>
+    </div>
 
-        <div class="space-x-1">
-          <button @click="uploadPicture" v-if="images.length > 0" class="cursor-pointer py-2 px-3 bg-green-300 rounded-lg hover:opacity-80">Upload</button>
-          <button @click="images.length = 0" v-if="images.length > 0" class="cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80">Clear</button>
-        </div>
-      </div>
+    <div class="space-x-1">
+      <button
+        @click="uploadPicture"
+        v-if="images.length > 0"
+        class="cursor-pointer py-2 px-3 bg-green-300 rounded-lg hover:opacity-80"
+      >
+        Upload
+      </button>
+      <button
+        @click="images.length = 0"
+        v-if="images.length > 0"
+        class="cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
 </template>
 <style scoped></style>
