@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -49,7 +50,7 @@ public class FileService {
         }
     }
 
-    public String store(MultipartFile file , Integer saleId){
+    public String store(MultipartFile file , Integer saleId , Integer order ){
 
         SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
 
@@ -63,8 +64,8 @@ public class FileService {
         try {
             Path targetLocation = this.fileStorageLocation.resolve(realName);
             Picture picture = new Picture();
-            picture.setOriginalName(originalName);
-            picture.setRealName(realName);
+            picture.setFileName(saleId + "." + order);
+            picture.setImageViewOrder(order);
             picture.setSales(saleItem);
             Files.copy(file.getInputStream() , targetLocation , StandardCopyOption.REPLACE_EXISTING);
             pictureRepository.save(picture);
@@ -88,18 +89,15 @@ public class FileService {
         }
     }
 
-//    public List<Resource> loadFileAsResources(Integer saleId) {
-//
-//        try {
-//            SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
-//            List<Picture> pictures = pictureRepository.findAllBySales(saleItem);
-//            List<Resource> resources = new ArrayList<>();
-//            pictures.forEach(p -> resources.add(loadFileAsResource(p.getRealName())));
-//            return resources;
-//        } catch (ResourceNotFoundException e) {
-//            throw new RuntimeException("Could not load Resources " + e);
-//        }
-//    }
+    public List<String> getImageList(){
+        File folder = fileStorageLocation.toFile();
+        List<String> extensions = Arrays.stream(fileStorageProperties.getSupportFileTypes())
+                .map(type -> "." + type.substring(type.indexOf("/")+ 1))
+                .toList();
+        File[] listOfFiles = folder.listFiles( (dir , name) ->
+            extensions.stream().anyMatch(name::endsWith));
+        return listOfFiles == null ? List.of() : Arrays.stream(listOfFiles).map(File::getName).toList();
+    }
 
 
     public String getFileType(Resource resource){
@@ -117,9 +115,13 @@ public class FileService {
         return supportFileTypes.contains(contentType);
     }
 
-    public List<String> store(List<MultipartFile> files , Integer id){
+    public List<String> store(List<MultipartFile> files , Integer saleId){
+        int order = 1 ;
         List<String> fileNames = new ArrayList<>(files.size());
-        files.forEach(file -> fileNames.add(store(file , id)));
+        for (MultipartFile file : files){
+            fileNames.add(store(file,saleId,order));
+            order++;
+        }
         return fileNames;
     }
 

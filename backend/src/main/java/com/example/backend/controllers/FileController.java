@@ -31,15 +31,13 @@ public class FileController {
         return ResponseEntity.ok().contentType(MediaType.valueOf(fileService.getFileType(file))).body(file);
     }
 
-//    @GetMapping("/{id}")
-//    @ResponseBody
-//    public ResponseEntity<Resource> getFiles(@RequestParam Integer saleId) {
-//        List<Resource> files = fileService.loadFileAsResources(saleId);
-//        return ResponseEntity.ok().contentType(MediaType.valueOf(fileService.getFileType(files))).body(files);
-//    }
+    @GetMapping("/images")
+    public ResponseEntity<List<String>> getImagesList() {
+        return ResponseEntity.ok().body(fileService.getImageList());
+    }
 
     @PostMapping("")
-    public ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> files ,@RequestParam("saleId") Integer saleId) {
+    public ResponseEntity<String> uploadFiles(@RequestParam("files") List<MultipartFile> files ,@RequestParam("saleId") Integer saleId) {
         fileService.store(files , saleId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Files are uploaded. " + files);
     }
