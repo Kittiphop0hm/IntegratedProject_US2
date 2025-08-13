@@ -117,8 +117,10 @@ public class SaleItemService {
 
         // แปลง List<String> เป็น List<Integer>
         List<Integer> filterStorageSizes = List.of();
+        boolean includeNotSpecified = false;
         if (filterStorageSizesStr != null && !filterStorageSizesStr.isEmpty()) {
             filterStorageSizes = filterStorageSizesStr.stream()
+                    .filter(s -> !s.equalsIgnoreCase("Not specified"))
                     .map(s -> {
                         try {
                             return Integer.parseInt(s);
@@ -132,6 +134,7 @@ public class SaleItemService {
             includeNotSpecified = filterStorageSizesStr.stream()
                     .anyMatch(s -> s.equalsIgnoreCase("Not specified"));
         }
+
 
         String sortBy = (sortField == null || sortField.isEmpty()) ? "createdOn" : sortField;
         boolean hasBrandFilter = filterBrands != null && !filterBrands.isEmpty();
