@@ -115,10 +115,12 @@ public class SaleItemService {
             Integer page,
             Integer size) {
 
-        // แปลง List<String> เป็น List<Integer>
+        // แปลง List<String> เป็น List<Integer> และเช็ค "Not specified"
         List<Integer> filterStorageSizes = List.of();
+        boolean includeNotSpecified = false;
         if (filterStorageSizesStr != null && !filterStorageSizesStr.isEmpty()) {
             filterStorageSizes = filterStorageSizesStr.stream()
+                    .filter(s -> !s.equalsIgnoreCase("Not specified"))
                     .map(s -> {
                         try {
                             return Integer.parseInt(s);
@@ -128,6 +130,9 @@ public class SaleItemService {
                     })
                     .filter(i -> i != null)
                     .toList();
+
+            includeNotSpecified = filterStorageSizesStr.stream()
+                    .anyMatch(s -> s.equalsIgnoreCase("Not specified"));
         }
 
         String sortBy = (sortField == null || sortField.isEmpty()) ? "createdOn" : sortField;
@@ -143,8 +148,8 @@ public class SaleItemService {
 
         Page<SaleItem> saleItems;
 
-        if (!hasPriceFilter && !hasStorageFilter) {
-            // กรองเฉพาะ brand + sort
+        if (!hasPriceFilter && !hasStorageFilter && !includeNotSpecified) {
+            // กรองเฉพาะ brand + sort (ไม่มี price, storage, not specified)
             if (!hasBrandFilter) {
                 if ((sortField == null || sortField.isEmpty()) && (sortDirection == null || sortDirection.isEmpty())) {
                     saleItems = pageRepository.findAllByOrderByCreatedOn(pageable);
@@ -162,17 +167,15 @@ public class SaleItemService {
                     saleItems = pageRepository.findByBrand_NameInOrderByBrand_NameDesc(filterBrands, pageable);
                 }
             }
-        } else if (hasPriceFilter && !hasStorageFilter) {
-            // กรอง price + brand แต่ไม่มี storage
+        } else if (hasPriceFilter && !hasStorageFilter && !includeNotSpecified) {
+            // กรอง price + brand แต่ไม่มี storage และ no not specified
             if (!hasBrandFilter) {
-                // กรอง price อย่างเดียว ไม่กรอง brand
                 if (direction == Sort.Direction.ASC) {
                     saleItems = pageRepository.findByPriceBetweenOrderByBrand_NameAsc(minPriceValue, maxPriceValue, pageable);
                 } else {
                     saleItems = pageRepository.findByPriceBetweenOrderByBrand_NameDesc(minPriceValue, maxPriceValue, pageable);
                 }
             } else {
-                // กรอง price + brand
                 if (direction == Sort.Direction.ASC) {
                     saleItems = pageRepository.findByBrand_NameInAndPriceBetweenOrderByBrand_NameAsc(
                             filterBrands, minPriceValue, maxPriceValue, pageable);
@@ -181,15 +184,15 @@ public class SaleItemService {
                             filterBrands, minPriceValue, maxPriceValue, pageable);
                 }
             }
-        } else if (!hasBrandFilter && !hasPriceFilter && hasStorageFilter) {
-            // กรอง storage อย่างเดียว (ไม่มี brand, ไม่มี price)
+        } else if (!hasBrandFilter && !hasPriceFilter && hasStorageFilter && !includeNotSpecified) {
+            // กรอง storage อย่างเดียว (ไม่มี brand, ไม่มี price, no not specified)
             if (direction == Sort.Direction.ASC) {
                 saleItems = pageRepository.findByStorageGbInOrderByBrand_NameAsc(filterStorageSizes, pageable);
             } else {
                 saleItems = pageRepository.findByStorageGbInOrderByBrand_NameDesc(filterStorageSizes, pageable);
             }
-        } else if (!hasBrandFilter && hasPriceFilter && hasStorageFilter) {
-            // กรอง price + storage แต่ไม่มี brand
+        } else if (!hasBrandFilter && hasPriceFilter && hasStorageFilter && !includeNotSpecified) {
+            // กรอง price + storage แต่ไม่มี brand (no not specified)
             if (direction == Sort.Direction.ASC) {
                 saleItems = pageRepository.findByPriceBetweenAndStorageGbInOrderByBrand_NameAsc(
                         minPriceValue, maxPriceValue, filterStorageSizes, pageable);
@@ -197,17 +200,49 @@ public class SaleItemService {
                 saleItems = pageRepository.findByPriceBetweenAndStorageGbInOrderByBrand_NameDesc(
                         minPriceValue, maxPriceValue, filterStorageSizes, pageable);
             }
-        } else {
-            // กรอง price + brand + storage
+        } else if (!hasBrandFilter && !hasPriceFilter && !hasStorageFilter && includeNotSpecified) {
+            // กรองกรณี Not specified storageGb เท่านั้น (no brand, no price, no storage)
             if (direction == Sort.Direction.ASC) {
-                saleItems = pageRepository.findByBrand_NameInAndPriceBetweenAndStorageGbInOrderByBrand_NameAsc(
+                saleItems = pageRepository.findByStorageGbIsNullOrderByBrand_NameAsc(pageable);
+            } else {
+                saleItems = pageRepository.findByStorageGbIsNullOrderByBrand_NameDesc(pageable);
+            }
+        } else if (!hasBrandFilter && hasPriceFilter && !hasStorageFilter && includeNotSpecified) {
+            // กรอง price + Not specified storageGb (no brand)
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByPriceBetweenAndStorageGbIsNullOrderByBrand_NameAsc(
+                        minPriceValue, maxPriceValue, pageable);
+            } else {
+                saleItems = pageRepository.findByPriceBetweenAndStorageGbIsNullOrderByBrand_NameDesc(
+                        minPriceValue, maxPriceValue, pageable);
+            }
+        } else if (!hasBrandFilter && !hasPriceFilter && hasStorageFilter && includeNotSpecified) {
+            // กรอง storage (normal list) + Not specified storageGb (no brand, no price)
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByStorageGbInOrStorageGbIsNullOrderByBrand_NameAsc(filterStorageSizes, pageable);
+            } else {
+                saleItems = pageRepository.findByStorageGbInOrStorageGbIsNullOrderByBrand_NameDesc(filterStorageSizes, pageable);
+            }
+        } else if (!hasBrandFilter && hasPriceFilter && hasStorageFilter && includeNotSpecified) {
+            // กรอง price + storage (list) + Not specified storageGb (no brand)
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByPriceBetweenAndStorageGbInOrStorageGbIsNullOrderByBrand_NameAsc(
+                        minPriceValue, maxPriceValue, filterStorageSizes, pageable);
+            } else {
+                saleItems = pageRepository.findByPriceBetweenAndStorageGbInOrStorageGbIsNullOrderByBrand_NameDesc(
+                        minPriceValue, maxPriceValue, filterStorageSizes, pageable);
+            }
+        } else {
+            // กรอง price + brand + storage (list) + Not specified storageGb
+            if (direction == Sort.Direction.ASC) {
+                saleItems = pageRepository.findByBrand_NameInAndPriceBetweenAndStorageGbInOrStorageGbIsNullOrderByBrand_NameAsc(
                         hasBrandFilter ? filterBrands : List.of(),
                         minPriceValue,
                         maxPriceValue,
                         filterStorageSizes,
                         pageable);
             } else {
-                saleItems = pageRepository.findByBrand_NameInAndPriceBetweenAndStorageGbInOrderByBrand_NameDesc(
+                saleItems = pageRepository.findByBrand_NameInAndPriceBetweenAndStorageGbInOrStorageGbIsNullOrderByBrand_NameDesc(
                         hasBrandFilter ? filterBrands : List.of(),
                         minPriceValue,
                         maxPriceValue,
