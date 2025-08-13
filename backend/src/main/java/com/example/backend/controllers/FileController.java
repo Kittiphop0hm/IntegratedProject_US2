@@ -41,10 +41,4 @@ public class FileController {
         fileService.store(files , saleId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Files are uploaded. " + files);
     }
-
-    @DeleteMapping("/{filename:.+}")
-    public ResponseEntity<Object> removeFile(@PathVariable String filename ) {
-        fileService.removeFile(filename);
-        return ResponseEntity.ok("File: " + filename + " removed");
-    }
 }
