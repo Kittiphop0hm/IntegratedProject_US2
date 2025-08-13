@@ -137,7 +137,16 @@ const initSaleItem = {
 const saleItem = ref({ ...initSaleItem });
 console.log(saleItem.value);
 const saleItemForchecking = ref({ ...initSaleItem });
+const isEditMode = ref(false)
+const isAddMode = ref(false)
 onMounted(async () => {
+  if (!route.params.id) {
+    isAddMode.value = !isAddMode.value
+    console.log("isAddMode:", isAddMode.value);
+  } else {
+    isEditMode.value = !isEditMode.value
+    console.log("isEditMode:", isEditMode.value);  
+  }
   try {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
   } catch (err) {
