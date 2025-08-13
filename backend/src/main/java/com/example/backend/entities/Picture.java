@@ -28,5 +28,4 @@ public class Picture {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "salesId")
     private SaleItem sales;
-
 }

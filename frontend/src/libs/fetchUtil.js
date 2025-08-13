@@ -74,7 +74,9 @@ async function getItems(url) {
   async function addImage(url, fileImages, saleId) {
     try {
       const formdata = new FormData()
-      formdata.append("file", fileImages)
+      for (let i = 0; i < fileImages.length; i++) {
+        formdata.append("files", fileImages[i])  
+      }
       formdata.append("saleId", saleId)
       const res = await fetch(`${url}`, {
         method: "POST",
@@ -89,4 +91,15 @@ async function getItems(url) {
       console.log(err);
     }
   }
-  export { getItems, getItemById, deleteItemById, addItem, editItem, addImage }
+
+    async function getIamgesBySaleId(url, saleId) {
+    try {
+      const data = await fetch(`${url}/${saleId}`)
+      const item = await data.blob()
+      return item
+    } catch (error) {
+      if (data.status === 404) return undefined
+      throw new Error('can not get your item')
+    }
+  }
+  export { getItems, getItemById, deleteItemById, addItem, editItem, addImage, getIamgesBySaleId }

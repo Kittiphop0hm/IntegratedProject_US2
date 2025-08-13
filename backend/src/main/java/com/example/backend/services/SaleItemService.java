@@ -1,9 +1,11 @@
 package com.example.backend.services;
 import com.example.backend.dtos.saleItems.*;
 import com.example.backend.entities.Brand;
+import com.example.backend.entities.Picture;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
+import com.example.backend.repositories.PictureRepository;
 import com.example.backend.repositories.SaleItemPageRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.ListMapper;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -33,6 +36,8 @@ public class SaleItemService {
     private ListMapper listMapper;
     @Autowired
     private SaleItemPageRepository pageRepository;
+    @Autowired
+    private PictureRepository pictureRepository;
 
     public List<ListSaleItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
@@ -79,8 +84,13 @@ public class SaleItemService {
     }
 
     public void deleteSaleItem(Integer id) {
-        SaleItem saleItem = repository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
+        SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
+        List<Picture> pictures = pictureRepository.findPictureBySalesId(saleItem.getId());
+        if (!pictures.isEmpty()) {
+            pictures.forEach((picture) -> {
+                pictureRepository.deleteById(picture.getId());
+            });
+        }
         repository.delete(saleItem);
     }
 

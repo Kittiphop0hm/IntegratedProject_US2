@@ -254,9 +254,7 @@ async function submitForm() {
         saleItem.value
       );
       console.log(item.data.id);
-      imageFile.value.forEach(async (file) => {
-          await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, file, item.data.id)
-      })
+      await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, imageFile.value, item.data.id)
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {
@@ -276,8 +274,9 @@ const moveDown = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0]
   arr.splice(index + 1, 0, deleteElement)
   console.log(arr);
-  
 }
+
+// Edit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
 </script>
 
 <template>

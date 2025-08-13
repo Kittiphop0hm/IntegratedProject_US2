@@ -57,6 +57,10 @@ console.log(route.query.alert);
 console.log(typeof route.query.alert);
 console.log("typeof Boolean(route.query.alert)");
 console.log(typeof Boolean(route.query.alert));
+
+const id = parseInt(route.params.id)
+// console.log(id);
+
 </script>
 
 <template>
@@ -68,7 +72,7 @@ console.log(typeof Boolean(route.query.alert));
       </template>
     </AlertMessageModel>
   </div>
-  <SaleItemDetailModel>
+  <SaleItemDetailModel :saleId="id">
     <template #path>
       <span class="itbms-model font-semibold">{{ item.model }}</span>
       <span class="itbms-ramGb font-semibold ml-1"
