@@ -16,18 +16,17 @@ public class Picture {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 45)
-    @Column(name = "originalName", length = 45)
-    private String originalName;
-
-    @Size(max = 45)
-    @Column(name = "realName", length = 45)
-    private String realName;
+    @Size(max = 200)
+    @NotNull
+    @Column(name = "fileName", nullable = false, length = 200)
+    private String fileName;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "salesId", nullable = false)
-    private SaleItem sales;
+    @Column(name = "imageViewOrder", nullable = false)
+    private Integer imageViewOrder;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "salesId")
+    private SaleItem sales;
 
 }
