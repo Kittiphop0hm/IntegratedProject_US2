@@ -1,10 +1,14 @@
 package com.example.backend.services;
 
+import com.example.backend.dtos.pictures.ResponsePictureDto;
 import com.example.backend.entities.Picture;
 import com.example.backend.entities.SaleItem;
+import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.PictureRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.FileStorageProperties;
+import com.example.backend.utils.ListMapper;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -36,6 +40,10 @@ public class FileService {
     private SaleItemRepository saleItemRepository;
     @Autowired
     private PictureRepository pictureRepository;
+    @Autowired
+    private ListMapper listMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     public FileService(FileStorageProperties fileStorageProperties){
@@ -123,7 +131,9 @@ public class FileService {
         return fileNames;
     }
 
-    public void removeFile(String filename) {
-
+    public List<ResponsePictureDto> findPicturesBySaleItemId(Integer id) {
+        SaleItem saleItem = saleItemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
+        List<Picture> pictures = pictureRepository.findPictureBySalesId(saleItem.getId());
+        return pictures.stream().map((p) -> modelMapper.map(p, ResponsePictureDto.class)).toList();
     }
 }

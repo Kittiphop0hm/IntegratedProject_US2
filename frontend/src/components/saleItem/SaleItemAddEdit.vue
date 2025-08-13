@@ -254,9 +254,7 @@ async function submitForm() {
         saleItem.value
       );
       console.log(item.data.id);
-      imageFile.value.forEach(async (file) => {
-          await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, file, item.data.id)
-      })
+      await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, imageFile.value, item.data.id)
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {

@@ -1,5 +1,7 @@
 package com.example.backend.controllers;
 
+import com.example.backend.dtos.pictures.ResponsePictureDto;
+import com.example.backend.entities.Picture;
 import com.example.backend.services.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -34,6 +36,11 @@ public class FileController {
     @GetMapping("/images")
     public ResponseEntity<List<String>> getImagesList() {
         return ResponseEntity.ok().body(fileService.getImageList());
+    }
+
+    @GetMapping("/imageSale/{id}")
+    public ResponseEntity<List<ResponsePictureDto>> getImagesBySaleId(@PathVariable Integer id) {
+        return ResponseEntity.ok(fileService.findPicturesBySaleItemId(id));
     }
 
     @PostMapping("")

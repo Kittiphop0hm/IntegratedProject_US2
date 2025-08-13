@@ -1,6 +1,7 @@
 <script setup>
 import Search from '../Search.vue';
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { getItems } from '@/libs/fetchUtil';
 
 const props = defineProps({
     isActive: {
@@ -11,7 +12,26 @@ const props = defineProps({
         type: Boolean ,
         default: true
     },
+    saleId: {
+        type:Number
+    }
 })
+console.log(props.saleId);
+const pictures = ref([])
+
+onMounted(async () => {
+  try {
+    const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/images`)
+    items.forEach((item) => {
+      const apiFormat = `${import.meta.env.VITE_APP_URL}/api/files/${item}`
+      pictures.value.push(apiFormat)
+    })
+    console.log(pictures.value);
+  } catch(err) {
+    console.error(err);
+  }
+})
+
 
 </script>
 
@@ -33,25 +53,25 @@ const props = defineProps({
     <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
       <div class="lg:w-1/2">
         <div class=" rounded-md p-2 bg-white">
-          <img src="/images/iPhone14ProMax.jpg" alt="main image" class="w-full" />
+          <img :src="pictures[0]" alt="main image" class="w-full" />
         </div>
 
         <div class="grid grid-cols-4 gap-2 mt-4">
           <div class="relative border border-gray-300 rounded p-1">
             <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
-            <img src="/images/iPhone14ProMax.jpg" alt="thumb 1" class="w-30 mx-auto" />
+            <img :src="pictures[0]" alt="thumb 1" class="w-30 mx-auto" />
           </div>
           <div class="relative border border-gray-300 rounded p-1">
             <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
-            <img src="/images/iPhone14ProMax.jpg" alt="thumb 2" class="w-30 mx-auto" />
+            <img :src="pictures[1]" alt="thumb 2" class="w-30 mx-auto" />
           </div>
           <div class="relative border border-gray-300 rounded p-1">
             <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
-            <img src="/images/iPhone14ProMax.jpg" alt="thumb 3" class="w-30 mx-auto" />
+            <img :src="pictures[2]" alt="thumb 3" class="w-30 mx-auto" />
           </div>
           <div class="relative border border-gray-300 rounded p-1">
             <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button>
-            <img src="/images/iPhone14ProMax.jpg" alt="thumb 4" class="w-30 mx-auto" />
+            <img :src="pictures[3]" alt="thumb 4" class="w-30 mx-auto" />
           </div>
         </div>
       </div>
