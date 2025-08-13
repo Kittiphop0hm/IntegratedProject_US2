@@ -28,5 +28,10 @@ public class SaleItemPageController {
     ) {
         return ResponseEntity.ok(service.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection , page , size));
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteSaleItem(@PathVariable Integer id) {
+        service.deleteSaleItem(id);
+    }
 }
 

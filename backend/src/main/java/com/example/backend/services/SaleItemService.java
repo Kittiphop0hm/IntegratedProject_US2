@@ -86,9 +86,11 @@ public class SaleItemService {
     public void deleteSaleItem(Integer id) {
         SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
         List<Picture> pictures = pictureRepository.findPictureBySalesId(saleItem.getId());
-        pictures.forEach((picture) -> {
-            pictureRepository.deleteById(picture.getId());
-        });
+        if (!pictures.isEmpty()) {
+            pictures.forEach((picture) -> {
+                pictureRepository.deleteById(picture.getId());
+            });
+        }
         repository.delete(saleItem);
     }
 
