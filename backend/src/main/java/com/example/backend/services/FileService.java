@@ -136,4 +136,17 @@ public class FileService {
         List<Picture> pictures = pictureRepository.findPictureBySalesId(saleItem.getId());
         return pictures.stream().map((p) -> modelMapper.map(p, ResponsePictureDto.class)).toList();
     }
+
+    public void removeFile(String filename) {
+        try {
+            Path filePath = this.fileStorageLocation.resolve(filename).normalize();
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            } else {
+                throw new RuntimeException("File: " + filename + " not found!");
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not delete file " + filename, ex);
+        }
+     }
 }

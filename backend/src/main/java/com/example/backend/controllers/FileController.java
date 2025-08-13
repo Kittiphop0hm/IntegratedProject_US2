@@ -48,4 +48,10 @@ public class FileController {
         fileService.store(files , saleId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Files are uploaded. " + files);
     }
+
+    @DeleteMapping("/{filename:.+}")
+    public ResponseEntity<Object> removeImage(@PathVariable String filename) {
+        fileService.removeFile(filename);
+        return ResponseEntity.noContent().build();
+    }
 }
