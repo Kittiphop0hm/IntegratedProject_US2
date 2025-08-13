@@ -277,21 +277,6 @@ const moveDown = (arr, index) => {
   arr.splice(index + 1, 0, deleteElement)
   console.log(arr);
   
-const previousPath = localStorage.getItem("previousPath");
-
-const images = ref([])
-
-const uploadFilename = (e) => {
-  const filenames = e.target.files
-  images.value = Array.from(filenames).map((filename) => filename.name)
-  console.log(images.value);
-}
-
-const deleteImg = (index) => {
-  if (images.value.length > 0) {
-    images.value.splice(index, 1)
-  }
-}
 }
 </script>
 
@@ -559,18 +544,5 @@ const deleteImg = (index) => {
       </button>
     </div>
   </div>
-      <div class="w-fit ml-[51px]">
-        <label for="file" class="cursor-pointer p-3 bg-amber-400 rounded-lg hover:opacity-80">Upload picture</label>
-        <input @change="uploadFilename" id="file" type="file" multiple class="cursor-pointer hidden">
-      </div>
-
-      <div class="ml-[51px] my-4">
-        <ul v-for="(img, index) in images" :key="index" class="flex">
-          <li class="bg-gray-200 my-1 py-2 px-6 rounded-lg relative">
-            {{ img }}
-            <button @click="deleteImg(index)" class="absolute flex justify-center items-center top-0 right-0 text-[12px] w-4 h-4 rounded-full bg-red-400 cursor-pointer">X</button>
-          </li>
-        </ul>
-      </div>
 </template>
 <style scoped></style>
