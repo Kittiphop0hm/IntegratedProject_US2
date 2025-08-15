@@ -183,6 +183,24 @@ onMounted(async () => {
   }
 });
 
+onMounted(async () => {
+  if (isEditMode.value) {
+    try {
+      const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/images`);
+      items.forEach((item) => {
+        const imageObj = {
+          name: item,
+          file: "",
+        };
+        images.value.push(imageObj)
+      })
+    } catch(err) {
+      console.error(err);
+    }
+    
+  }
+})
+
 const isSubmitted = ref(false);
 const isUpdated = computed(() => {
    const checkUpdate = JSON.stringify(saleItem.value) !== JSON.stringify(saleItemForchecking.value)
@@ -200,7 +218,6 @@ const showFilename = (e) => {
   filenames.forEach((file) => {
     const imageObj = {
       name: file.name,
-      url: URL.createObjectURL(file),
       file: file,
     };
     if (images.value.length < 4) {
@@ -284,7 +301,6 @@ const moveDown = (arr, index) => {
   arr.splice(index + 1, 0, deleteElement)
   console.log(arr);
 }
-
 // Edit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
 </script>
 
@@ -508,13 +524,6 @@ const moveDown = (arr, index) => {
           <li
             class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
           >
-            <img
-              :src="img.url"
-              :alt="`image${index}`"
-              width="200"
-              height="200"
-              class="rounded-lg"
-            />
             <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
             <button
               @click="deleteImg(index)"
