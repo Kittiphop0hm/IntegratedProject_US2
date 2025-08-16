@@ -8,18 +8,19 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class AddUpdateSaleItemDto {
-    private ListBrandsDto brand;
+public class SaleItemDetailForCreateOrUpdateDto {
+
     private String model;
     private String description;
     private Integer price;
     private Integer ramGb;
-    private Integer storageGb;
     private BigDecimal screenSizeInch;
-    private String color;
-
     @Min(value = 0)
     private Integer quantity;
+    private Integer storageGb;
+    private String color;
+    private ListBrandsDto brand;
+
 
     public void setModel(String model) {
         if (model != null) {

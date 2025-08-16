@@ -1,11 +1,11 @@
 package com.example.backend.services;
 import com.example.backend.dtos.saleItems.*;
 import com.example.backend.entities.Brand;
-import com.example.backend.entities.Picture;
+
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
-import com.example.backend.repositories.PictureRepository;
+
 import com.example.backend.repositories.SaleItemPageRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.ListMapper;
@@ -18,12 +18,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import java.nio.file.Path;
+
 import java.util.List;
 
 
+
+
+
 @Service
-public class SaleItemService {
+public class SaleItemService_v1 {
     @Autowired
     private SaleItemRepository repository;
     @Autowired
@@ -36,8 +39,6 @@ public class SaleItemService {
     private ListMapper listMapper;
     @Autowired
     private SaleItemPageRepository pageRepository;
-    @Autowired
-    private PictureRepository pictureRepository;
 
     public List<ListSaleItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
@@ -50,7 +51,7 @@ public class SaleItemService {
     }
 
     @Transactional
-    public ResponseSaleItemsDto createSaleItem(AddUpdateSaleItemDto createSaleItemDto) {
+    public ResponseSaleItemsDto createSaleItem(SaleItemDetailForCreateOrUpdateDto createSaleItemDto) {
         brandRepository.findById(createSaleItemDto.getBrand().getId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
@@ -61,7 +62,7 @@ public class SaleItemService {
         return responseDto;
     }
 
-    public ResponseSaleItemsDto updateSaleItem(int id, AddUpdateSaleItemDto updateSaleItemDto) {
+    public ResponseSaleItemsDto updateSaleItem(int id, SaleItemDetailForCreateOrUpdateDto updateSaleItemDto) {
         SaleItem existing = getSaleItemById(id);
         if (updateSaleItemDto.getBrand() == null || updateSaleItemDto.getBrand().getId() == null) {
             throw new ItemNotFoundException("Brand not found for this id :: " + id);
@@ -84,13 +85,8 @@ public class SaleItemService {
     }
 
     public void deleteSaleItem(Integer id) {
-        SaleItem saleItem = repository.findById(id).orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
-        List<Picture> pictures = pictureRepository.findPictureBySalesId(saleItem.getId());
-        if (!pictures.isEmpty()) {
-            pictures.forEach((picture) -> {
-                pictureRepository.deleteById(picture.getId());
-            });
-        }
+        SaleItem saleItem = repository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
         repository.delete(saleItem);
     }
 
