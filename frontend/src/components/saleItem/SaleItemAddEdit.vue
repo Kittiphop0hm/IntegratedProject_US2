@@ -136,24 +136,6 @@ const initSaleItem = {
 };
 
 const saleItem = ref({ ...initSaleItem });
-console.log(saleItem.value);
-
-const getBrandName = async (id) => {
-  console.log(id);
-  const brand = await getItemById(
-    `${import.meta.env.VITE_APP_URL}/v1/brands`,
-    id
-  );
-  initSaleItem.brand.name = brand.name;
-  console.log(saleItem.value.brand);
-  console.log(initSaleItem.brand);
-  console.log(saleItem.value);
-  console.log(imageFile.value);
-  console.log(images.value);
-  
-  
-  
-};
 
 const saleItemForchecking = ref({ ...initSaleItem });
 const isEditMode = ref(false);
@@ -201,6 +183,17 @@ onMounted(async () => {
     saleItemForchecking.value.brand.id = brandsFilter.id;
   }
 });
+
+const getBrandName = async (id) => {
+  const brand = await getItemById(
+    `${import.meta.env.VITE_APP_URL}/v1/brands`,
+    id
+  );
+  initSaleItem.brand.name = brand.name;
+  console.log(saleItem.value);
+  // console.log(initUpdateSaleItemAndImage.value);
+  
+}
 
 onMounted(async () => {
   if (isEditMode.value) {
@@ -293,19 +286,6 @@ const deleteImg = (index) => {
   console.log(imageReadyDeletes.value);
 };
 
-const initUpdateImage = ref(
-    {
-      order: 0,
-      fileName: "",
-      status: "", 
-      imageFile: null
-    }
-)
-const initUpdateSaleItemAndImage = ref({
-  ...saleItem.value,
-  images: []
-})
-
 async function submitForm() {
   isSubmitted.value = true;
   if (!isFormValid()) {
@@ -315,11 +295,11 @@ async function submitForm() {
   if (Number(route.params.id)) {
     if (imageReadyDeletes.value.length > 0) {
         imageReadyDeletes.value.forEach(async (img) => {
-        const deleteResource = await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`, img.name)
+        await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`, img.name)
       })
+      router.push({ name: "SaleItemList", query: { alertDelete: "true" } });
     }
 
-    initUpdateImage.value.imageFile = imageFile.value
     await editItem(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
       route.params.id,
@@ -333,11 +313,11 @@ async function submitForm() {
     });
   } else {
     try {
-      const item = await addSaleItemAndImage(
-        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
-        saleItem.value,
-        imageFile.value
-      );
+        await addSaleItemAndImage(
+          `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+          saleItem.value,
+          imageFile.value
+        );
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {
@@ -349,15 +329,27 @@ async function submitForm() {
 const moveUp = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0];
   arr.splice(index - 1, 0, deleteElement);
+  const deleteImageFile = imageFile.value.splice(index, 1)[0]
+  imageFile.value.splice(index - 1, 0, deleteImageFile);
+  console.log("Image file: ", imageFile.value);
   console.log(arr);
 };
 
 const moveDown = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0];
   arr.splice(index + 1, 0, deleteElement);
+  const deleteImageFile = imageFile.value.splice(index, 1)[0]
+  imageFile.value.splice(index + 1, 0, deleteImageFile);d
+  console.log("Image file: ", imageFile.value);
   console.log(arr);
 };
-// Edit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
+
+// watch(images.value, (newValue, oldValue) => {
+//   console.log(newValue, oldValue);
+// })
+// dit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
+//เหลือต้องแก้เลื่อนรูปให้เลื่อน imageFile ด้วย
+//และเหลือ edit
 
 </script>
 

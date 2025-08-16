@@ -114,7 +114,7 @@ async function getItems(url) {
     }
   }
 
-  async function editSaleItemAndImage(url, id, item) {
+  async function editSaleItemAndImage(url, id, item, images) {
     try {
       const formdata = new FormData()
       formdata.append("saleItem.model", item.model)
