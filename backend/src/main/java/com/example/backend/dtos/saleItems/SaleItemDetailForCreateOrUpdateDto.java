@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 public class SaleItemDetailForCreateOrUpdateDto {
-
     private String model;
     private String description;
     private Integer price;

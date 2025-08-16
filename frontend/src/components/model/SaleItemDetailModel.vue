@@ -21,9 +21,10 @@ const pictures = ref([])
 
 onMounted(async () => {
   try {
-    const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/images`)
+    const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${props.saleId}`)
+    console.log(items);
     items.forEach((item) => {
-      const apiFormat = `${import.meta.env.VITE_APP_URL}/api/files/${item}`
+      const apiFormat = `${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`
       pictures.value.push(apiFormat)
     })
     console.log(pictures.value);

@@ -8,7 +8,7 @@ import {
   addItem,
   getItemById,
   editItem,
-  addImage,
+  addSaleItemAndImage,
 } from "../../libs/fetchUtil.js";
 const router = useRouter();
 const route = useRoute();
@@ -121,31 +121,40 @@ function isFormValid() {
 }
 
 const initSaleItem = {
-  brand: {
-    id: "",
-  },
   model: "",
-  price: "",
   description: "",
+  price: "",
   ramGb: "",
   screenSizeInch: "",
+  quantity: "",
   storageGb: "",
   color: "",
-  quantity: "",
+  brand: {
+    id: "",
+    name: ""
+  },
 };
 
 const saleItem = ref({ ...initSaleItem });
 console.log(saleItem.value);
+
+const getBrandName = async (id) => {
+  console.log(id);
+  const brand = await getItemById(`${import.meta.env.VITE_APP_URL}/v1/brands`, saleItem.value.brand.id)
+  initSaleItem.brand.name = brand.name
+  console.log(saleItem.value.brand);
+}
+
 const saleItemForchecking = ref({ ...initSaleItem });
-const isEditMode = ref(false)
-const isAddMode = ref(false)
+const isEditMode = ref(false);
+const isAddMode = ref(false);
 onMounted(async () => {
   if (!route.params.id) {
-    isAddMode.value = !isAddMode.value
+    isAddMode.value = !isAddMode.value;
     console.log("isAddMode:", isAddMode.value);
   } else {
-    isEditMode.value = !isEditMode.value
-    console.log("isEditMode:", isEditMode.value);  
+    isEditMode.value = !isEditMode.value;
+    console.log("isEditMode:", isEditMode.value);
   }
   try {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
@@ -186,32 +195,35 @@ onMounted(async () => {
 onMounted(async () => {
   if (isEditMode.value) {
     try {
-      const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/images`);
+      const items = await getItems(
+        `${import.meta.env.VITE_APP_URL}/api/files/images`
+      );
       items.forEach((item) => {
         const imageObj = {
           name: item,
           file: "",
         };
-        images.value.push(imageObj)
-      })
-    } catch(err) {
+        images.value.push(imageObj);
+      });
+    } catch (err) {
       console.error(err);
     }
-    
   }
-})
+});
 
 const isSubmitted = ref(false);
 const isUpdated = computed(() => {
-   const checkUpdate = JSON.stringify(saleItem.value) !== JSON.stringify(saleItemForchecking.value)
-   return checkUpdate || isNewImages.value
+  const checkUpdate =
+    JSON.stringify(saleItem.value) !==
+    JSON.stringify(saleItemForchecking.value);
+  return checkUpdate
 });
 
 const previousPath = localStorage.getItem("previousPath");
 
 const images = ref([]);
-const imageFile = ref([])
-const isImageFull = ref(false)
+const imageFile = ref([]);
+const isImageFull = ref(false);
 
 const showFilename = (e) => {
   const filenames = Array.from(e.target.files);
@@ -221,35 +233,35 @@ const showFilename = (e) => {
       file: file,
     };
     if (images.value.length < 4) {
-        images.value.push(imageObj);
-        imageFile.value.push(file) 
+      images.value.push(imageObj);
+      imageFile.value.push(file);
     } else {
-      isImageFull.value = true
+      isImageFull.value = true;
       setTimeout(() => {
-        isImageFull.value = false
-      }, 3000)
+        isImageFull.value = false;
+      }, 3000);
     }
   });
-    e.target.value = null
-    console.log(images.value);
-    console.log(imageFile.value);
+  e.target.value = null;
+  console.log(images.value);
+  console.log(imageFile.value);
 };
 
-const isNewImages = computed(() => images.value.length > 0)
+// const isNewImages = computed(() => images.value.length > 0);
 
 const isActive = computed(() => {
-  const isUpdatedField = 
-      saleItem.value.brand.id !== "" &&
-      saleItem.value.model !== "" &&
-      saleItem.value.price !== "" &&
-      saleItem.value.description !== "" &&
-      isFormValid()
-   return isUpdatedField || isNewImages.value
+  const isUpdatedField =
+    saleItem.value.brand.id !== "" &&
+    saleItem.value.model !== "" &&
+    saleItem.value.price !== "" &&
+    saleItem.value.description !== "" &&
+    isFormValid();
+  return isUpdatedField
 });
 
 const deleteImg = (index) => {
   if (images.value.length > 0) {
-    URL.revokeObjectURL(images.value[index].url)
+    URL.revokeObjectURL(images.value[index].url);
     images.value.splice(index, 1);
   }
 };
@@ -275,12 +287,11 @@ async function submitForm() {
     });
   } else {
     try {
-      const item = await addItem(
-        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-        saleItem.value
+      const item = await addSaleItemAndImage(
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+        saleItem.value,
+        imageFile.value
       );
-      console.log(item.data.id);
-      await addImage(`${import.meta.env.VITE_APP_URL}/api/files`, imageFile.value, item.data.id)
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {
@@ -290,17 +301,16 @@ async function submitForm() {
 }
 
 const moveUp = (arr, index) => {
-  const deleteElement = arr.splice(index, 1)[0]
-  arr.splice(index - 1, 0, deleteElement)
+  const deleteElement = arr.splice(index, 1)[0];
+  arr.splice(index - 1, 0, deleteElement);
   console.log(arr);
-  
-}
+};
 
 const moveDown = (arr, index) => {
-  const deleteElement = arr.splice(index, 1)[0]
-  arr.splice(index + 1, 0, deleteElement)
+  const deleteElement = arr.splice(index, 1)[0];
+  arr.splice(index + 1, 0, deleteElement);
   console.log(arr);
-}
+};
 // Edit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
 </script>
 
@@ -335,6 +345,7 @@ const moveDown = (arr, index) => {
           id="brand"
           class="itbms-brand max-h-40 overflow-y-auto bg-gray-400 ml-32 border rounded-md px-2 py-1 w-70"
           @blur="validateField('brand')"
+          @change="getBrandName($event.target.value)"
         >
           <option value="">-- Select a brand --</option>
           <option
@@ -511,45 +522,80 @@ const moveDown = (arr, index) => {
     />
   </div>
 
-    <div v-if="isImageFull" role="alert" class="alert alert-warning mx-[51px] my-5">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
-      <span>Maximum 4 pictures are allowed.</span>
-    </div>
+  <div
+    v-if="isImageFull"
+    role="alert"
+    class="alert alert-warning mx-[51px] my-5"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6 shrink-0 stroke-current"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+      />
+    </svg>
+    <span>Maximum 4 pictures are allowed.</span>
+  </div>
 
-    <div class="ml-[51px] my-4">
-      <div class="flex flex-col space-x-4">
-        <ul v-for="(img, index) in images" :key="index" class="flex">
-          <li
-            class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
+  <div class="ml-[51px] my-4">
+    <div class="flex flex-col space-x-4">
+      <ul v-for="(img, index) in images" :key="index" class="flex">
+        <li
+          class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
+        >
+          <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
+          <button
+            @click="deleteImg(index)"
+            class="absolute flex justify -center items-center top-0 right-1 text-[12px] rounded-full font-black text-red-400 cursor-pointer hover:opacity-80"
           >
-            <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
-            <button
-              @click="deleteImg(index)"
-              class="absolute flex justify
-              -center items-center top-0 right-1 text-[12px] rounded-full font-black text-red-400 cursor-pointer hover:opacity-80"
+            X
+          </button>
+        </li>
+        <div class="flex flex-col justify-center space-y-2 ml-2">
+          <button
+            @click="moveUp(images, index)"
+            v-if="index > 0"
+            class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              fill="currentColor"
+              viewBox="0 0 24 24"
             >
-              X
-            </button>
-          </li>
-          <div class="flex flex-col justify-center space-y-2 ml-2">
-            <button @click="moveUp(images, index)" v-if="index > 0" class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer">
-              <svg  xmlns="http://www.w3.org/2000/svg" width="25" height="25"  
-                fill="currentColor" viewBox="0 0 24 24" >
-                <path d="M13 18V9.91l3.29 3.3 1.42-1.42L12 6.09l-5.71 5.7 1.42 1.42L11 9.91V18z"></path>
-              </svg>
-            </button>
+              <path
+                d="M13 18V9.91l3.29 3.3 1.42-1.42L12 6.09l-5.71 5.7 1.42 1.42L11 9.91V18z"
+              ></path>
+            </svg>
+          </button>
 
-            <button @click="moveDown(images, index)" v-if="index < images.length -1" class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer">
-              <svg  xmlns="http://www.w3.org/2000/svg" width="25" height="25"  
-                fill="currentColor" viewBox="0 0 24 24" >
-                <path d="M16.29 10.79 13 14.09V6h-2v8.09l-3.29-3.3-1.42 1.42 5.71 5.7 5.71-5.7z"></path>
-              </svg>
-            </button>
-          </div>
-        </ul>
-      </div>
+          <button
+            @click="moveDown(images, index)"
+            v-if="index < images.length - 1"
+            class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16.29 10.79 13 14.09V6h-2v8.09l-3.29-3.3-1.42 1.42 5.71 5.7 5.71-5.7z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </ul>
+    </div>
 
     <div class="space-x-1">
       <button
