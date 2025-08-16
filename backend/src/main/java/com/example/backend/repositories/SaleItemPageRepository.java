@@ -138,5 +138,13 @@ public interface SaleItemPageRepository extends JpaRepository<SaleItem, Integer>
 
     Page<SaleItem> findByPriceBetweenAndStorageGbIsNullOrderByBrand_NameDesc(
             Integer minPrice, Integer maxPrice, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndStorageGbIsNullOrderByBrand_NameAsc(List<String> brands, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndStorageGbIsNullOrderByBrand_NameDesc(List<String> brands, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndStorageGbInOrderByBrand_NameAsc(List<String> brands, List<Integer> storageGb, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndStorageGbInOrderByBrand_NameDesc(List<String> brands, List<Integer> storageGb, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndStorageGbInOrStorageGbIsNullOrderByBrand_NameAsc(List<String> brands, List<Integer> storageGb, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndStorageGbInOrStorageGbIsNullOrderByBrand_NameDesc(List<String> brands, List<Integer> storageGb, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndPriceBetweenAndStorageGbIsNullOrderByBrand_NameAsc(List<String> brands, Integer minPrice, Integer maxPrice, Pageable pageable);
+    Page<SaleItem> findByBrand_NameInAndPriceBetweenAndStorageGbIsNullOrderByBrand_NameDesc(List<String> brands, Integer minPrice, Integer maxPrice, Pageable pageable);
 
 }
