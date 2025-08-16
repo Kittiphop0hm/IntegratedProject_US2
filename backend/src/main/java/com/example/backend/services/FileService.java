@@ -1,13 +1,19 @@
 package com.example.backend.services;
 
+
 import com.example.backend.dtos.pictures.ResponsePictureDto;
+
+import com.example.backend.dtos.files.ListFilesDto;
+
 import com.example.backend.entities.Picture;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.PictureRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.utils.FileStorageProperties;
+
 import com.example.backend.utils.ListMapper;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -41,8 +47,6 @@ public class FileService {
     @Autowired
     private PictureRepository pictureRepository;
     @Autowired
-    private ListMapper listMapper;
-    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
@@ -58,7 +62,7 @@ public class FileService {
         }
     }
 
-    public String store(MultipartFile file , Integer saleId , Integer order ){
+    public ListFilesDto store(MultipartFile file , Integer saleId , Integer order ){
 
         SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
 
@@ -67,18 +71,30 @@ public class FileService {
         }
         String originalName = StringUtils.cleanPath(file.getOriginalFilename());
 
+        String extension = originalName.substring(originalName.lastIndexOf("."));
+        String newFileName = saleId + "." + order + extension;
         try {
-            Path targetLocation = this.fileStorageLocation.resolve(originalName);
+            Path targetLocation = this.fileStorageLocation.resolve(newFileName);
             Picture picture = new Picture();
-            picture.setFileName(saleId + "." + order);
+            picture.setFileName(newFileName);
             picture.setImageViewOrder(order);
             picture.setSales(saleItem);
             Files.copy(file.getInputStream() , targetLocation , StandardCopyOption.REPLACE_EXISTING);
             pictureRepository.save(picture);
-            return originalName;
+            return modelMapper.map(picture , ListFilesDto.class );
         } catch (IOException e) {
             throw new RuntimeException("Could not store file " + originalName, e);
         }
+    }
+
+    public List<ListFilesDto> storeList(List<MultipartFile> files , Integer saleId){
+        int order = 1 ;
+        List<ListFilesDto> fileList = new ArrayList<>(files.size());
+        for (MultipartFile file : files){
+            fileList.add(store(file,saleId,order));
+            order++;
+        }
+        return fileList;
     }
 
     public Resource loadFileAsResource(String fileName){
@@ -121,15 +137,7 @@ public class FileService {
         return supportFileTypes.contains(contentType);
     }
 
-    public List<String> store(List<MultipartFile> files , Integer saleId){
-        int order = 1 ;
-        List<String> fileNames = new ArrayList<>(files.size());
-        for (MultipartFile file : files){
-            fileNames.add(store(file,saleId,order));
-            order++;
-        }
-        return fileNames;
-    }
+
 
     public List<ResponsePictureDto> findPicturesBySaleItemId(Integer id) {
         SaleItem saleItem = saleItemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
@@ -141,6 +149,8 @@ public class FileService {
         try {
             Path filePath = this.fileStorageLocation.resolve(filename).normalize();
             if (Files.exists(filePath)) {
+                Picture picture = pictureRepository.findPictureByFileName(filename);
+                pictureRepository.deleteById(picture.getId());
                 Files.delete(filePath);
             } else {
                 throw new RuntimeException("File: " + filename + " not found!");

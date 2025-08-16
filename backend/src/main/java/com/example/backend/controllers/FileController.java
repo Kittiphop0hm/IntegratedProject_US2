@@ -45,7 +45,7 @@ public class FileController {
 
     @PostMapping("")
     public ResponseEntity<String> uploadFiles(@RequestParam("files") List<MultipartFile> files ,@RequestParam("saleId") Integer saleId) {
-        fileService.store(files , saleId);
+        fileService.storeList(files , saleId);
         return ResponseEntity.status(HttpStatus.CREATED).body("Files are uploaded. " + files);
     }
 
@@ -54,4 +54,11 @@ public class FileController {
         fileService.removeFile(filename);
         return ResponseEntity.noContent().build();
     }
+
+//    @DeleteMapping("/{filename:.+}")
+//    public ResponseEntity<Object> removeFile(@PathVariable String filename ) {
+//        fileService.removeFile(filename);
+//        return ResponseEntity.ok("File: " + filename + " removed");
+//    }
+
 }
