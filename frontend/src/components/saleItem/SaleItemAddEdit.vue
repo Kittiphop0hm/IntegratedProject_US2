@@ -131,7 +131,7 @@ const initSaleItem = {
   color: "",
   brand: {
     id: "",
-    name: ""
+    name: "",
   },
 };
 
@@ -140,10 +140,14 @@ console.log(saleItem.value);
 
 const getBrandName = async (id) => {
   console.log(id);
-  const brand = await getItemById(`${import.meta.env.VITE_APP_URL}/v1/brands`, saleItem.value.brand.id)
-  initSaleItem.brand.name = brand.name
+  const brand = await getItemById(
+    `${import.meta.env.VITE_APP_URL}/v1/brands`,
+    id
+  );
+  initSaleItem.brand.name = brand.name;
   console.log(saleItem.value.brand);
-}
+  console.log(initSaleItem.brand);
+};
 
 const saleItemForchecking = ref({ ...initSaleItem });
 const isEditMode = ref(false);
@@ -196,15 +200,19 @@ onMounted(async () => {
   if (isEditMode.value) {
     try {
       const items = await getItems(
-        `${import.meta.env.VITE_APP_URL}/api/files/images`
+        `${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`
       );
-      items.forEach((item) => {
-        const imageObj = {
-          name: item,
-          file: "",
-        };
-        images.value.push(imageObj);
-      });
+      console.log(items);
+
+      if (items.length > 0) {
+        items.forEach((item) => {
+          const imageObj = {
+            name: item.fileName,
+          };
+          images.value.push(imageObj);
+        });
+      }
+      console.log(images.value);
     } catch (err) {
       console.error(err);
     }
@@ -216,7 +224,7 @@ const isUpdated = computed(() => {
   const checkUpdate =
     JSON.stringify(saleItem.value) !==
     JSON.stringify(saleItemForchecking.value);
-  return checkUpdate
+  return checkUpdate;
 });
 
 const previousPath = localStorage.getItem("previousPath");
@@ -247,7 +255,7 @@ const showFilename = (e) => {
   console.log(imageFile.value);
 };
 
-// const isNewImages = computed(() => images.value.length > 0);
+const isNewImages = computed(() => images.value.length > 0);
 
 const isActive = computed(() => {
   const isUpdatedField =
@@ -256,7 +264,7 @@ const isActive = computed(() => {
     saleItem.value.price !== "" &&
     saleItem.value.description !== "" &&
     isFormValid();
-  return isUpdatedField
+  return isUpdatedField;
 });
 
 const deleteImg = (index) => {
