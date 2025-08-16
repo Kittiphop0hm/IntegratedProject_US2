@@ -28,6 +28,17 @@ async function getItems(url) {
       throw new Error('can not delete your item')
     }
   }
+
+  async function deleteImageResource(url, filename) {
+    try {
+      const res = await fetch(`${url}/${filename}`, {
+        method: 'DELETE'
+      })
+      return res.status
+    } catch (error) {
+      throw new Error('can not delete your image resource')
+    }
+  }
   
   async function addItem(url, newItem) {
     try {
@@ -93,9 +104,42 @@ async function getItems(url) {
         method: "POST",
         body: formdata
       })
-      const data = await res.text()
+      const data = await res.json()
       return {
         data: data,
+        status: res.status
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  async function editSaleItemAndImage(url, id, item) {
+    try {
+      const formdata = new FormData()
+      formdata.append("saleItem.model", item.model)
+      formdata.append("saleItem.description", item.description)
+      formdata.append("saleItem.price", item.price)
+      formdata.append("saleItem.ramGb", item.ramGb)
+      formdata.append("saleItem.screenSizeInch", item.screenSizeInch)
+      formdata.append("saleItem.quantity", item.quantity)
+      formdata.append("saleItem.storageGb", item.storageGb)
+      formdata.append("saleItem.color", item.color)
+      formdata.append("saleItem.brand.id", item.brand.id)
+      formdata.append("saleItem.brand.name", item.brand.name)
+      for (let i = 0; i < images.length; i++) {
+        formdata.append("imageInfos.order", images[i].order)
+        formdata.append("imageInfos.fileName", images[i].fileName)
+        formdata.append("imageInfos.status", images[i].status)
+        formdata.append("imageInfos.imageFile", images[i].imageFile)
+      }
+      const res = await fetch(`${url}/${id}`, {
+        method: 'PUT',
+        body: formdata
+      })
+      const data = await res.json()
+      return {
+        data,
         status: res.status
       }
     } catch(err) {
@@ -113,4 +157,4 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId }
+  export { getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }

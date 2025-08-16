@@ -5,10 +5,10 @@ import { computed, onMounted, ref, watch, watchEffect } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   getItems,
-  addItem,
   getItemById,
   editItem,
   addSaleItemAndImage,
+  deleteImageResource
 } from "../../libs/fetchUtil.js";
 const router = useRouter();
 const route = useRoute();
@@ -147,6 +147,12 @@ const getBrandName = async (id) => {
   initSaleItem.brand.name = brand.name;
   console.log(saleItem.value.brand);
   console.log(initSaleItem.brand);
+  console.log(saleItem.value);
+  console.log(imageFile.value);
+  console.log(images.value);
+  
+  
+  
 };
 
 const saleItemForchecking = ref({ ...initSaleItem });
@@ -278,12 +284,27 @@ const isActive = computed(() => {
   return isUpdatedField;
 });
 
+const imageReadyDeletes = ref([])
 const deleteImg = (index) => {
   if (images.value.length > 0) {
-    URL.revokeObjectURL(images.value[index].url);
+    imageReadyDeletes.value.push(images.value[index])
     images.value.splice(index, 1);
   }
+  console.log(imageReadyDeletes.value);
 };
+
+const initUpdateImage = ref(
+    {
+      order: 0,
+      fileName: "",
+      status: "", 
+      imageFile: null
+    }
+)
+const initUpdateSaleItemAndImage = ref({
+  ...saleItem.value,
+  images: []
+})
 
 async function submitForm() {
   isSubmitted.value = true;
@@ -291,8 +312,14 @@ async function submitForm() {
     isSubmitted.value = false;
     return;
   }
-
   if (Number(route.params.id)) {
+    if (imageReadyDeletes.value.length > 0) {
+        imageReadyDeletes.value.forEach(async (img) => {
+        const deleteResource = await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`, img.name)
+      })
+    }
+
+    initUpdateImage.value.imageFile = imageFile.value
     await editItem(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
       route.params.id,
@@ -331,6 +358,7 @@ const moveDown = (arr, index) => {
   console.log(arr);
 };
 // Edit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
+
 </script>
 
 <template>

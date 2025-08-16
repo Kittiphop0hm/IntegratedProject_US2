@@ -39,7 +39,6 @@ public class SaleItemService_v2 {
 
     @Autowired
     private SaleItemService_v1 saleItemServiceV1;
-
     @Autowired
     private FileService fileService;
     @Autowired
@@ -64,7 +63,6 @@ public class SaleItemService_v2 {
         if(!saleItemRepository.existsById(id)) {
             throw new ItemNotFoundException("Sale item does not exist");
         }
-
         List<Picture> pics = pictureRepository.findBySales_Id(id);
         List<String> fileNames = pics.stream().map(Picture::getFileName).toList();
         for(String fileName : fileNames) {

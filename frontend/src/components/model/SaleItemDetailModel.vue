@@ -1,6 +1,6 @@
 <script setup>
 import Search from '../Search.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getItems } from '@/libs/fetchUtil';
 import { useRoute } from 'vue-router';
 
@@ -31,21 +31,21 @@ const props = defineProps({
 console.log(props.saleId);
 
 const pictures = ref([])
+const items = ref([])
 
 onMounted(async () => {
   try {
     if (route.params.id) {
-      const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
-      console.log(items);
-      emit("fetchImagesForUpdate", items)
-      if (items.length > 0) {
-        items.forEach((item) => {
+      items.value = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
+      console.log(items.value);
+      emit("fetchImagesForUpdate", items.value)
+      if (items.value.length > 0) {
+        items.value.forEach((item) => {
           const apiFormat = `${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`
           pictures.value.push(apiFormat)
         })
       }
     }
-    console.log(pictures.value);
   } catch(err) {
     console.error(err);
   }
