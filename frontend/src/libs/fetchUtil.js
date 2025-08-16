@@ -71,13 +71,24 @@ async function getItems(url) {
     }
   }
 
-  async function addImage(url, fileImages, saleId) {
+  async function addSaleItemAndImage(url, item, images) {
     try {
       const formdata = new FormData()
-      for (let i = 0; i < fileImages.length; i++) {
-        formdata.append("files", fileImages[i])  
+      formdata.append("model", item.model)
+      formdata.append("description", item.description)
+      formdata.append("price", item.price)
+      formdata.append("ramGb", item.ramGb)
+      formdata.append("screenSizeInch", item.screenSizeInch)
+      formdata.append("quantity", item.quantity)
+      formdata.append("storageGb", item.storageGb)
+      formdata.append("color", item.color)
+      formdata.append("brand.id", item.brand.id)
+      formdata.append("brand.name", item.brand.name)
+      if (images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          formdata.append("images", images[i])  
+        }
       }
-      formdata.append("saleId", saleId)
       const res = await fetch(`${url}`, {
         method: "POST",
         body: formdata
@@ -102,4 +113,4 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { getItems, getItemById, deleteItemById, addItem, editItem, addImage, getIamgesBySaleId }
+  export { getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId }
