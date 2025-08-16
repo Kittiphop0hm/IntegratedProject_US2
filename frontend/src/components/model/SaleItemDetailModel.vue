@@ -5,6 +5,7 @@ import { getItems } from '@/libs/fetchUtil';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
+const emit = defineEmits(["fetchImagesForUpdate"])
 
 const props = defineProps({
     isActive: {
@@ -36,6 +37,7 @@ onMounted(async () => {
     if (route.params.id) {
       const items = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
       console.log(items);
+      emit("fetchImagesForUpdate", items)
       if (items.length > 0) {
         items.forEach((item) => {
           const apiFormat = `${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`

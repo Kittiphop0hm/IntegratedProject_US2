@@ -224,7 +224,7 @@ const isUpdated = computed(() => {
   const checkUpdate =
     JSON.stringify(saleItem.value) !==
     JSON.stringify(saleItemForchecking.value);
-  return checkUpdate;
+  return checkUpdate || isUpdatedImages.value;
 });
 
 const previousPath = localStorage.getItem("previousPath");
@@ -255,7 +255,18 @@ const showFilename = (e) => {
   console.log(imageFile.value);
 };
 
-const isNewImages = computed(() => images.value.length > 0);
+const isUpdatedImages = computed(() => {
+  if (images.value.length !== oldImages.value.length) return true;
+  return images.value.some((img, index) => img.name !== oldImages.value[index].fileName);
+});
+
+const oldImages = ref([])
+
+const fetchImagesForupdate = (items) => {
+  oldImages.value = [...items]
+  console.log(images.value);
+  console.log(oldImages.value);
+}
 
 const isActive = computed(() => {
   const isUpdatedField =
@@ -325,7 +336,7 @@ const moveDown = (arr, index) => {
 <template>
   <Navbar />
   <form @submit.prevent="submitForm">
-    <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated">
+    <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated" @fetchImagesForUpdate="fetchImagesForupdate">
       <template #path>
         <span class="font-semibold" v-show="!Number(route.params.id)"
           >New Sale Item
