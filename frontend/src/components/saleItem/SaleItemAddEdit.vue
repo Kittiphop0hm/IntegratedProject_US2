@@ -202,22 +202,21 @@ onMounted(async () => {
       const items = await getItems(
         `${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`
       );
+      console.log(items);
+      
       if (items.length > 0) {
-        items.forEach(async (item) => {
-          const imageUrlToObject = await imageUrlToFileObject(
-            `${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`,
-            item.fileName
-          );
+        for (let i = 0; i < items.length; i++) {
+          const imageUrlToObject = await imageUrlToFileObject(`${import.meta.env.VITE_APP_URL}/api/files/${items[i].fileName}`,items[i].fileName);
           const imageObj = {
-            name: item.fileName,
+            name: items[i].fileName,
             file: imageUrlToObject,
           };
           images.value.push(imageObj);
           imageFile.value.push(imageUrlToObject);
-        });
+        }
       }
       console.log(images.value);
-      console.log(imageFile.value);
+      
     } catch (err) {
       console.error(err);
     }
@@ -245,20 +244,18 @@ const showFilename = (e) => {
       name: file.name,
       file: file,
     };
-    if (images.value.length < 4 || images.value.includes("deleted")) {
-      if (images.value.includes("deleted") && isEditMode.value) {
-        const indexOfDeleted = images.value.indexOf("deleted");
-        if (indexOfDeleted !== -1) {
-          images.value[indexOfDeleted] = imageObj;
-          imageFile.value[indexOfDeleted] = file;
-          console.log(images.value);
-          console.log(imageFile.value);
-        }
-      } else {
-        images.value.push(imageObj);
-        imageFile.value.push(file);
+    if (images.value.includes("deleted") && isEditMode.value) {
+      const indexOfDeleted = images.value.indexOf("deleted");
+      if (indexOfDeleted !== -1) {
+        images.value[indexOfDeleted] = imageObj;
+        imageFile.value[indexOfDeleted] = file;
       }
-    } else {
+    } 
+    else if (images.value.length < 4) {
+      images.value.push(imageObj);
+      imageFile.value.push(file);
+    } 
+    else {
       isImageFull.value = true;
       setTimeout(() => {
         isImageFull.value = false;
@@ -274,15 +271,14 @@ const oldImages = ref([]);
 
 const isUpdatedImages = computed(() => {
   if (images.value.length !== oldImages.value.length) return true
-  if (images.value !== oldImages.value) return true
   return images.value.some(
     (img, index) => img.name !== oldImages.value[index].fileName
   );
 });
 
-const fetchImagesForupdate = (items) => {
+const fetchImagesForupdate = async (items) => {
   oldImages.value = [...items];
-};
+}
 
 const isActive = computed(() => {
   const isUpdatedField =
@@ -320,14 +316,14 @@ async function submitForm() {
   }
   if (Number(route.params.id)) {
     console.log(saleItem.value);
-    if (!isUpdatedImages.value) {
-      await editItem(
-        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-        route.params.id,
-        saleItem.value
-      );
-      saleItem.value = { ...initSaleItem };
-    }
+    // if (!isUpdatedImages.value) {
+    //   await editItem(
+    //     `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+    //     route.params.id,
+    //     saleItem.value
+    //   );
+    //   saleItem.value = { ...initSaleItem };
+    // }
       if (imageReadyDeletes.value.length > 0) {
         imageReadyDeletes.value.forEach(async (img) => {
           await deleteImageResource(
@@ -336,7 +332,6 @@ async function submitForm() {
           );
         });
       }
-      const imagesForUpdate = ref([]);
       const saleItemImageObjectFormats = {
         model: saleItem.value.model,
         description: saleItem.value.description,
@@ -352,6 +347,7 @@ async function submitForm() {
         }
       }
       console.log(saleItemImageObjectFormats);
+      const imagesForUpdate = ref([]);
       const imageObjectFormats = {
         order: 0,
         fileName: "",
@@ -669,16 +665,18 @@ const moveDown = (arr, index) => {
             X
           </button>
         </li>
-        <div class="flex flex-col justify-center space-y-2 ml-2">
+
+        <div class="flex flex-col items-center ml-2 gap-2">
           <button
             @click="moveUp(images, index)"
-            v-if="index > 0"
-            class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer"
+            :disabled="index === 0"
+            class="w-5 h-5 flex items-center justify-center bg-gray-300 rounded-full 
+                  hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="25"
+              width="20"
+              height="20"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -690,13 +688,14 @@ const moveDown = (arr, index) => {
 
           <button
             @click="moveDown(images, index)"
-            v-if="index < images.length - 1"
-            class="bg-gray-300 rounded-full hover:bg-gray-200 cursor-pointer"
+            :disabled="index === images.length - 1"
+            class="w-5 h-5 flex items-center justify-center bg-gray-300 rounded-full 
+                  hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="25"
-              height="25"
+              width="20"
+              height="20"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
