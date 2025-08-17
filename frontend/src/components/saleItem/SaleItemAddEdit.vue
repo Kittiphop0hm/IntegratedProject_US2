@@ -616,7 +616,7 @@ const moveDown = (arr, index) => {
       </template>
     </SaleItemDetailModel>
   </form>
-  <div class="w-fit ml-[51px]">
+  <button class="itbms-upload-button w-fit ml-[51px]">
     <label
       for="file"
       class="cursor-pointer p-3 bg-amber-400 rounded-lg hover:opacity-80"
@@ -629,7 +629,7 @@ const moveDown = (arr, index) => {
       multiple
       class="cursor-pointer hidden"
     />
-  </div>
+  </button>
 
   <div
     v-if="isImageFull"
@@ -658,10 +658,10 @@ const moveDown = (arr, index) => {
         <li
           class="flex flex-col justify-center items-center bg-gray-200 my-1 py-2 px-2 rounded-lg relative"
         >
-          <p class="text-[12px] p-2 font-semibold">{{ img.name }}</p>
+          <p :class="`itbms-picture-file${index+1} text-[12px] p-2 font-semibold`">{{ img.name }}</p>
           <button
             @click="deleteImg(index)"
-            class="absolute flex justify -center items-center top-0 right-1 text-[12px] rounded-full font-black text-red-400 cursor-pointer hover:opacity-80"
+            :class="`itbms-picture-file${index+1}-clear absolute flex justify -center items-center top-0 right-1 text-[12px] rounded-full font-black text-red-400 cursor-pointer hover:opacity-80`"
           >
             X
           </button>
@@ -671,8 +671,8 @@ const moveDown = (arr, index) => {
           <button
             @click="moveUp(images, index)"
             :disabled="index === 0"
-            class="w-5 h-5 flex items-center justify-center bg-gray-300 rounded-full 
-                  hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="`itbms-picture-file${index+1}-up w-5 h-5 flex items-center justify-center bg-gray-300 rounded-full 
+                  hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -690,8 +690,8 @@ const moveDown = (arr, index) => {
           <button
             @click="moveDown(images, index)"
             :disabled="index === images.length - 1"
-            class="w-5 h-5 flex items-center justify-center bg-gray-300 rounded-full 
-                  hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            :class="`itbms-picture-file${index+1}-down w-5 h-5 flex items-center justify-center bg-gray-300 rounded-full 
+                  hover:bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed`"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -713,7 +713,7 @@ const moveDown = (arr, index) => {
       <button
         @click="images.length = 0"
         v-if="images.length > 0"
-        class="cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80"
+        :class="`cursor-pointer py-2 px-3 bg-red-400 rounded-lg hover:opacity-80`"
       >
         Clear
       </button>
