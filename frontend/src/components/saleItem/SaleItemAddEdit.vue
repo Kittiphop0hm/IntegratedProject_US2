@@ -8,7 +8,8 @@ import {
   getItemById,
   editItem,
   addSaleItemAndImage,
-  deleteImageResource
+  deleteImageResource,
+  imageUrlToFileObject
 } from "../../libs/fetchUtil.js";
 const router = useRouter();
 const route = useRoute();
@@ -202,11 +203,12 @@ onMounted(async () => {
         `${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`
       );
       console.log(items);
-
       if (items.length > 0) {
-        items.forEach((item) => {
+        items.forEach(async (item) => {
+          const imageUrlToObject = await imageUrlToFileObject(`${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`, item.fileName)
           const imageObj = {
             name: item.fileName,
+            file: imageUrlToObject
           };
           images.value.push(imageObj);
         });
@@ -281,8 +283,9 @@ const imageReadyDeletes = ref([])
 const deleteImg = (index) => {
   if (images.value.length > 0) {
     imageReadyDeletes.value.push(images.value[index])
-    images.value.splice(index, 1);
+    images.value.splice(index, 1, "");
   }
+  console.log(images.value);
   console.log(imageReadyDeletes.value);
 };
 
@@ -300,6 +303,9 @@ async function submitForm() {
       router.push({ name: "SaleItemList", query: { alertDelete: "true" } });
     }
 
+
+
+
     await editItem(
       `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
       route.params.id,
@@ -311,6 +317,10 @@ async function submitForm() {
       params: { id: route.params.id },
       query: { alert: "true" },
     });
+
+
+    
+
   } else {
     try {
         await addSaleItemAndImage(
@@ -339,7 +349,7 @@ const moveDown = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0];
   arr.splice(index + 1, 0, deleteElement);
   const deleteImageFile = imageFile.value.splice(index, 1)[0]
-  imageFile.value.splice(index + 1, 0, deleteImageFile);d
+  imageFile.value.splice(index + 1, 0, deleteImageFile);
   console.log("Image file: ", imageFile.value);
   console.log(arr);
 };

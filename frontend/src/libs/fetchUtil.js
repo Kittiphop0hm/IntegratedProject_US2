@@ -147,6 +147,16 @@ async function getItems(url) {
     }
   }
 
+  async function imageUrlToFileObject(url, filename) {
+    try {
+      const res = await fetch(url)
+      const blob = await res.blob()
+      return new File([blob], filename, {type: blob.type})
+    } catch(error) {
+      throw new Error('can not convert image URL to file object')
+    }
+  }
+
     async function getIamgesBySaleId(url, saleId) {
     try {
       const data = await fetch(`${url}/${saleId}`)
@@ -157,4 +167,4 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }
+  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }
