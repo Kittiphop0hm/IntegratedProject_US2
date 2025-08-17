@@ -128,13 +128,15 @@ async function getItems(url) {
       formdata.append("saleItem.brand.id", item.brand.id)
       formdata.append("saleItem.brand.name", item.brand.name)
       for (let i = 0; i < images.length; i++) {
-        formdata.append(`imageInfos[${i}].order`, images[i].order)
-        formdata.append(`imageInfos[${i}].fileName`, images[i].fileName)
-        formdata.append(`imageInfos[${i}].status`, images[i].status)
-        formdata.append(`imageInfos[${i}].imageFile`, images[i].imageFile)
+        if (images[i] !== "deleted") {
+          formdata.append(`imageInfos[${i}].order`, images[i].order)
+          formdata.append(`imageInfos[${i}].fileName`, images[i].fileName)
+          formdata.append(`imageInfos[${i}].status`, images[i].status)
+          formdata.append(`imageInfos[${i}].imageFile`, images[i].imageFile)
+        }
       }
       const res = await fetch(`${url}/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         body: formdata
       })
       const data = await res.json()

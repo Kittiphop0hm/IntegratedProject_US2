@@ -315,22 +315,18 @@ async function submitForm() {
     return;
   }
   if (Number(route.params.id)) {
-    console.log(saleItem.value);
-    // if (!isUpdatedImages.value) {
-    //   await editItem(
-    //     `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-    //     route.params.id,
-    //     saleItem.value
-    //   );
-    //   saleItem.value = { ...initSaleItem };
-    // }
+      if (!isUpdatedImages.value) {
+        await editItem(
+          `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+          route.params.id,
+          saleItem.value
+        );
+        saleItem.value = { ...initSaleItem };
+      }
       if (imageReadyDeletes.value.length > 0) {
-        imageReadyDeletes.value.forEach(async (img) => {
-          await deleteImageResource(
-            `${import.meta.env.VITE_APP_URL}/api/files`,
-            img.name
-          );
-        });
+        for (let i = 0; i < imageReadyDeletes.value.length; i++) {
+            await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`,imageReadyDeletes.value[i].name);
+        }
       }
       const saleItemImageObjectFormats = {
         model: saleItem.value.model,
@@ -346,7 +342,11 @@ async function submitForm() {
           name: saleItem.value.brand.name
         }
       }
-      console.log(saleItemImageObjectFormats);
+      if (images.value.includes("deleted") || imageFile.value.includes("deleted")) {
+        const indexOfDeleted = images.value.indexOf("deleted");
+        images.value.splice(indexOfDeleted, 1)
+        imageFile.value.splice(indexOfDeleted, 1);
+      }
       const imagesForUpdate = ref([]);
       const imageObjectFormats = {
         order: 0,
@@ -360,9 +360,10 @@ async function submitForm() {
         imageObjectFormats.imageFile = file;
         imagesForUpdate.value.push({ ...imageObjectFormats });
       });
+      console.log(images.value);
+      console.log(imageFile.value);
       console.log(imagesForUpdate.value);
-      console.log(route.params.id);
-      console.log(saleItem.value);
+      
       const editSaleItem = await editSaleItemAndImage(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
         route.params.id,

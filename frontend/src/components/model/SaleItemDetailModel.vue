@@ -49,8 +49,6 @@ onMounted(async () => {
     console.error(err);
   }
 })
-
-
 </script>
 
 <template>
