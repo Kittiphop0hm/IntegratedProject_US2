@@ -191,9 +191,6 @@ const getBrandName = async (id) => {
     id
   );
   initSaleItem.brand.name = brand.name;
-  console.log(saleItem.value);
-  // console.log(initUpdateSaleItemAndImage.value);
-  
 }
 
 onMounted(async () => {
@@ -202,7 +199,6 @@ onMounted(async () => {
       const items = await getItems(
         `${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`
       );
-      console.log(items);
       if (items.length > 0) {
         items.forEach(async (item) => {
           const imageUrlToObject = await imageUrlToFileObject(`${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`, item.fileName)
@@ -211,9 +207,12 @@ onMounted(async () => {
             file: imageUrlToObject
           };
           images.value.push(imageObj);
+          imageFile.value.push(imageUrlToObject)
         });
       }
       console.log(images.value);
+      console.log(imageFile.value);
+      
     } catch (err) {
       console.error(err);
     }
@@ -242,8 +241,18 @@ const showFilename = (e) => {
       file: file,
     };
     if (images.value.length < 4) {
-      images.value.push(imageObj);
-      imageFile.value.push(file);
+      if (images.value.includes("deleted") && isEditMode.value) {
+        const indexOfDeleted = images.value.indexOf("deleted")
+        if (indexOfDeleted !== -1) {
+          images.value[indexOfDeleted] = imageObj
+          imageFile.value[indexOfDeleted] = file
+          console.log(images.value);
+          console.log(imageFile.value);
+        }
+      } else {
+        images.value.push(imageObj);
+        imageFile.value.push(file);
+      }
     } else {
       isImageFull.value = true;
       setTimeout(() => {
@@ -256,17 +265,16 @@ const showFilename = (e) => {
   console.log(imageFile.value);
 };
 
+const oldImages = ref([])
+
 const isUpdatedImages = computed(() => {
   if (images.value.length !== oldImages.value.length) return true;
   return images.value.some((img, index) => img.name !== oldImages.value[index].fileName);
 });
 
-const oldImages = ref([])
 
 const fetchImagesForupdate = (items) => {
   oldImages.value = [...items]
-  console.log(images.value);
-  console.log(oldImages.value);
 }
 
 const isActive = computed(() => {
@@ -280,13 +288,23 @@ const isActive = computed(() => {
 });
 
 const imageReadyDeletes = ref([])
+
 const deleteImg = (index) => {
   if (images.value.length > 0) {
-    imageReadyDeletes.value.push(images.value[index])
-    images.value.splice(index, 1, "");
+    if (isEditMode.value) {
+      imageReadyDeletes.value.push(images.value[index])
+      images.value.splice(index, 1, "deleted");
+      imageFile.value.splice(index, 1, "deleted");
+    } else {
+      imageReadyDeletes.value.push(images.value[index])
+      images.value.splice(index, 1);
+      imageFile.value.splice(index, 1);
+    }
   }
-  console.log(images.value);
-  console.log(imageReadyDeletes.value);
+  const saleItemObjectFormat = saleItem.value
+  console.log(imageFile.value);
+  console.log(saleItemObjectFormat);
+  console.log(saleItem.value);
 };
 
 async function submitForm() {
@@ -300,27 +318,39 @@ async function submitForm() {
         imageReadyDeletes.value.forEach(async (img) => {
         await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`, img.name)
       })
-      router.push({ name: "SaleItemList", query: { alertDelete: "true" } });
+      router.push({ name: "SaleItemList", query: { alertDelete: "true" }});
     }
+    if (!isUpdatedImages.value) {
+      await editItem(
+        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+        route.params.id,
+        saleItem.value
+      );
+      saleItem.value = { ...initSaleItem };
+      router.push({
+        name: "SaleItemDetail",
+        params: { id: route.params.id },
+        query: { alert: "true" },
+      });
+    } else {
+        // const saleItemObjectFormat = {...saleItem.value}
+        const imageObjectFormat = {}
+        imageFile.value.forEach((file, index) => {
 
+        })
 
-
-
-    await editItem(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-      route.params.id,
-      saleItem.value
-    );
-    saleItem.value = { ...initSaleItem };
-    router.push({
-      name: "SaleItemDetail",
-      params: { id: route.params.id },
-      query: { alert: "true" },
-    });
-
-
-    
-
+        await editItem(
+        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+        route.params.id,
+        saleItem.value
+      );
+      saleItem.value = { ...initSaleItem };
+      router.push({
+        name: "SaleItemDetail",
+        params: { id: route.params.id },
+        query: { alert: "true" },
+      });
+    }
   } else {
     try {
         await addSaleItemAndImage(
