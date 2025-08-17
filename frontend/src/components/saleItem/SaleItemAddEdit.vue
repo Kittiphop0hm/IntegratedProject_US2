@@ -273,7 +273,8 @@ const showFilename = (e) => {
 const oldImages = ref([]);
 
 const isUpdatedImages = computed(() => {
-  if (images.value.length !== oldImages.value.length) return true;
+  if (images.value.length !== oldImages.value.length) return true
+  if (images.value !== oldImages.value) return true
   return images.value.some(
     (img, index) => img.name !== oldImages.value[index].fileName
   );
@@ -317,14 +318,16 @@ async function submitForm() {
     isSubmitted.value = false;
     return;
   }
-
   if (Number(route.params.id)) {
-      // await editItem(
-      //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-      //   route.params.id,
-      //   saleItem.value
-      // );
-      // saleItem.value = { ...initSaleItem };
+    console.log(saleItem.value);
+    if (!isUpdatedImages.value) {
+      await editItem(
+        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+        route.params.id,
+        saleItem.value
+      );
+      saleItem.value = { ...initSaleItem };
+    }
       if (imageReadyDeletes.value.length > 0) {
         imageReadyDeletes.value.forEach(async (img) => {
           await deleteImageResource(
@@ -334,6 +337,21 @@ async function submitForm() {
         });
       }
       const imagesForUpdate = ref([]);
+      const saleItemImageObjectFormats = {
+        model: saleItem.value.model,
+        description: saleItem.value.description,
+        price: saleItem.value.price,  
+        ramGb: saleItem.value.ramGb,
+        screenSizeInch: saleItem.value.screenSizeInch,
+        quantity: saleItem.value.quantity,
+        storageGb: saleItem.value.storageGb,  
+        color: saleItem.value.color,
+        brand: {
+          id: saleItem.value.brand.id,
+          name: saleItem.value.brand.name
+        }
+      }
+      console.log(saleItemImageObjectFormats);
       const imageObjectFormats = {
         order: 0,
         fileName: "",
@@ -349,14 +367,16 @@ async function submitForm() {
       console.log(imagesForUpdate.value);
       console.log(route.params.id);
       console.log(saleItem.value);
-      await editSaleItemAndImage(
+      const editSaleItem = await editSaleItemAndImage(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
         route.params.id,
-        saleItem.value,
+        saleItemImageObjectFormats,
         imagesForUpdate.value
       );
+      console.log(editSaleItem.data);
+      
       saleItem.value = { ...initSaleItem };
-    router.push({
+      router.push({
       name: "SaleItemDetail",
       params: { id: route.params.id },
       query: { alert: "true" },

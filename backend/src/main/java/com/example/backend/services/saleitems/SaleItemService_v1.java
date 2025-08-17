@@ -78,6 +78,7 @@ public class SaleItemService_v1 {
         existing.setScreenSizeInch(updateSaleItemDto.getScreenSizeInch());
         existing.setStorageGb(updateSaleItemDto.getStorageGb());
         existing.setColor(updateSaleItemDto.getColor());
+        existing.setBrand(brand);
         SaleItem updated = repository.save(existing);
         ResponseSaleItemsDto responseDto = modelMapper.map(updated, ResponseSaleItemsDto.class);
         responseDto.setBrandName(brand.getName());
