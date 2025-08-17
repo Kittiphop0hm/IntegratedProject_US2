@@ -244,7 +244,7 @@ const showFilename = (e) => {
       name: file.name,
       file: file,
     };
-    if (images.value.includes("deleted") && isEditMode.value) {
+    if (images.value.includes("deleted")) {
       const indexOfDeleted = images.value.indexOf("deleted");
       if (indexOfDeleted !== -1) {
         images.value[indexOfDeleted] = imageObj;
@@ -270,11 +270,14 @@ const showFilename = (e) => {
 const oldImages = ref([]);
 
 const isUpdatedImages = computed(() => {
-  if (images.value.length !== oldImages.value.length) return true
-  return images.value.some(
-    (img, index) => img.name !== oldImages.value[index].fileName
-  );
-});
+  const currentImages = images.value.filter(img => img !== "deleted")
+  const previousImages = oldImages.value.filter(img => img.fileName !== "deleted")
+
+  if (currentImages.length !== previousImages.length) return true;
+  return currentImages.some(
+    (img, index) => img.name !== previousImages[index].fileName
+  )
+})
 
 const fetchImagesForupdate = async (items) => {
   oldImages.value = [...items];
@@ -295,15 +298,9 @@ const imageReadyDeletes = ref([]);
 const deleteImg = (index) => {
   if (index < 0 || index >= images.value.length) return;
   if (images.value.length > 0) {
-    if (isEditMode.value) {
       imageReadyDeletes.value.push(images.value[index]);
       images.value.splice(index, 1, "deleted");
       imageFile.value.splice(index, 1, "deleted");
-    } else {
-      imageReadyDeletes.value.push(images.value[index]);
-      images.value.splice(index, 1);
-      imageFile.value.splice(index, 1);
-    }
     console.log(imageFile.value);
   }
 };
@@ -379,6 +376,11 @@ async function submitForm() {
       query: { alert: "true" },
     });
   } else {
+      if (images.value.includes("deleted") || imageFile.value.includes("deleted")) {
+        const indexOfDeleted = images.value.indexOf("deleted");
+        images.value.splice(indexOfDeleted, 1)
+        imageFile.value.splice(indexOfDeleted, 1);
+      }
     try {
       await addSaleItemAndImage(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
