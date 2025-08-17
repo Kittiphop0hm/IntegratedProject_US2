@@ -28,7 +28,6 @@ const props = defineProps({
         default: false
     },
 })
-console.log(props.saleId);
 
 const pictures = ref([])
 const items = ref([])

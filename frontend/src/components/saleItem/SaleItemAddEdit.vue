@@ -9,7 +9,8 @@ import {
   editItem,
   addSaleItemAndImage,
   deleteImageResource,
-  imageUrlToFileObject
+  imageUrlToFileObject,
+  editSaleItemAndImage,
 } from "../../libs/fetchUtil.js";
 const router = useRouter();
 const route = useRoute();
@@ -191,7 +192,9 @@ const getBrandName = async (id) => {
     id
   );
   initSaleItem.brand.name = brand.name;
-}
+  saleItem.value.brandName = brand.name;
+  console.log(saleItem.value);
+};
 
 onMounted(async () => {
   if (isEditMode.value) {
@@ -201,18 +204,20 @@ onMounted(async () => {
       );
       if (items.length > 0) {
         items.forEach(async (item) => {
-          const imageUrlToObject = await imageUrlToFileObject(`${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`, item.fileName)
+          const imageUrlToObject = await imageUrlToFileObject(
+            `${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`,
+            item.fileName
+          );
           const imageObj = {
             name: item.fileName,
-            file: imageUrlToObject
+            file: imageUrlToObject,
           };
           images.value.push(imageObj);
-          imageFile.value.push(imageUrlToObject)
+          imageFile.value.push(imageUrlToObject);
         });
       }
       console.log(images.value);
       console.log(imageFile.value);
-      
     } catch (err) {
       console.error(err);
     }
@@ -240,12 +245,12 @@ const showFilename = (e) => {
       name: file.name,
       file: file,
     };
-    if (images.value.length < 4) {
+    if (images.value.length < 4 || images.value.includes("deleted")) {
       if (images.value.includes("deleted") && isEditMode.value) {
-        const indexOfDeleted = images.value.indexOf("deleted")
+        const indexOfDeleted = images.value.indexOf("deleted");
         if (indexOfDeleted !== -1) {
-          images.value[indexOfDeleted] = imageObj
-          imageFile.value[indexOfDeleted] = file
+          images.value[indexOfDeleted] = imageObj;
+          imageFile.value[indexOfDeleted] = file;
           console.log(images.value);
           console.log(imageFile.value);
         }
@@ -265,17 +270,18 @@ const showFilename = (e) => {
   console.log(imageFile.value);
 };
 
-const oldImages = ref([])
+const oldImages = ref([]);
 
 const isUpdatedImages = computed(() => {
   if (images.value.length !== oldImages.value.length) return true;
-  return images.value.some((img, index) => img.name !== oldImages.value[index].fileName);
+  return images.value.some(
+    (img, index) => img.name !== oldImages.value[index].fileName
+  );
 });
 
-
 const fetchImagesForupdate = (items) => {
-  oldImages.value = [...items]
-}
+  oldImages.value = [...items];
+};
 
 const isActive = computed(() => {
   const isUpdatedField =
@@ -287,24 +293,22 @@ const isActive = computed(() => {
   return isUpdatedField;
 });
 
-const imageReadyDeletes = ref([])
+const imageReadyDeletes = ref([]);
 
 const deleteImg = (index) => {
+  if (index < 0 || index >= images.value.length) return;
   if (images.value.length > 0) {
     if (isEditMode.value) {
-      imageReadyDeletes.value.push(images.value[index])
+      imageReadyDeletes.value.push(images.value[index]);
       images.value.splice(index, 1, "deleted");
       imageFile.value.splice(index, 1, "deleted");
     } else {
-      imageReadyDeletes.value.push(images.value[index])
+      imageReadyDeletes.value.push(images.value[index]);
       images.value.splice(index, 1);
       imageFile.value.splice(index, 1);
     }
+    console.log(imageFile.value);
   }
-  const saleItemObjectFormat = saleItem.value
-  console.log(imageFile.value);
-  console.log(saleItemObjectFormat);
-  console.log(saleItem.value);
 };
 
 async function submitForm() {
@@ -313,51 +317,57 @@ async function submitForm() {
     isSubmitted.value = false;
     return;
   }
+
   if (Number(route.params.id)) {
-    if (imageReadyDeletes.value.length > 0) {
+      // await editItem(
+      //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+      //   route.params.id,
+      //   saleItem.value
+      // );
+      // saleItem.value = { ...initSaleItem };
+      if (imageReadyDeletes.value.length > 0) {
         imageReadyDeletes.value.forEach(async (img) => {
-        await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`, img.name)
-      })
-      router.push({ name: "SaleItemList", query: { alertDelete: "true" }});
-    }
-    if (!isUpdatedImages.value) {
-      await editItem(
-        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+          await deleteImageResource(
+            `${import.meta.env.VITE_APP_URL}/api/files`,
+            img.name
+          );
+        });
+      }
+      const imagesForUpdate = ref([]);
+      const imageObjectFormats = {
+        order: 0,
+        fileName: "",
+        status: "NEW",
+        imageFile: {},
+      };
+      imageFile.value.forEach((file, index) => {
+        imageObjectFormats.order = index + 1;
+        imageObjectFormats.fileName = file.name;
+        imageObjectFormats.imageFile = file;
+        imagesForUpdate.value.push({ ...imageObjectFormats });
+      });
+      console.log(imagesForUpdate.value);
+      console.log(route.params.id);
+      console.log(saleItem.value);
+      await editSaleItemAndImage(
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
         route.params.id,
-        saleItem.value
+        saleItem.value,
+        imagesForUpdate.value
       );
       saleItem.value = { ...initSaleItem };
-      router.push({
-        name: "SaleItemDetail",
-        params: { id: route.params.id },
-        query: { alert: "true" },
-      });
-    } else {
-        // const saleItemObjectFormat = {...saleItem.value}
-        const imageObjectFormat = {}
-        imageFile.value.forEach((file, index) => {
-
-        })
-
-        await editItem(
-        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-        route.params.id,
-        saleItem.value
-      );
-      saleItem.value = { ...initSaleItem };
-      router.push({
-        name: "SaleItemDetail",
-        params: { id: route.params.id },
-        query: { alert: "true" },
-      });
-    }
+    router.push({
+      name: "SaleItemDetail",
+      params: { id: route.params.id },
+      query: { alert: "true" },
+    });
   } else {
     try {
-        await addSaleItemAndImage(
-          `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
-          saleItem.value,
-          imageFile.value
-        );
+      await addSaleItemAndImage(
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+        saleItem.value,
+        imageFile.value
+      );
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
     } catch (error) {
@@ -369,7 +379,7 @@ async function submitForm() {
 const moveUp = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0];
   arr.splice(index - 1, 0, deleteElement);
-  const deleteImageFile = imageFile.value.splice(index, 1)[0]
+  const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index - 1, 0, deleteImageFile);
   console.log("Image file: ", imageFile.value);
   console.log(arr);
@@ -378,7 +388,7 @@ const moveUp = (arr, index) => {
 const moveDown = (arr, index) => {
   const deleteElement = arr.splice(index, 1)[0];
   arr.splice(index + 1, 0, deleteElement);
-  const deleteImageFile = imageFile.value.splice(index, 1)[0]
+  const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index + 1, 0, deleteImageFile);
   console.log("Image file: ", imageFile.value);
   console.log(arr);
@@ -390,13 +400,16 @@ const moveDown = (arr, index) => {
 // dit ตอนลบแล้วคงความยาวไว้อาจจะต้องแอด String เปล่าเข้าไปแทนที่ตัวที่ลบ แล้วตอนแอดก็ค่อยแอดทับตัวที่เป็น string เปล่า
 //เหลือต้องแก้เลื่อนรูปให้เลื่อน imageFile ด้วย
 //และเหลือ edit
-
 </script>
 
 <template>
   <Navbar />
   <form @submit.prevent="submitForm">
-    <SaleItemDetailModel :isActive="isActive" :isUpdated="isUpdated" @fetchImagesForUpdate="fetchImagesForupdate">
+    <SaleItemDetailModel
+      :isActive="isActive"
+      :isUpdated="isUpdated"
+      @fetchImagesForUpdate="fetchImagesForupdate"
+    >
       <template #path>
         <span class="font-semibold" v-show="!Number(route.params.id)"
           >New Sale Item
