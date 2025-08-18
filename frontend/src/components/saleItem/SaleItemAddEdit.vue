@@ -360,7 +360,6 @@ async function submitForm() {
       console.log(images.value);
       console.log(imageFile.value);
       console.log(imagesForUpdate.value);
-      
       const editSaleItem = await editSaleItemAndImage(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
         route.params.id,
