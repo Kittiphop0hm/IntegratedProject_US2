@@ -64,15 +64,36 @@ const sortStorageSizes = (sizes) => {
   });
 };
 
-   const mockStorageSizes = ref([
-        { id: 1, name: "32Gb", value: 32 },
-        { id: 2, name: "64Gb", value: 64},
-        { id: 3, name: "128Gb", value: 128},
-        { id: 4, name: "256Gb", value: 256 },
-        { id: 5, name: "512Gb", value: 512},
-        { id: 6, name: "1Tb", value: 1024},
-        { id: 7, name: "Not specified", value: -1}
-    ]);
+const mockStorageSizes = ref([
+    { id: 1, name: "32Gb", value: 32 },
+    { id: 2, name: "64Gb", value: 64},
+    { id: 3, name: "128Gb", value: 128},
+    { id: 4, name: "256Gb", value: 256 },
+    { id: 5, name: "512Gb", value: 512},
+    { id: 6, name: "1Tb", value: 1024},
+    { id: 7, name: "Not specified", value: 0} // เปลี่ยนเป็น 0
+]);
+
+// ฟังก์ชันแปลงค่าสำหรับส่งไป backend
+const convertStorageSizesForBackend = (storageSizes) => {
+  return storageSizes.map(size => {
+    // ถ้าค่าเป็น 0 ให้ส่งเป็น "0"
+    if (size === 0) {
+      return "0";
+    }
+    return size.toString();
+  });
+};
+
+// ฟังก์ชันหลักสำหรับ emit ข้อมูล
+const emitFilterAndSort = () => {
+  const convertedStorageSizes = convertStorageSizesForBackend(filterStorageSize.value);
+  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
+    brands: filterBrand.value,
+    priceRange: filterPrice.value,
+    storageSizes: convertedStorageSizes
+  });
+};
 
 onMounted(async () => {
   try {
@@ -80,10 +101,10 @@ onMounted(async () => {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
     brands.value.sort((a, b) => a.name.localeCompare(b.name));
   
-    // โหลด filters จาก sessionStorage
-    const savedBrandFilter = sessionStorage.getItem("filterBrand");
-    const savedPriceFilter = sessionStorage.getItem("filterPrice");
-    const savedStorageSizeFilter = sessionStorage.getItem("filterStorageSize");
+    // โหลด filters จาก localStorage
+    const savedBrandFilter = localStorage.getItem("filterBrand");
+    const savedPriceFilter = localStorage.getItem("filterPrice");
+    const savedStorageSizeFilter = localStorage.getItem("filterStorageSize");
     
     if (savedBrandFilter) {
       filterBrand.value = JSON.parse(savedBrandFilter);
@@ -109,24 +130,16 @@ const clearAllFilters = () => {
   isDropFilterBrand.value = false;
   isDropFilterPrice.value = false;
   isDropFilterStorageSize.value = false;
-  sessionStorage.removeItem("filterBrand");
-  sessionStorage.removeItem("filterPrice");
-  sessionStorage.removeItem("filterStorageSize");
-  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-    brands: filterBrand.value,
-    priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
-  });
+  localStorage.removeItem("filterBrand");
+  localStorage.removeItem("filterPrice");
+  localStorage.removeItem("filterStorageSize");
+  emitFilterAndSort();
 };
 
 const deleteBrand = (index) => {
   filterBrand.value.splice(index, 1);
-  sessionStorage.setItem("filterBrand", JSON.stringify(filterBrand.value));
-  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-    brands: filterBrand.value,
-    priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
-  });
+  localStorage.setItem("filterBrand", JSON.stringify(filterBrand.value));
+  emitFilterAndSort();
 };
 
 // เลือกช่วงราคา
@@ -135,12 +148,8 @@ const selectPriceRange = (range) => {
   customPriceMin.value = '';
   customPriceMax.value = '';
   isDropFilterPrice.value = false;
-  sessionStorage.setItem("filterPrice", JSON.stringify(range));
-  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-    brands: filterBrand.value,
-    priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
-  });
+  localStorage.setItem("filterPrice", JSON.stringify(range));
+  emitFilterAndSort();
 };
 
 // ตั้งค่า custom price range
@@ -164,24 +173,16 @@ const setCustomPriceRange = () => {
     
     filterPrice.value = customRange;
     isDropFilterPrice.value = false;
-    sessionStorage.setItem("filterPrice", JSON.stringify(customRange));
-    emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-      brands: filterBrand.value,
-      priceRange: filterPrice.value,
-      storageSizes: filterStorageSize.value
-    });
+    localStorage.setItem("filterPrice", JSON.stringify(customRange));
+    emitFilterAndSort();
   }
 };
 
 // ลบช่วงราคาที่เลือก
 const removePriceFilter = () => {
   filterPrice.value = null;
-  sessionStorage.removeItem("filterPrice");
-  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-    brands: filterBrand.value,
-    priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
-  });
+  localStorage.removeItem("filterPrice");
+  emitFilterAndSort();
 };
 
 // ลบ storage size ที่เลือกเฉพาะรายการ
@@ -189,44 +190,33 @@ const removeStorageSizeFilter = (storageToRemove) => {
   const index = filterStorageSize.value.indexOf(storageToRemove);
   if (index > -1) {
     filterStorageSize.value.splice(index, 1);
-    sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
-    emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-      brands: filterBrand.value,
-      priceRange: filterPrice.value,
-      storageSizes: filterStorageSize.value
-    });
+    localStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
+    emitFilterAndSort();
   }
 };
 
 // ล้าง storage size ทั้งหมด
 const clearAllStorageSizeFilters = () => {
   filterStorageSize.value = [];
-  sessionStorage.removeItem("filterStorageSize");
-  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-    brands: filterBrand.value,
-    priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
-  });
+  localStorage.removeItem("filterStorageSize");
+  emitFilterAndSort();
 };
 
 const setFilterSortSaleItems = (brands, direction, field) => {
-  const directionSession = sessionStorage.getItem("direction");
+  const directionSession = localStorage.getItem("direction");
   sortDirection.value = directionSession ? directionSession : direction;
+  const convertedStorageSizes = convertStorageSizesForBackend(filterStorageSize.value);
   emit("filterAndSortSaleItem", brands, direction, field, {
     brands: brands,
     priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
+    storageSizes: convertedStorageSizes
   });
 };
 
 // ฟังก์ชันสำหรับการเปลี่ยนแปลง storage size filter
 const onStorageSizeChange = () => {
-  sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
-  emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
-    brands: filterBrand.value,
-    priceRange: filterPrice.value,
-    storageSizes: filterStorageSize.value
-  });
+  localStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
+  emitFilterAndSort();
 };
 </script>
 
@@ -439,7 +429,7 @@ const onStorageSizeChange = () => {
         :key="'storage-' + index"
         class="itbms-storage-size-item bg-white border-2 border-gray-300 rounded-full px-4 py-2 text-sm text-gray-800 shadow-sm hover:shadow-md transition-all duration-200 flex items-center"
       >
-        {{ storage }}
+        {{ storage === 0 ? 'Not specified' : storage + 'Gb' }}
         <button
           @click="removeStorageSizeFilter(storage)"
           class="itbms-storage-size-item-clear ml-2 text-gray-500 hover:text-red-500 focus:outline-none hover:bg-gray-100 rounded-full p-1 transition-all duration-200"
@@ -504,7 +494,6 @@ const onStorageSizeChange = () => {
           
           <!-- Predefined Price Ranges -->
           <div class="mb-4">
-            <h4 class="text-xs font-medium text-gray-600 mb-2">Price options</h4>
             <div class="flex flex-col space-y-2">
               <div
                 v-for="range in priceRanges"
@@ -559,13 +548,6 @@ const onStorageSizeChange = () => {
         <div v-if="isDropFilterStorageSize" class="flex-1 min-w-48">
           <div class="flex items-center justify-between mb-3 border-b pb-2">
             <h3 class="text-sm font-semibold text-gray-700">Storage Size</h3>
-            <button
-              v-if="filterStorageSize.length > 0"
-              @click="clearAllStorageSizeFilters"
-              class="text-xs text-red-500 hover:text-red-700 underline"
-            >
-              Clear All
-            </button>
           </div>
 
           <div class="flex flex-col space-y-2">
@@ -588,7 +570,7 @@ const onStorageSizeChange = () => {
             </div>
           </div>
         </div>
-        
+      
       </div>
     </div>
   </div>

@@ -15,10 +15,10 @@ const pageSize = ref();
 const pageNumber = ref();
 
 // Updated filter states
-const filterBrandSession = sessionStorage.getItem("filterBrand");
-const directionSession = sessionStorage.getItem("direction");
-const filterPriceSession = sessionStorage.getItem("filterPrice");
-const filterStorageSizeSession = sessionStorage.getItem("filterStorageSize");
+const filterBrandSession = localStorage.getItem("filterBrand");
+const directionSession = localStorage.getItem("direction");
+const filterPriceSession = localStorage.getItem("filterPrice");
+const filterStorageSizeSession = localStorage.getItem("filterStorageSize");
 
 const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
 const directionR = ref(directionSession ? directionSession : '');
@@ -26,8 +26,8 @@ const filterPriceR = ref(filterPriceSession ? JSON.parse(filterPriceSession) : n
 const filterStorageSizeR = ref(filterStorageSizeSession ? JSON.parse(filterStorageSizeSession) : []);
 const fieldR = ref('');
 
-const pageNumberSession = sessionStorage.getItem("pageNumber");
-const pageSizeSession = sessionStorage.getItem("pageSize");
+const pageNumberSession = localStorage.getItem("pageNumber");
+const pageSizeSession = localStorage.getItem("pageSize");
 
 onMounted(() => {
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
@@ -126,16 +126,16 @@ const fetchData = async () => {
 };
 
 watch([pageSize, pageNumber], () => {
-  sessionStorage.setItem("pageSize", pageSize.value);
-  sessionStorage.setItem("pageNumber", pageNumber.value);
+  localStorage.setItem("pageSize", pageSize.value);
+  localStorage.setItem("pageNumber", pageNumber.value);
   fetchData();
 });
 
 watch([filterBrandR, directionR, filterPriceR, filterStorageSizeR], () => {
-  sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
-  sessionStorage.setItem("direction", directionR.value);
-  sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
-  sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSizeR.value));
+  localStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
+  localStorage.setItem("direction", directionR.value);
+  localStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
+  localStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSizeR.value));
   console.log("Filters changed, resetting to page 0");
   pageNumber.value = 0;
 }, { deep: true });

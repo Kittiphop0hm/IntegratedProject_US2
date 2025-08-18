@@ -13,7 +13,6 @@ import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.PictureRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.services.FileService;
-import com.example.backend.services.SaleItemService_v1;
 import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
