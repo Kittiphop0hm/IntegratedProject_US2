@@ -244,7 +244,7 @@ const showFilename = (e) => {
   
   filenames.forEach((file) => {
     console.log(file.size);
-    if (file.size > 2000000) {
+    if (file.size > 2100000) {
       isOver2MB.value = true
       return
     }
