@@ -9,10 +9,14 @@ const props = defineProps({
         required: true
     }
 })
+
+function savePreviousPath() {
+  const previousPath = route.fullPath;
+  localStorage.setItem("previousPath", previousPath);
+}
 </script>
 
 <template>
-
   <SaleItemListModel :items="saleItems">
     <template #listItem="{ yourItem }">
       <router-link
