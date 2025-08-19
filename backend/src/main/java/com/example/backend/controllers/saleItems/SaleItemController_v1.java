@@ -4,7 +4,7 @@ import com.example.backend.dtos.saleItems.SaleItemDetailForCreateOrUpdateDto;
 import com.example.backend.dtos.saleItems.GetSaleItemDto;
 import com.example.backend.dtos.saleItems.ListSaleItemsDto;
 import com.example.backend.dtos.saleItems.ResponseSaleItemsDto;
-import com.example.backend.services.SaleItemService_v1;
+import com.example.backend.services.saleitems.SaleItemService_v1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
