@@ -392,10 +392,7 @@ public interface SaleItemPageRepository extends JpaRepository<SaleItem, Integer>
             @Param("notSpecifiedValue") Integer notSpecifiedValue,
             Pageable pageable);
 
-    // ========== LEGACY METHODS (เก็บไว้เผื่อยังใช้ null อยู่) ==========
 
-    Page<SaleItem> findByStorageGbInOrStorageGbIsNullOrderByBrand_NameAsc(List<Integer> storageGbs, Pageable pageable);
-    Page<SaleItem> findByStorageGbInOrStorageGbIsNullOrderByBrand_NameDesc(List<Integer> storageGbs, Pageable pageable);
 
     @Query("""
         SELECT s FROM SaleItem s

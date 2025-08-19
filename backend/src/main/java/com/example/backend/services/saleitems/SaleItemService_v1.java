@@ -154,7 +154,14 @@ public class SaleItemService_v1 {
         boolean hasPriceFilter = minPrice != null || maxPrice != null;
 
         int minPriceValue = (minPrice != null) ? minPrice : 0;
-        int maxPriceValue = (maxPrice != null) ? maxPrice : Integer.MAX_VALUE;
+        int maxPriceValue;
+        if (maxPrice != null) {
+            maxPriceValue = maxPrice;
+        } else if (minPrice != null) {
+            maxPriceValue = minPrice;
+        } else {
+            maxPriceValue = Integer.MAX_VALUE;
+        }
 
         // ปรับปรุง sorting logic - รองรับ sortField = "brand.name" หรือ "brand"
         boolean isBrandSort = "brand.name".equals(sortField) || "brand".equals(sortField);
