@@ -137,8 +137,6 @@ public class FileService {
         return supportFileTypes.contains(contentType);
     }
 
-
-
     public List<ResponsePictureDto> findPicturesBySaleItemId(Integer id) {
         SaleItem saleItem = saleItemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("Sale item not found for id: " + id));
         List<Picture> pictures = pictureRepository.findPictureBySalesId(saleItem.getId());
@@ -158,5 +156,5 @@ public class FileService {
         } catch (IOException ex) {
             throw new RuntimeException("Could not delete file " + filename, ex);
         }
-     }
+    }
 }

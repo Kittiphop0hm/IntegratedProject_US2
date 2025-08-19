@@ -65,7 +65,6 @@ public class SaleItemController_v2 {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Sale item create failed: " + e.getMessage());
         }
-
     }
 
     @DeleteMapping("{id}")

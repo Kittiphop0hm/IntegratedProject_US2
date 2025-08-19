@@ -33,7 +33,7 @@ const cancelDelete = () => {
 const deleteSaleItem = async (id) => {
   try {
     const deleteStatus = await deleteItemById(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+      `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
       id
     );
     if (deleteStatus === 204) {

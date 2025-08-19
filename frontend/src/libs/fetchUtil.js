@@ -28,6 +28,17 @@ async function getItems(url) {
       throw new Error('can not delete your item')
     }
   }
+
+  async function deleteImageResource(url, filename) {
+    try {
+      const res = await fetch(`${url}/${filename}`, {
+        method: 'DELETE'
+      })
+      return res.status
+    } catch (error) {
+      throw new Error('can not delete your image resource')
+    }
+  }
   
   async function addItem(url, newItem) {
     try {
@@ -71,24 +82,80 @@ async function getItems(url) {
     }
   }
 
-  async function addImage(url, fileImages, saleId) {
+  async function addSaleItemAndImage(url, item, images) {
     try {
       const formdata = new FormData()
-      for (let i = 0; i < fileImages.length; i++) {
-        formdata.append("files", fileImages[i])  
+      formdata.append("model", item.model)
+      formdata.append("description", item.description)
+      formdata.append("price", item.price)
+      formdata.append("ramGb", item.ramGb)
+      formdata.append("screenSizeInch", item.screenSizeInch)
+      formdata.append("quantity", item.quantity)
+      formdata.append("storageGb", item.storageGb)
+      formdata.append("color", item.color)
+      formdata.append("brand.id", item.brand.id)
+      formdata.append("brand.name", item.brand.name)
+      if (images.length > 0) {
+        for (let i = 0; i < images.length; i++) {
+          formdata.append("images", images[i])  
+        }
       }
-      formdata.append("saleId", saleId)
       const res = await fetch(`${url}`, {
         method: "POST",
         body: formdata
       })
-      const data = await res.text()
+      const data = await res.json()
       return {
         data: data,
         status: res.status
       }
     } catch(err) {
       console.log(err);
+    }
+  }
+
+  async function editSaleItemAndImage(url, id, item, images) {
+    try {
+      const formdata = new FormData()
+      formdata.append("saleItem.model", item.model)
+      formdata.append("saleItem.description", item.description)
+      formdata.append("saleItem.price", item.price)
+      formdata.append("saleItem.ramGb", item.ramGb)
+      formdata.append("saleItem.screenSizeInch", item.screenSizeInch)
+      formdata.append("saleItem.quantity", item.quantity)
+      formdata.append("saleItem.storageGb", item.storageGb)
+      formdata.append("saleItem.color", item.color)
+      formdata.append("saleItem.brand.id", item.brand.id)
+      formdata.append("saleItem.brand.name", item.brand.name)
+      for (let i = 0; i < images.length; i++) {
+        if (images[i] !== "deleted") {
+          formdata.append(`imageInfos[${i}].order`, images[i].order)
+          formdata.append(`imageInfos[${i}].fileName`, images[i].fileName)
+          formdata.append(`imageInfos[${i}].status`, images[i].status)
+          formdata.append(`imageInfos[${i}].imageFile`, images[i].imageFile)
+        }
+      }
+      const res = await fetch(`${url}/${id}`, {
+        method: "PUT",
+        body: formdata
+      })
+      const data = await res.json()
+      return {
+        data,
+        status: res.status
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  async function imageUrlToFileObject(url, filename) {
+    try {
+      const res = await fetch(url)
+      const blob = await res.blob()
+      return new File([blob], filename, {type: blob.type})
+    } catch(error) {
+      throw new Error('can not convert image URL to file object')
     }
   }
 
@@ -102,4 +169,4 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { getItems, getItemById, deleteItemById, addItem, editItem, addImage, getIamgesBySaleId }
+  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }
