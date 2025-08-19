@@ -605,7 +605,7 @@ const moveDown = (arr, index) => {
         </button>
       </template>
       <template #button2>
-        <router-link :to="{ path: previousPath }">
+        <router-link :to="{ name: 'SaleItemHome' }">
           <button class="itbms-cancel-button text-white">Cancel</button>
         </router-link>
       </template>
