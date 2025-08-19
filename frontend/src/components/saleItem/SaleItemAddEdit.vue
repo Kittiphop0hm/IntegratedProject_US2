@@ -617,7 +617,7 @@ function savePreviousPath() {
         </button>
       </template>
       <template #button2>
-        <router-link :to="{name: 'SaleItemHome'}">
+        <router-link :to="{ name: 'SaleItemHome' }">
           <button class="itbms-cancel-button text-white">Cancel</button>
         </router-link>
       </template>
