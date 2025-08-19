@@ -101,10 +101,10 @@ onMounted(async () => {
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
     brands.value.sort((a, b) => a.name.localeCompare(b.name));
   
-    // โหลด filters จาก localStorage
-    const savedBrandFilter = localStorage.getItem("filterBrand");
-    const savedPriceFilter = localStorage.getItem("filterPrice");
-    const savedStorageSizeFilter = localStorage.getItem("filterStorageSize");
+    // โหลด filters จาก sessionStorage
+    const savedBrandFilter = sessionStorage.getItem("filterBrand");
+    const savedPriceFilter = sessionStorage.getItem("filterPrice");
+    const savedStorageSizeFilter = sessionStorage.getItem("filterStorageSize");
     
     if (savedBrandFilter) {
       filterBrand.value = JSON.parse(savedBrandFilter);
@@ -130,15 +130,15 @@ const clearAllFilters = () => {
   isDropFilterBrand.value = false;
   isDropFilterPrice.value = false;
   isDropFilterStorageSize.value = false;
-  localStorage.removeItem("filterBrand");
-  localStorage.removeItem("filterPrice");
-  localStorage.removeItem("filterStorageSize");
+  sessionStorage.removeItem("filterBrand");
+  sessionStorage.removeItem("filterPrice");
+  sessionStorage.removeItem("filterStorageSize");
   emitFilterAndSort();
 };
 
 const deleteBrand = (index) => {
   filterBrand.value.splice(index, 1);
-  localStorage.setItem("filterBrand", JSON.stringify(filterBrand.value));
+  sessionStorage.setItem("filterBrand", JSON.stringify(filterBrand.value));
   emitFilterAndSort();
 };
 
@@ -148,7 +148,7 @@ const selectPriceRange = (range) => {
   customPriceMin.value = '';
   customPriceMax.value = '';
   isDropFilterPrice.value = false;
-  localStorage.setItem("filterPrice", JSON.stringify(range));
+  sessionStorage.setItem("filterPrice", JSON.stringify(range));
   emitFilterAndSort();
 };
 
@@ -173,7 +173,7 @@ const setCustomPriceRange = () => {
     
     filterPrice.value = customRange;
     isDropFilterPrice.value = false;
-    localStorage.setItem("filterPrice", JSON.stringify(customRange));
+    sessionStorage.setItem("filterPrice", JSON.stringify(customRange));
     emitFilterAndSort();
   }
 };
@@ -181,7 +181,7 @@ const setCustomPriceRange = () => {
 // ลบช่วงราคาที่เลือก
 const removePriceFilter = () => {
   filterPrice.value = null;
-  localStorage.removeItem("filterPrice");
+  sessionStorage.removeItem("filterPrice");
   emitFilterAndSort();
 };
 
@@ -190,7 +190,7 @@ const removeStorageSizeFilter = (storageToRemove) => {
   const index = filterStorageSize.value.indexOf(storageToRemove);
   if (index > -1) {
     filterStorageSize.value.splice(index, 1);
-    localStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
+    sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
     emitFilterAndSort();
   }
 };
@@ -198,12 +198,12 @@ const removeStorageSizeFilter = (storageToRemove) => {
 // ล้าง storage size ทั้งหมด
 const clearAllStorageSizeFilters = () => {
   filterStorageSize.value = [];
-  localStorage.removeItem("filterStorageSize");
+  sessionStorage.removeItem("filterStorageSize");
   emitFilterAndSort();
 };
 
 const setFilterSortSaleItems = (brands, direction, field) => {
-  const directionSession = localStorage.getItem("direction");
+  const directionSession = sessionStorage.getItem("direction");
   sortDirection.value = directionSession ? directionSession : direction;
   const convertedStorageSizes = convertStorageSizesForBackend(filterStorageSize.value);
   emit("filterAndSortSaleItem", brands, direction, field, {
@@ -215,7 +215,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
 
 // ฟังก์ชันสำหรับการเปลี่ยนแปลง storage size filter
 const onStorageSizeChange = () => {
-  localStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
+  sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
   emitFilterAndSort();
 };
 </script>
