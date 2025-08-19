@@ -395,7 +395,11 @@ async function submitForm() {
         imageFile.value
       );
       saleItem.value = { ...initSaleItem };
-      router.push({ path: previousPath, query: { alertAdd: "true" } });
+      // router.push({ path: previousPath, query: { alertAdd: "true" } });
+      router.push({
+        name: "SaleItemHome",
+        query: { alertAdd: "true" },
+      });
     } catch (error) {
       console.log(error);
     }
