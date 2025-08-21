@@ -1,21 +1,27 @@
 <script setup>
-import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed, ref, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
+const route = useRoute()
+const pathName = ref("")
 const props = defineProps({
     roles: {
         type: Array,
         required: true
     },
-    pathName: {
-        type: String,
-        required: true
+})
+
+watchEffect(() => {
+    if (route.name === 'Register') {
+        pathName.value = 'Register'
+    } else if (route.name === 'Login') {
+        pathName.value = 'Login'
     }
 })
 </script>
 
 <template>
-<div v-if="props.pathName === 'Register'" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+<div v-if="pathName === 'Register'" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
     <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
@@ -103,7 +109,7 @@ const props = defineProps({
 </div>
 
 
-<div v-if="props.pathName === 'Login'" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
+<div v-if="pathName === 'Login'" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
     <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
@@ -151,7 +157,7 @@ const props = defineProps({
         <div class="mt-8 pt-6 border-t border-gray-200 text-center">
             <p class="text-sm text-gray-600">
                 Don't have an account? 
-                <router-link :to="{name: 'Login'}" href="#" class="text-blue-600 hover:text-blue-700 font-medium">Login</router-link>
+                <router-link :to="{name: 'Register'}" href="#" class="text-blue-600 hover:text-blue-700 font-medium">Register</router-link>
             </p>
         </div>
     </div>
