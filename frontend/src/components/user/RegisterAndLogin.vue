@@ -44,7 +44,7 @@ watchEffect(() => {
                 <input 
                     id="fullname"
                     type="text" 
-                    placeholder="Enter your full name"
+                    placeholder="Enter your fullname"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
@@ -54,7 +54,7 @@ watchEffect(() => {
                 <input 
                     id="email"
                     type="email" 
-                    placeholder="Enter your email address"
+                    placeholder="Enter your email"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
@@ -64,7 +64,7 @@ watchEffect(() => {
                 <input 
                     id="password"
                     type="password" 
-                    placeholder="Create a strong password"
+                    placeholder="Enter your password"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
                 >
             </div>
@@ -122,7 +122,7 @@ watchEffect(() => {
                 <input 
                     id="email"
                     type="email" 
-                    placeholder="Enter your email address"
+                    placeholder="Enter your email"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
@@ -132,7 +132,7 @@ watchEffect(() => {
                 <input 
                     id="password"
                     type="password" 
-                    placeholder="Create a strong password"
+                    placeholder="Enter your password"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
                 >
             </div>
