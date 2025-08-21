@@ -31,6 +31,7 @@ const props = defineProps({
 
 const pictures = ref([])
 const items = ref([])
+const mainImage = ref("")
 
 onMounted(async () => {
   try {
@@ -44,11 +45,16 @@ onMounted(async () => {
           pictures.value.push(apiFormat)
         })
       }
+      mainImage.value = pictures.value[0]
     }
   } catch(err) {
     console.error(err);
   }
 })
+
+const clickShowImage = (index) => {  
+  mainImage.value = pictures.value[index]
+}
 </script>
 
 <template>
@@ -70,23 +76,23 @@ onMounted(async () => {
       <div class="lg:w-1/2">
         <div class="relative rounded-md p-2 bg-white">
           <!-- <button class="absolute top-1 right-2 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-          <img :src="pictures[0]" alt="main image" class="w-full" />
+          <img :src="mainImage" alt="main image" class="w-full" />
         </div>
 
         <div class="grid grid-cols-4 gap-2 mt-4">
-          <div class="relative border border-gray-300 rounded p-1">
+          <div @click="clickShowImage(0)" class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer">
             <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
             <img :src="pictures[0]" alt="thumb 1" class="w-30 mx-auto" />
           </div>
-          <div class="relative border border-gray-300 rounded p-1">
+          <div @click="clickShowImage(1)" class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer">
             <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
             <img :src="pictures[1]" alt="thumb 2" class="w-30 mx-auto" />
           </div>
-          <div class="relative border border-gray-300 rounded p-1">
+          <div @click="clickShowImage(2)" class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer">
             <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
             <img :src="pictures[2]" alt="thumb 3" class="w-30 mx-auto" />
           </div>
-          <div class="relative border border-gray-300 rounded p-1">
+          <div @click="clickShowImage(3)" class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer">
             <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
             <img :src="pictures[3]" alt="thumb 4" class="w-30 mx-auto" />
           </div>
