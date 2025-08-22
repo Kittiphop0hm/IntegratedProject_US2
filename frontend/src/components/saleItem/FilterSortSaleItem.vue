@@ -164,7 +164,7 @@ const setCustomPriceRange = () => {
   if (minPrice !== null || maxPrice !== null) {
     const customRange = {
       label: minPrice === maxPrice ? `${minPrice}` : 
-             maxPrice === null ? `${minPrice}+` :
+             maxPrice === null ? `${minPrice}` :
              minPrice === null ? `0-${maxPrice}` : 
              `${minPrice}-${maxPrice}`,
       min: minPrice,
