@@ -202,11 +202,11 @@ onMounted(async () => {
       const items = await getItems(
         `${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`
       );
-      console.log(items);
       
       if (items.length > 0) {
         for (let i = 0; i < items.length; i++) {
           const imageUrlToObject = await imageUrlToFileObject(`${import.meta.env.VITE_APP_URL}/api/files/${items[i].fileName}`,items[i].fileName);
+          console.log(imageUrlToObject);
           const imageObj = {
             name: items[i].fileName,
             file: imageUrlToObject,
@@ -216,6 +216,8 @@ onMounted(async () => {
         }
       }
       console.log(images.value);
+      console.log(imageFile.value);
+      
       
     } catch (err) {
       console.error(err);
