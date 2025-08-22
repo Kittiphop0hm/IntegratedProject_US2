@@ -5,12 +5,12 @@ import { onMounted, ref } from 'vue';
 
 const roles = ref([
     {
-    text: 'Seller',
-    value: 'seller'
-    },
-    {
     text: 'Buyer',
     value: 'buyer'
+    },
+    {
+    text: 'Seller',
+    value: 'seller'
     },
 ])
 

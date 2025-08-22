@@ -18,6 +18,39 @@ watchEffect(() => {
         pathName.value = 'Login'
     }
 })
+
+const email = ref("")
+const validateErrorEmail = ref("")
+const validateEmail = (value) => {
+    if (!value || value.includes("@")) {
+        validateErrorEmail.value = ""
+    } else {
+        validateErrorEmail.value = "Email format is invalid."
+    }
+}
+
+const password = ref("")
+const validateErrorPassword = ref("")
+const validatePassword = (value) => {
+    console.log(value);
+    const regex = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%&*]{6,20}$/
+    if (!value || regex.test(value)) {
+        validateErrorPassword.value = ""
+    } else {
+        validateErrorPassword.value = "Password error"
+    }
+}
+
+const role = ref("")
+const isSeller = ref(false)
+const inputForUserRole = () => role.value === "seller" ? isSeller.value = true : isSeller.value = false
+
+watchEffect(() => {
+    console.log(isSeller.value);
+    
+})
+
+
 </script>
 
 <template>
@@ -29,7 +62,7 @@ watchEffect(() => {
         </div>
         
         <form class="space-y-6">
-            <div class="space-y-2">
+            <div class="space-y-1">
                 <label for="nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
                 <input 
                     id="nickname"
@@ -38,9 +71,105 @@ watchEffect(() => {
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
+
+            <div class="space-y-1">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                    v-model="email" 
+                    @blur="validateEmail(email)"
+                    id="email"
+                    type="email" 
+                    placeholder="Enter your email"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+                >
+                <p class="text-red-500 text-[12px]">{{ validateErrorEmail }}</p>
+            </div>
+
+            <div class="space-y-1">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input 
+                    v-model="password"
+                    @blur="validatePassword(password)"
+                    id="password"
+                    type="password" 
+                    placeholder="Enter your password"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
+                >
+                <div v-if="password.length > 0" class="text-[12px]">
+                    <p class="flex">
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
+                        </svg>
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
+                        </svg>
+                        At least uppercase letter
+                    </p>
+
+                    <p class="flex">
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
+                        </svg>
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
+                        </svg>
+                        At least lowercase letter
+                    </p>
+
+                    <p class="flex">
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
+                        </svg>
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
+                        </svg>
+                        At least one number
+                    </p>
+
+                    <p class="flex">
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
+                        </svg>
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
+                        </svg>
+                        At least one special symbo
+                    </p>
+
+                    <p class="flex">
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
+                        </svg>
+                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
+                            fill="currentColor" viewBox="0 0 24 24" >
+                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
+                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
+                        </svg>
+                        should be more than 4 character
+                    </p>
+                </div>
+            </div>
             
-            <div class="space-y-2">
-                <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
+            <div class="space-y-1">
+                <label for="fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
                 <input 
                     id="fullname"
                     type="text" 
@@ -49,43 +178,67 @@ watchEffect(() => {
                 >
             </div>
             
-            <div class="space-y-2">
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input 
-                    id="email"
-                    type="email" 
-                    placeholder="Enter your email"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
-                >
-            </div>
-            
-            <div class="space-y-2 ">
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input 
-                    id="password"
-                    type="password" 
-                    placeholder="Enter your password"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
-                >
-            </div>
-            
-            <div class="space-y-2">
-                <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+            <div class="space-y-1">
+                <label for="role" class="block text-sm font-medium text-gray-700">Roles</label>
                 <select 
+                    v-model="role"
+                    @change="inputForUserRole"
                     id="role"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 bg-white cursor-pointer hover:border-gray-400"
                 >
-                    <option disabled selected class="text-gray-400">Select your role</option>
+                    <option disabled selected value="" class="text-gray-400">Select your roles</option>
                     <option v-for="(role, index) in roles" :key="index" :value="role.value" class="text-gray-900">
                         {{ role.text }}
                     </option>
                 </select>
             </div>
             
-            <div class="w-full flex flex-row justify-center items-center space-y-2 pt-4 max-md:flex-col">
+            <div v-if="isSeller" class="space-y-1">
+                <label for="Mobile" class="block text-sm font-medium text-gray-700">Mobile</label>
+                <input 
+                    id="Mobile"
+                    type="text" 
+                    placeholder="Enter your Mobile"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+                >
+            </div>
+
+            <div v-if="isSeller" class="space-y-1">
+                <label for="Bank Account No" class="block text-sm font-medium text-gray-700">Bank Account No</label>
+                <input 
+                    id="Bank Account No"
+                    type="number" 
+                    placeholder="Enter your Bank Account No"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+                >
+            </div>
+
+            
+            <div v-if="isSeller" class="space-y-1">
+                <label for="National Card No" class="block text-sm font-medium text-gray-700">National Card No</label>
+                <input 
+                    id="National Card No"
+                    type="number" 
+                    placeholder="Enter your National Card No"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+                >
+            </div>
+
+            
+            <div v-if="isSeller" class="space-y-1 cursor-pointer">
+                <label for="National Card Photo" class="block text-sm font-medium text-gray-700 cursor-pointer">National Card Photo</label>
+                <input 
+                    id="National Card Photo"
+                    type="file" 
+                    placeholder="Enter your National Card Photo"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 cursor-pointer placeholder-gray-400 hover:border-gray-400"
+                >
+            </div>
+            
+            <div class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col">
                 <button 
                     type="submit"
-                    class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                    class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1"
                 >
                     Submit
                 </button>
@@ -99,6 +252,7 @@ watchEffect(() => {
                 </router-link>
             </div>
         </form>
+        
         <div class="mt-8 pt-6 border-t border-gray-200 text-center">
             <p class="text-sm text-gray-600">
                 Already have an account? 
@@ -117,7 +271,7 @@ watchEffect(() => {
         </div>
         
         <form class="space-y-6">
-            <div class="space-y-2">
+            <div class="space-y-1">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input 
                     id="email"
@@ -127,7 +281,7 @@ watchEffect(() => {
                 >
             </div>
             
-            <div class="space-y-2 ">
+            <div class="space-y-1">
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <input 
                     id="password"
@@ -137,10 +291,10 @@ watchEffect(() => {
                 >
             </div>
             
-            <div class="w-full flex flex-row justify-center items-center space-y-2 pt-4 max-md:flex-col">
+            <div class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col">
                 <button 
                     type="submit"
-                    class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg"
+                    class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1"
                 >
                     Submit
                 </button>
