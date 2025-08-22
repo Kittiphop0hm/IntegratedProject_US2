@@ -225,15 +225,52 @@ watchEffect(() => {
             </div>
 
             
-            <div v-if="isSeller" class="space-y-1 cursor-pointer">
-                <label for="National Card Photo" class="block text-sm font-medium text-gray-700 cursor-pointer">National Card Photo</label>
-                <input 
-                    id="National Card Photo"
-                    type="file" 
-                    placeholder="Enter your National Card Photo"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 cursor-pointer placeholder-gray-400 hover:border-gray-400"
-                >
-            </div>
+          <div class="mb-3 flex flex-col">
+            <label class="block text-sm font-medium text-gray-700 mb-1">National Card Photo</label>
+            <label
+              for="file"
+              class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
+            >
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-10 h-10 mb-3 text-slate-400 group-hover:text-slate-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p class="mb-2 text-sm text-slate-500 group-hover:text-slate-600">
+                  <span class="font-semibold">Front side</span>
+                </p>
+              </div>
+            </label>
+            <input
+              id="file"
+              type="file"
+              multiple
+              class="hidden"
+              accept="image/*"
+            />
+          </div>
+
+        <div class="mb-3 flex flex-col">
+            <label
+              for="file"
+              class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
+            >
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg class="w-10 h-10 mb-3 text-slate-400 group-hover:text-slate-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <p class="mb-2 text-sm text-slate-500 group-hover:text-slate-600">
+                  <span class="font-semibold">Back side</span>
+                </p>
+              </div>
+            </label>
+            <input
+              id="file"
+              type="file"
+              multiple
+              class="hidden"
+              accept="image/*"
+            />
+          </div>
             
             <div class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col">
                 <button 
