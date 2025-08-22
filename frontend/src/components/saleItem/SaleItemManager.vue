@@ -14,28 +14,33 @@ let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
 
+// Updated filter states
 const filterBrandSession = sessionStorage.getItem("filterBrand");
 const directionSession = sessionStorage.getItem("direction");
+const filterPriceSession = sessionStorage.getItem("filterPrice");
+const filterStorageSizeSession = sessionStorage.getItem("filterStorageSize");
+
 const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
 const directionR = ref(directionSession ? directionSession : '');
-const fieldR = ref('')
+const filterPriceR = ref(filterPriceSession ? JSON.parse(filterPriceSession) : null);
+const filterStorageSizeR = ref(filterStorageSizeSession ? JSON.parse(filterStorageSizeSession) : []);
+const fieldR = ref('');
+
 const pageNumberSession = sessionStorage.getItem("pageNumber");
 const pageSizeSession = sessionStorage.getItem("pageSize");
-onMounted(() => {
 
+onMounted(() => {
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
   pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
 });
 
 function savePreviousPath() {
   const previousPath = route.fullPath;
-  localStorage.setItem("previousPath", previousPath);
+  sessionStorage.setItem("previousPath", previousPath);
 }
 
 const isFirst = computed(() => {
-  // fetchData()
   return pageNumber.value === 0;
-    // fetchData()
 });
 
 const isLast = computed(() => {
@@ -67,31 +72,54 @@ const computedPageNumberArr = computed(() => {
   return arr;
 });
 
+// Build query parameters helper function
+const buildQueryParams = () => {
+  const params = new URLSearchParams();
+  
+  // Add pagination
+  params.append('page', pageNumber.value);
+  params.append('size', pageSize.value);
+  
+  // Add brand filter
+  if (filterBrandR.value && filterBrandR.value.length > 0) {
+    params.append('filterBrands', filterBrandR.value.join(','));
+  }
+  
+  // Add price filter
+  if (filterPriceR.value) {
+    if (filterPriceR.value.min !== null && filterPriceR.value.min !== undefined) {
+      params.append('minPrice', filterPriceR.value.min);
+    }
+    if (filterPriceR.value.max !== null && filterPriceR.value.max !== undefined) {
+      params.append('maxPrice', filterPriceR.value.max);
+    }
+  }
+  
+  // Add storage size filter
+  if (filterStorageSizeR.value && filterStorageSizeR.value.length > 0) {
+    params.append('filterStorageSizes', filterStorageSizeR.value.join(','));
+  }
+  
+  // Add sorting
+  if (directionR.value && fieldR.value) {
+    params.append('sortField', fieldR.value);
+    params.append('sortDirection', directionR.value);
+  } else if (directionR.value === 'asc' || directionR.value === 'desc') {
+    params.append('sortField', 'brand.name');
+    params.append('sortDirection', directionR.value);
+  }
+  
+  return params.toString();
+};
+
 const fetchData = async () => {
   try {
-    if (fieldR === "brand.name") {
-      const res = await getItems(
-          `${
-            import.meta.env.VITE_APP_URL
-          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortField=brand.name&sortDirection=${directionR.value}&page=${
-            pageNumber.value
-          }&size=${pageSize.value}`
-        );
+    const queryString = buildQueryParams();
+    const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`);
+    
     pageObj.value = res;
     console.log("pageObj.value:", pageObj.value);
     saleItem.value = res.content;
-    } else {
-      const res = await getItems(
-          `${
-            import.meta.env.VITE_APP_URL
-          }/v2/sale-items?filterBrands=${filterBrandR.value}&sortDirection=${directionR.value}&page=${
-            pageNumber.value
-          }&size=${pageSize.value}`
-        );
-    pageObj.value = res;
-    console.log("pageObj.value:", pageObj.value);
-    saleItem.value = res.content;
-    }
   } catch (err) {
     console.log(err);
   }
@@ -102,79 +130,61 @@ watch([pageSize, pageNumber], () => {
   sessionStorage.setItem("pageNumber", pageNumber.value);
   fetchData();
 });
-watch([filterBrandR, directionR], () => {
+
+watch([filterBrandR, directionR, filterPriceR, filterStorageSizeR], () => {
   sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
   sessionStorage.setItem("direction", directionR.value);
-  console.log("reset");
+  sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
+  sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSizeR.value));
+  console.log("Filters changed, resetting to page 0");
   pageNumber.value = 0;
-});
+}, { deep: true });
+
 watch(pageSize, () => {
   if (!pageSizeWatchInitialized) {
     pageSizeWatchInitialized = true;
     return;
   }
-
   pageNumber.value = 0;
-
 });
-
-
-
 
 const isSuccess = ref(
   Boolean(route.query.alertAdd || route.query.alertDelete) &&
     !route.query.alert404
 );
 
-const filterAndSortSaleItem = async (filterBrand, direction, field) => {
-  filterBrandR.value = filterBrand;
-  directionR.value =direction;
-  fieldR.value = field;
+const filterAndSortSaleItem = async (filterBrand, direction, field, filters = {}) => {
+  console.log("filterAndSortSaleItem called with:", { filterBrand, direction, field, filters });
+  
+  // Update all filter states
+  filterBrandR.value = filterBrand || [];
+  directionR.value = direction || '';
+  fieldR.value = field || '';
+  
+  // Update additional filters from the new filter component
+  if (filters.brands !== undefined) {
+    filterBrandR.value = filters.brands || [];
+  }
+  if (filters.priceRange !== undefined) {
+    filterPriceR.value = filters.priceRange;
+  }
+  if (filters.storageSizes !== undefined) {
+    filterStorageSizeR.value = filters.storageSizes || [];
+  }
+  
   try {
-    if (!filterBrand || filterBrand.length === 0) {
-      if (!direction && !field) {
-        console.log("no filter createTime");
-        const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}`);
-        saleItem.value = res.content;
-        pageObj.value = res;
-      } else if(direction.toLowerCase() === "asc" || !direction) {
-        console.log("no filter ASC");
-        const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=asc`);
-        saleItem.value = res.content;
-        pageObj.value = res;
-      } else {
-        console.log("no filter DESC");
-        const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=${direction}`);
-        saleItem.value = res.content;
-        pageObj.value = res;
-      }
-    } else {
-        if (!direction && !field) {
-          console.log("filter createTime");
-          const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}`);
-          saleItem.value = res.content;
-          pageObj.value = res;
-        } else if (direction.toLowerCase() === "asc" || !direction) {
-          console.log("filter asc");
-          const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=asc`);
-          saleItem.value = res.content;
-          pageObj.value = res;
-        } else {
-          console.log("filter DESC");
-          const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?filterBrands=${filterBrand}&page=${pageNumber.value}&size=${pageSize.value}&sortField=brand.name&sortDirection=${direction}`);
-          saleItem.value = res.content;
-          pageObj.value = res;
-        }
-    }
+    await fetchData();
   } catch(err) {
     console.log(err);
   }
-} 
+};
+
 const fecthItemFromPage = async(index) => {
-  await fetchData()
-  pageNumber.value = index - 1
-}
+  pageNumber.value = index - 1;
+  await fetchData();
+};
 </script>
+
 <template>
   <div
     v-show="
@@ -201,7 +211,7 @@ const fecthItemFromPage = async(index) => {
   <div class="pl-10 pr-10 pt-10 m-0 flex justify-between">
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
-      @click="savePreviousPath"
+        @click="savePreviousPath"
         class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
       >
         Add Sale Item
@@ -227,6 +237,7 @@ const fecthItemFromPage = async(index) => {
     :sortDirection="directionR"
     @filterAndSortSaleItem="filterAndSortSaleItem"
   ></FilterSaleItem>
+  
   <SaleItemGallery :saleItems="saleItem"></SaleItemGallery>
 
   <div class="p-10 pt-0" v-show="pageObj.totalPages > 1">
@@ -279,4 +290,5 @@ const fecthItemFromPage = async(index) => {
     </button>
   </div>
 </template>
+
 <style scoped></style>

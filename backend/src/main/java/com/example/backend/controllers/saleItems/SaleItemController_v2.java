@@ -1,7 +1,9 @@
 package com.example.backend.controllers.saleItems;
 
 import com.example.backend.dtos.saleItems.*;
-import com.example.backend.services.SaleItemService_v1;
+
+
+import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.services.saleitems.SaleItemService_v2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +22,31 @@ public class SaleItemController_v2 {
     @Autowired
     private SaleItemService_v2 saleItemServiceV2;
 
+
     @GetMapping("")
     public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
             @RequestParam(defaultValue = "") List<String> filterBrands,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            @RequestParam(defaultValue = "") List<String> filterStorageSizes,
             @RequestParam(defaultValue = "") String sortField,
             @RequestParam(defaultValue = "") String sortDirection,
-            @RequestParam Integer page ,
-            @RequestParam(defaultValue = "10")  Integer size
+            @RequestParam Integer page,
+            @RequestParam(defaultValue = "10") Integer size
     ) {
-        return ResponseEntity.ok(saleItemServiceV1.mergeFilterAndSortSaleItem(filterBrands, sortField, sortDirection , page , size));
+
+        return ResponseEntity.ok(saleItemServiceV1.mergeFilterAndSortSaleItem(
+                filterBrands,
+                minPrice,
+                maxPrice,
+                filterStorageSizes,
+                sortField,
+                sortDirection,
+                page,
+                size
+        ));
     }
+
 
     @GetMapping("{id}")
     public ResponseEntity<ResponseSaleItemsDto> getProductById(@PathVariable Integer id) {

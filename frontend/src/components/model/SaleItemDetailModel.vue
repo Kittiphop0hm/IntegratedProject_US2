@@ -127,11 +127,11 @@ onMounted(async () => {
         </p>
         <div class="">
         <button 
-        class="mr-3 rounded-md mt-3 text-white"
-        :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-gray-500 opacity-75 cursor-not-allowed': !isActive  || !isUpdated}"
-        :disabled="!isActive || !isUpdated"
-        >
-        <slot name="button1">Input Name Button1</slot>
+          class="mr-3 rounded-md mt-3 text-white"
+          :class="{ 'bg-blue-500': isActive && isUpdated, 'bg-gray-500 opacity-75 cursor-not-allowed': !isActive  || !isUpdated}"
+          :disabled="!isActive || !isUpdated"
+          >
+          <slot name="button1">Input Name Button1</slot>
         </button
         >
           <button class=" px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer">
