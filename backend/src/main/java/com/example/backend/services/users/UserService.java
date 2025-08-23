@@ -26,6 +26,11 @@ public class UserService {
     @Autowired
     private UserFileService userFileService;
 
+    public ResponseUserDto findByEmail(String email) {
+        User user = repository.findUserByEmail(email);
+        return modelMapper.map(user, ResponseUserDto.class);
+    }
+
     @Transactional
     public ResponseUserDto createUser(RegisterFormDto userForm, List<MultipartFile> files) {
         if (repository.existsUserByEmail(userForm.getEmail())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");

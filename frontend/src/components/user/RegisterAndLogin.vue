@@ -40,6 +40,13 @@ const validatePassword = (value) => {
 }
 
 const validateErrorFullname = ref("")
+const validateFullname = (value) => {
+    if (!value || value.length >= 4 && value.length <=40) {
+        validateErrorFullname.value = ""
+    } else {
+        validateErrorFullname.value = "Fullname must be between 4 and 40 characters long"
+    }
+}
 
 const isShowPassword = ref(false)
 const userFormat = ref({
@@ -56,12 +63,18 @@ const userFormat = ref({
 const isSeller = ref(false)
 const inputForUserRole = () => userFormat.value.role === "seller" ? isSeller.value = true : isSeller.value = false
 const enableSaveButton = computed(() => {
-  return (
+  const isEmptyField =
     userFormat.value.nickname.length > 0 &&
     userFormat.value.email.length > 0 &&
     userFormat.value.password.length > 0 &&
     userFormat.value.fullname.length > 0
-  )
+  
+  const isValidateAllField = 
+    validateErrorEmail.value.length <= 0 &&
+    validateErrorFullname.value.length <= 0 &&
+    validateErrorPassword.value.length <= 0
+
+    return isEmptyField && isValidateAllField
 })
 
 watchEffect(() => {
@@ -74,7 +87,6 @@ watchEffect(() => {
     console.log("bankAccountNumber", userFormat.value.bankAccountNumber);
     console.log("nationalCardNumber", userFormat.value.nationalCardNumber);
     console.log("files", userFormat.value.files);
-    
 })
 </script>
 
@@ -132,11 +144,13 @@ watchEffect(() => {
                 <label for="fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
                 <input 
                     v-model.trim="userFormat.fullname"
+                    @blur="validateFullname(userFormat.fullname)"
                     id="fullname"
                     type="text" 
                     placeholder="Enter your fullname"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
+                <p class="text-[12px] text-red-500">{{ validateErrorFullname }}</p>
             </div>
             
             <div class="space-y-1">

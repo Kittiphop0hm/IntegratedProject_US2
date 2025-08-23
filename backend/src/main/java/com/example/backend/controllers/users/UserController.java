@@ -26,8 +26,15 @@ public class UserController {
         return ResponseEntity.ok(userFileService.findPictureByUserId(userId));
     }
 
+    @GetMapping("")
+    public ResponseEntity<ResponseUserDto> findUserByEmail(@RequestParam(value = "email") String email) {
+        return ResponseEntity.ok(userService.findByEmail(email));
+    }
+
     @PostMapping("")
     public ResponseEntity<ResponseUserDto> registerUser(@ModelAttribute RegisterFormDto userForm, @RequestParam List<MultipartFile> files) {
         return ResponseEntity.status(201).body(userService.createUser(userForm, files));
     }
+
+
 }
