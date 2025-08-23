@@ -1,8 +1,10 @@
 package com.example.backend.dtos.users;
 
+import com.example.backend.dtos.files.ListFilesDto;
 import lombok.Data;
 
 import java.time.Instant;
+import java.util.List;
 
 @Data
 public class ResponseUserDto {
@@ -15,6 +17,7 @@ public class ResponseUserDto {
     private String mobile;
     private Integer bankAccountNumber;
     private Integer nationalCardNumber;
+    private List<ListFilesDto> userNationalPicture;
     private Instant createdOn;
     private Instant updatedOn;
 }
