@@ -31,14 +31,15 @@ const validateEmail = (value) => {
 
 const validateErrorPassword = ref("")
 const validatePassword = (value) => {
-    console.log(value);
-    const regex = /^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9!@#$%&*]{6,20}$/
+    const regex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%&*?.])[a-zA-Z0-9!@#$%&*?.]{8,50}$/
     if (!value || regex.test(value)) {
         validateErrorPassword.value = ""
     } else {
-        validateErrorPassword.value = "Password error"
+        validateErrorPassword.value = "Least 8 characters and at least one uppercase, lowercase, number, and special character."
     }
 }
+
+const validateErrorFullname = ref("")
 
 const isShowPassword = ref(false)
 const userFormat = ref({
@@ -124,77 +125,7 @@ watchEffect(() => {
                     <input v-model.trim="isShowPassword" type="checkbox">
                     <label class="text-[12px] mx-1 text-center">Show password</label>
                 </div>
-                <div v-if="userFormat.password.length > 0" class="text-[12px]">
-                    <p class="flex">
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
-                        </svg>
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
-                        </svg>
-                        At least uppercase letter
-                    </p>
-
-                    <p class="flex">
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
-                        </svg>
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
-                        </svg>
-                        At least lowercase letter
-                    </p>
-
-                    <p class="flex">
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
-                        </svg>
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
-                        </svg>
-                        At least one number
-                    </p>
-
-                    <p class="flex">
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
-                        </svg>
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
-                        </svg>
-                        At least one special symbo
-                    </p>
-
-                    <p class="flex">
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="m7.76 14.83-2.83 2.83 1.41 1.41 2.83-2.83 2.12-2.12.71-.71.71.71 1.41 1.42 3.54 3.53 1.41-1.41-3.53-3.54-1.42-1.41-.71-.71 5.66-5.66-1.41-1.41L12 10.59 6.34 4.93 4.93 6.34 10.59 12l-.71.71z"></path>
-                        </svg>
-                        <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
-                            fill="currentColor" viewBox="0 0 24 24" >
-                            <!--Boxicons v3.0 https://boxicons.com | License  https://docs.boxicons.com/free-->
-                            <path d="M9 15.59 4.71 11.3 3.3 12.71l5 5c.2.2.45.29.71.29s.51-.1.71-.29l11-11-1.41-1.41L9.02 15.59Z"></path>
-                        </svg>
-                        should be more than 4 character
-                    </p>
-                </div>
+                <p class="text-[12px] text-red-500">{{ validateErrorPassword }}</p>
             </div>
             
             <div class="space-y-1">
