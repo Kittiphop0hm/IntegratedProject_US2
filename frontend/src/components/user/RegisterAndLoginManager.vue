@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from 'vue-router';
 import RegisterAndLogin from './RegisterAndLogin.vue';
 import { onMounted, ref } from 'vue';
+import { register } from '@/libs/fetchUtil';
 
 const roles = ref([
     {
@@ -14,10 +15,18 @@ const roles = ref([
     },
 ])
 
+const registerForm = (event, user) => {
+    event.preventDefault()
+    console.log(user);
+    
+    
+    console.log("Submit"); 
+}
+
 </script>
 
 <template>
-<RegisterAndLogin :roles="roles"></RegisterAndLogin>
+<RegisterAndLogin :roles="roles" @register="registerForm"></RegisterAndLogin>
 
 </template>
 

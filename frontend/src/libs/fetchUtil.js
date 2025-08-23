@@ -169,4 +169,35 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }
+
+  async function register(url, user, files) {
+    try {
+      const formdata = new FormData()
+      formdata.append("nickname", user.nickname)
+      formdata.append("email", user.email)
+      formdata.append("password", user.password)
+      formdata.append("fullname", user.fullname)
+      formdata.append("role", user.role)
+      formdata.append("mobile", user.mobile)
+      formdata.append("bankAccountNumber", user.bankAccountNumber)
+      formdata.append("nationalCardNumber", user.nationalCardNumber)
+      for (let i = 0; i < files.length; i++) {
+        formdata.append("files", files[i])
+      }
+      const res = await fetch(`${url}`, {
+        method: 'POST',
+        body: formdata
+      })
+      const data = await res.json()
+      return {
+        data,
+        status: res.status
+      }
+
+    } catch(err) {
+      console.log(err);
+    }
+
+
+  }
+  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage, register }

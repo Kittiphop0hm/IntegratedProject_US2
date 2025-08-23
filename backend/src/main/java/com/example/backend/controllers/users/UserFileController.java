@@ -13,8 +13,4 @@ public class UserFileController {
     @Autowired
     private UserFileService service;
 
-    @GetMapping("")
-    public ResponseEntity<String> getPath() {
-        return ResponseEntity.ok(service.getPath());
-    }
 }

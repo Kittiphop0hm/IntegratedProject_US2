@@ -1,6 +1,7 @@
 package com.example.backend.services.users;
 
 import com.example.backend.dtos.files.ListFilesDto;
+import com.example.backend.dtos.users.ResponseUserPictureDto;
 import com.example.backend.entities.User;
 import com.example.backend.entities.Userpicture;
 import com.example.backend.repositories.UserPictureRepository;
@@ -48,10 +49,6 @@ public class UserFileService {
         }
     }
 
-    public String getPath() {
-        return "Hello" + this.userFileStorageLocation;
-    }
-
     private boolean isSupportedContentType(MultipartFile file){
         String contentType = file.getContentType();
         List<String> supportFileTypes = Arrays.stream(userFileStorageProperties.getSupportFileTypes()).toList();
@@ -89,10 +86,10 @@ public class UserFileService {
         return fileList;
     }
 
-    public List<Userpicture> findPictureByUserId(Integer userId) {
+    public List<ResponseUserPictureDto> findPictureByUserId(Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User id: " + userId + " not found!"));
-        return userPictureRepository.findUserpicturesByUsers_Id(user.getId());
-
+        List<Userpicture> pictures = userPictureRepository.findUserpicturesByUsers_Id(user.getId());
+        return pictures.stream().map(p -> modelMapper.map(p, ResponseUserPictureDto.class)).toList();
     }
 
 }

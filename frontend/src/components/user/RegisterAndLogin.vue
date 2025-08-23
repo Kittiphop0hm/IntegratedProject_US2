@@ -2,6 +2,7 @@
 import { computed, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+const emits = defineEmits(["register"])
 const route = useRoute()
 const pathName = ref("")
 const props = defineProps({
@@ -19,7 +20,6 @@ watchEffect(() => {
     }
 })
 
-const email = ref("")
 const validateErrorEmail = ref("")
 const validateEmail = (value) => {
     if (!value || value.includes("@")) {
@@ -29,7 +29,6 @@ const validateEmail = (value) => {
     }
 }
 
-const password = ref("")
 const validateErrorPassword = ref("")
 const validatePassword = (value) => {
     console.log(value);
@@ -41,16 +40,41 @@ const validatePassword = (value) => {
     }
 }
 
-const role = ref("")
+const isShowPassword = ref(false)
+const userFormat = ref({
+    nickname: "",
+    email: "",
+    password: "",
+    fullname: "",
+    role: "",
+    mobile: "",
+    bankAccountNumber: "",
+    nationalCardNumber: "",
+    files: []
+})
 const isSeller = ref(false)
-const inputForUserRole = () => role.value === "seller" ? isSeller.value = true : isSeller.value = false
-
-watchEffect(() => {
-    console.log(isSeller.value);
-    
+const inputForUserRole = () => userFormat.value.role === "seller" ? isSeller.value = true : isSeller.value = false
+const enableSaveButton = computed(() => {
+  return (
+    userFormat.value.nickname.length > 0 &&
+    userFormat.value.email.length > 0 &&
+    userFormat.value.password.length > 0 &&
+    userFormat.value.fullname.length > 0
+  )
 })
 
-
+watchEffect(() => {
+    console.log("nickname", userFormat.value.nickname);
+    console.log("email", userFormat.value.email);
+    console.log("password", userFormat.value.password);
+    console.log("fullname", userFormat.value.fullname);
+    console.log("role", userFormat.value.role);
+    console.log("mobile", userFormat.value.mobile);
+    console.log("bankAccountNumber", userFormat.value.bankAccountNumber);
+    console.log("nationalCardNumber", userFormat.value.nationalCardNumber);
+    console.log("files", userFormat.value.files);
+    
+})
 </script>
 
 <template>
@@ -65,6 +89,7 @@ watchEffect(() => {
             <div class="space-y-1">
                 <label for="nickname" class="block text-sm font-medium text-gray-700">Nickname</label>
                 <input 
+                    v-model.trim="userFormat.nickname"
                     id="nickname"
                     type="text" 
                     placeholder="Enter your nickname"
@@ -75,8 +100,8 @@ watchEffect(() => {
             <div class="space-y-1">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input
-                    v-model="email" 
-                    @blur="validateEmail(email)"
+                    v-model.trim="userFormat.email" 
+                    @blur="validateEmail(userFormat.email)"
                     id="email"
                     type="email" 
                     placeholder="Enter your email"
@@ -88,14 +113,18 @@ watchEffect(() => {
             <div class="space-y-1">
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <input 
-                    v-model="password"
-                    @blur="validatePassword(password)"
+                    v-model.trim="userFormat.password"
+                    @blur="validatePassword(userFormat.password)"
                     id="password"
-                    type="password" 
+                    :type="isShowPassword ? 'text' : 'password'" 
                     placeholder="Enter your password"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
                 >
-                <div v-if="password.length > 0" class="text-[12px]">
+                <div class="h-full flex items-center my-1">
+                    <input v-model.trim="isShowPassword" type="checkbox">
+                    <label class="text-[12px] mx-1 text-center">Show password</label>
+                </div>
+                <div v-if="userFormat.password.length > 0" class="text-[12px]">
                     <p class="flex">
                         <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16"  
                             fill="currentColor" viewBox="0 0 24 24" >
@@ -171,6 +200,7 @@ watchEffect(() => {
             <div class="space-y-1">
                 <label for="fullname" class="block text-sm font-medium text-gray-700">Fullname</label>
                 <input 
+                    v-model.trim="userFormat.fullname"
                     id="fullname"
                     type="text" 
                     placeholder="Enter your fullname"
@@ -181,7 +211,7 @@ watchEffect(() => {
             <div class="space-y-1">
                 <label for="role" class="block text-sm font-medium text-gray-700">Roles</label>
                 <select 
-                    v-model="role"
+                    v-model.trim="userFormat.role"
                     @change="inputForUserRole"
                     id="role"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 bg-white cursor-pointer hover:border-gray-400"
@@ -196,6 +226,7 @@ watchEffect(() => {
             <div v-if="isSeller" class="space-y-1">
                 <label for="Mobile" class="block text-sm font-medium text-gray-700">Mobile</label>
                 <input 
+                    v-model.trim="userFormat.mobile"
                     id="Mobile"
                     type="text" 
                     placeholder="Enter your Mobile"
@@ -206,6 +237,7 @@ watchEffect(() => {
             <div v-if="isSeller" class="space-y-1">
                 <label for="Bank Account No" class="block text-sm font-medium text-gray-700">Bank Account No</label>
                 <input 
+                    v-model.trim="userFormat.bankAccountNumber"
                     id="Bank Account No"
                     type="number" 
                     placeholder="Enter your Bank Account No"
@@ -217,6 +249,7 @@ watchEffect(() => {
             <div v-if="isSeller" class="space-y-1">
                 <label for="National Card No" class="block text-sm font-medium text-gray-700">National Card No</label>
                 <input 
+                    v-model.trim="userFormat.nationalCardNumber"
                     id="National Card No"
                     type="number" 
                     placeholder="Enter your National Card No"
@@ -228,7 +261,7 @@ watchEffect(() => {
           <div v-if="isSeller" class="mb-3 flex flex-col">
             <label class="block text-sm font-medium text-gray-700 mb-1">National Card Photo</label>
             <label
-              for="file"
+              for="fileFront"
               class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
             >
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -241,7 +274,7 @@ watchEffect(() => {
               </div>
             </label>
             <input
-              id="file"
+              id="fileFront"
               type="file"
               multiple
               class="hidden"
@@ -251,7 +284,7 @@ watchEffect(() => {
 
         <div v-if="isSeller" class="mb-3 flex flex-col">
             <label
-              for="file"
+              for="fileBack"
               class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
             >
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -264,7 +297,7 @@ watchEffect(() => {
               </div>
             </label>
             <input
-              id="file"
+              id="fileBack"
               type="file"
               multiple
               class="hidden"
@@ -274,8 +307,10 @@ watchEffect(() => {
             
             <div class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col">
                 <button 
+                    :disabled="!enableSaveButton"
+                    @click="$emit('register', $event, userFormat)"
                     type="submit"
-                    class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1"
+                    :class="enableSaveButton ? 'w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1' : 'w-full mx-1 flex-1 bg-gray-600 cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg shadow-lg max-md:my-1'"
                 >
                     Submit
                 </button>
@@ -321,15 +356,22 @@ watchEffect(() => {
             <div class="space-y-1">
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                 <input 
+                    v-model.trim="userFormat.password"
+                    @blur="validatePassword(userFormat.password)"
                     id="password"
-                    type="password" 
+                    :type="isShowPassword ? 'text' : 'password'" 
                     placeholder="Enter your password"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
                 >
+                <div class="h-full flex items-center my-1">
+                    <input v-model.trim="isShowPassword" type="checkbox">
+                    <label class="text-[12px] mx-1 text-center">Show password</label>
+                </div>
             </div>
             
             <div class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col">
                 <button 
+                    disabled=""
                     type="submit"
                     class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1"
                 >
