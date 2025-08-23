@@ -77,6 +77,23 @@ const enableSaveButton = computed(() => {
     return isEmptyField && isValidateAllField
 })
 
+const frontImageShowname = ref("")
+const addFrontImage = (event) => {
+    const frontImages = Array.from(event.target.files) 
+    frontImageShowname.value = frontImages[0].name
+    userFormat.value.files.push(frontImages[0])
+}
+
+const backImageShowname = ref("")
+const addBackImage = (event) => {
+    const backImages = Array.from(event.target.files)
+    backImageShowname.value = backImages[0].name
+    console.log(backImageShowname.value);
+    console.log(backImages);
+    
+    
+}
+
 watchEffect(() => {
     console.log("nickname", userFormat.value.nickname);
     console.log("email", userFormat.value.email);
@@ -203,22 +220,24 @@ watchEffect(() => {
             </div>
 
             
-          <div v-if="isSeller" class="mb-3 flex flex-col">
+          <div v-if="isSeller" class="relative mb-3 flex flex-col">
             <label class="block text-sm font-medium text-gray-700 mb-1">National Card Photo</label>
             <label
               for="fileFront"
               class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
             >
+            <button class="absolute top-8 right-4 text-red-500 font-bold cursor-pointer hover:text-red-300">X</button>
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
                 <svg class="w-10 h-10 mb-3 text-slate-400 group-hover:text-slate-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 48 48">
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <p class="mb-2 text-sm text-slate-500 group-hover:text-slate-600">
-                  <span class="font-semibold">Front side</span>
+                  <span class="font-semibold">{{ frontImageShowname.length > 0 ? frontImageShowname : 'Front side'}}</span>
                 </p>
               </div>
             </label>
             <input
+              @change="addFrontImage($event)"
               id="fileFront"
               type="file"
               multiple
@@ -227,21 +246,23 @@ watchEffect(() => {
             />
           </div>
 
-        <div v-if="isSeller" class="mb-3 flex flex-col">
+        <div v-if="isSeller" class="relative mb-3 flex flex-col">
             <label
               for="fileBack"
               class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
             >
+            <button class="absolute top-2 right-4 text-red-500 font-bold cursor-pointer hover:text-red-300">X</button>
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
                 <svg class="w-10 h-10 mb-3 text-slate-400 group-hover:text-slate-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 48 48">
                   <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
                 <p class="mb-2 text-sm text-slate-500 group-hover:text-slate-600">
-                  <span class="font-semibold">Back side</span>
+                  <span class="font-semibold">{{backImageShowname.length > 0  ? backImageShowname : 'Back side'}}</span>
                 </p>
               </div>
             </label>
             <input
+              @change="addBackImage($event)"
               id="fileBack"
               type="file"
               multiple
