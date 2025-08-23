@@ -72,16 +72,36 @@ public class SaleItemService_v2 {
 
     public ResponseSaleItemsDto updateProduct(Integer id, SaleItemWithImageInfo data) {
         saleItemServiceV1.updateSaleItem(id,data.getSaleItem());
-        List<Picture> pics = pictureRepository.findBySales_Id(id);
-        List<String> fileNames = pics.stream().map(Picture::getFileName).toList();
-        for(String fileName : fileNames) {
-            fileService.removeFile(fileName);
-        }
-        List<SaleItemImageRequest> imagesReq = data.getImageInfos();
-        List<MultipartFile> fileList = imagesReq
-                .stream()
-                .map(SaleItemImageRequest::getImageFile).toList();
-        fileService.storeList(fileList,id);
+        List<SaleItemImageRequest>imageInfos = data.getImageInfos();
+        imageInfos.forEach(
+                imageInfo -> {
+                    switch (imageInfo.getStatus()) {
+                        case "ONLINE":
+                            break;
+                        case "DELETE":
+                            fileService.removeFile(imageInfo.getFileName());
+                            break;
+                        case "MOVE":
+                            Picture pic = pictureRepository.findPictureByFileName(imageInfo.getFileName());
+                            pic.setImageViewOrder(imageInfo.getOrder());
+                            break;
+                        case "NEW":
+                            fileService.store(imageInfo.getImageFile(), id , imageInfo.getOrder());
+                            break;
+                    }
+
+                }
+        );
+//        List<Picture> pics = pictureRepository.findBySales_Id(id);
+//        List<String> fileNames = pics.stream().map(Picture::getFileName).toList();
+//        for(String fileName : fileNames) {
+//            fileService.removeFile(fileName);
+//        }
+//        List<SaleItemImageRequest> imagesReq = data.getImageInfos();
+//        List<MultipartFile> fileList = imagesReq
+//                .stream()
+//                .map(SaleItemImageRequest::getImageFile).toList();
+//        fileService.storeList(fileList,id);
         return findByid(id);
         }
     }

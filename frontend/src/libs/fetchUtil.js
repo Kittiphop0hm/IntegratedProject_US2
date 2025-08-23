@@ -120,12 +120,12 @@ async function getItems(url) {
       formdata.append("saleItem.model", item.model)
       formdata.append("saleItem.description", item.description)
       formdata.append("saleItem.price", item.price)
-      formdata.append("saleItem.ramGb", item.ramGb)
-      formdata.append("saleItem.screenSizeInch", item.screenSizeInch)
-      formdata.append("saleItem.quantity", item.quantity)
-      formdata.append("saleItem.storageGb", item.storageGb)
-      formdata.append("saleItem.color", item.color)
-      formdata.append("saleItem.brand.id", item.brand.id)
+      formdata.append("saleItem.ramGb", item.ramGb ?? "");
+      formdata.append("saleItem.screenSizeInch", item.screenSizeInch ?? "");
+      formdata.append("saleItem.quantity", item.quantity ?? "");
+      formdata.append("saleItem.storageGb", item.storageGb ?? "");
+      formdata.append("saleItem.color", item.color ?? "");
+      formdata.append("saleItem.brand.id", item.brand.id )
       formdata.append("saleItem.brand.name", item.brand.name)
       for (let i = 0; i < images.length; i++) {
         if (images[i] !== "deleted") {
@@ -159,9 +159,9 @@ async function getItems(url) {
     }
   }
 
-    async function getIamgesBySaleId(url, saleId) {
+    async function getImage(url) {
     try {
-      const data = await fetch(`${url}/${saleId}`)
+      const data = await fetch(url)
       const item = await data.blob()
       return item
     } catch (error) {
@@ -169,4 +169,15 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }
+  export {
+    imageUrlToFileObject,
+    getItems,
+    getItemById,
+    deleteItemById,
+    addItem,
+    editItem,
+    addSaleItemAndImage,
+    getImage,
+    deleteImageResource,
+    editSaleItemAndImage,
+  };

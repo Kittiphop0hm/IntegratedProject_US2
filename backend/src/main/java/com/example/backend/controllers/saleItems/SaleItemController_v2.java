@@ -3,10 +3,13 @@ package com.example.backend.controllers.saleItems;
 import com.example.backend.dtos.saleItems.*;
 
 
+import com.example.backend.services.FileService;
 import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.services.saleitems.SaleItemService_v2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +24,8 @@ public class SaleItemController_v2 {
     private SaleItemService_v1 saleItemServiceV1;
     @Autowired
     private SaleItemService_v2 saleItemServiceV2;
-
+    @Autowired
+    private FileService fileService;
 
     @GetMapping("")
     public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
@@ -48,7 +52,7 @@ public class SaleItemController_v2 {
     }
 
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseSaleItemsDto> getProductById(@PathVariable Integer id) {
         return ResponseEntity.ok(saleItemServiceV2.findByid(id));
     }
@@ -81,5 +85,18 @@ public class SaleItemController_v2 {
         ResponseSaleItemsDto res = saleItemServiceV2.updateProduct(id, data);
         return ResponseEntity.ok(res);
     }
+
+    @GetMapping("/files/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        Resource file = fileService.loadFileAsResource(filename);
+        return ResponseEntity.ok().contentType(MediaType.valueOf(fileService.getFileType(file))).body(file);
+    }
+
+    @GetMapping("/images")
+    public ResponseEntity<List<String>> getImagesList() {
+        return ResponseEntity.ok().body(fileService.getImageList());
+    }
+
 }
 
