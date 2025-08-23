@@ -225,7 +225,7 @@ watchEffect(() => {
             </div>
 
             
-          <div class="mb-3 flex flex-col">
+          <div v-if="isSeller" class="mb-3 flex flex-col">
             <label class="block text-sm font-medium text-gray-700 mb-1">National Card Photo</label>
             <label
               for="file"
@@ -249,7 +249,7 @@ watchEffect(() => {
             />
           </div>
 
-        <div class="mb-3 flex flex-col">
+        <div v-if="isSeller" class="mb-3 flex flex-col">
             <label
               for="file"
               class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
