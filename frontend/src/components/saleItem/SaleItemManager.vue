@@ -85,19 +85,19 @@ const buildQueryParams = () => {
     params.append('filterBrands', filterBrandR.value.join(','));
   }
   
-  // Add price filter
+  // Add price filter - แก้ไขชื่อ parameter ให้ตรงกับ backend
   if (filterPriceR.value) {
     if (filterPriceR.value.min !== null && filterPriceR.value.min !== undefined) {
-      params.append('minPrice', filterPriceR.value.min);
+      params.append('filterPriceLower', filterPriceR.value.min);
     }
     if (filterPriceR.value.max !== null && filterPriceR.value.max !== undefined) {
-      params.append('maxPrice', filterPriceR.value.max);
+      params.append('filterPriceUpper', filterPriceR.value.max);
     }
   }
   
-  // Add storage size filter
+  // Add storage size filter - แก้ไขชื่อ parameter ให้ตรงกับ backend
   if (filterStorageSizeR.value && filterStorageSizeR.value.length > 0) {
-    params.append('filterStorageSizes', filterStorageSizeR.value.join(','));
+    params.append('filterStorages', filterStorageSizeR.value.join(','));
   }
   
   // Add sorting
