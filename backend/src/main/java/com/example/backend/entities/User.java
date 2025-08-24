@@ -21,13 +21,13 @@ public class User {
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "fullname", nullable = false, length = 45)
-    private String fullname;
+    @Column(name = "fullName", nullable = false, length = 45)
+    private String fullName;
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "nickname", nullable = false, length = 45)
-    private String nickname;
+    @Column(name = "nickName", nullable = false, length = 45)
+    private String nickName;
 
     @Size(max = 45)
     @NotNull
@@ -39,20 +39,23 @@ public class User {
     @Column(name = "password", nullable = false, length = 45)
     private String password;
 
+    @Column(name = "isActive")
+    private Boolean isActive;
+
     @Size(max = 45)
     @NotNull
-    @Column(name = "role", nullable = false, length = 45)
-    private String role;
+    @Column(name = "userType", nullable = false, length = 45)
+    private String userType;
 
     @Size(max = 45)
-    @Column(name = "mobile", length = 45)
-    private String mobile;
+    @Column(name = "phoneNumber", length = 45)
+    private String phoneNumber;
 
-    @Column(name = "bankAccountNumber")
-    private Integer bankAccountNumber;
+    @Column(name = "bankAccount")
+    private Integer bankAccount;
 
-    @Column(name = "nationalCardNumber")
-    private Integer nationalCardNumber;
+    @Column(name = "idCardNumber")
+    private Integer idCardNumber;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false, insertable = false, updatable = false)
@@ -61,4 +64,5 @@ public class User {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false)
     private Instant updatedOn;
+
 }

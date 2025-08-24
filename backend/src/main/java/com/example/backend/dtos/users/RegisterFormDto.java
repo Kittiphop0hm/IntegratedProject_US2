@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class RegisterFormDto {
     @NotNull
-    private String nickname;
+    private String nickName;
     @NotNull
     private String email;
     @NotNull
@@ -20,11 +20,10 @@ public class RegisterFormDto {
     @NotNull
     @Min(4)
     @Max(40)
-    private String fullname;
+    private String fullName;
     @NotNull
-    private String role;
-    private String mobile;
-    private Integer bankAccountNumber;
-    private Integer nationalCardNumber;
-    private List<MultipartFile> files;
+    private String userType;
+    private String phoneNumber;
+    private Integer bankAccount;
+    private Integer idCardNumber;
 }

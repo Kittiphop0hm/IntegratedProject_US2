@@ -173,16 +173,23 @@ async function getItems(url) {
   async function register(url, user, files) {
     try {
       const formdata = new FormData()
-      formdata.append("nickname", user.nickname)
-      formdata.append("email", user.email)
-      formdata.append("password", user.password)
-      formdata.append("fullname", user.fullname)
-      formdata.append("role", user.role)
-      formdata.append("mobile", user.mobile)
-      formdata.append("bankAccountNumber", user.bankAccountNumber)
-      formdata.append("nationalCardNumber", user.nationalCardNumber)
-      for (let i = 0; i < files.length; i++) {
-        formdata.append("files", files[i])
+      if (user.role === "SELLER") {
+        formdata.append("nickName", user.nickname)
+        formdata.append("email", user.email)
+        formdata.append("password", user.password)
+        formdata.append("fullName", user.fullname)
+        formdata.append("userType", user.role)
+        formdata.append("phoneNumber", user.userPhone)
+        formdata.append("bankAccount", user.bankAccount)
+        formdata.append("idCardNumber", user.idCardNumber)
+        formdata.append("cardFrontImage", files[0])
+        formdata.append("cardBackImage", files[1])
+      } else {
+        formdata.append("nickName", user.nickname)
+        formdata.append("email", user.email)
+        formdata.append("password", user.password)
+        formdata.append("fullName", user.fullname)
+        formdata.append("userType", user.role)
       }
       const res = await fetch(`${url}`, {
         method: 'POST',
@@ -191,7 +198,8 @@ async function getItems(url) {
       const data = await res.json()
       return {
         data,
-        status: res.status
+        status: res.status,
+        error: res.statusText
       }
 
     } catch(err) {

@@ -55,18 +55,19 @@ public class UserFileService {
         return supportFileTypes.contains(contentType);
     }
 
-    public ListFilesDto store(MultipartFile file, Integer userId, Integer order) {
+    public ListFilesDto store(MultipartFile file, Integer userId, String imageType) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User id: " + userId + " not found!"));
         if (!isSupportedContentType(file)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The content type of the file is not supported." + file.getContentType());
-        String originName = StringUtils.cleanPath(file.getOriginalFilename());
 
+        String originName = StringUtils.cleanPath(file.getOriginalFilename());
         String extension = originName.substring(originName.lastIndexOf("."));
-        String newFilename = userId + "." + order + extension;
+        String newFilename = userId + "." + imageType + extension;
+
         try {
             Path targetLocation = this.userFileStorageLocation.resolve(newFilename);
             Userpicture userpicture = new Userpicture();
             userpicture.setFileName(newFilename);
-            userpicture.setImageViewOrder(order);
+            userpicture.setImageType(imageType);
             userpicture.setUsers(user);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             userPictureRepository.save(userpicture);
@@ -76,19 +77,9 @@ public class UserFileService {
         }
     }
 
-    public List<ListFilesDto> storeList(List<MultipartFile> files, Integer userId) {
-        int order = 1;
-        List<ListFilesDto> fileList = new ArrayList<>(files.size());
-        for (MultipartFile file : files) {
-            fileList.add(store(file, userId, order));
-            order++;
-        }
-        return fileList;
-    }
-
     public List<ResponseUserPictureDto> findPictureByUserId(Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User id: " + userId + " not found!"));
-        List<Userpicture> pictures = userPictureRepository.findUserpicturesByUsers_Id(user.getId());
+        List<Userpicture> pictures = userPictureRepository.findUserpictureByUsers_Id(user.getId());
         return pictures.stream().map(p -> modelMapper.map(p, ResponseUserPictureDto.class)).toList();
     }
 

@@ -4,25 +4,30 @@ import RegisterAndLogin from './RegisterAndLogin.vue';
 import { onMounted, ref } from 'vue';
 import { register } from '@/libs/fetchUtil';
 
+const router = useRouter()
 const roles = ref([
     {
     text: 'Buyer',
-    value: 'buyer'
+    value: 'BUYER'
     },
     {
     text: 'Seller',
-    value: 'seller'
+    value: 'SELLER'
     },
 ])
 
 const registerForm = async (event, user) => {
     event.preventDefault()
     console.log(user);
-    console.log("Submit"); 
+    console.log("Submit");
+    console.log(user.files);
+
+    
     try {
-        const registerUser = await register(`${import.meta.env.VITE_APP_URL}/v1/register`, user, user.files)
+        const registerUser = await register(`${import.meta.env.VITE_APP_URL}/v2/register`, user, user.files)
         console.log(registerUser.status);
-        
+        console.log(registerUser.error);  
+        router.push({name: 'SaleItemHome'})   
     } catch(err) {
         console.log(err);
     }

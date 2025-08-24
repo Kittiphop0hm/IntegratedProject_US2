@@ -32,11 +32,24 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseUserDto createUser(RegisterFormDto userForm, List<MultipartFile> files) {
-        if (repository.existsUserByEmail(userForm.getEmail())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
-        User user = repository.save(modelMapper.map(userForm, User.class));
-        userFileService.storeList(files, user.getId());
-        entityManager.refresh(user);
-        return modelMapper.map(user, ResponseUserDto.class);
+    public ResponseUserDto createUser(RegisterFormDto userForm, MultipartFile cardImageFront, MultipartFile cardImageBack) {
+        if (userForm.getUserType().toUpperCase().equals("SELLER")) {
+            if (repository.existsUserByEmail(userForm.getEmail())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
+            User user = modelMapper.map(userForm, User.class);
+            user.setIsActive(false);
+            user.setUserType(user.getUserType().toUpperCase());
+            User addUser = repository.save(user);
+            userFileService.store(cardImageFront, addUser.getId(), "FRONT");
+            userFileService.store(cardImageBack, addUser.getId(), "BACK");
+            entityManager.refresh(addUser);
+            return modelMapper.map(addUser, ResponseUserDto.class);
+        } else {
+            User user = modelMapper.map(userForm, User.class);
+            user.setIsActive(false);
+            user.setUserType(user.getUserType().toUpperCase());
+            User addUser = repository.save(user);
+            entityManager.refresh(addUser);
+            return modelMapper.map(addUser, ResponseUserDto.class);
+        }
     }
 }

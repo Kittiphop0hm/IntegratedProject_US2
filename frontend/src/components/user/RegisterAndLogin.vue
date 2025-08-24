@@ -55,13 +55,13 @@ const userFormat = ref({
     password: "",
     fullname: "",
     role: "",
-    mobile: "",
-    bankAccountNumber: "",
-    nationalCardNumber: "",
+    userPhone: "",
+    bankAccount: 0,
+    idCardNumber: 0,
     files: []
 })
 const isSeller = ref(false)
-const inputForUserRole = () => userFormat.value.role === "seller" ? isSeller.value = true : isSeller.value = false
+const inputForUserRole = () => userFormat.value.role === "SELLER" ? isSeller.value = true : isSeller.value = false
 const enableSaveButton = computed(() => {
   const isEmptyField =
     userFormat.value.nickname.length > 0 &&
@@ -119,17 +119,25 @@ const deleteImage = (filename) => {
     
 }
 
-// watchEffect(() => {
-//     console.log("nickname", userFormat.value.nickname);
-//     console.log("email", userFormat.value.email);
-//     console.log("password", userFormat.value.password);
-//     console.log("fullname", userFormat.value.fullname);
-//     console.log("role", userFormat.value.role);
-//     console.log("mobile", userFormat.value.mobile);
-//     console.log("bankAccountNumber", userFormat.value.bankAccountNumber);
-//     console.log("nationalCardNumber", userFormat.value.nationalCardNumber);
-//     console.log("files", userFormat.value.files);
-// })
+watchEffect(() => {
+    console.log(isSeller.value);
+    if (!isSeller.value) {
+        userFormat.value.userPhone = ""
+        userFormat.value.bankAccount = ""
+        userFormat.value.idCardNumber = ""
+        userFormat.value.files = []
+    }
+    
+    console.log("nickname", userFormat.value.nickname);
+    console.log("email", userFormat.value.email);
+    console.log("password", userFormat.value.password);
+    console.log("fullname", userFormat.value.fullname);
+    console.log("role", userFormat.value.role);
+    console.log("userPhone", userFormat.value.userPhone);
+    console.log("bankAccount", userFormat.value.bankAccount);
+    console.log("idCardNumber", userFormat.value.idCardNumber);
+    console.log("files", userFormat.value.files);
+})
 </script>
 
 <template>
@@ -196,14 +204,14 @@ const deleteImage = (filename) => {
             </div>
             
             <div class="space-y-1">
-                <label for="role" class="block text-sm font-medium text-gray-700">Roles</label>
+                <label for="UserType" class="block text-sm font-medium text-gray-700">Roles</label>
                 <select 
                     v-model.trim="userFormat.role"
                     @change="inputForUserRole"
-                    id="role"
+                    id="UserType"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 bg-white cursor-pointer hover:border-gray-400"
                 >
-                    <option disabled selected value="" class="text-gray-400">Select your roles</option>
+                    <option disabled selected value="" class="text-gray-400">Select your types</option>
                     <option v-for="(role, index) in roles" :key="index" :value="role.value" class="text-gray-900">
                         {{ role.text }}
                     </option>
@@ -211,42 +219,42 @@ const deleteImage = (filename) => {
             </div>
             
             <div v-if="isSeller" class="space-y-1">
-                <label for="Mobile" class="block text-sm font-medium text-gray-700">Mobile</label>
+                <label for="userPhone" class="block text-sm font-medium text-gray-700">phoneNumber</label>
                 <input 
-                    v-model.trim="userFormat.mobile"
-                    id="Mobile"
+                    v-model.trim="userFormat.userPhone"
+                    id="userPhone"
                     type="text" 
-                    placeholder="Enter your Mobile"
+                    placeholder="Enter your userPhone"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
 
             <div v-if="isSeller" class="space-y-1">
-                <label for="Bank Account No" class="block text-sm font-medium text-gray-700">Bank Account No</label>
+                <label for="Bank Account No" class="block text-sm font-medium text-gray-700">Bank Account Number</label>
                 <input 
-                    v-model.trim="userFormat.bankAccountNumber"
+                    v-model.trim="userFormat.bankAccount"
                     id="Bank Account No"
                     type="number" 
-                    placeholder="Enter your Bank Account No"
+                    placeholder="Enter your Bank Account Number"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
 
             
             <div v-if="isSeller" class="space-y-1">
-                <label for="National Card No" class="block text-sm font-medium text-gray-700">National Card No</label>
+                <label for="National Card No" class="block text-sm font-medium text-gray-700">ID Card Number</label>
                 <input 
-                    v-model.trim="userFormat.nationalCardNumber"
+                    v-model.trim="userFormat.idCardNumber"
                     id="National Card No"
                     type="number" 
-                    placeholder="Enter your National Card No"
+                    placeholder="Enter your ID Card Number"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
 
             
           <div v-if="isSeller" class="relative mb-3 flex flex-col">
-            <label class="block text-sm font-medium text-gray-700 mb-1">National Card Photo</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">ID Card Photo</label>
             <p @click="deleteImage(frontImageShowname)" v-if="frontImageShowname.length > 0" class="absolute top-8 right-4 text-red-500 font-bold cursor-pointer hover:text-red-300">X</p>
             <label
               for="fileFront"
