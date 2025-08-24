@@ -27,7 +27,9 @@ const registerForm = async (event, user) => {
         const registerUser = await register(`${import.meta.env.VITE_APP_URL}/v2/register`, user, user.files)
         console.log(registerUser.status);
         console.log(registerUser.error);  
-        router.push({name: 'SaleItemHome'})   
+        if (registerUser.status === 201) {
+            router.push({ name: "SaleItemHome", query: { alertAdd: "true" } });   
+        }
     } catch(err) {
         console.log(err);
     }
