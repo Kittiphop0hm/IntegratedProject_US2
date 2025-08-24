@@ -79,42 +79,57 @@ const enableSaveButton = computed(() => {
 
 const frontImageShowname = ref("")
 const addFrontImage = (event) => {
+    if (frontImageShowname.value.length > 0) {
+        console.log("You can't upload front image");
+        return
+    }
     const frontImages = Array.from(event.target.files) 
     frontImageShowname.value = frontImages[0].name
-    userFormat.value.files.push(frontImages[0])
+    userFormat.value.files[0] = frontImages[0]
+    console.log(userFormat.value.files);
+    event.target.value = null;
+    
 }
 
 const backImageShowname = ref("")
 const addBackImage = (event) => {
+    if (backImageShowname.value.length > 0) {
+        console.log("You can't upload back image");
+        return;
+    }
     const backImages = Array.from(event.target.files)
     backImageShowname.value = backImages[0].name
-    userFormat.value.files.push(backImages[0])
+    userFormat.value.files[1] = backImages[0]
+    console.log(userFormat.value.files);
     console.log(backImageShowname.value);
     console.log(backImages);
+    event.target.value = null;
 }
 
 const deleteImage = (filename) => {
     console.log(filename);
-    const index = userFormat.value.files.findIndex((file) => file.name === filename)
-    userFormat.value.files.splice(index, 1)
+    const index = userFormat.value.files.findIndex((file) => file && file.name === filename)
+    userFormat.value.files.splice(index, 1, "deleted")
     if (frontImageShowname.value === filename) {
         frontImageShowname.value = ""
     } else {
         backImageShowname.value = ""
     }
+    console.log(userFormat.value.files);
+    
 }
 
-watchEffect(() => {
-    console.log("nickname", userFormat.value.nickname);
-    console.log("email", userFormat.value.email);
-    console.log("password", userFormat.value.password);
-    console.log("fullname", userFormat.value.fullname);
-    console.log("role", userFormat.value.role);
-    console.log("mobile", userFormat.value.mobile);
-    console.log("bankAccountNumber", userFormat.value.bankAccountNumber);
-    console.log("nationalCardNumber", userFormat.value.nationalCardNumber);
-    console.log("files", userFormat.value.files);
-})
+// watchEffect(() => {
+//     console.log("nickname", userFormat.value.nickname);
+//     console.log("email", userFormat.value.email);
+//     console.log("password", userFormat.value.password);
+//     console.log("fullname", userFormat.value.fullname);
+//     console.log("role", userFormat.value.role);
+//     console.log("mobile", userFormat.value.mobile);
+//     console.log("bankAccountNumber", userFormat.value.bankAccountNumber);
+//     console.log("nationalCardNumber", userFormat.value.nationalCardNumber);
+//     console.log("files", userFormat.value.files);
+// })
 </script>
 
 <template>
