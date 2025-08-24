@@ -19,11 +19,13 @@ const registerForm = async (event, user) => {
     event.preventDefault()
     console.log(user);
     console.log("Submit"); 
-    // try {
-    //     const registerUser = await register(`${import.meta.env.VITE_APP_URL}/v1/register`, user, user.files)
-    // } catch(err) {
-    //     console.log(err);
-    // }
+    try {
+        const registerUser = await register(`${import.meta.env.VITE_APP_URL}/v1/register`, user, user.files)
+        console.log(registerUser.status);
+        
+    } catch(err) {
+        console.log(err);
+    }
 }
 
 </script>
