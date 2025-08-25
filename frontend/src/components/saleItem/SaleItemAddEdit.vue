@@ -297,7 +297,7 @@ const showFilename = (e) => {
 };
 
 const oldImages = ref([]);
-
+const imageReadyDeletes = ref([]);
 const isUpdatedImages = computed(() => {
   const currentImages = images.value.filter((img) => img !== "deleted");
   const previousImages = oldImages.value.filter(
@@ -307,7 +307,7 @@ const isUpdatedImages = computed(() => {
   console.log("oldImages.value: ", oldImages.value);
   console.log(currentImages);
   console.log(previousImages);
-  if (currentImages.length !== previousImages.length) return true;
+  if (currentImages.length !== previousImages.length || imageReadyDeletes.value.length > 0) return true;
   return currentImages.some(
     (img, index) => img.fileName !== previousImages[index].fileName
   );
@@ -315,24 +315,24 @@ const isUpdatedImages = computed(() => {
 console.log("isUpdated: " + isUpdated.value);
 console.log("isUpdatedImages: " + isUpdatedImages.value);
 
-const imageReadyDeletes = ref([]);
 const deleteImg = (index) => {
-  if(Array.isArray(index)){
-    console.log("Delete all images");
-    for (let i = 0; i < index.length; i++) {
-      imageReadyDeletes.value.push(index[i]);
-      images.value.splice(i, 1, "deleted");   
-    }
-    return
-  }
   if (index < 0 || index >= images.value.length) return;
-  if (images.value.length > 0) {
-    if (images.value[index] !== "deleted") imageReadyDeletes.value.push(images.value[index]);
-    images.value.splice(index, 1, "deleted");
-    imageFile.value.splice(index, 1, "deleted");
-    console.log(imageFile.value);
-    console.log(imageReadyDeletes.value);
+  const img = images.value[index];
+  if (img && img.status === "DELETED") {
+    console.log("Status: " + img.status);
+    img.status = !img.originalStatus ? "ONLINE" : img.originalStatus; 
+    const indexReadyDelete = imageReadyDeletes.value.findIndex(
+      (image) => image.fileName === img.fileName
+    );
+    if (indexReadyDelete !== -1) imageReadyDeletes.value.splice(indexReadyDelete, 1);
+  } else {
+    console.log(img.status);
+    img.originalStatus = img.status;
+    img.status = "DELETED";
+    imageReadyDeletes.value.push(img);
   }
+  console.log("images:", images.value);
+  console.log("imageReadyDeletes:", imageReadyDeletes.value);
 };
 
 const updateImagesStatus = () => {
@@ -539,9 +539,6 @@ const moveUp = (arr, index) => {
   const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index - 1, 0, deleteImageFile);
   console.log(arr);
-
-
-
 };
 
 const moveDown = (arr, index) => {
@@ -950,12 +947,15 @@ function savePreviousPath() {
 
             <button
               @click="deleteImg(index)"
-              :class="`itbms-picture-file${
-                index + 1
-              }-clear p-2 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200`"
-              title="Remove image"
+              :class="`itbms-picture-file${index + 1}-clear p-2 rounded-lg transition-all duration-200 ${
+                images[index].status === 'DELETED'
+                  ? 'text-green-500 hover:text-green-700 hover:bg-green-50'
+                  : 'text-red-400 hover:text-red-600 hover:bg-red-50'
+              }`"
+              :title="images[index].status === 'DELETED' ? 'Undo delete' : 'Remove image'"
             >
               <svg
+                v-if="images[index].status !== 'DELETED'"
                 class="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
@@ -966,6 +966,21 @@ function savePreviousPath() {
                   stroke-linejoin="round"
                   stroke-width="2"
                   d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+              <svg
+                v-else
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <!-- ไอคอน Undo -->
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 14l-4-4m0 0l4-4m-4 4h11a4 4 0 010 8h-1"
                 />
               </svg>
             </button>
