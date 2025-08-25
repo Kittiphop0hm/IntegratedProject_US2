@@ -35,6 +35,4 @@ public class UserController {
     public ResponseEntity<ResponseUserDto> registerUser(@ModelAttribute RegisterFormDto userForm, @RequestParam(required = false) MultipartFile cardFrontImage, @RequestParam(required = false) MultipartFile cardBackImage) {
         return ResponseEntity.status(201).body(userService.createUser(userForm, cardFrontImage, cardBackImage));
     }
-
-
 }

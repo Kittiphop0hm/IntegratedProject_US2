@@ -24,6 +24,7 @@ public class RegisterFormDto {
     @NotNull
     private String userType;
     private String phoneNumber;
-    private Integer bankAccount;
-    private Integer idCardNumber;
+    private String bankAccount;
+    private String bankName;
+    private String idCardNumber;
 }

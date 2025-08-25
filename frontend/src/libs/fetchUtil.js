@@ -181,6 +181,7 @@ async function getItems(url) {
         formdata.append("userType", user.role)
         formdata.append("phoneNumber", user.userPhone)
         formdata.append("bankAccount", user.bankAccount)
+        formdata.append("bankName", user.bankName)
         formdata.append("idCardNumber", user.idCardNumber)
         formdata.append("cardFrontImage", files[0])
         formdata.append("cardBackImage", files[1])
@@ -208,4 +209,4 @@ async function getItems(url) {
 
 
   }
-  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage, register }
+  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, deleteImageResource, editSaleItemAndImage, register }

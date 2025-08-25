@@ -48,14 +48,8 @@ public class User {
     private String userType;
 
     @Size(max = 45)
-    @Column(name = "phoneNumber", length = 45)
-    private String phoneNumber;
-
-    @Column(name = "bankAccount")
-    private Integer bankAccount;
-
-    @Column(name = "idCardNumber")
-    private Integer idCardNumber;
+    @Column(name = "bankName", length = 45)
+    private String bankName;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "createdOn", nullable = false, insertable = false, updatable = false)
@@ -65,4 +59,15 @@ public class User {
     @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false)
     private Instant updatedOn;
 
+    @Size(max = 45)
+    @Column(name = "phoneNumber", length = 45)
+    private String phoneNumber;
+
+    @Size(max = 45)
+    @Column(name = "bankAccount", length = 45)
+    private String bankAccount;
+
+    @Size(max = 45)
+    @Column(name = "idCardNumber", length = 45)
+    private String idCardNumber;
 }

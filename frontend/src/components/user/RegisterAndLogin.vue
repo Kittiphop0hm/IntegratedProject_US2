@@ -56,8 +56,9 @@ const userFormat = ref({
     fullname: "",
     role: "",
     userPhone: "",
-    bankAccount: 0,
-    idCardNumber: 0,
+    bankAccount: "",
+    bankName: "",
+    idCardNumber: "",
     files: []
 })
 const isSeller = ref(false)
@@ -124,6 +125,7 @@ watchEffect(() => {
     if (!isSeller.value) {
         userFormat.value.userPhone = ""
         userFormat.value.bankAccount = ""
+        userFormat.value.bankName = ""
         userFormat.value.idCardNumber = ""
         userFormat.value.files = []
     }
@@ -236,6 +238,17 @@ watchEffect(() => {
                     id="Bank Account No"
                     type="number" 
                     placeholder="Enter your Bank Account Number"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+                >
+            </div>
+
+            <div v-if="isSeller" class="space-y-1">
+                <label for="Bank Name" class="block text-sm font-medium text-gray-700">Bank Name</label>
+                <input 
+                    v-model.trim="userFormat.bankName"
+                    id="Bank Name"
+                    type="text" 
+                    placeholder="Enter your Bank Name"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
                 >
             </div>
