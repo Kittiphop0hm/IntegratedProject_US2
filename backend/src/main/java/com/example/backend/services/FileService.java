@@ -63,9 +63,7 @@ public class FileService {
     }
 
     public ListFilesDto store(MultipartFile file , Integer saleId , Integer order ){
-
         SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
-
         if(!isSupportedContentType(file)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The content type of the file is not supported." + file.getContentType());
         }
@@ -157,4 +155,10 @@ public class FileService {
             throw new RuntimeException("Could not delete file " + filename, ex);
         }
     }
+
+
+
+
+
+
 }

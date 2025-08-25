@@ -169,15 +169,43 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export {
-    imageUrlToFileObject,
-    getItems,
-    getItemById,
-    deleteItemById,
-    addItem,
-    editItem,
-    addSaleItemAndImage,
-    getImage,
-    deleteImageResource,
-    editSaleItemAndImage,
-  };
+
+  async function register(url, user, files) {
+    try {
+      const formdata = new FormData()
+      if (user.role === "SELLER") {
+        formdata.append("nickName", user.nickname)
+        formdata.append("email", user.email)
+        formdata.append("password", user.password)
+        formdata.append("fullName", user.fullname)
+        formdata.append("userType", user.role)
+        formdata.append("phoneNumber", user.userPhone)
+        formdata.append("bankAccount", user.bankAccount)
+        formdata.append("idCardNumber", user.idCardNumber)
+        formdata.append("cardFrontImage", files[0])
+        formdata.append("cardBackImage", files[1])
+      } else {
+        formdata.append("nickName", user.nickname)
+        formdata.append("email", user.email)
+        formdata.append("password", user.password)
+        formdata.append("fullName", user.fullname)
+        formdata.append("userType", user.role)
+      }
+      const res = await fetch(`${url}`, {
+        method: 'POST',
+        body: formdata
+      })
+      const data = await res.json()
+      return {
+        data,
+        status: res.status,
+        error: res.statusText
+      }
+
+    } catch(err) {
+      console.log(err);
+    }
+
+
+  }
+  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage, register }
