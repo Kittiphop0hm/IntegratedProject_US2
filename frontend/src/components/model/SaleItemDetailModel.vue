@@ -32,6 +32,7 @@ const props = defineProps({
 const pictures = ref([])
 const items = ref([])
 const itemss = ref([])
+const mainImage = ref()
 
 onMounted(async () => {
   try {
