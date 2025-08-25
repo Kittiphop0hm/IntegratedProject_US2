@@ -33,6 +33,7 @@ public class UserService {
 
     @Transactional
     public ResponseUserDto createUser(RegisterFormDto userForm, MultipartFile cardImageFront, MultipartFile cardImageBack) {
+        System.out.println(userForm.getCardNumber().getClass().getSimpleName());
         if (userForm.getUserType().toUpperCase().equals("SELLER")) {
             if (repository.existsUserByEmail(userForm.getEmail())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
             User user = modelMapper.map(userForm, User.class);

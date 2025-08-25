@@ -182,7 +182,7 @@ async function getItems(url) {
         formdata.append("phoneNumber", user.userPhone)
         formdata.append("bankAccount", user.bankAccount)
         formdata.append("bankName", user.bankName)
-        formdata.append("idCardNumber", user.idCardNumber)
+        formdata.append("cardNumber", user.idCardNumber)
         formdata.append("cardFrontImage", files[0])
         formdata.append("cardBackImage", files[1])
       } else {

@@ -139,6 +139,8 @@ watchEffect(() => {
     console.log("bankAccount", userFormat.value.bankAccount);
     console.log("idCardNumber", userFormat.value.idCardNumber);
     console.log("files", userFormat.value.files);
+    console.log(typeof userFormat.value.idCardNumber);
+    
 })
 </script>
 

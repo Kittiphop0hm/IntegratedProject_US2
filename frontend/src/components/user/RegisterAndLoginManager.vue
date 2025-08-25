@@ -21,8 +21,6 @@ const registerForm = async (event, user) => {
     console.log(user);
     console.log("Submit");
     console.log(user.files);
-
-    
     try {
         const registerUser = await register(`${import.meta.env.VITE_APP_URL}/v2/register`, user, user.files)
         console.log(registerUser.status);
