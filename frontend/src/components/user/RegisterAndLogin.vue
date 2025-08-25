@@ -31,7 +31,7 @@ const validateEmail = (value) => {
 
 const validateErrorPassword = ref("")
 const validatePassword = (value) => {
-    const regex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%&*?.])[a-zA-Z0-9!@#$%&*?.]{8,50}$/
+    const regex = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%&*?./_])[a-zA-Z0-9!@#$%&*?./_]{8,50}$/
     if (!value || regex.test(value)) {
         validateErrorPassword.value = ""
     } else {
@@ -139,6 +139,8 @@ watchEffect(() => {
     console.log("bankAccount", userFormat.value.bankAccount);
     console.log("idCardNumber", userFormat.value.idCardNumber);
     console.log("files", userFormat.value.files);
+    console.log(typeof userFormat.value.idCardNumber);
+    
 })
 </script>
 

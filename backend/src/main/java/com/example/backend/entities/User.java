@@ -69,5 +69,5 @@ public class User {
 
     @Size(max = 45)
     @Column(name = "idCardNumber", length = 45)
-    private String idCardNumber;
+    private String cardNumber;
 }

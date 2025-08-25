@@ -149,7 +149,7 @@ watch(pageSize, () => {
 });
 
 const isSuccess = ref(
-  Boolean(route.query.alertAdd || route.query.alertDelete) &&
+  Boolean(route.query.alertAdd || route.query.alertDelete || route.query.alertAddUser) &&
     !route.query.alert404
 );
 
@@ -188,17 +188,18 @@ const fecthItemFromPage = async(index) => {
 <template>
   <div
     v-show="
-      route.query.alertAdd || route.query.alertDelete || route.query.alert404
+      route.query.alertAdd || route.query.alertDelete || route.query.alert404 || route.query.alertAddUser
     "
     class="p-10 pb-0"
   >
     <AlertMessageModel :isSuccess="isSuccess">
       <template #message>
         <p class="itbms-message" v-show="isSuccess === true">
-          The sale item has been
+          {{ route.query.alertAddUser ? 'The user account has been' : 'The sale item has been'}}
           <span class="text-green-400">
             {{
-              route.query.alertAdd ? "successfully added." : "deleted."
+              route.query.alertAdd ? "successfully added." : "deleted." ||
+              route.query.alertAddUser ? "successfully registered." : "deleted."
             }}</span
           >
         </p>
