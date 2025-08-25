@@ -62,7 +62,8 @@ public class FileService {
         }
     }
 
-    public ListFilesDto store(MultipartFile file , Integer saleId , Integer order ){
+    public ListFilesDto store(MultipartFile file , Integer saleId , Integer order   ){
+
         SaleItem saleItem = saleItemRepository.findById(saleId).orElseThrow(() -> new RuntimeException("SaleItem not found"));
         if(!isSupportedContentType(file)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"The content type of the file is not supported." + file.getContentType());
@@ -74,11 +75,11 @@ public class FileService {
         try {
             Path targetLocation = this.fileStorageLocation.resolve(newFileName);
             Picture picture = new Picture();
-            picture.setFileName(newFileName);
-            picture.setImageViewOrder(order);
-            picture.setSales(saleItem);
+                picture.setFileName(newFileName);
+                picture.setSales(saleItem);
+                picture.setImageViewOrder(order);
+                pictureRepository.save(picture);
             Files.copy(file.getInputStream() , targetLocation , StandardCopyOption.REPLACE_EXISTING);
-            pictureRepository.save(picture);
             return modelMapper.map(picture , ListFilesDto.class );
         } catch (IOException e) {
             throw new RuntimeException("Could not store file " + originalName, e);
@@ -156,9 +157,16 @@ public class FileService {
         }
     }
 
+    public void renameFile(String oldName , String newName)  {
+        try{
+            Path sourcePath = this.fileStorageLocation.resolve(oldName);
+            Path targetPath = this.fileStorageLocation.resolve(newName);
+            Files.move(sourcePath,targetPath,StandardCopyOption.REPLACE_EXISTING);
+        } catch(IOException e){
+            throw new RuntimeException("Could not rename file " + oldName, e);
+        }
 
 
-
-
+    }
 
 }
