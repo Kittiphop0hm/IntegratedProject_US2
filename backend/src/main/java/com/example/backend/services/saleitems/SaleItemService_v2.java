@@ -87,6 +87,7 @@ public class SaleItemService_v2 {
                             break;
                         case "DELETE":
                             fileService.removeFile(imageInfo.getFileName());
+                            System.out.println("Remove case");
                             break;
                         case "MOVE":
                             String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
@@ -123,16 +124,6 @@ public class SaleItemService_v2 {
                         }
                     }
             );
-//        List<Picture> pics = pictureRepository.findBySalesIdOrderByImageViewOrderAsc(id);
-//        List<String> fileNames = pics.stream().map(Picture::getFileName).toList();
-//        for(String fileName : fileNames) {
-//            fileService.removeFile(fileName);
-//        }
-//        List<SaleItemImageRequest> imagesReq = data.getImageInfos();
-//        List<MultipartFile> fileList = imagesReq
-//                .stream()
-//                .map(SaleItemImageRequest::getImageFile).toList();
-//        fileService.storeList(fileList,id);
         return findByid(id);
         }
     }

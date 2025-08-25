@@ -31,7 +31,6 @@ const props = defineProps({
 
 const pictures = ref([])
 const items = ref([])
-const itemss = ref([])
 const mainImage = ref()
 
 onMounted(async () => {
@@ -41,7 +40,6 @@ onMounted(async () => {
       items.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items/${route.params.id}`)
       const saleItemImages = items.value.saleItemImages;
       console.log(saleItemImages);
-      console.log(itemss.value.saleItemImages);
       emit("fetchImagesForUpdate", saleItemImages)
       if (saleItemImages.length > 0) {
         saleItemImages.forEach((item) => {
@@ -50,8 +48,9 @@ onMounted(async () => {
         })
       }
       mainImage.value = pictures.value[0]
+      console.log(items.value);
+      
     }
-
   } catch(err) {
     console.error(err);
   }
