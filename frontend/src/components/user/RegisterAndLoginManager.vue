@@ -28,7 +28,7 @@ const registerForm = async (event, user) => {
         console.log(registerUser.status);
         console.log(registerUser.error);  
         if (registerUser.status === 201) {
-            router.push({ name: "SaleItemHome", query: { alertAdd: "true" } });   
+            router.push({ name: "SaleItemHome", query: { alertAddUser: "true" } });   
         }
     } catch(err) {
         console.log(err);

@@ -60,7 +60,7 @@ public class SaleItemController_v2 {
     @PostMapping("")
     public ResponseEntity<?> createProduct(
             @ModelAttribute SaleItemDetailForCreateOrUpdateDto newSaleItem ,
-            @RequestParam List<MultipartFile> images
+            @RequestParam(required = false)  List<MultipartFile> images
     ){
         try{
             ResponseSaleItemsDto result = saleItemServiceV2.createProduct(newSaleItem , images);

@@ -195,15 +195,14 @@ const getBrandName = async (id) => {
   saleItem.value.brandName = brand.name;
   console.log(saleItem.value);
 };
-
-
 const imageRecentObject = ref([]);
 onMounted(async () => {
   if (isEditMode.value) {
     try {
       const items = await getItemById(
-            `${import.meta.env.VITE_APP_URL}/v2/sale-items` , route.params.id
-          );
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+        route.params.id
+      );
       const saleItemImages = items.saleItemImages;
       console.log("saleItemImages", saleItemImages);
       if (saleItemImages.length > 0) {
@@ -214,7 +213,7 @@ onMounted(async () => {
           };
           images.value.push(imageObj);
           imageFile.value.push(imageObj);
-          
+
           const imageUrlToObject = await imageUrlToFileObject(
             `${import.meta.env.VITE_APP_URL}/v2/sale-items/files/${
               saleItemImages[i].fileName
@@ -258,7 +257,7 @@ const isOver2MB = ref(false);
 const imageAddObject = ref([]);
 const showFilename = (e) => {
   const filenames = Array.from(e.target.files);
-  console.log("254 filenames" , filenames);
+  console.log("254 filenames", filenames);
   imageAddObject.value.push(...filenames);
   filenames.forEach((file) => {
     if (file.size > 2 * 1024 * 1024) {
@@ -266,10 +265,11 @@ const showFilename = (e) => {
       return;
     }
     const imageObj = {
-      fileName: file.name ,
-      imageViewOrder: images.value.indexOf("deleted") + 1 ?
-        images.value.indexOf("deleted") + 1 :
-        images.value.length + 1,
+      fileName: file.name,
+      imageViewOrder:
+        images.value.indexOf("deleted") + 1
+          ? images.value.indexOf("deleted") + 1
+          : images.value.length + 1,
       // file: file,
     };
 
@@ -281,7 +281,7 @@ const showFilename = (e) => {
         console.log(images.value.length + " 280 length");
       }
     } else if (images.value.length < 4) {
-      console.log("test")
+      console.log("test");
       images.value.push(imageObj);
       imageFile.value.push(file);
     } else {
@@ -300,7 +300,9 @@ const oldImages = ref([]);
 
 const isUpdatedImages = computed(() => {
   const currentImages = images.value.filter((img) => img !== "deleted");
-  const previousImages = oldImages.value.filter((img) => img.fileName !== "deleted");
+  const previousImages = oldImages.value.filter(
+    (img) => img.fileName !== "deleted"
+  );
   console.log("images.value: ", images.value);
   console.log("oldImages.value: ", oldImages.value);
   console.log(currentImages);
@@ -313,14 +315,19 @@ const isUpdatedImages = computed(() => {
 console.log("isUpdated: " + isUpdated.value);
 console.log("isUpdatedImages: " + isUpdatedImages.value);
 
-
-
 const imageReadyDeletes = ref([]);
 const deleteImg = (index) => {
+  if(Array.isArray(index)){
+    console.log("Delete all images");
+    for (let i = 0; i < index.length; i++) {
+      imageReadyDeletes.value.push(index[i]);
+      images.value.splice(i, 1, "deleted");   
+    }
+    return
+  }
   if (index < 0 || index >= images.value.length) return;
   if (images.value.length > 0) {
-    if (images.value[index] !== "deleted")
-      imageReadyDeletes.value.push(images.value[index]);
+    if (images.value[index] !== "deleted") imageReadyDeletes.value.push(images.value[index]);
     images.value.splice(index, 1, "deleted");
     imageFile.value.splice(index, 1, "deleted");
     console.log(imageFile.value);
@@ -343,11 +350,16 @@ const updateImagesStatus = () => {
     for (let i = 0; i < currentImages.length; i++) {
       if (typeof currentImages[i] === "object") {
         console.log(currentImages[i].fileName);
-        if ( currentImages[i].fileName.startsWith(String(route.params.id + "."))) {
-          if ( currentImages[i].imageViewOrder !== previousImages[i].imageViewOrder) {
+        if (
+          currentImages[i].fileName.startsWith(String(route.params.id + "."))
+        ) {
+          if (currentImages[i].fileName !== previousImages[i].fileName) {
+            console.log("358 MOVE Image order changed for:", currentImages[i].fileName);
             currentImages[i].status = "MOVE";
           } else {
+            console.log(currentImages[i].imageView)
             currentImages[i].status = "ONLINE";
+            console.log("362 ONLINE Image order changed for:", currentImages[i].fileName);
           }
         } else {
           currentImages[i].status = "NEW";
@@ -357,6 +369,7 @@ const updateImagesStatus = () => {
   }
   // console.log("imageReadyDeletes.value:", imageReadyDeletes.value);
   for (let i = 0; i < imageReadyDeletes.value.length; i++) {
+    console.log("imageReadyDeletes.value before add status:", imageReadyDeletes.value[i]);
     imageReadyDeletes.value[i].status = "DELETE";
     // console.log("imageReadyDeletes.value after add status:", imageReadyDeletes.value[i]);
   }
@@ -367,7 +380,7 @@ const updateImagesStatus = () => {
   // )
   // return currentImages
 
-  return currentImages.filter((img) => img !== "deleted")
+  return currentImages.filter((img) => img !== "deleted");
 };
 
 const fetchImagesForupdate = async (items) => {
@@ -393,18 +406,21 @@ async function submitForm() {
     return;
   }
   if (Number(route.params.id)) {
-    const updatedImagesObject =  updateImagesStatus(); 
-    const updatedImagesArr = Object.values(updatedImagesObject)
-    console.log("Updated Images Object:", updatedImagesObject);
-    const imagesArr = [
-      ...updatedImagesArr ,
-      ...imageReadyDeletes.value
-    ]
-    const imageFileArr = [
-      ...imageRecentObject.value ,
-      ...imageAddObject.value
-    ]
+    const updatedImagesObject = updateImagesStatus();
+    for (let index = 0; index < updatedImagesObject.length; index++) {
+      console.log("409 Before Updated imageViewOrder:", updatedImagesObject[index]);
+      if(updatedImagesObject[index].imageViewOrder !== index + 1){
+        updatedImagesObject[index].imageViewOrder = index + 1;
+        console.log("412 Updated imageViewOrder:", updatedImagesObject[index]);
+      }
+      
+    }
+    const updatedImagesArr = Object.values(updatedImagesObject);
 
+
+    console.log("Updated Images Object:", updatedImagesObject);
+    const imagesArr = [...imageReadyDeletes.value , ...updatedImagesArr];
+    const imageFileArr = [...imageRecentObject.value, ...imageAddObject.value];
     // if (!isUpdatedImages.value) {
     //   await editItem(
     //     `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
@@ -425,25 +441,25 @@ async function submitForm() {
     const saleItemImageObjectFormats = {
       model: saleItem.value.model,
       description: saleItem.value.description,
-      price: saleItem.value.price ,
-      ramGb: saleItem.value.ramGb ,
-      screenSizeInch: saleItem.value.screenSizeInch ,
-      quantity: saleItem.value.quantity ,
-      storageGb: saleItem.value.storageGb ,
-      color: saleItem.value.color ,
+      price: saleItem.value.price,
+      ramGb: saleItem.value.ramGb,
+      screenSizeInch: saleItem.value.screenSizeInch,
+      quantity: saleItem.value.quantity,
+      storageGb: saleItem.value.storageGb,
+      color: saleItem.value.color,
       brand: {
         id: saleItem.value.brand.id,
         name: saleItem.value.brand.name,
       },
     };
-    if (
-      images.value.includes("deleted") ||
-      imageFile.value.includes("deleted")
-    ) {
-      const indexOfDeleted = images.value.indexOf("deleted");
-      images.value.splice(indexOfDeleted, 1);
-      imageFile.value.splice(indexOfDeleted, 1);
-    }
+    // if (
+    //   images.value.includes("deleted") ||
+    //   imageFile.value.includes("deleted")
+    // ) {
+    //   const indexOfDeleted = images.value.indexOf("deleted");
+    //   images.value.splice(indexOfDeleted, 1);
+    //   imageFile.value.splice(indexOfDeleted, 1);
+    // }
     console.log("Updated Images with deleted:", imagesArr);
     const imagesForUpdate = ref([]);
     const imageObjectFormats = {
@@ -458,22 +474,22 @@ async function submitForm() {
       imageObjectFormats.order = file.imageViewOrder;
       imageObjectFormats.fileName = file.fileName;
       imageObjectFormats.status = file.status;
-      imageObjectFormats.imageFile = imageFileArr[
-        imageFileArr.findIndex((f) => f.name === file.fileName)
-      ];
+      imageObjectFormats.imageFile =
+        imageFileArr[imageFileArr.findIndex((f) => f.name === file.fileName)];
       imagesForUpdate.value.push({ ...imageObjectFormats });
     });
 
-    console.log(imagesForUpdate.value)
-    console.log(saleItemImageObjectFormats)
-    console.log(saleItemImageObjectFormats.ramGb)
-    console.log("Typeof", typeof saleItemImageObjectFormats.ramGb);
+    console.log(imagesForUpdate.value);
+    console.log(saleItemImageObjectFormats);
+    console.log(saleItemImageObjectFormats.ramGb);
     const editSaleItem = await editSaleItemAndImage(
       `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
       route.params.id,
       saleItemImageObjectFormats,
       imagesForUpdate.value
     );
+
+    console.log("Finished Process 474")
     console.log(editSaleItem.data);
 
     saleItem.value = { ...initSaleItem };
@@ -510,25 +526,32 @@ async function submitForm() {
 }
 
 const moveUp = (arr, index) => {
-  console.log( arr )
-  console.log(index)
+  console.log(arr);
+  console.log(index);
   const moveBackElement = arr[index - 1];
   const deleteElement = arr.splice(index, 1)[0];
+  if (moveBackElement !== "deleted") {
+    moveBackElement.imageViewOrder += 1;
+  }
   deleteElement.imageViewOrder -= 1;
-  moveBackElement.imageViewOrder += 1;
-  console.log(deleteElement)
+  console.log(deleteElement);
   arr.splice(index - 1, 0, deleteElement);
   const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index - 1, 0, deleteImageFile);
   console.log(arr);
+
+
+
 };
 
 const moveDown = (arr, index) => {
-  console.log("516 Moveup: " + arr )
+  console.log("516 Moveup: " + arr);
   const moveFrontElement = arr[index + 1];
   const deleteElement = arr.splice(index, 1)[0];
+    if (moveFrontElement !== "deleted") {
+      moveFrontElement.imageViewOrder -= 1;
+  }
   deleteElement.imageViewOrder += 1;
-  moveFrontElement.imageViewOrder -= 1;
   arr.splice(index + 1, 0, deleteElement);
   const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index + 1, 0, deleteImageFile);
@@ -541,7 +564,6 @@ function savePreviousPath() {
   localStorage.setItem("previousPath", previousPath);
 }
 </script>
-
 <template>
   <Navbar />
   <form @submit.prevent="submitForm">
@@ -863,7 +885,7 @@ function savePreviousPath() {
                   index + 1
                 } text-sm font-medium text-slate-700 truncate`"
               >
-                {{ img.fileName }} 1
+                {{ img.fileName }} 
               </p>
               <p class="text-xs text-slate-500">
                 Image {{ index + 1 }} of {{ images.length }}
@@ -952,7 +974,7 @@ function savePreviousPath() {
 
         <div class="pt-4 border-t border-slate-200">
           <button
-            @click="images.length = 0"
+            @click="deleteImg(images)"
             class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
           >
             <svg

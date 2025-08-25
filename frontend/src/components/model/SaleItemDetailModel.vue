@@ -36,7 +36,7 @@ const mainImage = ref()
 
 onMounted(async () => {
   try {
-    if (route.params.id) {
+      if (route.params.id) {
       // items.value = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
       items.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items/${route.params.id}`)
       const saleItemImages = items.value.saleItemImages;
@@ -51,6 +51,7 @@ onMounted(async () => {
       }
       mainImage.value = pictures.value[0]
     }
+
   } catch(err) {
     console.error(err);
   }
