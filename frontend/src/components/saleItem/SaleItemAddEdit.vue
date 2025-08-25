@@ -196,27 +196,44 @@ const getBrandName = async (id) => {
   console.log(saleItem.value);
 };
 
+
+const imageRecentObject = ref([]);
 onMounted(async () => {
   if (isEditMode.value) {
     try {
-      const items = await getItems(
-        `${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`
-      );
-      console.log(items);
-      
-      if (items.length > 0) {
-        for (let i = 0; i < items.length; i++) {
-          const imageUrlToObject = await imageUrlToFileObject(`${import.meta.env.VITE_APP_URL}/api/files/${items[i].fileName}`,items[i].fileName);
+      const items = await getItemById(
+            `${import.meta.env.VITE_APP_URL}/v2/sale-items` , route.params.id
+          );
+      const saleItemImages = items.saleItemImages;
+      console.log("saleItemImages", saleItemImages);
+      if (saleItemImages.length > 0) {
+        for (let i = 0; i < saleItemImages.length; i++) {
           const imageObj = {
-            name: items[i].fileName,
-            file: imageUrlToObject,
+            fileName: saleItemImages[i].fileName,
+            imageViewOrder: saleItemImages[i].imageViewOrder,
           };
           images.value.push(imageObj);
-          imageFile.value.push(imageUrlToObject);
+          imageFile.value.push(imageObj);
+          
+          const imageUrlToObject = await imageUrlToFileObject(
+            `${import.meta.env.VITE_APP_URL}/v2/sale-items/files/${
+              saleItemImages[i].fileName
+            }`,
+            saleItemImages[i].fileName
+          );
+          imageRecentObject.value.push(imageUrlToObject);
+          // console.log("227 imageUrlToObject:", imageUrlToObject);
+          // console.log("228 imageGetItems:", imageGetItems);
+          // console.log("229 items:" , items);
+          // console.log("imageUrlToObject:", imageUrlToObject);
+          // const imageObj = {
+          //   name: saleItemImages[i].fileName,
+          //   file: imageUrlToObject,
+          // };
+          // images.value.push(imageObj);
+          // imageFile.value.push(imageUrlToObject);
         }
       }
-      console.log(images.value);
-      
     } catch (err) {
       console.error(err);
     }
@@ -236,34 +253,38 @@ const previousPath = localStorage.getItem("previousPath");
 const images = ref([]);
 const imageFile = ref([]);
 const isImageFull = ref(false);
-const isOver2MB = ref(false)
+const isOver2MB = ref(false);
 
+const imageAddObject = ref([]);
 const showFilename = (e) => {
   const filenames = Array.from(e.target.files);
-  console.log(filenames);
-  
+  console.log("254 filenames" , filenames);
+  imageAddObject.value.push(...filenames);
   filenames.forEach((file) => {
-    console.log(file.size);
-    if (file.size > 2000000) {
-      isOver2MB.value = true
-      return
+    if (file.size > 2 * 1024 * 1024) {
+      isOver2MB.value = true;
+      return;
     }
     const imageObj = {
-      name: file.name,
-      file: file,
+      fileName: file.name ,
+      imageViewOrder: images.value.indexOf("deleted") + 1 ?
+        images.value.indexOf("deleted") + 1 :
+        images.value.length + 1,
+      // file: file,
     };
+
     if (images.value.includes("deleted")) {
       const indexOfDeleted = images.value.indexOf("deleted");
       if (indexOfDeleted !== -1) {
         images.value[indexOfDeleted] = imageObj;
         imageFile.value[indexOfDeleted] = file;
+        console.log(images.value.length + " 280 length");
       }
-    } 
-    else if (images.value.length < 4) {
+    } else if (images.value.length < 4) {
+      console.log("test")
       images.value.push(imageObj);
       imageFile.value.push(file);
-    } 
-    else {
+    } else {
       isImageFull.value = true;
       setTimeout(() => {
         isImageFull.value = false;
@@ -278,18 +299,80 @@ const showFilename = (e) => {
 const oldImages = ref([]);
 
 const isUpdatedImages = computed(() => {
-  const currentImages = images.value.filter(img => img !== "deleted")
-  const previousImages = oldImages.value.filter(img => img.fileName !== "deleted")
-
+  const currentImages = images.value.filter((img) => img !== "deleted");
+  const previousImages = oldImages.value.filter((img) => img.fileName !== "deleted");
+  console.log("images.value: ", images.value);
+  console.log("oldImages.value: ", oldImages.value);
+  console.log(currentImages);
+  console.log(previousImages);
   if (currentImages.length !== previousImages.length) return true;
   return currentImages.some(
-    (img, index) => img.name !== previousImages[index].fileName
-  )
-})
+    (img, index) => img.fileName !== previousImages[index].fileName
+  );
+});
+console.log("isUpdated: " + isUpdated.value);
+console.log("isUpdatedImages: " + isUpdatedImages.value);
+
+
+
+const imageReadyDeletes = ref([]);
+const deleteImg = (index) => {
+  if (index < 0 || index >= images.value.length) return;
+  if (images.value.length > 0) {
+    if (images.value[index] !== "deleted")
+      imageReadyDeletes.value.push(images.value[index]);
+    images.value.splice(index, 1, "deleted");
+    imageFile.value.splice(index, 1, "deleted");
+    console.log(imageFile.value);
+    console.log(imageReadyDeletes.value);
+  }
+};
+
+const updateImagesStatus = () => {
+  console.log("Images:", images.value);
+  const currentImages = images.value.filter((img) => img);
+  const previousImages = oldImages.value.filter((img) => img !== "deleted");
+  console.log("images.value:", images.value);
+  console.log("Current Images:", currentImages);
+  console.log("Previous Images:", previousImages);
+  if (JSON.stringify(currentImages) === JSON.stringify(previousImages)) {
+    for (let i = 0; i < currentImages.length; i++) {
+      currentImages[i].status = "ONLINE";
+    }
+  } else {
+    for (let i = 0; i < currentImages.length; i++) {
+      if (typeof currentImages[i] === "object") {
+        console.log(currentImages[i].fileName);
+        if ( currentImages[i].fileName.startsWith(String(route.params.id + "."))) {
+          if ( currentImages[i].imageViewOrder !== previousImages[i].imageViewOrder) {
+            currentImages[i].status = "MOVE";
+          } else {
+            currentImages[i].status = "ONLINE";
+          }
+        } else {
+          currentImages[i].status = "NEW";
+        }
+      }
+    }
+  }
+  // console.log("imageReadyDeletes.value:", imageReadyDeletes.value);
+  for (let i = 0; i < imageReadyDeletes.value.length; i++) {
+    imageReadyDeletes.value[i].status = "DELETE";
+    // console.log("imageReadyDeletes.value after add status:", imageReadyDeletes.value[i]);
+  }
+
+  // if (currentImages.length !== previousImages.length) return true;
+  // return currentImages.some(
+  //   (img, index) => img.name !== previousImages[index].fileName
+  // )
+  // return currentImages
+
+  return currentImages.filter((img) => img !== "deleted")
+};
 
 const fetchImagesForupdate = async (items) => {
   oldImages.value = [...items];
-}
+};
 
 const isActive = computed(() => {
   const isUpdatedField =
@@ -301,17 +384,7 @@ const isActive = computed(() => {
   return isUpdatedField;
 });
 
-const imageReadyDeletes = ref([]);
 
-const deleteImg = (index) => {
-  if (index < 0 || index >= images.value.length) return;
-  if (images.value.length > 0) {
-      imageReadyDeletes.value.push(images.value[index]);
-      images.value.splice(index, 1, "deleted");
-      imageFile.value.splice(index, 1, "deleted");
-    console.log(imageFile.value);
-  }
-};
 
 async function submitForm() {
   isSubmitted.value = true;
@@ -320,74 +393,104 @@ async function submitForm() {
     return;
   }
   if (Number(route.params.id)) {
-      if (!isUpdatedImages.value) {
-        await editItem(
-          `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-          route.params.id,
-          saleItem.value
-        );
-        saleItem.value = { ...initSaleItem };
-      }
-      if (imageReadyDeletes.value.length > 0) {
-        for (let i = 0; i < imageReadyDeletes.value.length; i++) {
-            await deleteImageResource(`${import.meta.env.VITE_APP_URL}/api/files`,imageReadyDeletes.value[i].name);
-        }
-      }
-      const saleItemImageObjectFormats = {
-        model: saleItem.value.model,
-        description: saleItem.value.description,
-        price: saleItem.value.price,  
-        ramGb: saleItem.value.ramGb,
-        screenSizeInch: saleItem.value.screenSizeInch,
-        quantity: saleItem.value.quantity,
-        storageGb: saleItem.value.storageGb,  
-        color: saleItem.value.color,
-        brand: {
-          id: saleItem.value.brand.id,
-          name: saleItem.value.brand.name
-        }
-      }
-      if (images.value.includes("deleted") || imageFile.value.includes("deleted")) {
-        const indexOfDeleted = images.value.indexOf("deleted");
-        images.value.splice(indexOfDeleted, 1)
-        imageFile.value.splice(indexOfDeleted, 1);
-      }
-      const imagesForUpdate = ref([]);
-      const imageObjectFormats = {
-        order: 0,
-        fileName: "",
-        status: "NEW",
-        imageFile: {},
-      };
-      imageFile.value.forEach((file, index) => {
-        imageObjectFormats.order = index + 1;
-        imageObjectFormats.fileName = file.name;
-        imageObjectFormats.imageFile = file;
-        imagesForUpdate.value.push({ ...imageObjectFormats });
-      });
-      console.log(images.value);
-      console.log(imageFile.value);
-      console.log(imagesForUpdate.value);
-      const editSaleItem = await editSaleItemAndImage(
-        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
-        route.params.id,
-        saleItemImageObjectFormats,
-        imagesForUpdate.value
-      );
-      console.log(editSaleItem.data);
-      
-      saleItem.value = { ...initSaleItem };
-      router.push({
+    const updatedImagesObject =  updateImagesStatus(); 
+    const updatedImagesArr = Object.values(updatedImagesObject)
+    console.log("Updated Images Object:", updatedImagesObject);
+    const imagesArr = [
+      ...updatedImagesArr ,
+      ...imageReadyDeletes.value
+    ]
+    const imageFileArr = [
+      ...imageRecentObject.value ,
+      ...imageAddObject.value
+    ]
+
+    // if (!isUpdatedImages.value) {
+    //   await editItem(
+    //     `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+    //     route.params.id,
+    //     saleItem.value
+    //   );
+    //   saleItem.value = { ...initSaleItem };
+    // }
+
+    // if (imageReadyDeletes.value.length > 0) {
+    //   for (let i = 0; i < imageReadyDeletes.value.length; i++) {
+    //     await deleteImageResource(
+    //       `${import.meta.env.VITE_APP_URL}/api/files`,
+    //       imageReadyDeletes.value[i].name
+    //     );
+    //   }
+    // }
+    const saleItemImageObjectFormats = {
+      model: saleItem.value.model,
+      description: saleItem.value.description,
+      price: saleItem.value.price ,
+      ramGb: saleItem.value.ramGb ,
+      screenSizeInch: saleItem.value.screenSizeInch ,
+      quantity: saleItem.value.quantity ,
+      storageGb: saleItem.value.storageGb ,
+      color: saleItem.value.color ,
+      brand: {
+        id: saleItem.value.brand.id,
+        name: saleItem.value.brand.name,
+      },
+    };
+    if (
+      images.value.includes("deleted") ||
+      imageFile.value.includes("deleted")
+    ) {
+      const indexOfDeleted = images.value.indexOf("deleted");
+      images.value.splice(indexOfDeleted, 1);
+      imageFile.value.splice(indexOfDeleted, 1);
+    }
+    console.log("Updated Images with deleted:", imagesArr);
+    const imagesForUpdate = ref([]);
+    const imageObjectFormats = {
+      order: 0,
+      fileName: "",
+      status: "",
+      imageFile: {},
+    };
+    console.log(imageRecentObject.value);
+    console.log(imageFileArr);
+    imagesArr.forEach((file) => {
+      imageObjectFormats.order = file.imageViewOrder;
+      imageObjectFormats.fileName = file.fileName;
+      imageObjectFormats.status = file.status;
+      imageObjectFormats.imageFile = imageFileArr[
+        imageFileArr.findIndex((f) => f.name === file.fileName)
+      ];
+      imagesForUpdate.value.push({ ...imageObjectFormats });
+    });
+
+    console.log(imagesForUpdate.value)
+    console.log(saleItemImageObjectFormats)
+    console.log(saleItemImageObjectFormats.ramGb)
+    console.log("Typeof", typeof saleItemImageObjectFormats.ramGb);
+    const editSaleItem = await editSaleItemAndImage(
+      `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+      route.params.id,
+      saleItemImageObjectFormats,
+      imagesForUpdate.value
+    );
+    console.log(editSaleItem.data);
+
+    saleItem.value = { ...initSaleItem };
+    router.push({
       name: "SaleItemDetail",
-      params: { id: route.params.id },
+      // params: { id: route.params.id },
       query: { alert: "true" },
     });
   } else {
-      if (images.value.includes("deleted") || imageFile.value.includes("deleted")) {
-        const indexOfDeleted = images.value.indexOf("deleted");
-        images.value.splice(indexOfDeleted, 1)
-        imageFile.value.splice(indexOfDeleted, 1);
-      }
+    if (
+      images.value.includes("deleted") ||
+      imageFile.value.includes("deleted")
+    ) {
+      const indexOfDeleted = images.value.indexOf("deleted");
+      images.value.splice(indexOfDeleted, 1);
+      imageFile.value.splice(indexOfDeleted, 1);
+    }
     try {
       await addSaleItemAndImage(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
@@ -395,7 +498,7 @@ async function submitForm() {
         imageFile.value
       );
       saleItem.value = { ...initSaleItem };
-      // router.push({ path: previousPath, query: { alertAdd: "true" } });
+      router.push({ path: previousPath, query: { alertAdd: "true" } });
       router.push({
         name: "SaleItemHome",
         query: { alertAdd: "true" },
@@ -407,16 +510,25 @@ async function submitForm() {
 }
 
 const moveUp = (arr, index) => {
+  console.log( arr )
+  console.log(index)
+  const moveBackElement = arr[index - 1];
   const deleteElement = arr.splice(index, 1)[0];
+  deleteElement.imageViewOrder -= 1;
+  moveBackElement.imageViewOrder += 1;
+  console.log(deleteElement)
   arr.splice(index - 1, 0, deleteElement);
   const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index - 1, 0, deleteImageFile);
-  console.log("Image file: ", imageFile.value);
   console.log(arr);
 };
 
 const moveDown = (arr, index) => {
+  console.log("516 Moveup: " + arr )
+  const moveFrontElement = arr[index + 1];
   const deleteElement = arr.splice(index, 1)[0];
+  deleteElement.imageViewOrder += 1;
+  moveFrontElement.imageViewOrder -= 1;
   arr.splice(index + 1, 0, deleteElement);
   const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index + 1, 0, deleteImageFile);
@@ -630,159 +742,238 @@ function savePreviousPath() {
 
   <div class="w-full space-y-6">
     <div class="w-full mx-auto max-w-4xl px-4 py-6 rounded-lg">
-          <div class="mb-3 flex items-center justify-center">
-            <label
-              for="file"
-              class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
+      <div class="mb-3 flex items-center justify-center">
+        <label
+          for="file"
+          class="itbms-upload-button flex flex-col items-center justify-center w-full h-32 border-2 border-slate-300 border-dashed rounded-xl cursor-pointer bg-slate-50 hover:bg-slate-100 transition-all duration-200 group"
+        >
+          <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg
+              class="w-10 h-10 mb-3 text-slate-400 group-hover:text-slate-600 transition-colors duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 48 48"
             >
-              <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg class="w-10 h-10 mb-3 text-slate-400 group-hover:text-slate-600 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 48 48">
-                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <p class="mb-2 text-sm text-slate-500 group-hover:text-slate-600">
-                  <span class="font-semibold">Click to upload</span> or drag and drop
-                </p>
-                <p class="text-xs text-slate-400">PNG, JPG, GIF up to 2MB</p>
-              </div>
-            </label>
-            <input
-              @change="showFilename"
-              id="file"
-              type="file"
-              multiple
-              class="hidden"
-              accept="image/*"
+              <path
+                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <p class="mb-2 text-sm text-slate-500 group-hover:text-slate-600">
+              <span class="font-semibold">Click to upload</span> or drag and
+              drop
+            </p>
+            <p class="text-xs text-slate-400">PNG, JPG, GIF up to 2MB</p>
+          </div>
+        </label>
+        <input
+          @change="showFilename"
+          id="file"
+          type="file"
+          multiple
+          class="hidden"
+          accept="image/*"
+        />
+      </div>
+
+      <div
+        v-if="isImageFull"
+        class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg animate-pulse"
+        role="alert"
+      >
+        <div class="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-amber-400 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
-          </div>
-
-          <div
-            v-if="isImageFull"
-            class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg animate-pulse"
-            role="alert"
+          </svg>
+          <span class="text-amber-700 font-medium"
+            >Maximum 4 pictures are allowed.</span
           >
-            <div class="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-amber-400 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-              <span class="text-amber-700 font-medium">Maximum 4 pictures are allowed.</span>
-            </div>
-          </div>
-
-          <div
-            v-if="isOver2MB"
-            class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg animate-pulse"
-            role="alert"
-          >
-            <div class="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5 text-amber-400 mr-2"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-              <span class="text-amber-700 font-medium">The picture file size cannot be larger than 2MB.</span>
-            </div>
-          </div>
-
-          <div v-if="images.length > 0" class="space-y-3">
-            <div
-              v-for="(img, index) in images"
-              :key="index"
-              class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg p-4 group hover:bg-slate-100 transition-colors duration-200"
-            >
-              <div class="flex items-center space-x-4 flex-1">
-                <div class="flex-shrink-0">
-                  <div class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </div>
-                
-                <div class="flex-1 min-w-0">
-                  <p :class="`itbms-picture-file${index+1} text-sm font-medium text-slate-700 truncate`">
-                    {{ img.name }}
-                  </p>
-                  <p class="text-xs text-slate-500">Image {{ index + 1 }} of {{ images.length }}</p>
-                </div>
-              </div>
-
-              <div class="flex items-center space-x-2">
-                <button
-                  @click="moveUp(images, index)"
-                  :disabled="index === 0"
-                  :class="`itbms-picture-file${index+1}-up p-2 rounded-lg transition-all duration-200 ${
-                    index === 0 
-                      ? 'text-slate-300 cursor-not-allowed' 
-                      : 'text-slate-500 hover:text-slate-700 hover:bg-white'
-                  }`"
-                  title="Move up"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                  </svg>
-                </button>
-
-                <button
-                  @click="moveDown(images, index)"
-                  :disabled="index === images.length - 1"
-                  :class="`itbms-picture-file${index+1}-down p-2 rounded-lg transition-all duration-200 ${
-                    index === images.length - 1 
-                      ? 'text-slate-300 cursor-not-allowed' 
-                      : 'text-slate-500 hover:text-slate-700 hover:bg-white'
-                  }`"
-                  title="Move down"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-
-                <button
-                  @click="deleteImg(index)"
-                  :class="`itbms-picture-file${index+1}-clear p-2 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200`"
-                  title="Remove image"
-                >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="pt-4 border-t border-slate-200">
-              <button
-                @click="images.length = 0"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
-              >
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Clear All Images
-              </button>
-            </div>
-          </div>
         </div>
       </div>
+
+      <div
+        v-if="isOver2MB"
+        class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-lg animate-pulse"
+        role="alert"
+      >
+        <div class="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-amber-400 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <span class="text-amber-700 font-medium"
+            >The picture file size cannot be larger than 2MB.</span
+          >
+        </div>
+      </div>
+
+      <div v-if="images.length > 0" class="space-y-3">
+        <div
+          v-for="(img, index) in images"
+          :key="index"
+          class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg p-4 group hover:bg-slate-100 transition-colors duration-200"
+        >
+          <div class="flex items-center space-x-4 flex-1">
+            <div class="flex-shrink-0">
+              <div
+                class="w-12 h-12 bg-slate-200 rounded-lg flex items-center justify-center"
+              >
+                <svg
+                  class="w-6 h-6 text-slate-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <p
+                :class="`itbms-picture-file${
+                  index + 1
+                } text-sm font-medium text-slate-700 truncate`"
+              >
+                {{ img.fileName }} 1
+              </p>
+              <p class="text-xs text-slate-500">
+                Image {{ index + 1 }} of {{ images.length }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button
+              @click="moveUp(images, index)"
+              :disabled="index === 0"
+              :class="`itbms-picture-file${
+                index + 1
+              }-up p-2 rounded-lg transition-all duration-200 ${
+                index === 0
+                  ? 'text-slate-300 cursor-not-allowed'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-white'
+              }`"
+              title="Move up"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                />
+              </svg>
+            </button>
+
+            <button
+              @click="moveDown(images, index)"
+              :disabled="index === images.length - 1"
+              :class="`itbms-picture-file${
+                index + 1
+              }-down p-2 rounded-lg transition-all duration-200 ${
+                index === images.length - 1
+                  ? 'text-slate-300 cursor-not-allowed'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-white'
+              }`"
+              title="Move down"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            <button
+              @click="deleteImg(index)"
+              :class="`itbms-picture-file${
+                index + 1
+              }-clear p-2 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-all duration-200`"
+              title="Remove image"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200">
+          <button
+            @click="images.length = 0"
+            class="inline-flex items-center px-4 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            Clear All Images
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <style scoped>
 @keyframes fadeIn {

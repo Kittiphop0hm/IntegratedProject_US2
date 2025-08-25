@@ -31,16 +31,19 @@ const props = defineProps({
 
 const pictures = ref([])
 const items = ref([])
-const mainImage = ref("")
+const itemss = ref([])
 
 onMounted(async () => {
   try {
     if (route.params.id) {
-      items.value = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
-      console.log(items.value);
-      emit("fetchImagesForUpdate", items.value)
-      if (items.value.length > 0) {
-        items.value.forEach((item) => {
+      // items.value = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
+      items.value = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items/${route.params.id}`)
+      const saleItemImages = items.value.saleItemImages;
+      console.log(saleItemImages);
+      console.log(itemss.value.saleItemImages);
+      emit("fetchImagesForUpdate", saleItemImages)
+      if (saleItemImages.length > 0) {
+        saleItemImages.forEach((item) => {
           const apiFormat = `${import.meta.env.VITE_APP_URL}/api/files/${item.fileName}`
           pictures.value.push(apiFormat)
         })
