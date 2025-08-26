@@ -25,6 +25,10 @@ public class UserService {
     private EntityManager entityManager;
     @Autowired
     private UserFileService userFileService;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private JwtService jwtService;
 
     public ResponseUserDto findByEmail(String email) {
         User user = repository.findUserByEmail(email);
@@ -33,7 +37,7 @@ public class UserService {
 
     @Transactional
     public ResponseUserDto createUser(RegisterFormDto userForm, MultipartFile cardImageFront, MultipartFile cardImageBack) {
-        System.out.println(userForm.getCardNumber().getClass().getSimpleName());
+
         if (userForm.getUserType().toUpperCase().equals("SELLER")) {
             if (repository.existsUserByEmail(userForm.getEmail())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
             User user = modelMapper.map(userForm, User.class);
@@ -43,6 +47,9 @@ public class UserService {
             userFileService.store(cardImageFront, addUser.getId(), "FRONT");
             userFileService.store(cardImageBack, addUser.getId(), "BACK");
             entityManager.refresh(addUser);
+            User checkUser = repository.findUserByEmail(userForm.getEmail());
+            String token = jwtService.generateJwtToken(checkUser.getId() , checkUser.getEmail());
+            emailService.sendEmail(userForm.getEmail(), token);
             return modelMapper.map(addUser, ResponseUserDto.class);
         } else {
             User user = modelMapper.map(userForm, User.class);
@@ -50,7 +57,23 @@ public class UserService {
             user.setUserType(user.getUserType().toUpperCase());
             User addUser = repository.save(user);
             entityManager.refresh(addUser);
+            User checkUser = repository.findUserByEmail(userForm.getEmail());
+            String token = jwtService.generateJwtToken(checkUser.getId() , checkUser.getEmail());
+            emailService.sendEmail(userForm.getEmail(), token);
             return modelMapper.map(addUser, ResponseUserDto.class);
         }
+    }
+
+    public ResponseUserDto verifyEmail(Integer userId , String email){
+        User user = repository.findUserByEmail(email);
+        if(user.getIsActive()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        }
+        if(user.getId().equals(userId)){
+            user.setIsActive(true);
+            repository.save(user);
+            return modelMapper.map(user, ResponseUserDto.class);
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid verification token");
     }
 }
