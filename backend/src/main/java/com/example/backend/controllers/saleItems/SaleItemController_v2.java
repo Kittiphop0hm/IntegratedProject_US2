@@ -25,7 +25,7 @@ public class SaleItemController_v2 {
 
     @GetMapping("")
     public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
-            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String searchKeyWord,
             @RequestParam(defaultValue = "") List<String> filterBrands,
             @RequestParam(required = false) Integer filterPriceLower,
             @RequestParam(required = false) Integer filterPriceUpper,
@@ -37,7 +37,7 @@ public class SaleItemController_v2 {
     ) {
 
         return ResponseEntity.ok(saleItemServiceV1.mergeFilterAndSortSaleItem(
-                search,
+                searchKeyWord,
                 filterBrands,
                 filterPriceLower,
                 filterPriceUpper,

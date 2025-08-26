@@ -71,7 +71,7 @@ const mockStorageSizes = ref([
     { id: 4, name: "256Gb", value: 256 },
     { id: 5, name: "512Gb", value: 512},
     { id: 6, name: "1Tb", value: 1024},
-    { id: 7, name: "Not specified", value: 0} // เปลี่ยนเป็น 0
+    { id: 7, name: "Not specified", value: 0} 
 ]);
 
 // ฟังก์ชันแปลงค่าสำหรับส่งไป backend

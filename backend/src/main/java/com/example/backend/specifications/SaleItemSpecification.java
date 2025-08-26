@@ -16,12 +16,55 @@ import java.util.List;
  * - query = query builder
  * - criteriaBuilder = เครื่องมือสร้าง condition ต่างๆ
  */
-public class SaleItemFilterSpecification {
+public class SaleItemSpecification {
 
     /**
      * กรองตาม brand name
      * SQL ที่ได้: SELECT * FROM sale_item si JOIN brand b ON si.brand_id = b.id WHERE b.name IN (...)
      */
+    public static Specification<SaleItem> withSearchKeyword(String searchKeyword) {
+        return (root, query, cb) -> {
+            // ถ้าไม่ได้ค้นหาอะไร ก็ไม่กรองอะไร
+            if (searchKeyword == null || searchKeyword.trim().isEmpty()) {
+                return cb.conjunction();
+            }
+
+            // แยกคำด้วย space เช่น "flag black" → ["flag", "black"]
+            String[] words = searchKeyword.toLowerCase().split("\\s+");
+
+            // เตรียม field ที่จะค้นหา (description, model, color)
+            Expression<String> description = cb.lower(root.get("description").as(String.class));
+            Expression<String> model = cb.lower(root.get("model"));
+            Expression<String> color = cb.lower(root.get("color"));
+
+            // สำหรับแต่ละคำ สร้างเงื่อนไข
+            List<Predicate> allWordConditions = new ArrayList<>();
+
+            for (String word : words) {
+                word = word.trim();
+                if (word.isEmpty()) continue; // ข้ามคำว่าง
+
+                String pattern = "%" + word + "%";
+
+                // คำนี้ต้องพบในอย่างน้อย 1 field (description หรือ model หรือ color)
+                Predicate wordFound = cb.or(
+                        cb.like(description, pattern),
+                        cb.like(model, pattern),
+                        cb.like(color, pattern)
+                );
+
+                allWordConditions.add(wordFound);
+            }
+
+            // ถ้าไม่มีคำที่ค้นหาได้
+            if (allWordConditions.isEmpty()) {
+                return cb.conjunction();
+            }
+
+            // ทุกคำต้องพบ (AND กันทุกคำ)
+            return cb.and(allWordConditions.toArray(new Predicate[0]));
+        };
+    }
     public static Specification<SaleItem> withBrands(List<String> brands) {
         return (root, query, cb) -> {
             // ถ้าไม่มี brand ให้กรอง ก็ไม่กรองอะไร
@@ -76,18 +119,7 @@ public class SaleItemFilterSpecification {
         };
     }
 
-    /**
-     * กรองตาม storage ที่เท่ากับค่าหนึ่ง
-     * SQL ที่ได้: SELECT * FROM sale_item WHERE storage_gb = 128
-     */
-    public static Specification<SaleItem> withStorageGbEquals(Integer storageValue) {
-        return (root, query, cb) -> {
-            if (storageValue == null) {
-                return cb.conjunction();
-            }
-            return cb.equal(root.get("storageGb"), storageValue);
-        };
-    }
+
 
     /**
      * กรองตาม storage ที่เท่ากับค่าหนึ่ง หรือ เป็น null
@@ -183,7 +215,7 @@ public class SaleItemFilterSpecification {
             } else if (field.equals("color")) {
                 orderPath = root.get("color");
 
-            } else if (field.equals("storage") || field.equals("storagegb") || field.equals("storage_gb")) {
+            } else if (field.equals("storage") || field.equals("storagegb")) {
                 orderPath = root.get("storageGb");
 
             } else if (field.equals("quantity")) {
@@ -211,7 +243,12 @@ public class SaleItemFilterSpecification {
      * รวมทุก filter เข้าด้วยกัน
      * วิธีใช้: repository.findAll(buildFilterSpecification(...))
      */
+    /**
+     * รวมทุก filter เข้าด้วยกัน (เพิ่ม searchKeyword parameter)
+     * วิธีใช้: repository.findAll(buildFilterSpecification(...))
+     */
     public static Specification<SaleItem> buildFilterSpecification(
+            String searchKeyword,           // เพิ่มใหม่ - คำค้นหา
             List<String> filterBrands,      // brand ที่จะกรอง
             Integer minPrice,               // ราคาต่ำสุด
             Integer maxPrice,               // ราคาสูงสุด
@@ -222,6 +259,11 @@ public class SaleItemFilterSpecification {
 
         // เริ่มต้นด้วย Specification ว่าง
         Specification<SaleItem> spec = Specification.where(null);
+
+        // เพิ่ม search keyword filter (เพิ่มใหม่)
+        if (searchKeyword != null && !searchKeyword.trim().isEmpty()) {
+            spec = spec.and(withSearchKeyword(searchKeyword));
+        }
 
         // เพิ่ม brand filter (ถ้ามี)
         if (filterBrands != null && !filterBrands.isEmpty()) {

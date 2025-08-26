@@ -6,8 +6,7 @@ import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemPageRepository;
 import com.example.backend.repositories.SaleItemRepository;
-import com.example.backend.specifications.SaleItemFilterSpecification;
-import com.example.backend.specifications.SaleItemSearchSpecification;
+import com.example.backend.specifications.SaleItemSpecification;
 import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
@@ -115,8 +114,6 @@ public class SaleItemService_v1 {
             String sortDirection,
             Integer page,
             Integer size) {
-
-        // แปลง List<String> เป็น List<Integer
         List<Integer> filterStorageSizes = new ArrayList<>();
         boolean includeNotSpecified = false;
 
@@ -128,42 +125,34 @@ public class SaleItemService_v1 {
                     try {
                         int val = Integer.parseInt(s);
                         if (val > 0) filterStorageSizes.add(val);
-                    } catch (NumberFormatException ignored) {}
+                    } catch (NumberFormatException ignored) {
+
+                    }
                 }
             }
         }
-
-        // Price range
-        int minPriceValue = (minPrice != null) ? minPrice : 0;
-        int maxPriceValue = (maxPrice != null) ? maxPrice : ((minPrice != null) ? minPrice : Integer.MAX_VALUE);
-
-        // สร้าง Specification สำหรับ Filter
-        Specification<SaleItem> filterSpec = SaleItemFilterSpecification.buildFilterSpecification(
+        Specification<SaleItem> combinedSpec = SaleItemSpecification.buildFilterSpecification(
+                searchKeyword,
                 filterBrands,
-                (minPrice != null || maxPrice != null) ? minPriceValue : null,
-                (minPrice != null || maxPrice != null) ? maxPriceValue : null,
+                minPrice,
+                maxPrice,
                 filterStorageSizes,
                 includeNotSpecified,
                 sortField,
                 sortDirection
         );
 
-        // สร้าง Specification สำหรับ Search
-        Specification<SaleItem> searchSpec = SaleItemSearchSpecification.withSearchKeyword(searchKeyword);
-
-        // รวม filter + search
-        Specification<SaleItem> combinedSpec = filterSpec.and(searchSpec);
-
-        // เรียกใช้ repository + pagination
         Page<SaleItem> saleItems = pageRepository.findAll(combinedSpec, PageRequest.of(page, size));
 
         // Log debug
         System.out.println("🔍 Search keyword: " + searchKeyword);
         System.out.println("🔧 Brands filter: " + filterBrands);
         System.out.println("🔧 Storage filter: " + filterStorageSizes + ", includeNotSpecified=" + includeNotSpecified);
-        System.out.println("🔧 Price range: " + minPriceValue + " - " + maxPriceValue);
+        System.out.println("💰 Price range: " + minPrice + " - " + maxPrice);
         System.out.println("🔧 Sort: " + sortField + " " + sortDirection);
+        System.out.println("📄 Page: " + page + ", Size: " + size);
         System.out.println("📈 Total items found: " + saleItems.getTotalElements());
+        System.out.println("📊 Total pages: " + saleItems.getTotalPages());
 
         // Mapping to DTO
         return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
