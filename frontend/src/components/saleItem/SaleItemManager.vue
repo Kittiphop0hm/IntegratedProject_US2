@@ -75,7 +75,6 @@ const computedPageNumberArr = computed(() => {
   return arr;
 });
 
-// Build query parameters helper function - เพิ่ม searchKeyword
 const buildQueryParams = () => {
   const params = new URLSearchParams();
   
@@ -145,7 +144,7 @@ watch([filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeyword
   sessionStorage.setItem("direction", directionR.value);
   sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
   sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSizeR.value));
-  sessionStorage.setItem("searchKeyword", searchKeywordR.value); // เก็บ search keyword
+  sessionStorage.setItem("searchKeyword", searchKeywordR.value); 
   console.log("Filters changed, resetting to page 0");
   pageNumber.value = 0;
 }, { deep: true });
@@ -171,7 +170,6 @@ const filterAndSortSaleItem = async (filterBrand, direction, field, filters = {}
   directionR.value = direction || '';
   fieldR.value = field || '';
   
-  // Update additional filters from the new filter component
   if (filters.brands !== undefined) {
     filterBrandR.value = filters.brands || [];
   }
@@ -194,7 +192,7 @@ const fecthItemFromPage = async(index) => {
   await fetchData();
 };
 
-// Handle search จาก SearchComponent (เพิ่มตรงนี้)
+
 const handleSearch = (keyword) => {
   console.log("Search triggered with keyword:", keyword);
   searchKeywordR.value = keyword;
@@ -204,7 +202,7 @@ const handleSearch = (keyword) => {
 </script>
 
 <template>
-  <!-- เพิ่ม SearchComponent ด้านบน -->
+ 
   <SearchComponent @search="handleSearch" />
 
   <div

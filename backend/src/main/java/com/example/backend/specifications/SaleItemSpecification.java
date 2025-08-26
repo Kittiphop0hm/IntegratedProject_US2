@@ -228,7 +228,7 @@ public class SaleItemSpecification {
             } else {
                 // default: sort ตาม createdOn DESC (ใหม่สุดก่อน)
                 orderPath = root.get("createdOn");
-                isAscending = false;
+                isAscending = true;
             }
 
             // สร้าง Order และใส่ใน query

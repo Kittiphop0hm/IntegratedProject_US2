@@ -323,17 +323,14 @@ const retores = ref([])
 const deleteImg = (index) => {
   console.log(index);
 
-  if (Array.isArray(index)) {
-    console.log("Delete all images");
-    index.forEach(i => {
-      if (images.value[i] !== "deleted") {
-        imageReadyDeletes.value.push({ index: i, value: images.value[i] });
-        images.value[i] = "deleted";
-        imageFile.value[i] = "deleted";
+    if(Array.isArray(index)){
+      console.log("Delete all images");
+      for (let i = 0; i < index.length; i++) {
+        imageReadyDeletes.value.push(index[i]);
+        images.value.splice(i, 1, "deleted");   
       }
-    });
-    return;
-  }
+      return
+    }
 
   if (index < 0 || index >= images.value.length) return;
 
@@ -349,6 +346,8 @@ const deleteImg = (index) => {
     imageFile.value[index] = "deleted";
     console.log("Deleted:", images.value, imageReadyDeletes.value);
   } else {
+    console.log(index);
+    
     const deletedIndex = retores.value.findIndex(item => item.index === index);
     if (deletedIndex !== -1) {
       const restored = retores.value[deletedIndex].value;
