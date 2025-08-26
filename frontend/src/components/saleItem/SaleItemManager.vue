@@ -5,6 +5,7 @@ import { getItems } from "../../libs/fetchUtil.js";
 import { useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
+import SearchComponent from "../Search.vue"; 
 
 const route = useRoute();
 const saleItem = ref([]);
@@ -14,16 +15,18 @@ let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
 
-// Updated filter states
+// Updated filter states - เพิ่ม searchKeyword
 const filterBrandSession = sessionStorage.getItem("filterBrand");
 const directionSession = sessionStorage.getItem("direction");
 const filterPriceSession = sessionStorage.getItem("filterPrice");
 const filterStorageSizeSession = sessionStorage.getItem("filterStorageSize");
+const searchKeywordSession = sessionStorage.getItem("searchKeyword");
 
 const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
 const directionR = ref(directionSession ? directionSession : '');
 const filterPriceR = ref(filterPriceSession ? JSON.parse(filterPriceSession) : null);
 const filterStorageSizeR = ref(filterStorageSizeSession ? JSON.parse(filterStorageSizeSession) : []);
+const searchKeywordR = ref(searchKeywordSession ? searchKeywordSession : ''); // เพิ่ม search keyword
 const fieldR = ref('');
 
 const pageNumberSession = sessionStorage.getItem("pageNumber");
@@ -72,13 +75,17 @@ const computedPageNumberArr = computed(() => {
   return arr;
 });
 
-// Build query parameters helper function
 const buildQueryParams = () => {
   const params = new URLSearchParams();
   
   // Add pagination
   params.append('page', pageNumber.value);
   params.append('size', pageSize.value);
+  
+  // Add search keyword (เพิ่มตรงนี้)
+  if (searchKeywordR.value && searchKeywordR.value.trim()) {
+    params.append('searchKeyWord', searchKeywordR.value.trim());
+  }
   
   // Add brand filter
   if (filterBrandR.value && filterBrandR.value.length > 0) {
@@ -88,16 +95,16 @@ const buildQueryParams = () => {
   // Add price filter
   if (filterPriceR.value) {
     if (filterPriceR.value.min !== null && filterPriceR.value.min !== undefined) {
-      params.append('minPrice', filterPriceR.value.min);
+      params.append('filterPriceLower', filterPriceR.value.min);
     }
     if (filterPriceR.value.max !== null && filterPriceR.value.max !== undefined) {
-      params.append('maxPrice', filterPriceR.value.max);
+      params.append('filterPriceUpper', filterPriceR.value.max);
     }
   }
   
   // Add storage size filter
   if (filterStorageSizeR.value && filterStorageSizeR.value.length > 0) {
-    params.append('filterStorageSizes', filterStorageSizeR.value.join(','));
+    params.append('filterStorages', filterStorageSizeR.value.join(','));
   }
   
   // Add sorting
@@ -131,11 +138,13 @@ watch([pageSize, pageNumber], () => {
   fetchData();
 });
 
-watch([filterBrandR, directionR, filterPriceR, filterStorageSizeR], () => {
+// เพิ่ม searchKeywordR ใน watch
+watch([filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeywordR], () => {
   sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
   sessionStorage.setItem("direction", directionR.value);
   sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
   sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSizeR.value));
+  sessionStorage.setItem("searchKeyword", searchKeywordR.value); 
   console.log("Filters changed, resetting to page 0");
   pageNumber.value = 0;
 }, { deep: true });
@@ -161,7 +170,6 @@ const filterAndSortSaleItem = async (filterBrand, direction, field, filters = {}
   directionR.value = direction || '';
   fieldR.value = field || '';
   
-  // Update additional filters from the new filter component
   if (filters.brands !== undefined) {
     filterBrandR.value = filters.brands || [];
   }
@@ -183,9 +191,20 @@ const fecthItemFromPage = async(index) => {
   pageNumber.value = index - 1;
   await fetchData();
 };
+
+
+const handleSearch = (keyword) => {
+  console.log("Search triggered with keyword:", keyword);
+  searchKeywordR.value = keyword;
+  pageNumber.value = 0;
+  fetchData();
+};
 </script>
 
 <template>
+ 
+  <SearchComponent @search="handleSearch" />
+
   <div
     v-show="
       route.query.alertAdd || route.query.alertDelete || route.query.alert404 || route.query.alertAddUser
