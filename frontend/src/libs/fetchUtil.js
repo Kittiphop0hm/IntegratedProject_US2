@@ -216,7 +216,10 @@ async function getItems(url) {
           method: "POST"
         });
       const items = await res.json();
-      return items;
+      return {
+        data:items,
+        status: res.status
+      }
       } catch (error) {
         throw new Error("can not add your item");
       }

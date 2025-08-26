@@ -12,6 +12,7 @@ onMounted(async () => {
     result.value = await verifyEmail(
       `${import.meta.env.VITE_APP_URL}/v2/users/verify-email?token=${token}`
     );
+    console.log(result.value.status);
     console.log("Email verification result:", result.value);
   } catch (err) {
     console.error("Error fetching sale items:", err);
@@ -30,7 +31,7 @@ onMounted(async () => {
          </div>
          </div>
     </div>
-    <div v-else-if="result">
+    <div v-else-if="result.status === 200">
         <div class="flex flex-col items-center justify-center min-h-screen bg-gray-700">
             <div class="bg-white p-8 rounded shadow-md text-center">
                 <h1 class="text-2xl font-bold mb-4 text-green-600">Email Verified Successfully!</h1>
