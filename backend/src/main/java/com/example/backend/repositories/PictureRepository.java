@@ -10,7 +10,8 @@ import java.util.List;
 public interface PictureRepository extends JpaRepository<Picture, Integer> {
 
     List<Picture> findPictureBySalesId(Integer id);
-
+    List<Picture> findBySalesIdOrderByImageViewOrderAsc(Integer salesId);
     List<Picture> findBySales_Id(Integer salesId);
     Picture findPictureByFileName(String fileName);
+    Picture findBySalesIdAndImageViewOrder(Integer salesId, Integer imageViewOrder);
 }

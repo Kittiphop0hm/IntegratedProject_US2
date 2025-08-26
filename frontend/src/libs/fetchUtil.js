@@ -120,12 +120,12 @@ async function getItems(url) {
       formdata.append("saleItem.model", item.model)
       formdata.append("saleItem.description", item.description)
       formdata.append("saleItem.price", item.price)
-      formdata.append("saleItem.ramGb", item.ramGb)
-      formdata.append("saleItem.screenSizeInch", item.screenSizeInch)
-      formdata.append("saleItem.quantity", item.quantity)
-      formdata.append("saleItem.storageGb", item.storageGb)
-      formdata.append("saleItem.color", item.color)
-      formdata.append("saleItem.brand.id", item.brand.id)
+      formdata.append("saleItem.ramGb", item.ramGb ?? "");
+      formdata.append("saleItem.screenSizeInch", item.screenSizeInch ?? "");
+      formdata.append("saleItem.quantity", item.quantity ?? "");
+      formdata.append("saleItem.storageGb", item.storageGb ?? "");
+      formdata.append("saleItem.color", item.color ?? "");
+      formdata.append("saleItem.brand.id", item.brand.id )
       formdata.append("saleItem.brand.name", item.brand.name)
       for (let i = 0; i < images.length; i++) {
         if (images[i] !== "deleted") {
@@ -159,9 +159,9 @@ async function getItems(url) {
     }
   }
 
-    async function getIamgesBySaleId(url, saleId) {
+    async function getImage(url) {
     try {
-      const data = await fetch(`${url}/${saleId}`)
+      const data = await fetch(url)
       const item = await data.blob()
       return item
     } catch (error) {
@@ -169,4 +169,67 @@ async function getItems(url) {
       throw new Error('can not get your item')
     }
   }
-  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, getIamgesBySaleId, deleteImageResource, editSaleItemAndImage }
+
+  async function register(url, user, files) {
+    try {
+      const formdata = new FormData()
+      if (user.role === "SELLER") {
+        formdata.append("nickName", user.nickname)
+        formdata.append("email", user.email)
+        formdata.append("password", user.password)
+        formdata.append("fullName", user.fullname)
+        formdata.append("userType", user.role)
+        formdata.append("phoneNumber", user.userPhone)
+        formdata.append("bankAccount", user.bankAccount)
+        formdata.append("bankName", user.bankName)
+        formdata.append("cardNumber", user.idCardNumber)
+        formdata.append("cardFrontImage", files[0])
+        formdata.append("cardBackImage", files[1])
+      } else {
+        formdata.append("nickName", user.nickname)
+        formdata.append("email", user.email)
+        formdata.append("password", user.password)
+        formdata.append("fullName", user.fullname)
+        formdata.append("userType", user.role)
+      }
+      const res = await fetch(`${url}`, {
+        method: 'POST',
+        body: formdata
+      })
+      const data = await res.json()
+      return {
+        data,
+        status: res.status,
+        error: res.statusText
+      }
+
+    } catch(err) {
+      console.log(err);
+    }
+
+
+  }
+
+    async function verifyEmail(url) {
+      try {
+        const res = await fetch(url, {
+          method: "POST"
+        });
+      const items = await res.json();
+      return items;
+      } catch (error) {
+        throw new Error("can not add your item");
+      }
+    }
+  export {
+    verifyEmail, imageUrlToFileObject,
+    getItems,
+    getItemById,
+    deleteItemById,
+    addItem,
+    editItem,
+    addSaleItemAndImage,
+    deleteImageResource,
+    editSaleItemAndImage,
+    register,
+  };

@@ -26,6 +26,7 @@ public class FileController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body("File uploaded " + file.getOriginalFilename());
 //    }
 
+
     @GetMapping("/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
