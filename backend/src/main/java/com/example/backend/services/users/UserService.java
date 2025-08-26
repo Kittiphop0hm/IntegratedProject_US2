@@ -44,7 +44,7 @@ public class UserService {
             user.setIsActive(false);
             user.setUserType(user.getUserType().toUpperCase());
             User addUser = repository.save(user);
-            entityManager.flush();
+            entityManager.flush();//เพิ่ม
             userFileService.store(cardImageFront, addUser.getId(), "FRONT");
             userFileService.store(cardImageBack, addUser.getId(), "BACK");
             entityManager.refresh(addUser);
