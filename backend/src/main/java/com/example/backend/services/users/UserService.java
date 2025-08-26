@@ -7,6 +7,7 @@ import com.example.backend.repositories.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,71 +39,86 @@ public class UserService {
     @Transactional
     public ResponseUserDto createUser(RegisterFormDto userForm, MultipartFile cardImageFront, MultipartFile cardImageBack) {
 
-        if (userForm.getUserType().toUpperCase().equals("SELLER")) {
-            // ตรวจสอบอีเมลซ้ำ
-            if (repository.existsUserByEmail(userForm.getEmail())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
-            }
-            User user = modelMapper.map(userForm, User.class);
-            user.setIsActive(false);
-            user.setUserType(user.getUserType().toUpperCase());
+        try {
+            if (userForm.getUserType().toUpperCase().equals("SELLER")) {
+                // ตรวจสอบอีเมลซ้ำ
+                if (repository.existsUserByEmail(userForm.getEmail())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
+                }
 
-            // บันทึก user และให้แน่ใจว่าถูก commit แล้ว
-            User addUser = repository.save(user);
-            repository.flush(); // ใช้ repository.flush() แทน entityManager.flush()
+                // สร้าง User object
+                User user = modelMapper.map(userForm, User.class);
+                user.setIsActive(false);
+                user.setUserType(user.getUserType().toUpperCase());
 
-            // ตรวจสอบว่า user ถูกบันทึกพร้อม ID ที่ถูกต้องแล้ว
-            if (addUser.getId() == null) {
-                throw new RuntimeException("User ID is null after save operation");
-            }
+                // บันทึก user และ commit transaction ทันที
+                User addUser = repository.saveAndFlush(user); // ใช้ saveAndFlush()
 
-            // Debug logging (สามารถลบออกได้หลังจากแก้ไขแล้ว)
-            System.out.println("กำลังจะบันทึกไฟล์สำหรับ user ID: " + addUser.getId());
-            System.out.println("User มีอยู่ในฐานข้อมูล: " + repository.existsById(addUser.getId()));
+                // ตรวจสอบว่า user ถูกบันทึกพร้อม ID ที่ถูกต้องแล้ว
+                if (addUser.getId() == null) {
+                    throw new RuntimeException("User ID is null after save operation");
+                }
 
-            try {
+                // รอสักครู่เพื่อให้แน่ใจว่า database ได้รับข้อมูลแล้ว
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+
+                // Debug logging
+                System.out.println("กำลังจะบันทึกไฟล์สำหรับ user ID: " + addUser.getId());
+                System.out.println("User มีอยู่ในฐานข้อมูล: " + repository.existsById(addUser.getId()));
+
                 // ตอนนี้ค่อยเก็บไฟล์
                 userFileService.store(cardImageFront, addUser.getId(), "FRONT");
                 userFileService.store(cardImageBack, addUser.getId(), "BACK");
-            } catch (Exception e) {
-                System.err.println("Error storing files for user ID: " + addUser.getId());
-                e.printStackTrace();
-                throw e; // Re-throw เพื่อให้ transaction rollback
+
+                // Refresh หลังจากเก็บไฟล์เสร็จแล้ว
+                entityManager.refresh(addUser);
+
+                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token
+                User checkUser = repository.findUserByEmail(userForm.getEmail());
+                String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
+                emailService.sendEmail(userForm.getEmail(), token);
+
+                return modelMapper.map(addUser, ResponseUserDto.class);
+
+            } else {
+                // กรณี UserType ไม่ใช่ SELLER
+                User user = modelMapper.map(userForm, User.class);
+                user.setIsActive(false);
+                user.setUserType(user.getUserType().toUpperCase());
+
+                // บันทึก user
+                User addUser = repository.saveAndFlush(user); // ใช้ saveAndFlush()
+
+                // ตรวจสอบ ID
+                if (addUser.getId() == null) {
+                    throw new RuntimeException("User ID is null after save operation");
+                }
+
+                entityManager.refresh(addUser);
+
+                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token
+                User checkUser = repository.findUserByEmail(userForm.getEmail());
+                String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
+                emailService.sendEmail(userForm.getEmail(), token);
+
+                return modelMapper.map(addUser, ResponseUserDto.class);
             }
 
-            // Refresh เพื่อให้แน่ใจว่าได้ข้อมูลล่าสุด
-            entityManager.refresh(addUser);
-
-            // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token
-            User checkUser = repository.findUserByEmail(userForm.getEmail());
-            String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
-            emailService.sendEmail(userForm.getEmail(), token);
-
-            return modelMapper.map(addUser, ResponseUserDto.class);
-
-        } else {
-            // กรณี UserType ไม่ใช่ SELLER
-            User user = modelMapper.map(userForm, User.class);
-            user.setIsActive(false);
-            user.setUserType(user.getUserType().toUpperCase());
-
-            // บันทึก user
-            User addUser = repository.save(user);
-            repository.flush(); // ใช้ repository.flush()
-
-            // ตรวจสอบ ID
-            if (addUser.getId() == null) {
-                throw new RuntimeException("User ID is null after save operation");
-            }
-
-            entityManager.refresh(addUser);
-
-            // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token
-            User checkUser = repository.findUserByEmail(userForm.getEmail());
-            String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
-            emailService.sendEmail(userForm.getEmail(), token);
-
-            return modelMapper.map(addUser, ResponseUserDto.class);
+        } catch (DataIntegrityViolationException e) {
+            System.err.println("Database constraint violation: " + e.getMessage());
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ไม่สามารถสร้างผู้ใช้ได้ เนื่องจากข้อมูลไม่ถูกต้อง");
+        } catch (ResponseStatusException e) {
+            // Re-throw ResponseStatusException ที่เรา throw เอง
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Unexpected error during user creation: " + e.getMessage());
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "เกิดข้อผิดพลาดในระบบ");
         }
     }
 
