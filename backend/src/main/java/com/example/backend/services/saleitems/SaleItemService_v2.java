@@ -108,7 +108,7 @@ public class SaleItemService_v2 {
             imageInfos.forEach(
                     imageInfo -> {
                         Picture picCheck  = pictureRepository.findBySalesIdAndImageViewOrder(id, imageInfo.getOrder());
-                        if(!picCheck.getFileName().contains(id.toString())) {
+                        if(picCheck != null && !picCheck.getFileName().contains(id.toString())) {
                             String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
                             String extension = originalName.substring(originalName.lastIndexOf("."));
                             String oldName = imageInfo.getOrder()+"" + extension;

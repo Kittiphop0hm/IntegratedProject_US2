@@ -315,23 +315,49 @@ const isUpdatedImages = computed(() => {
 console.log("isUpdated: " + isUpdated.value);
 console.log("isUpdatedImages: " + isUpdatedImages.value);
 
+
 const imageReadyDeletes = ref([]);
+const retores = ref([])
+
+
 const deleteImg = (index) => {
-  if(Array.isArray(index)){
+  console.log(index);
+
+  if (Array.isArray(index)) {
     console.log("Delete all images");
-    for (let i = 0; i < index.length; i++) {
-      imageReadyDeletes.value.push(index[i]);
-      images.value.splice(i, 1, "deleted");   
-    }
-    return
+    index.forEach(i => {
+      if (images.value[i] !== "deleted") {
+        imageReadyDeletes.value.push({ index: i, value: images.value[i] });
+        images.value[i] = "deleted";
+        imageFile.value[i] = "deleted";
+      }
+    });
+    return;
   }
+
   if (index < 0 || index >= images.value.length) return;
-  if (images.value.length > 0) {
-    if (images.value[index] !== "deleted") imageReadyDeletes.value.push(images.value[index]);
-    images.value.splice(index, 1, "deleted");
-    imageFile.value.splice(index, 1, "deleted");
-    console.log(imageFile.value);
-    console.log(imageReadyDeletes.value);
+
+  const img = images.value[index];
+  console.log("Current img:", img);
+  console.log("imageFile:", imageFile.value);
+  console.log("imageReadyDeletes:", imageReadyDeletes.value);
+
+  if (img !== "deleted") {
+    retores.value.push({ index: index, value: img })
+    imageReadyDeletes.value.push(img);
+    images.value[index] = "deleted";
+    imageFile.value[index] = "deleted";
+    console.log("Deleted:", images.value, imageReadyDeletes.value);
+  } else {
+    const deletedIndex = retores.value.findIndex(item => item.index === index);
+    if (deletedIndex !== -1) {
+      const restored = retores.value[deletedIndex].value;
+      images.value[index] = restored;
+      imageFile.value[index] = restored;
+      retores.value.splice(deletedIndex, 1)
+      imageReadyDeletes.value.splice(deletedIndex, 1);
+      console.log("Restored:", images.value);
+    }
   }
 };
 
@@ -369,7 +395,7 @@ const updateImagesStatus = () => {
   }
   // console.log("imageReadyDeletes.value:", imageReadyDeletes.value);
   for (let i = 0; i < imageReadyDeletes.value.length; i++) {
-    console.log("imageReadyDeletes.value before add status:", imageReadyDeletes.value[i]);
+    console.log("imageReadyDeletes.value before add status:", imageReadyDeletes.value[i].value);
     imageReadyDeletes.value[i].status = "DELETE";
     // console.log("imageReadyDeletes.value after add status:", imageReadyDeletes.value[i]);
   }
