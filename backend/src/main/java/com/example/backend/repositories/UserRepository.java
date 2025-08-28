@@ -5,5 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
     public boolean existsUserByEmail(String email);
+    public boolean existsUserByPassword(String Password);
     public User findUserByEmail(String email);
 }

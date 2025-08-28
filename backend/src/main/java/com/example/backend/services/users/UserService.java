@@ -1,6 +1,7 @@
 package com.example.backend.services.users;
 
 import com.example.backend.dtos.users.RegisterFormDto;
+import com.example.backend.dtos.users.ResponseTokenDto;
 import com.example.backend.dtos.users.ResponseUserDto;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
@@ -9,12 +10,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -30,11 +33,16 @@ public class UserService {
     private EmailService emailService;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    public PasswordEncoder passwordEncoder;
+
 
     public ResponseUserDto findByEmail(String email) {
         User user = repository.findUserByEmail(email);
         return modelMapper.map(user, ResponseUserDto.class);
     }
+
+
 
     @Transactional
     public ResponseUserDto createUser(RegisterFormDto userForm, MultipartFile cardImageFront, MultipartFile cardImageBack) {
@@ -48,6 +56,7 @@ public class UserService {
 
                 // สร้าง User object
                 User user = modelMapper.map(userForm, User.class);
+                user.setPassword(encodePassword(userForm.getPassword()));
                 user.setIsActive(false);
                 user.setUserType(user.getUserType().toUpperCase());
 
@@ -55,16 +64,16 @@ public class UserService {
                 User addUser = repository.saveAndFlush(user); // ใช้ saveAndFlush()
 
                 // ตรวจสอบว่า user ถูกบันทึกพร้อม ID ที่ถูกต้องแล้ว
-                if (addUser.getId() == null) {
-                    throw new RuntimeException("User ID is null after save operation");
-                }
+//                if (addUser.getId() == null) {
+//                    throw new RuntimeException("User ID is null after save operation");
+//                }
 
                 // รอสักครู่เพื่อให้แน่ใจว่า database ได้รับข้อมูลแล้ว
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    Thread.currentThread().interrupt();
+//                }
 
                 // Debug logging
                 System.out.println("กำลังจะบันทึกไฟล์สำหรับ user ID: " + addUser.getId());
@@ -88,6 +97,7 @@ public class UserService {
                 // กรณี UserType ไม่ใช่ SELLER
                 User user = modelMapper.map(userForm, User.class);
                 user.setIsActive(false);
+                user.setPassword(encodePassword(userForm.getPassword()));
                 user.setUserType(user.getUserType().toUpperCase());
 
                 // บันทึก user
@@ -133,5 +143,26 @@ public class UserService {
             return modelMapper.map(user, ResponseUserDto.class);
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid verification token");
+    }
+
+    public String encodePassword(String rawPassword){
+        return passwordEncoder.encode(rawPassword);
+    }
+
+    public boolean checkPassword(String raw , String encoded){
+        return passwordEncoder.matches(raw, encoded);
+    }
+
+    public ResponseTokenDto checkLogin(String email, String rawPassword) {
+
+        if(repository.existsUserByEmail(email)) {
+            User user = repository.findUserByEmail(email);
+            if(checkPassword(rawPassword, user.getPassword())) {
+                String access_token = "String";
+                String refresh_token = "String";
+                return modelMapper.map(Map.of("access_token", access_token, "refresh_token", refresh_token),ResponseTokenDto.class );
+            }
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
     }
 }

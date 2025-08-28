@@ -1,8 +1,8 @@
 <script setup>
 import { computed, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
-
-const emits = defineEmits(["register"]);
+import AlertMessageModel from "../model/AlertMessageModel.vue";
+const emits = defineEmits(["register" , "login"]);
 const route = useRoute();
 const pathName = ref("");
 const props = defineProps({
@@ -10,6 +10,10 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  is401: {
+    type: Boolean,
+    required: true 
+  }
 });
 
 watchEffect(() => {
@@ -19,6 +23,7 @@ watchEffect(() => {
     pathName.value = "Login";
   }
 });
+
 
 const validateErrorEmail = ref("");
 const validateEmail = (value) => {
@@ -63,6 +68,11 @@ const userFormat = ref({
   bankName: "",
   idCardNumber: "",
   files: [],
+});
+
+const loginFormat = ref({
+  email: "",
+  password: "",
 });
 const isSeller = ref(false);
 const inputForUserRole = () =>
@@ -477,13 +487,22 @@ watchEffect(() => {
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
-
+    <div v-show="props.is401" class="itbms-message mb-3">
+    <AlertMessageModel :isSuccess="false">
+      <template #message>
+        <p class="text-red-400">
+          Email or Password is Incorrect.
+        </p>
+      </template>
+    </AlertMessageModel>
+      </div>
       <form class="space-y-6">
         <div class="space-y-1">
           <label for="email" class="block text-sm font-medium text-gray-700"
             >Email</label
           >
           <input
+            v-model="loginFormat.email"
             id="email"
             type="email"
             placeholder="Enter your email"
@@ -496,7 +515,7 @@ watchEffect(() => {
             >Password</label
           >
           <input
-            v-model.trim="userFormat.password"
+            v-model="loginFormat.password"
             @blur="validatePassword(userFormat.password)"
             id="password"
             :type="isShowPassword ? 'text' : 'password'"
@@ -513,10 +532,10 @@ watchEffect(() => {
           class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col"
         >
           <button
-            disabled=""
             type="submit"
             class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1"
-          >
+           @click="$emit('login',$event, loginFormat)"
+            >
             Submit
           </button>
           <router-link

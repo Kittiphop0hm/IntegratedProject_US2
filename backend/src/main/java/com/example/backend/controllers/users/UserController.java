@@ -1,8 +1,6 @@
 package com.example.backend.controllers.users;
 
-import com.example.backend.dtos.users.RegisterFormDto;
-import com.example.backend.dtos.users.ResponseUserDto;
-import com.example.backend.dtos.users.ResponseUserPictureDto;
+import com.example.backend.dtos.users.*;
 import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.UserFileService;
 import com.example.backend.services.users.UserService;
@@ -46,5 +44,11 @@ public class UserController {
         String email = jwtService.extractEmail(token);
         ResponseUserDto user = userService.verifyEmail(userId, email);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/authentications")
+    public ResponseEntity<ResponseTokenDto> authenticateUser(@RequestBody RequestLoginDto requestLoginDto) {
+        System.out.println("authentication called");
+        return ResponseEntity.ok(userService.checkLogin(requestLoginDto.getEmail(), requestLoginDto.getPassword()));
     }
 }
