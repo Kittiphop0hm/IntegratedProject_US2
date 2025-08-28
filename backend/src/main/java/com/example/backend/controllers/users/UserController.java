@@ -5,6 +5,7 @@ import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.UserFileService;
 import com.example.backend.services.users.UserService;
 import io.jsonwebtoken.Claims;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class UserController {
     }
 
     @PostMapping("/authentications")
-    public ResponseEntity<ResponseTokenDto> authenticateUser(@RequestBody RequestLoginDto requestLoginDto) {
+    public ResponseEntity<ResponseTokenDto> authenticateUser(@Valid @RequestBody RequestLoginDto requestLoginDto) {
         System.out.println("authentication called");
         return ResponseEntity.ok(userService.checkLogin(requestLoginDto.getEmail(), requestLoginDto.getPassword()));
     }
