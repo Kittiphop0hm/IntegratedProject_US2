@@ -502,7 +502,7 @@ const enableLoginButton = computed(() => {
     <AlertMessageModel :isSuccess="false">
       <template #message>
         <p class="text-red-400">
-          {{props.is401 ? 'Email or Password is Incorrect.' : 'There is a problem. Please try again later.'}}
+          {{props.is401 || props.is400 ? 'Email or Password is Incorrect.' : 'There is a problem. Please try again later.'}}
         </p>
       </template>
     </AlertMessageModel>
