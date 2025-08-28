@@ -17,6 +17,7 @@ const roles = ref([
   },
 ]);
 const is401 = ref(false)
+const is400 = ref(false)
 const registerForm = async (event, user) => {
   event.preventDefault();
   console.log(user);
@@ -47,9 +48,15 @@ const loginForm = async (event, user) => {
       `${import.meta.env.VITE_APP_URL}/v2/users/authentications`,
       user
     );
-    console.log(loginUser.value);
+    console.log(loginUser.value.status);
+    if (loginUser.value.status === 400) {
+      is400.value = true
+      is401.value = false
+    }
+    
     if(loginUser.value.status === 401){
       is401.value = true;
+      is400.value = false
     }
 
   } catch (err) {
@@ -63,6 +70,7 @@ const loginForm = async (event, user) => {
   <RegisterAndLogin
     :roles="roles"
     :is401="is401"
+    :is400="is400"
     @register="registerForm"
     @login="loginForm"
   ></RegisterAndLogin>

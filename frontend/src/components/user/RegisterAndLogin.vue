@@ -13,8 +13,13 @@ const props = defineProps({
   is401: {
     type: Boolean,
     required: true 
+  },
+  is400: {
+    type: Boolean,
+    required: true 
   }
 });
+
 
 watchEffect(() => {
   if (route.name === "Register") {
@@ -185,6 +190,12 @@ watchEffect(() => {
   console.log(enableSaveButtonForSeller.value);
   console.log(typeof userFormat.value.idCardNumber);
 });
+
+const enableLoginButton = computed(() => {
+  const isEmailFormat = loginFormat.value.email.includes('@')
+  const passwordIsNotEmpty = loginFormat.value || loginFormat.value.password.length > 0
+  return isEmailFormat && passwordIsNotEmpty
+})
 </script>
 
 <template>
@@ -487,15 +498,16 @@ watchEffect(() => {
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
-    <div v-show="props.is401" class="itbms-message mb-3">
+    <div v-show="props.is401 || props.is400" class="itbms-message mb-3">
     <AlertMessageModel :isSuccess="false">
       <template #message>
         <p class="text-red-400">
-          Email or Password is Incorrect.
+          {{props.is401 ? 'Email or Password is Incorrect.' : 'There is a problem. Please try again later.'}}
         </p>
       </template>
     </AlertMessageModel>
       </div>
+
       <form class="space-y-6">
         <div class="space-y-1">
           <label for="email" class="block text-sm font-medium text-gray-700"
@@ -532,8 +544,13 @@ watchEffect(() => {
           class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col"
         >
           <button
+            :disabled="!enableLoginButton"
             type="submit"
-            class="w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1"
+            :class="
+              enableLoginButton
+                ? 'w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1'
+                : 'w-full mx-1 flex-1 bg-gray-600 cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg shadow-lg max-md:my-1'
+            "
            @click="$emit('login',$event, loginFormat)"
             >
             Submit
