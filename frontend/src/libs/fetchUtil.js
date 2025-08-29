@@ -209,4 +209,30 @@ async function getItems(url) {
 
 
   }
-  export { imageUrlToFileObject, getItems, getItemById, deleteItemById, addItem, editItem, addSaleItemAndImage, deleteImageResource, editSaleItemAndImage, register }
+
+    async function verifyEmail(url) {
+      try {
+        const res = await fetch(url, {
+          method: "POST"
+        });
+      const items = await res.json();
+      return {
+        data:items,
+        status: res.status
+      }
+      } catch (error) {
+        throw new Error("can not add your item");
+      }
+    }
+  export {
+    verifyEmail, imageUrlToFileObject,
+    getItems,
+    getItemById,
+    deleteItemById,
+    addItem,
+    editItem,
+    addSaleItemAndImage,
+    deleteImageResource,
+    editSaleItemAndImage,
+    register,
+  };
