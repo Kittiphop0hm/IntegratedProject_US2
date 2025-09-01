@@ -514,7 +514,7 @@ const enableLoginButton = computed(() => {
             >Email</label
           >
           <input
-            v-model="loginFormat.email"
+            v-model.trim="loginFormat.email"
             id="email"
             type="text"
             placeholder="Enter your email"

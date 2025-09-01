@@ -438,7 +438,6 @@ async function submitForm() {
         updatedImagesObject[index].imageViewOrder = index + 1;
         console.log("412 Updated imageViewOrder:", updatedImagesObject[index]);
       }
-      
     }
     const updatedImagesArr = Object.values(updatedImagesObject);
 
