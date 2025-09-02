@@ -89,21 +89,6 @@ public class SaleItemService_v1 {
         return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
     }
 
-    public void checkValues(SaleItem item) {
-        if (item.getRamGb() == null || item.getRamGb() <= 0) {
-            item.setRamGb(null);
-        }
-        if (item.getStorageGb() == null || item.getStorageGb() <= 0) {
-            item.setStorageGb(null);
-        }
-        if (item.getColor() == null || item.getColor().isEmpty() || item.getColor().isBlank()) {
-            item.setColor(null);
-        }
-        if (item.getScreenSizeInch() == null || item.getScreenSizeInch().doubleValue() <= 0) {
-            item.setScreenSizeInch(null);
-        }
-    }
-
     public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(
             String searchKeyword,
             List<String> filterBrands,

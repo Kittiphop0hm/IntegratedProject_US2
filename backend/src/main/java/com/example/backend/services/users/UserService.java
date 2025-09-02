@@ -42,13 +42,11 @@ public class UserService {
         return modelMapper.map(user, ResponseUserDto.class);
     }
 
-
-
     @Transactional
     public ResponseUserDto createUser(RegisterFormDto userForm, MultipartFile cardImageFront, MultipartFile cardImageBack) {
 
         try {
-            if (userForm.getUserType().toUpperCase().equals("SELLER")) {
+            if (userForm.getUserType().equalsIgnoreCase("SELLER")) {
                 // ตรวจสอบอีเมลซ้ำ
                 if (repository.existsUserByEmail(userForm.getEmail())) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
@@ -63,18 +61,6 @@ public class UserService {
                 // บันทึก user และ commit transaction ทันที
                 User addUser = repository.saveAndFlush(user); // ใช้ saveAndFlush()
 
-                // ตรวจสอบว่า user ถูกบันทึกพร้อม ID ที่ถูกต้องแล้ว
-//                if (addUser.getId() == null) {
-//                    throw new RuntimeException("User ID is null after save operation");
-//                }
-
-                // รอสักครู่เพื่อให้แน่ใจว่า database ได้รับข้อมูลแล้ว
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    Thread.currentThread().interrupt();
-//                }
-
                 // Debug logging
                 System.out.println("กำลังจะบันทึกไฟล์สำหรับ user ID: " + addUser.getId());
                 System.out.println("User มีอยู่ในฐานข้อมูล: " + repository.existsById(addUser.getId()));
@@ -86,7 +72,7 @@ public class UserService {
                 // Refresh หลังจากเก็บไฟล์เสร็จแล้ว
                 entityManager.refresh(addUser);
 
-                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token
+                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token (ใช้ method เดิมสำหรับ email verification)
                 User checkUser = repository.findUserByEmail(userForm.getEmail());
                 String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
                 emailService.sendEmail(userForm.getEmail(), token);
@@ -110,7 +96,7 @@ public class UserService {
 
                 entityManager.refresh(addUser);
 
-                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token
+                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token (ใช้ method เดิมสำหรับ email verification)
                 User checkUser = repository.findUserByEmail(userForm.getEmail());
                 String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
                 emailService.sendEmail(userForm.getEmail(), token);
@@ -153,14 +139,20 @@ public class UserService {
         return passwordEncoder.matches(raw, encoded);
     }
 
-    public ResponseTokenDto checkLogin(String email, String rawPassword) {
 
+    public ResponseTokenDto checkLogin(String email, String rawPassword) {
         if(repository.existsUserByEmail(email)) {
             User user = repository.findUserByEmail(email);
             if(checkPassword(rawPassword, user.getPassword())) {
-                String access_token = "String";
-                String refresh_token = "String";
-                return modelMapper.map(Map.of("access_token", access_token, "refresh_token", refresh_token),ResponseTokenDto.class );
+                if (!user.getIsActive()) {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You need to activate your account before signing in.");
+                }
+                String accessToken = jwtService.generateAccessToken(user);
+                String refreshToken = jwtService.generateRefreshToken(user);
+                ResponseTokenDto tokenDto = new ResponseTokenDto();
+                tokenDto.setAccessToken(accessToken);
+                tokenDto.setRefreshToken(refreshToken);
+                return tokenDto;
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");

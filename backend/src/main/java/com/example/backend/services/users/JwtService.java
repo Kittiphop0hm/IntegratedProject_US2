@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -17,9 +16,8 @@ import java.util.Map;
 public class JwtService {
     private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-
-    public String generateJwtToken(Integer userId , String email) {
-        Map<String,Object> claims = new HashMap<>();
+    public String generateJwtToken(Integer userId, String email) {
+        Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("email", email);
 
@@ -27,7 +25,33 @@ public class JwtService {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
-                .signWith(SignatureAlgorithm.HS256,SECRET_KEY)
+                .signWith(SECRET_KEY,SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateAccessToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        System.out.println("jwt: " + user.getNickName());
+        claims.put("id", user.getId());
+        claims.put("email", user.getEmail());
+        claims.put("role", user.getUserType());
+        claims.put("nickname", user.getNickName());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuer("https://intproj24.sit.kmutt.ac.th/us2/")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -39,7 +63,12 @@ public class JwtService {
     }
 
     public Integer extractUserId(String token) {
-        return extractClaims(token).get("userId", Integer.class);
+        Claims claims = extractClaims(token);
+        Integer userId = claims.get("userId", Integer.class);
+        if (userId != null) {
+            return userId;
+        }
+        return claims.get("id", Integer.class);
     }
 
     public String extractEmail(String token) {
