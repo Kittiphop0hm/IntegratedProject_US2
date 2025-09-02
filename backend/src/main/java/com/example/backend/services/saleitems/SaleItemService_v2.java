@@ -89,13 +89,13 @@ public class SaleItemService_v2 {
                             fileService.removeFile(imageInfo.getFileName());
                             break;
                         case "MOVE":
-                            String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
-                            String extension = originalName.substring(originalName.lastIndexOf("."));
-                            String newName = imageInfo.getOrder() + extension;
+//                            String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
+//                            String extension = originalName.substring(originalName.lastIndexOf("."));
+//                            String newName = imageInfo.getOrder() + extension;
                             Picture pic = pictureRepository.findPictureByFileName(imageInfo.getFileName());
-                            fileService.renameFile(imageInfo.getFileName(), newName);
+//                            fileService.renameFile(imageInfo.getFileName(), newName);
                             pic.setImageViewOrder(imageInfo.getOrder());
-                            pic.setFileName(newName);
+//                            pic.setFileName(newName);
                             pictureRepository.save(pic);
                             break;
                         case "NEW":
@@ -105,24 +105,24 @@ public class SaleItemService_v2 {
                 }
 
         );
-            imageInfos.forEach(
-                    imageInfo -> {
-                        Picture picCheck  = pictureRepository.findBySalesIdAndImageViewOrder(id, imageInfo.getOrder());
-                        if(picCheck != null && !picCheck.getFileName().contains(id.toString())) {
-                            String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
-                            String extension = originalName.substring(originalName.lastIndexOf("."));
-                            String oldName = imageInfo.getOrder()+"" + extension;
-                            String newName = id + "." + imageInfo.getOrder() + extension;
-                            Picture pic = pictureRepository.findPictureByFileName(oldName);
-                            fileService.renameFile(oldName, newName);
-                            if(pic != null) {
-                                pic.setFileName(newName);
-                                pictureRepository.save(pic);
-
-                            }
-                        }
-                    }
-            );
+//            imageInfos.forEach(
+//                    imageInfo -> {
+//                        Picture picCheck  = pictureRepository.findBySalesIdAndImageViewOrder(id, imageInfo.getOrder());
+//                        if(picCheck != null && !picCheck.getFileName().contains(id.toString())) {
+//                            String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
+//                            String extension = originalName.substring(originalName.lastIndexOf("."));
+//                            String oldName = imageInfo.getOrder()+"" + extension;
+//                            String newName = id + "." + imageInfo.getOrder() + extension;
+//                            Picture pic = pictureRepository.findPictureByFileName(oldName);
+//                            fileService.renameFile(oldName, newName);
+//                            if(pic != null) {
+//                                pic.setFileName(newName);
+//                                pictureRepository.save(pic);
+//
+//                            }
+//                        }
+//                    }
+//            );
 //        List<Picture> pics = pictureRepository.findBySalesIdOrderByImageViewOrderAsc(id);
 //        List<String> fileNames = pics.stream().map(Picture::getFileName).toList();
 //        for(String fileName : fileNames) {

@@ -197,8 +197,8 @@ watchEffect(() => {
 });
 
 const enableLoginButton = computed(() => {
-  const isEmailFormat = loginFormat.value.email.includes('@')
-  const passwordIsNotEmpty = loginFormat.value || loginFormat.value.password.length > 0
+  const isEmailFormat = loginFormat.value.email.length > 0
+  const passwordIsNotEmpty = loginFormat.value.password.length > 0
   return isEmailFormat && passwordIsNotEmpty
 })
 </script>
@@ -525,9 +525,9 @@ const enableLoginButton = computed(() => {
             >Email</label
           >
           <input
-            v-model="loginFormat.email"
+            v-model.trim="loginFormat.email"
             id="email"
-            type="email"
+            type="text"
             placeholder="Enter your email"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
           />
