@@ -530,7 +530,8 @@ const enableLoginButton = computed(() => {
             type="text"
             placeholder="Enter your email"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
-          />
+            maxlength="50"
+            />
         </div>
 
         <div class="space-y-1">
@@ -542,6 +543,7 @@ const enableLoginButton = computed(() => {
             @blur="validatePassword(userFormat.password)"
             id="password"
             :type="isShowPassword ? 'text' : 'password'"
+            maxlength="14"
             placeholder="Enter your password"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
           />
