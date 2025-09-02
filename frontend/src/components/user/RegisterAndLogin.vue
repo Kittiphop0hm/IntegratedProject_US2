@@ -17,6 +17,11 @@ const props = defineProps({
   is400: {
     type: Boolean,
     required: true 
+  },
+  is403: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 
@@ -498,15 +503,21 @@ const enableLoginButton = computed(() => {
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
-    <div v-show="props.is401 || props.is400" class="itbms-message mb-3">
+    <div v-show="props.is401 || props.is400 || props.is403" class="itbms-message mb-3">
     <AlertMessageModel :isSuccess="false">
       <template #message>
         <p class="text-red-400">
-          {{props.is401 || props.is400 ? 'Email or Password is Incorrect.' : 'There is a problem. Please try again later.'}}
+          {{ 
+            props.is403 
+              ? 'You need to activate your account before signing in.' 
+              : props.is401 || props.is400 
+                ? 'Email or Password is Incorrect.' 
+                : 'There is a problem. Please try again later.' 
+          }}
         </p>
       </template>
     </AlertMessageModel>
-      </div>
+  </div>
 
       <form class="space-y-6">
         <div class="space-y-1">
