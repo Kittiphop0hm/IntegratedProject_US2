@@ -8,6 +8,7 @@ import BrandAddEdit from "@/components/brand/BrandAddEdit.vue";
 import BrandManager from "@/components/brand/BrandManager.vue";
 import RegisterAndLoginManager from "@/components/user/RegisterAndLoginManager.vue";
 import EmailVerification from "@/components/user/EmailVerification.vue";
+import UserProfileManager from "@/components/user/UserProfileManager.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,7 +78,12 @@ const router = createRouter({
       path: "/verify-email",
       name: "EmailVerification",
       component: EmailVerification
-    }
+    },
+    {
+      path: "/profile",
+      name: "UserProfile",
+      component: UserProfileManager
+    },
   ],
 });
 

@@ -3,11 +3,13 @@ package com.example.backend.services.users;
 import com.example.backend.dtos.users.RegisterFormDto;
 import com.example.backend.dtos.users.ResponseTokenDto;
 import com.example.backend.dtos.users.ResponseUserDto;
+import com.example.backend.dtos.users.UserProfileResponseDto;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +42,12 @@ public class UserService {
     public ResponseUserDto findByEmail(String email) {
         User user = repository.findUserByEmail(email);
         return modelMapper.map(user, ResponseUserDto.class);
+    }
+
+    public UserProfileResponseDto findById(Integer id) {
+        User user = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User id: " + id + " not found"));
+        if (!user.getIsActive()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User id: " + id + " is not active");
+        return modelMapper.map(user, UserProfileResponseDto.class);
     }
 
     @Transactional

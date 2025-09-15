@@ -24,9 +24,14 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<ResponseUserPictureDto>> findUserPictureByUserId(@PathVariable Integer userId) {
-        return ResponseEntity.ok(userFileService.findPictureByUserId(userId));
+//    @GetMapping("/{userId}")
+//    public ResponseEntity<List<ResponseUserPictureDto>> findUserPictureByUserId(@PathVariable Integer userId) {
+//        return ResponseEntity.ok(userFileService.findPictureByUserId(userId));
+//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserProfileResponseDto> findUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @GetMapping("")
