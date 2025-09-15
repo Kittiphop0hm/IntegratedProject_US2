@@ -3,27 +3,13 @@ import { useRoute, useRouter } from "vue-router";
 import RegisterAndLogin from "./RegisterAndLogin.vue";
 import { onMounted, ref } from "vue";
 import { register, addItem } from "@/libs/fetchUtil";
+import { decodeJWT } from "@/libs/decodeJWT";
 
 
 const saveTokens = (accessToken, refreshToken, nickname) => {
   sessionStorage.setItem('accessToken', accessToken);
   sessionStorage.setItem('refreshToken', refreshToken);
   sessionStorage.setItem('nickname', nickname);
-};
-
-// ฟังก์ชันสำหรับ decode JWT token
-const decodeJWT = (token) => {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error('Error decoding JWT:', error);
-    return null;
-  }
 };
 
 const router = useRouter();
