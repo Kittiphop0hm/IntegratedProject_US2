@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect, onMounted, computed } from 'vue';
+import { ref, watchEffect, computed } from 'vue';
 import {useRoute} from "vue-router";
 
 const emits = defineEmits(['updateUser'])
@@ -7,10 +7,6 @@ const props = defineProps({
   user: {
     type: Object,
     required: true
-  },
-  userPictureCard: {
-    type: Array,
-    required: false
   },
   isSuccess: {
     type: Boolean,
@@ -158,13 +154,6 @@ const enableEditBtn = computed(() => {
                 </div>
               </div>
 
-              <div>
-                <h1 class="font-semibold">Password</h1>
-                <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">xxx</p>
-                </div>
-              </div>
-
               <div v-if="currentUser?.phoneNumber">
                 <h1 class="font-semibold">Phonenumber</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
@@ -190,14 +179,6 @@ const enableEditBtn = computed(() => {
                 <h1 class="font-semibold">User type</h1>
                 <div class="flex justify-between items-center bg-gray-200 p-3 rounded-lg">
                   <p class="max-[450px]:text-sm">{{ currentUser?.userType}}</p>
-                </div>
-              </div>
-
-              <div v-if="userPictureCard.length > 0">
-                <h1 class="font-semibold">National ID pictures</h1>
-                <div class="flex flex-col justify-center bg-gray-200 p-3 rounded-lg gap-y-2">
-                  <p class="max-[450px]:text-sm"><span class="font-semibold">Front:</span> {{ userPictureCard[0]?.filename }}</p>
-                  <p class="max-[450px]:text-sm"><span class="font-semibold">Back:</span> {{ userPictureCard[1]?.filename }}</p>
                 </div>
               </div>
             </div>

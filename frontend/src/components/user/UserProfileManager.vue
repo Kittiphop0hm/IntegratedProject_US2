@@ -9,14 +9,11 @@ const router = useRouter()
 const accessToken = sessionStorage.getItem('accessToken')
 const getUser = decodeJWT(accessToken)
 const user = ref({})
-const userPictureCard = ref([])
 const maskPhone = ref('')
 
 onMounted(async () => {
   try {
     const data = await getItemById(`${import.meta.env.VITE_APP_URL}/v2/users`, getUser.id)
-    const pictures = await getItemById(`${import.meta.env.VITE_APP_URL}/v2/users/picture`, getUser.id)
-    userPictureCard.value = pictures
     user.value = data
     maskPhone.value = maskPhoneNumber(user.value.phoneNumber)
   } catch (error) {
@@ -64,7 +61,12 @@ const editUser = async (currentUser) => {
 </script>
 
 <template>
-  <UserProfile :user="user" :userPictureCard="userPictureCard" :maskPhoneNumber="maskPhone" :isSuccess="isSuccess" :isError="isError" @updateUser="editUser"  />
+  <UserProfile 
+  :user="user" 
+  :maskPhoneNumber="maskPhone" 
+  :isSuccess="isSuccess" 
+  :isError="isError"
+  @updateUser="editUser" />
 </template>
 
 <style scoped>
