@@ -24,9 +24,14 @@ public class UserController {
     @Autowired
     private JwtService jwtService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/picture/{userId}")
     public ResponseEntity<List<ResponseUserPictureDto>> findUserPictureByUserId(@PathVariable Integer userId) {
         return ResponseEntity.ok(userFileService.findPictureByUserId(userId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserProfileResponseDto> findUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.findById(id));
     }
 
     @GetMapping("")
@@ -51,5 +56,10 @@ public class UserController {
     public ResponseEntity<ResponseTokenDto> authenticateUser(@Valid @RequestBody RequestLoginDto requestLoginDto) {
         System.out.println("authentication called");
         return ResponseEntity.ok(userService.checkLogin(requestLoginDto.getEmail(), requestLoginDto.getPassword()));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserProfileResponseDto> updateUserProfile(@PathVariable Integer id, @RequestBody UserUpdateFormatDto userFormat) {
+        return ResponseEntity.ok(userService.updateUser(id, userFormat));
     }
 }

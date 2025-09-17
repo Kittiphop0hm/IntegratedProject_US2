@@ -51,14 +51,21 @@ onMounted(() => {
         
        
         <div class="flex items-center mx-3">
-
           <router-link :to="{name: 'Register'}" class="cursor-pointer flex justify-center items-center">
             <button class="cursor-pointer hover:opacity-80">
                 <svg class="fill-current hover:opacity-80" xmlns="http://www.w3.org/2000/svg" width="28" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path d="M12 5.9a2.1 2.1 0 1 1 0 4.2a2.1 2.1 0 0 1 0-4.2m0 9c2.97 0 6.1 1.46 6.1 2.1v1.1H5.9V17c0-.64 3.13-2.1 6.1-2.1M12 4C9.79 4 8 5.79 8 8s1.79 4 4 4s4-1.79 4-4s-1.79-4-4-4m0 9c-2.67 0-8 1.34-8 4v2c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-2c0-2.66-5.33-4-8-4"/></svg>
             </button>
           </router-link>
           <span v-if="nickname" class="mr-3 text-sm text-gray-800 pl-3 font-bold">
-             {{ nickname }}
+            <div class="dropdown dropdown-center">
+              <div tabindex="0" role="button" class="btn m-1">
+                {{nickname}}
+              </div>
+              <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                <li><router-link :to="{name: 'UserProfile'}">Profile</router-link></li>
+                <li><a>Logout</a></li>
+              </ul>
+            </div>
           </span>
         </div>
       </div>
