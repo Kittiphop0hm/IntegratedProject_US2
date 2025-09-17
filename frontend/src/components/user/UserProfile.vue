@@ -172,7 +172,7 @@ const enableEditBtn = computed(() => {
               </div>
 
               <div>
-                <h1 class="font-semibold">Pictures</h1>
+                <h1 class="font-semibold">National ID pictures</h1>
                 <div class="flex flex-col justify-center bg-gray-200 p-3 rounded-lg gap-y-2">
                   <p class="max-[450px]:text-sm"><span class="font-semibold">Front:</span> {{ userPictureCard[0]?.filename }}</p>
                   <p class="max-[450px]:text-sm"><span class="font-semibold">Back:</span> {{ userPictureCard[1]?.filename }}</p>
