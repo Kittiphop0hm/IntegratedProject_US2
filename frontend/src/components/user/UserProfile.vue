@@ -165,35 +165,35 @@ const enableEditBtn = computed(() => {
                 </div>
               </div>
 
-              <div>
+              <div v-if="currentUser?.phoneNumber">
                 <h1 class="font-semibold">Phonenumber</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="max-[450px]:text-sm">{{ maskPhoneNumber }}</p>
                 </div>
               </div>
 
-              <div>
+              <div v-if="currentUser?.bankAccount">
                 <h1 class="font-semibold">Bankaccount</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="max-[450px]:text-sm">{{ currentUser?.bankAccount ? currentUser?.bankAccount : "-" }}</p>
                 </div>
               </div>
 
-              <div>
+              <div v-if="currentUser?.bankName">
                 <h1 class="font-semibold">Bankname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="max-[450px]:text-sm">{{ currentUser?.bankName ? currentUser?.bankName : "-" }}</p>
                 </div>
               </div>
 
-              <div>
+              <div v-if="currentUser?.userType">
                 <h1 class="font-semibold">User type</h1>
                 <div class="flex justify-between items-center bg-gray-200 p-3 rounded-lg">
                   <p class="max-[450px]:text-sm">{{ currentUser?.userType}}</p>
                 </div>
               </div>
 
-              <div>
+              <div v-if="userPictureCard.length > 0">
                 <h1 class="font-semibold">National ID pictures</h1>
                 <div class="flex flex-col justify-center bg-gray-200 p-3 rounded-lg gap-y-2">
                   <p class="max-[450px]:text-sm"><span class="font-semibold">Front:</span> {{ userPictureCard[0]?.filename }}</p>
