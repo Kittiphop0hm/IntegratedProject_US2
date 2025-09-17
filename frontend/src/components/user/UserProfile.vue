@@ -34,9 +34,29 @@ watchEffect(() => {
   props.user ? oldUser.value = {...props.user} : oldUser.value = {}
 })
 
+const validateErrorFullname = ref("");
+const validateFullname = (value) => {
+  if (value.length >= 4 && value.length <= 40) {
+    validateErrorFullname.value = "";
+  } else {
+    validateErrorFullname.value =
+      "Fullname must be between 4 and 40 characters long";
+  }
+};
+
+const validateErrorNickname = ref("");
+const validateNickname = (value) => {
+  if (value.length >= 3 && value.length <= 40) {
+    validateErrorNickname.value = "";
+  } else {
+    validateErrorNickname.value =
+      "Nickname must be between 3 and 40 characters long";
+  }
+};
 
 const enableEditBtn = computed(() => {
-  return JSON.stringify(currentUser.value) !== JSON.stringify(oldUser.value)
+  const validateError = validateErrorFullname.value.length <= 0 && validateErrorNickname.value.length <= 0
+  return validateError && JSON.stringify(currentUser.value) !== JSON.stringify(oldUser.value)
 })
 </script>
 
@@ -111,8 +131,9 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Fullname</h1>
                 <div>
-                  <input v-model="currentUser.fullName" type="text" class="w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input v-model="currentUser.fullName" @change="validateFullname(currentUser.fullName)" type="text" class="w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
+                <p class="text-red-400 text-sm">{{ validateErrorFullname }}</p>
               </div>
 
               <div v-if="route.path === '/profile'">
@@ -125,8 +146,9 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Nickname</h1>
                 <div>
-                  <input v-model="currentUser.nickName" type="text" class="w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input v-model="currentUser.nickName" @change="validateNickname(currentUser.nickName)" type="text" class="w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
+                <p class="text-red-400 text-sm">{{ validateErrorNickname }}</p>
               </div>
 
               <div>
