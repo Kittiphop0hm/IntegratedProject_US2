@@ -1,14 +1,17 @@
 <script setup>
 import UserProfile from "@/components/user/UserProfile.vue";
 import {onMounted, ref} from "vue";
-import {getItemById} from "@/libs/fetchUtil.js";
+import {editItem, getItemById} from "@/libs/fetchUtil.js";
 import {decodeJWT} from "@/libs/decodeJWT.js";
+import { useRoute, useRouter } from "vue-router";
+import AlertMessageModel from "../model/AlertMessageModel.vue";
 
-const accessToken = sessionStorage.getItem('accessToken');
-const getUser = decodeJWT(accessToken);
-console.log(getUser);
-
+const router = useRouter()
+const route = useRoute()
+const accessToken = sessionStorage.getItem('accessToken')
+const getUser = decodeJWT(accessToken)
 const user = ref({})
+
 
 onMounted(async () => {
   try {
@@ -19,16 +22,31 @@ onMounted(async () => {
   }
 })
 
-const editUser = (user) => {
-  console.log(user);
-  
-  console.log("update");
-  
+const isSuccess = ref(false)
+const isError = ref(false)
+const editUser = async (currentUser) => {
+  console.log(currentUser);
+  console.log(currentUser.id);
+  if (currentUser) {
+    const updateUser = await editItem(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser) 
+    router.push({name: 'UserProfile'})
+    if (updateUser.status === 200) {
+        isSuccess.value = true
+        setTimeout(() => {
+          isSuccess.value = false
+        }, 5000); 
+    } else {
+        isError.value = true
+        setTimeout(() => {
+          isError.value = false
+        }, 5000);
+    }
+  }
 }
 </script>
 
 <template>
-  <UserProfile :user="user" @updateUser="editUser" />
+  <UserProfile :user="user" :isSuccess="isSuccess" :isError="isError" @updateUser="editUser"  />
 </template>
 
 <style scoped>
