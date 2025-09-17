@@ -60,7 +60,7 @@ const roles = ref([
                 </router-link>
               </div>
               <div v-if="route.path === '/profile/edit'" class="flex gap-3">
-                <button @click="$emit('updateUser', currentUser)" class="bg-linear-to-r from-green-400 to-green-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Save</button>
+                <button @click="$emit('updateUser', currentUser)" class="bg-linear-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Save</button>
                 <router-link :to="{name: 'UserProfile'}">
                   <button class="bg-gray-400 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Cancel</button>
                 </router-link>
@@ -70,20 +70,6 @@ const roles = ref([
 
           <div v-if="route.path === '/profile'" class="w-full h-full flex justify-center items-center">
             <div class="w-full h-full grid grid-cols-2 gap-x-20 gap-y-10 mt-10">
-              <div>
-                <h1 class="font-semibold">ID</h1>
-                <div class="bg-gray-200 p-3 rounded-lg">
-                  <p>{{ currentUser?.id }}</p>
-                </div>
-              </div>
-
-              <div>
-                <h1 class="font-semibold">Email</h1>
-                <div class="bg-gray-200 p-3 rounded-lg">
-                  <p>{{ currentUser?.email }}</p>
-                </div>
-              </div>
-
               <div>
                 <h1 class="font-semibold">Fullname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
@@ -95,6 +81,19 @@ const roles = ref([
                 <h1 class="font-semibold">Nickname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p>{{ currentUser?.nickName }}</p>
+                </div>
+              </div>
+              <div>
+                <h1 class="font-semibold">Email</h1>
+                <div class="bg-gray-200 p-3 rounded-lg">
+                  <p>{{ currentUser?.email }}</p>
+                </div>
+              </div>
+
+              <div>
+                <h1 class="font-semibold">Password</h1>
+                <div class="bg-gray-200 p-3 rounded-lg">
+                  <p>xxx</p>
                 </div>
               </div>
 
@@ -134,14 +133,14 @@ const roles = ref([
               <div>
                 <h1 class="font-semibold">ID</h1>
                 <div class="bg-gray-200 p-3 rounded-lg cursor-not-allowed">
-                  <p>{{ currentUser?.id }}</p>
+                  <p>{{ currentUser.id }}</p>
                 </div>
               </div>
 
               <div>
                 <h1 class="font-semibold">Email</h1>
-                <div>
-                  <input v-model="currentUser.email" type="text" class="w-full border-1 border-gray-400 p-3 rounded-lg">
+                <div class="bg-gray-200 p-3 rounded-lg cursor-not-allowed">
+                  <p>{{ currentUser.email }}</p>
                 </div>
               </div>
 
@@ -161,33 +160,29 @@ const roles = ref([
 
               <div>
                 <h1 class="font-semibold">Phonenumber</h1>
-                <div>
-                  <input v-model="currentUser.phoneNumber" type="text" class="w-full border-1 border-gray-400 p-3 rounded-lg">
+                <div class="bg-gray-200 p-3 rounded-lg cursor-not-allowed">
+                  <p>{{ currentUser.phoneNumber }}</p>
                 </div>
               </div>
 
               <div>
                 <h1 class="font-semibold">Bankaccount</h1>
-                <div>
-                  <input v-model="currentUser.bankAccount" type="text" class="w-full border-1 border-gray-400 p-3 rounded-lg">
+                <div class="bg-gray-200 p-3 rounded-lg cursor-not-allowed">
+                  <p>{{ currentUser.bankAccount }}</p>
                 </div>
               </div>
 
               <div>
                 <h1 class="font-semibold">Bankname</h1>
-                <div>
-                  <input v-model="currentUser.bankName" type="text" class="w-full border-1 border-gray-400 p-3 rounded-lg">
+                <div class="bg-gray-200 p-3 rounded-lg cursor-not-allowed">
+                  <p>{{ currentUser.bankName }}</p>
                 </div>
               </div>
 
               <div>
                 <h1 class="font-semibold">User type</h1>
-                <div>
-                  <select v-model="currentUser.userType" class="w-full border-1 border-gray-400 p-3 rounded-lg">
-                    <option v-for="(role, index) in roles" :value="role.value" :key="index">
-                      {{ role.text }}
-                    </option>
-                  </select>
+                <div class="bg-gray-200 p-3 rounded-lg cursor-not-allowed">
+                  <p>{{ currentUser.userType }}</p>
                 </div>
               </div>
             </form>

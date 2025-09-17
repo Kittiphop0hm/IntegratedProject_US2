@@ -6,6 +6,8 @@ import {decodeJWT} from "@/libs/decodeJWT.js";
 
 const accessToken = sessionStorage.getItem('accessToken');
 const getUser = decodeJWT(accessToken);
+console.log(getUser);
+
 const user = ref({})
 
 onMounted(async () => {

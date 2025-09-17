@@ -57,4 +57,9 @@ public class UserController {
         System.out.println("authentication called");
         return ResponseEntity.ok(userService.checkLogin(requestLoginDto.getEmail(), requestLoginDto.getPassword()));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserProfileResponseDto> updateUserProfile(@PathVariable Integer id, @RequestBody UserUpdateFormatDto userFormat) {
+        return ResponseEntity.ok(userService.updateUser(id, userFormat));
+    }
 }

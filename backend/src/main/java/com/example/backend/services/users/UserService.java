@@ -1,9 +1,6 @@
 package com.example.backend.services.users;
 
-import com.example.backend.dtos.users.RegisterFormDto;
-import com.example.backend.dtos.users.ResponseTokenDto;
-import com.example.backend.dtos.users.ResponseUserDto;
-import com.example.backend.dtos.users.UserProfileResponseDto;
+import com.example.backend.dtos.users.*;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -164,5 +161,13 @@ public class UserService {
             }
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
+    }
+
+    public UserProfileResponseDto updateUser(Integer id, UserUpdateFormatDto userFormat) {
+        if (!repository.existsById(id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User id: " + id + " not exists");
+        User user = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User id: " + id + " not found"));
+        modelMapper.map(userFormat, user);
+        User updatedUser = repository.save(user);
+        return modelMapper.map(updatedUser, UserProfileResponseDto.class);
     }
 }
