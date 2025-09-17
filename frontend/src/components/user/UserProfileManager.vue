@@ -10,6 +10,7 @@ const accessToken = sessionStorage.getItem('accessToken')
 const getUser = decodeJWT(accessToken)
 const user = ref({})
 const userPictureCard = ref([])
+const maskPhone = ref('')
 
 onMounted(async () => {
   try {
@@ -17,10 +18,30 @@ onMounted(async () => {
     const pictures = await getItemById(`${import.meta.env.VITE_APP_URL}/v2/users/picture`, getUser.id)
     userPictureCard.value = pictures
     user.value = data
+    maskPhone.value = maskPhoneNumber(user.value.phoneNumber)
+    console.log(maskPhone.value);
+    
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 })
+
+const maskPhoneNumber = (number) => {
+  if (!number) return '';
+
+  const len = number.length;
+  if (len < 4) {
+    return 'x'.repeat(len);
+  }
+
+  const second = number.charAt(len - 2);
+  const third  = number.charAt(len - 3);
+  const fourth = number.charAt(len - 4);
+
+  const head = 'x'.repeat(len - 4 > 0 ? len - 4 : 0);
+
+  return `${head}${fourth}${third}${second}x`;
+}
 
 const isSuccess = ref(false)
 const isError = ref(false)
@@ -45,7 +66,7 @@ const editUser = async (currentUser) => {
 </script>
 
 <template>
-  <UserProfile :user="user" :userPictureCard="userPictureCard" :isSuccess="isSuccess" :isError="isError" @updateUser="editUser"  />
+  <UserProfile :user="user" :userPictureCard="userPictureCard" :maskPhoneNumber="maskPhone" :isSuccess="isSuccess" :isError="isError" @updateUser="editUser"  />
 </template>
 
 <style scoped>

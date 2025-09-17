@@ -19,13 +19,16 @@ const props = defineProps({
   isError: {
     type: Boolean,
     default: false
+  },
+  maskPhoneNumber: {
+    type: String,
+    required: false
   }
 })
 
 const route = useRoute()
 const currentUser = ref({})
 const oldUser = ref({})
-const pictures = computed(() => props.userPictureCard)
 watchEffect(() => {
   props.user ? currentUser.value = {...props.user} : currentUser.value = {}
   props.user ? oldUser.value = {...props.user} : oldUser.value = {}
@@ -143,7 +146,7 @@ const enableEditBtn = computed(() => {
               <div>
                 <h1 class="font-semibold">Phonenumber</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.phoneNumber ? currentUser?.phoneNumber : "-" }}</p>
+                  <p class="max-[450px]:text-sm">{{ maskPhoneNumber }}</p>
                 </div>
               </div>
 
