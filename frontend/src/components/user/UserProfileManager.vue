@@ -16,10 +16,17 @@ onMounted(async () => {
     console.error("Error fetching user data:", error);
   }
 })
+
+const editUser = (user) => {
+  console.log(user);
+  
+  console.log("update");
+  
+}
 </script>
 
 <template>
-  <UserProfile :user="user" />
+  <UserProfile :user="user" @updateUser="editUser" />
 </template>
 
 <style scoped>

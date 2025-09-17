@@ -40,13 +40,13 @@ const router = createRouter({
       component: SaleItemAddEdit,
     },
     {
-      path: '/sale-items/list',
-      name: 'SaleItemList',
+      path: "/sale-items/list",
+      name: "SaleItemList",
       component: SaleItemList,
     },
     {
-      path: '/sale-items/list/:id',
-      name: 'SaleItemListById',
+      path: "/sale-items/list/:id",
+      name: "SaleItemListById",
       component: SaleItemDetail,
     },
     {
@@ -67,32 +67,32 @@ const router = createRouter({
     {
       path: "/register",
       name: "Register",
-      component: RegisterAndLoginManager
+      component: RegisterAndLoginManager,
     },
     {
       path: "/login",
       name: "Login",
-      component: RegisterAndLoginManager
+      component: RegisterAndLoginManager,
     },
     {
       path: "/verify-email",
       name: "EmailVerification",
-      component: EmailVerification
+      component: EmailVerification,
     },
     {
       path: "/profile",
       name: "UserProfile",
-      component: UserProfileManager
+      component: UserProfileManager,
     },
-      {
-          path: "/profile/edit",
-          name: "UserProfileEdit",
-          component: UserProfileManager
-      },
+    {
+      path: "/profile/edit",
+      name: "UserProfileEdit",
+      component: UserProfileManager,
+    },
   ],
 });
 
-router.beforeEach( (to,form) => {
+router.beforeEach((to, form) => {
   // console.log("form.name: " + form.name);
   // console.log("to.name: " + to.name);
   if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
@@ -100,8 +100,6 @@ router.beforeEach( (to,form) => {
     sessionStorage.removeItem("pageSize");
     sessionStorage.removeItem("pageNumber");
   }
-} )
-
-
+});
 
 export default router;
