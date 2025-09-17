@@ -84,6 +84,11 @@ const router = createRouter({
       name: "UserProfile",
       component: UserProfileManager
     },
+      {
+          path: "/profile/edit",
+          name: "UserProfileEdit",
+          component: UserProfileManager
+      },
   ],
 });
 
