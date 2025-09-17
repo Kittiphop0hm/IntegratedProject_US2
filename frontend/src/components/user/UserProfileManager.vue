@@ -19,8 +19,6 @@ onMounted(async () => {
     userPictureCard.value = pictures
     user.value = data
     maskPhone.value = maskPhoneNumber(user.value.phoneNumber)
-    console.log(maskPhone.value);
-    
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
