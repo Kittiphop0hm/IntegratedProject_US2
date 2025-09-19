@@ -3,17 +3,23 @@ package com.example.backend.services.users;
 import com.example.backend.dtos.users.*;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
+import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityManager;
+//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+
 
 import java.util.List;
 import java.util.Map;
@@ -145,22 +151,29 @@ public class UserService {
     }
 
 
-    public ResponseTokenDto checkLogin(String email, String rawPassword) {
-        if(repository.existsUserByEmail(email)) {
-            User user = repository.findUserByEmail(email);
-            if(checkPassword(rawPassword, user.getPassword())) {
-                if (!user.getIsActive()) {
-                    throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You need to activate your account before signing in.");
-                }
-                String accessToken = jwtService.generateAccessToken(user);
-                String refreshToken = jwtService.generateRefreshToken(user);
-                ResponseTokenDto tokenDto = new ResponseTokenDto();
-                tokenDto.setAccessToken(accessToken);
-                tokenDto.setRefreshToken(refreshToken);
-                return tokenDto;
-            }
+    public ResponseTokenDto checkLogin(String email, String rawPassword, HttpServletResponse response) {
+        // Validate user
+        User user = repository.findUserByEmail(email);
+        if (user == null || !checkPassword(rawPassword, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
         }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
+        if (!user.getIsActive()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You need to activate your account before signing in.");
+        }
+
+
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/v2/users/refresh");
+        cookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(cookie);
+
+        ResponseTokenDto tokenDto = new ResponseTokenDto();
+        tokenDto.setAccessToken(accessToken);
+        return tokenDto;
     }
 
     public UserProfileResponseDto updateUser(Integer id, UserUpdateFormatDto userFormat) {
@@ -170,4 +183,33 @@ public class UserService {
         User updatedUser = repository.save(user);
         return modelMapper.map(updatedUser, UserProfileResponseDto.class);
     }
+
+    public ResponseTokenDto refreshAccessToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No refresh token provided");
+        }
+
+        try {
+            Claims claims = jwtService.extractClaims(refreshToken);
+            String email = claims.getSubject();
+            User user = repository.findUserByEmail(email);
+
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
+            }
+            if (!user.getIsActive()) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not active");
+            }
+
+            String newAccessToken = jwtService.generateAccessToken(user);
+            ResponseTokenDto tokenDto = new ResponseTokenDto();
+            tokenDto.setAccessToken(newAccessToken);
+
+            return tokenDto;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
+        }
+    }
+
+
 }

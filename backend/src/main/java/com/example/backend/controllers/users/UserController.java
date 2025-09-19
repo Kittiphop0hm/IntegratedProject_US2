@@ -6,16 +6,20 @@ import com.example.backend.services.users.UserFileService;
 import com.example.backend.services.users.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.validation.Valid;
+//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import jakarta.servlet.http.HttpServletResponse;
+import java.security.Principal;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/v2/users")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
+@CrossOrigin(origins = "${app.cors.allowed-origins}", allowCredentials = "true")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -53,13 +57,30 @@ public class UserController {
     }
 
     @PostMapping("/authentications")
-    public ResponseEntity<ResponseTokenDto> authenticateUser(@Valid @RequestBody RequestLoginDto requestLoginDto) {
+    public ResponseEntity<ResponseTokenDto> authenticateUser(
+            @Valid @RequestBody RequestLoginDto requestLoginDto,
+            HttpServletResponse response) {
         System.out.println("authentication called");
-        return ResponseEntity.ok(userService.checkLogin(requestLoginDto.getEmail(), requestLoginDto.getPassword()));
+        return ResponseEntity.ok(userService.checkLogin(
+                requestLoginDto.getEmail(),
+                requestLoginDto.getPassword(),
+                response));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserProfileResponseDto> updateUserProfile(@PathVariable Integer id, @RequestBody UserUpdateFormatDto userFormat) {
         return ResponseEntity.ok(userService.updateUser(id, userFormat));
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ResponseTokenDto> refreshAccessToken(
+            @CookieValue(value = "refresh_token", required = false) String refreshToken) {
+        return ResponseEntity.ok(userService.refreshAccessToken(refreshToken));
+    }
+
+//    @PostMapping("/logout")
+//    public ResponseEntity<Void> logout(HttpServletResponse response, Authentication authentication) {
+//        return userService.logout(response, authentication);
+//    }
+
 }

@@ -1,3 +1,5 @@
+import { includes } from "lodash"
+
 async function getItems(url) {
     try {
       const data = await fetch(url)
@@ -49,7 +51,8 @@ async function getItems(url) {
         },
         body: JSON.stringify({
           ...newItem
-        })
+        }),
+        credentials:"include",
       })
       const addedItem = await res.json()
       return {
@@ -102,7 +105,8 @@ async function getItems(url) {
       }
       const res = await fetch(`${url}`, {
         method: "POST",
-        body: formdata
+        body: formdata,
+        credentials:"include",
       })
       const data = await res.json()
       return {
@@ -137,7 +141,8 @@ async function getItems(url) {
       }
       const res = await fetch(`${url}/${id}`, {
         method: "PUT",
-        body: formdata
+        body: formdata,
+        credentials:"include",
       })
       const data = await res.json()
       return {
@@ -194,7 +199,8 @@ async function getItems(url) {
       }
       const res = await fetch(`${url}`, {
         method: 'POST',
-        body: formdata
+        body: formdata,
+        credentials:"include",
       })
       const data = await res.json()
       return {
@@ -213,7 +219,8 @@ async function getItems(url) {
     async function verifyEmail(url) {
       try {
         const res = await fetch(url, {
-          method: "POST"
+          method: "POST",
+          credentials:"include",
         });
       const items = await res.json();
       return {

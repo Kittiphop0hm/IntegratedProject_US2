@@ -6,9 +6,8 @@ import { register, addItem } from "@/libs/fetchUtil";
 import { decodeJWT } from "@/libs/decodeJWT";
 
 
-const saveTokens = (accessToken, refreshToken, nickname) => {
+const saveTokens = (accessToken, nickname) => {
   sessionStorage.setItem('accessToken', accessToken);
-  sessionStorage.setItem('refreshToken', refreshToken);
   sessionStorage.setItem('nickname', nickname);
 };
 
@@ -97,8 +96,8 @@ const loginForm = async (event, user) => {
       
       console.log('Extracted values:', { accessToken, refreshToken, nickName });
       
-      if (accessToken && refreshToken && nickName) {
-        saveTokens(accessToken, refreshToken, nickName);
+      if (accessToken && nickName) {
+        saveTokens(accessToken, nickName);
         router.push({ 
           name: "SaleItemHome",
           query: { loginSuccess: "true" }
