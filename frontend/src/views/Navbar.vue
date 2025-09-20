@@ -1,8 +1,7 @@
 <script setup>
-import { addItemNoBody } from '@/libs/fetchUtil';
+import { addItemNoBodyAndNoContent } from '@/libs/fetchUtil';
 import { ref, onMounted, watchEffect } from 'vue';
 import { decodeJWT } from '@/libs/decodeJWT';
-import { useRouter } from 'vue-router';
 
 const isBurgerBar = ref(false)
 const isLoggedIn = ref(false);
@@ -23,7 +22,7 @@ const logout = async () => {
   sessionStorage.removeItem("accessToken")
   sessionStorage.removeItem("nickname")
   nickname.value = ''
-  const logout = await addItemNoBody(`${import.meta.env.VITE_APP_URL}/v2/auth/logout`)
+  const logout = await addItemNoBodyAndNoContent(`${import.meta.env.VITE_APP_URL}/v2/auth/logout`)
   console.log(logout.status);
 }
 

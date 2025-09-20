@@ -3,7 +3,6 @@ package com.example.backend.services.users;
 import com.example.backend.dtos.users.*;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
-import com.example.backend.utils.Decode;
 import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityManager;
 //import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -12,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,11 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
-
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class UserService {
@@ -183,10 +176,8 @@ public class UserService {
         if (cookies == null || cookies.length == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
         for (int i = 0; i < cookies.length; i++) {
             if ("refresh_token".equalsIgnoreCase(cookies[i].getName())) {
-                Decode decode = new Decode();
-                String userEmail = decode.getUserEmailByRefreshToken(cookies[i].getValue());
-                User user = repository.findUserByEmail(userEmail);
-                System.out.println(cookies[i].getValue());
+                Claims claims = jwtService.extractClaims(cookies[i].getValue());
+                User user = repository.findUserByEmail(claims.getSubject());
                 if (!repository.existsUserByEmail(user.getEmail())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email:" + user.getEmail() + " not found");
                 if (!user.getIsActive()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not active");
                 cookies[i].setHttpOnly(true);
@@ -211,7 +202,9 @@ public class UserService {
         }
 
         try {
+            System.out.println("refresh: " + refreshToken);
             Claims claims = jwtService.extractClaims(refreshToken);
+            System.out.println(claims);
             String email = claims.getSubject();
             User user = repository.findUserByEmail(email);
 
@@ -223,6 +216,7 @@ public class UserService {
             }
 
             String newAccessToken = jwtService.generateAccessToken(user);
+            System.out.println("new AccessToken: " + newAccessToken);
             ResponseTokenDto tokenDto = new ResponseTokenDto();
             tokenDto.setAccessToken(newAccessToken);
 
@@ -231,6 +225,4 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
         }
     }
-
-
 }

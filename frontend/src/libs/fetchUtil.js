@@ -64,13 +64,29 @@ async function getItems(url) {
     }
   }
 
-  async function addItemNoBody(url) {
+    async function addItemNoBodyAndNoContent(url) {
     try {
       const res = await fetch(url, {
         method: 'POST',
         credentials:"include",
       })
       return {
+        status: res.status,
+      }
+    } catch (error) {
+      throw new Error('can not add your item')
+    }
+  }
+
+  async function addItemNoBody(url) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        credentials:"include",
+      })
+      const addedItem = await res.json()
+      return {
+        data: addedItem,
         status: res.status,
       }
     } catch (error) {
@@ -255,4 +271,5 @@ async function getItems(url) {
     editSaleItemAndImage,
     register,
     addItemNoBody,
+    addItemNoBodyAndNoContent,
   };
