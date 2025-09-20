@@ -17,7 +17,7 @@ watchEffect(() => {
   }
 })
 
-const logout = async (event) => {
+const logout = async () => {
   const decodeSession = decodeJWT(sessionStorage.getItem("accessToken"))
   decodeSession.exp = 0
   sessionStorage.removeItem("accessToken")
@@ -127,7 +127,7 @@ const logout = async (event) => {
             <router-link :to="{name: 'UserProfile'}">Profile</router-link>
           </div>
           <div class="my-3 hover:opacity-80">
-            <a @click="logout($event)" class="cursor-pointer text-red-600">Logout</a>
+            <a @click="logout" class="cursor-pointer text-red-600">Logout</a>
           </div>
         </div>
     </div>
