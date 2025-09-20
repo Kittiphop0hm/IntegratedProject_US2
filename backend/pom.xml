@@ -112,14 +112,10 @@
             <version>1.70</version>
             <scope>compile</scope><!-- ใช้เวอร์ชันล่าสุด -->
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
-
-
     </dependencies>
 
     <build>

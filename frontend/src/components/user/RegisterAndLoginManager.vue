@@ -5,10 +5,8 @@ import { onMounted, ref } from "vue";
 import { register, addItem } from "@/libs/fetchUtil";
 import { decodeJWT } from "@/libs/decodeJWT";
 
-
-const saveTokens = (accessToken, refreshToken, nickname) => {
+const saveTokens = (accessToken, nickname) => {
   sessionStorage.setItem('accessToken', accessToken);
-  sessionStorage.setItem('refreshToken', refreshToken);
   sessionStorage.setItem('nickname', nickname);
 };
 
@@ -29,13 +27,10 @@ const is400 = ref(false);
 const is403 = ref(false); 
 
 const registerForm = async (event, user) => {
-  event.preventDefault();
-  console.log(user);
-  console.log("Submit");
-  console.log(user.files);
+  event.preventDefault()
   try {
     const registerUser = await register(
-      `${import.meta.env.VITE_APP_URL}/v2/users/register`,
+      `${import.meta.env.VITE_APP_URL}/v2/auth/register`,
       user,
       user.files
     );
@@ -57,7 +52,7 @@ const loginForm = async (event, user) => {
   
   try {
     loginUser.value = await addItem(
-      `${import.meta.env.VITE_APP_URL}/v2/users/authentications`,
+      `${import.meta.env.VITE_APP_URL}/v2/auth/login`,
       user
     );
     console.log(loginUser.value.status);
@@ -97,8 +92,8 @@ const loginForm = async (event, user) => {
       
       console.log('Extracted values:', { accessToken, refreshToken, nickName });
       
-      if (accessToken && refreshToken && nickName) {
-        saveTokens(accessToken, refreshToken, nickName);
+      if (accessToken && nickName) {
+        saveTokens(accessToken, nickName);
         router.push({ 
           name: "SaleItemHome",
           query: { loginSuccess: "true" }

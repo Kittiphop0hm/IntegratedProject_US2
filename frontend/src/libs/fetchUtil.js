@@ -1,3 +1,5 @@
+import { includes } from "lodash"
+
 async function getItems(url) {
     try {
       const data = await fetch(url)
@@ -49,12 +51,43 @@ async function getItems(url) {
         },
         body: JSON.stringify({
           ...newItem
-        })
+        }),
+        credentials:"include",
       })
       const addedItem = await res.json()
       return {
         status: res.status,
         data: addedItem
+      }
+    } catch (error) {
+      throw new Error('can not add your item')
+    }
+  }
+
+    async function addItemNoBodyAndNoContent(url) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        credentials:"include",
+      })
+      return {
+        status: res.status,
+      }
+    } catch (error) {
+      throw new Error('can not add your item')
+    }
+  }
+
+  async function addItemNoBody(url) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        credentials:"include",
+      })
+      const addedItem = await res.json()
+      return {
+        data: addedItem,
+        status: res.status,
       }
     } catch (error) {
       throw new Error('can not add your item')
@@ -102,7 +135,8 @@ async function getItems(url) {
       }
       const res = await fetch(`${url}`, {
         method: "POST",
-        body: formdata
+        body: formdata,
+        credentials:"include",
       })
       const data = await res.json()
       return {
@@ -137,7 +171,8 @@ async function getItems(url) {
       }
       const res = await fetch(`${url}/${id}`, {
         method: "PUT",
-        body: formdata
+        body: formdata,
+        credentials:"include",
       })
       const data = await res.json()
       return {
@@ -194,7 +229,8 @@ async function getItems(url) {
       }
       const res = await fetch(`${url}`, {
         method: 'POST',
-        body: formdata
+        body: formdata,
+        credentials:"include",
       })
       const data = await res.json()
       return {
@@ -206,14 +242,13 @@ async function getItems(url) {
     } catch(err) {
       console.log(err);
     }
-
-
   }
 
     async function verifyEmail(url) {
       try {
         const res = await fetch(url, {
-          method: "POST"
+          method: "POST",
+          credentials:"include",
         });
       const items = await res.json();
       return {
@@ -235,4 +270,6 @@ async function getItems(url) {
     deleteImageResource,
     editSaleItemAndImage,
     register,
+    addItemNoBody,
+    addItemNoBodyAndNoContent,
   };
