@@ -5,7 +5,6 @@ import { onMounted, ref } from "vue";
 import { register, addItem } from "@/libs/fetchUtil";
 import { decodeJWT } from "@/libs/decodeJWT";
 
-
 const saveTokens = (accessToken, nickname) => {
   sessionStorage.setItem('accessToken', accessToken);
   sessionStorage.setItem('nickname', nickname);
