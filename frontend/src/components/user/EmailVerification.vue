@@ -6,11 +6,10 @@ import { verifyEmail } from "../../libs/fetchUtil.js";
 const route = useRoute(); 
 const result = ref();
 onMounted(async () => {
-    
   try {
     const token = route.query.token
     result.value = await verifyEmail(
-      `${import.meta.env.VITE_APP_URL}/v2/users/verify-email?token=${token}`
+      `${import.meta.env.VITE_APP_URL}/v2/auth/verify-email?token=${token}`
     );
     console.log(result.value.status);
     console.log("Email verification result:", result.value);

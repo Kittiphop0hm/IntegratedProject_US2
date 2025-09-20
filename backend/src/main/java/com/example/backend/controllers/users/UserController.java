@@ -43,44 +43,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findByEmail(email));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseUserDto> registerUser(@ModelAttribute RegisterFormDto userForm, @RequestParam(required = false) MultipartFile cardFrontImage, @RequestParam(required = false) MultipartFile cardBackImage) {
-        return ResponseEntity.status(201).body(userService.createUser(userForm, cardFrontImage, cardBackImage));
-    }
-
-    @PostMapping("/verify-email")
-    public ResponseEntity<ResponseUserDto> verifyEmail(@RequestParam String token) {
-        Integer userId = jwtService.extractUserId(token);
-        String email = jwtService.extractEmail(token);
-        ResponseUserDto user = userService.verifyEmail(userId, email);
-        return ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/authentications")
-    public ResponseEntity<ResponseTokenDto> authenticateUser(
-            @Valid @RequestBody RequestLoginDto requestLoginDto,
-            HttpServletResponse response) {
-        System.out.println("authentication called");
-        return ResponseEntity.ok(userService.checkLogin(
-                requestLoginDto.getEmail(),
-                requestLoginDto.getPassword(),
-                response));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<UserProfileResponseDto> updateUserProfile(@PathVariable Integer id, @RequestBody UserUpdateFormatDto userFormat) {
         return ResponseEntity.ok(userService.updateUser(id, userFormat));
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<ResponseTokenDto> refreshAccessToken(
-            @CookieValue(value = "refresh_token", required = false) String refreshToken) {
-        return ResponseEntity.ok(userService.refreshAccessToken(refreshToken));
-    }
 
-//    @PostMapping("/logout")
-//    public ResponseEntity<Void> logout(HttpServletResponse response, Authentication authentication) {
-//        return userService.logout(response, authentication);
-//    }
 
 }

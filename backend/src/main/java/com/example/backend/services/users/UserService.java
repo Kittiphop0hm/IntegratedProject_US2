@@ -3,9 +3,11 @@ package com.example.backend.services.users;
 import com.example.backend.dtos.users.*;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.Decode;
 import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityManager;
 //import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -167,13 +169,32 @@ public class UserService {
 
         Cookie cookie = new Cookie("refresh_token", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setPath("/v2/users/refresh");
+        cookie.setPath("/");
         cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
 
         ResponseTokenDto tokenDto = new ResponseTokenDto();
         tokenDto.setAccessToken(accessToken);
         return tokenDto;
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
+        for (int i = 0; i < cookies.length; i++) {
+            if ("refresh_token".equalsIgnoreCase(cookies[i].getName())) {
+                Decode decode = new Decode();
+                String userEmail = decode.getUserEmailByRefreshToken(cookies[i].getValue());
+                User user = repository.findUserByEmail(userEmail);
+                System.out.println(cookies[i].getValue());
+                if (!repository.existsUserByEmail(user.getEmail())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email:" + user.getEmail() + " not found");
+                if (!user.getIsActive()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not active");
+                cookies[i].setHttpOnly(true);
+                cookies[i].setPath("/");
+                cookies[i].setMaxAge(0);
+                response.addCookie(cookies[i]);
+            }
+        }
     }
 
     public UserProfileResponseDto updateUser(Integer id, UserUpdateFormatDto userFormat) {

@@ -7,6 +7,7 @@ import com.example.backend.dtos.users.ResponseUserDto;
 import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.UserFileService;
 import com.example.backend.services.users.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/v2/auth")
 @CrossOrigin(origins = "${app.cors.allowed-origins}", allowCredentials = "true")
 public class UserAuthenticationController {
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserFileService userFileService;
     @Autowired
     private JwtService jwtService;
 
@@ -47,6 +46,12 @@ public class UserAuthenticationController {
                 requestLoginDto.getEmail(),
                 requestLoginDto.getPassword(),
                 response));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        userService.logout(request, response);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/refresh")

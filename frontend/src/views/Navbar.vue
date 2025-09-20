@@ -1,98 +1,31 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { addItemNoBody } from '@/libs/fetchUtil';
+import { ref, onMounted, watchEffect } from 'vue';
+import { decodeJWT } from '@/libs/decodeJWT';
+import { useRouter } from 'vue-router';
 
 const isBurgerBar = ref(false)
-const route = useRoute();
-const router = useRouter();
-const nickname = ref('');
 const isLoggedIn = ref(false);
+const userNickname = ref(sessionStorage.getItem('nickname'))
+const nickname = ref(userNickname.value || '')
 
-const getNickname = () => {
-  return sessionStorage.getItem('nickname');
-};
-
-const getAccessToken = () => {
-  return sessionStorage.getItem('accessToken');
-};
-
-const checkLoginStatus = () => {
-  const token = getAccessToken();
-  const userNickname = getNickname();
-  
-  if (token && userNickname) {
+watchEffect(() => {
+  if (nickname.value) {
     isLoggedIn.value = true;
-    nickname.value = userNickname;
   } else {
     isLoggedIn.value = false;
-    nickname.value = '';
   }
-};
+})
 
-const logout = async () => {
-  try {
-    const token = getAccessToken();
-    
-    console.log('=== FRONTEND LOGOUT DEBUG ===');
-    console.log('Token from sessionStorage:', token);
-    console.log('Token length:', token ? token.length : 'null');
-    
-    if (!token) {
-      console.warn('No access token found');
-      clearSessionData();
-      return;
-    }
-
-    console.log('Making request to:', `${import.meta.env.VITE_APP_URL}/v2/users/logout`);
-    console.log('Authorization header:', `Bearer ${token}`);
-
-    const response = await fetch(`${import.meta.env.VITE_APP_URL}/v2/users/logout`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include'
-    });
-
-    console.log('Logout response status:', response.status);
-    console.log('Response headers:', [...response.headers.entries()]);
-
-    if (response.status === 204) {
-      clearSessionData();
-      router.push({ 
-        name: 'SaleItemHome', 
-        query: { logoutSuccess: 'true' } 
-      });
-    } else if (response.status === 400) {
-      console.error('No access token or invalid token');
-      clearSessionData();
-    } else if (response.status === 401) {
-      console.error('User not found');
-      clearSessionData();
-    } else if (response.status === 403) {
-      console.error('User is not active');
-      clearSessionData();
-    } else {
-      console.error('Logout failed:', response.status);
-      clearSessionData();
-    }
-  } catch (err) {
-    console.error('Logout error:', err);
-    clearSessionData();
-  }
-};
-
-const clearSessionData = () => {
-  sessionStorage.removeItem('accessToken');
-  sessionStorage.removeItem('nickname');
-  isLoggedIn.value = false;
-  nickname.value = '';
-};
-
-onMounted(() => {
-  checkLoginStatus();
-});
+const logout = async (event) => {
+  const decodeSession = decodeJWT(sessionStorage.getItem("accessToken"))
+  decodeSession.exp = 0
+  sessionStorage.removeItem("accessToken")
+  sessionStorage.removeItem("nickname")
+  nickname.value = ''
+  const logout = await addItemNoBody(`${import.meta.env.VITE_APP_URL}/v2/auth/logout`)
+  console.log(logout.status);
+}
 
 </script>
 
@@ -194,7 +127,7 @@ onMounted(() => {
             <router-link :to="{name: 'UserProfile'}">Profile</router-link>
           </div>
           <div class="my-3 hover:opacity-80">
-            <a @click="logout" class="cursor-pointer text-red-600">Logout</a>
+            <a @click="logout($event)" class="cursor-pointer text-red-600">Logout</a>
           </div>
         </div>
     </div>

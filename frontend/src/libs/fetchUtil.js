@@ -63,6 +63,20 @@ async function getItems(url) {
       throw new Error('can not add your item')
     }
   }
+
+  async function addItemNoBody(url) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        credentials:"include",
+      })
+      return {
+        status: res.status,
+      }
+    } catch (error) {
+      throw new Error('can not add your item')
+    }
+  }
   
   async function editItem(url, id, editItem) {
     try {
@@ -212,8 +226,6 @@ async function getItems(url) {
     } catch(err) {
       console.log(err);
     }
-
-
   }
 
     async function verifyEmail(url) {
@@ -242,4 +254,5 @@ async function getItems(url) {
     deleteImageResource,
     editSaleItemAndImage,
     register,
+    addItemNoBody,
   };
