@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +90,7 @@ public class SaleItemService_v1 {
         return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
     }
 
-    public PageDto<GetSaleItemDto> mergeFilterAndSortSaleItem(
+    public PageDto<GetSaleItemDto> FilterAndSortSaleItem(
             String searchKeyword,
             List<String> filterBrands,
             Integer minPrice,
@@ -142,4 +143,5 @@ public class SaleItemService_v1 {
         // Mapping to DTO
         return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
     }
+
 }

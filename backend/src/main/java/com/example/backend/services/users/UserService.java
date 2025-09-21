@@ -5,7 +5,6 @@ import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.persistence.EntityManager;
-//import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,7 +146,6 @@ public class UserService {
 
 
     public ResponseTokenDto checkLogin(String email, String rawPassword, HttpServletResponse response) {
-        // Validate user
         User user = repository.findUserByEmail(email);
         if (user == null || !checkPassword(rawPassword, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
