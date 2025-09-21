@@ -28,7 +28,7 @@ public class SaleItemController_v2 {
     private FileService fileService;
 
     @GetMapping("")
-    public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName(
+    public ResponseEntity<PageDto<GetSaleItemDto>> filterSaleItemsByBrandName (
             @RequestParam(required = false) String searchKeyWord,
             @RequestParam(defaultValue = "") List<String> filterBrands,
             @RequestParam(required = false) Integer filterPriceLower,

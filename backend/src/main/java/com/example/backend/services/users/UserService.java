@@ -10,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +36,10 @@ public class UserService {
     private JwtService jwtService;
     @Autowired
     public PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtUserDetailsService jwtUserDetailsService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
 
     public ResponseUserDto findByEmail(String email) {
@@ -147,6 +153,10 @@ public class UserService {
 
     public ResponseTokenDto checkLogin(String email, String rawPassword, HttpServletResponse response) {
         User user = repository.findUserByEmail(email);
+//        UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(
+//                user.getFullName() , user.getPassword()
+//        );
+//        authenticationManager.authenticate(upat);
         if (user == null || !checkPassword(rawPassword, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
         }

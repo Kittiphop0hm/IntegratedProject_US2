@@ -30,9 +30,9 @@ public class BackendApplication {
         return ListMapper.getInstance();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
+//    }
 }
 

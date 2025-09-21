@@ -1,13 +1,15 @@
 package com.example.backend.services.users;
 
 import com.example.backend.entities.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Key;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,4 +77,38 @@ public class JwtService {
     public String extractEmail(String token) {
         return extractClaims(token).get("email", String.class);
     }
+
+    public void verifyToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token);
+
+        } catch (ExpiredJwtException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired", e);
+        } catch (MalformedJwtException  | UnsupportedJwtException | IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid JWT token", e);
+        }
+    }
+
+    public boolean isExpired(Map<String,Object> jwtClaims) {
+        Date expDate = (Date) jwtClaims.get("exp");
+        return expDate.before(new Date());
+    }
+
+    public Boolean isValidClaims(Map<String,Object> jwtClaims) {
+        System.out.println(jwtClaims);
+        return jwtClaims.containsKey("iat")
+                && "https://intproj24.sit.kmutt.ac.th/us2/"
+                .equals(jwtClaims.get("iss"))
+                        && jwtClaims.containsKey("uid")
+                        && (Long) jwtClaims.get("uid") > 0 ;
+    }
+
+
+
+
+
+
 }
