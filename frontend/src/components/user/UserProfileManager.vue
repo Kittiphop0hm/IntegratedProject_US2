@@ -10,18 +10,20 @@ const accessToken = sessionStorage.getItem('accessToken')
 const getUser = decodeJWT(accessToken)
 const user = ref({})
 const maskPhone = ref('')
+const maskBankNo = ref('')
 
 onMounted(async () => {
   try {
     const data = await getItemById(`${import.meta.env.VITE_APP_URL}/v2/users`, getUser.id)
     user.value = data
-    maskPhone.value = maskPhoneNumber(user.value.phoneNumber)
+    maskPhone.value = maskNumber(user.value.phoneNumber)
+    maskBankNo.value = maskNumber(user.value.bankAccount)
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 })
 
-const maskPhoneNumber = (number) => {
+const maskNumber = (number) => {
   if (!number) return '';
 
   const len = number.length;
@@ -63,7 +65,8 @@ const editUser = async (currentUser) => {
 <template>
   <UserProfile 
   :user="user" 
-  :maskPhoneNumber="maskPhone" 
+  :maskPhoneNumber="maskPhone"
+  :maskBankNo="maskBankNo" 
   :isSuccess="isSuccess" 
   :isError="isError"
   @updateUser="editUser" />
