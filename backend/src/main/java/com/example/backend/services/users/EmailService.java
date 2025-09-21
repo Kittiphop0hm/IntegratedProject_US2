@@ -16,10 +16,10 @@ public class EmailService {
         message.setTo(to);
         message.setSubject("Confirm your email");
         String messageBody = """
-               Thank you for registration, Please Confirm your email to Get 2000 Robux Free!
-              
-               http://localhost:5173/verify-email?token=%s
-              """.formatted(token);
+                 Thank you for registration, Please Confirm your email to Get 2000 Robux Free!
+                
+                 http://localhost:5173/verify-email?token=%s
+                """.formatted(token);
         message.setText(messageBody);
         mailSender.send(message);
     }
