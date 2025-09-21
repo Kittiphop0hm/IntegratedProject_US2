@@ -21,12 +21,12 @@ public class User {
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "fullName", nullable = false, length = 45)
+    @Column(name = "fullname", nullable = false, length = 45)
     private String fullName;
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "nickName", nullable = false, length = 45)
+    @Column(name = "nickname", nullable = false, length = 45)
     private String nickName;
 
     @Size(max = 45)

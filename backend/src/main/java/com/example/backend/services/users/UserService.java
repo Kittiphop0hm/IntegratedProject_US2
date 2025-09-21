@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +41,8 @@ public class UserService {
     private JwtUserDetailsService jwtUserDetailsService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private DataSourceTransactionManager dataSourceTransactionManager;
 
 
     public ResponseUserDto findByEmail(String email) {
@@ -204,8 +207,11 @@ public class UserService {
         Claims claims = jwtService.extractClaims(accessToken);
         System.out.println(claims);
         User user = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User id: " + id + " not found"));
+        Integer userTokenId = claims.get("id", Integer.class);
+        if (!userTokenId.equals(user.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
         System.out.println(user.getId());
-        System.out.println(claims.getSubject());
+        System.out.println(claims.get("id", Integer.class));
+        System.out.println(claims.get("email", String.class));
         modelMapper.map(userFormat, user);
         User updatedUser = repository.save(user);
         String newAccessToken = jwtService.generateAccessToken(updatedUser);

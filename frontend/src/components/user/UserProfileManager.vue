@@ -50,8 +50,10 @@ const editUser = async (currentUser) => {
     console.log("new token: " + updateUser.accessToken);
     const decodeNewToken = decodeJWT(updateUser.accessToken)
     console.log(decodeNewToken);
-    sessionStorage.setItem("accessToken", updateUser.accessToken)
-    sessionStorage.setItem("nickname", decodeNewToken.nickname)
+    if (updateUser.accessToken && decodeNewToken.nickname) {
+        sessionStorage.setItem("accessToken", updateUser.accessToken)
+        sessionStorage.setItem("nickname", decodeNewToken.nickname) 
+    }
     router.push({name: 'UserProfile'})
     if (updateUser.status === 200) {
         user.value = updateUser
