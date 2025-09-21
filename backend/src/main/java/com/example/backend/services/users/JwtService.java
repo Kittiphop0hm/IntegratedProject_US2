@@ -67,7 +67,7 @@ public class JwtService {
 
     public Integer extractUserId(String token) {
         Claims claims = extractClaims(token);
-        return claims.get("id", Integer.class);
+        return claims.get("userId", Integer.class);
     }
 
     public String extractEmail(String token) {

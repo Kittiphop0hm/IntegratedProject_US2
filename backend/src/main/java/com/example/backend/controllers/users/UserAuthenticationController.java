@@ -32,7 +32,9 @@ public class UserAuthenticationController {
     @PostMapping("/verify-email")
     public ResponseEntity<ResponseUserDto> verifyEmail(@RequestParam String token) {
         Integer userId = jwtService.extractUserId(token);
+        System.out.println("controller: " + userId);
         String email = jwtService.extractEmail(token);
+        System.out.println("controller: " + email);
         ResponseUserDto user = userService.verifyEmail(userId, email);
         return ResponseEntity.ok(user);
     }

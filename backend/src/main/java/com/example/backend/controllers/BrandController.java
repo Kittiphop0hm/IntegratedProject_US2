@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/v1/brands")
-@CrossOrigin(origins = "${app.cors.allowed-origins}")
+@CrossOrigin(origins = "${app.cors.allowed-origins}", allowCredentials = "true")
 public class BrandController {
     @Autowired
     private BrandService brandService;

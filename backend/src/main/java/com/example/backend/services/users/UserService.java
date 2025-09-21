@@ -131,6 +131,9 @@ public class UserService {
 
     public ResponseUserDto verifyEmail(Integer userId , String email){
         User user = repository.findUserByEmail(email);
+        System.out.println(userId);
+        System.out.println(email);
+        System.out.println(user.getEmail());
         if(user.getIsActive()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
         }

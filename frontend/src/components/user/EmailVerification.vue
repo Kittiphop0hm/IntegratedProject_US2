@@ -8,6 +8,7 @@ const result = ref();
 onMounted(async () => {
   try {
     const token = route.query.token
+    console.log(token);
     result.value = await verifyEmail(
       `${import.meta.env.VITE_APP_URL}/v2/auth/verify-email?token=${token}`
     );
