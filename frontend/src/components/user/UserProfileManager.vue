@@ -45,6 +45,9 @@ const isError = ref(false)
 const editUser = async (currentUser) => {
   if (currentUser) {
     const updateUser = await editItem(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser) 
+    console.log(updateUser);
+    sessionStorage.setItem("nickname", updateUser.nickName)
+     
     router.push({name: 'UserProfile'})
     if (updateUser.status === 200) {
         user.value = updateUser
