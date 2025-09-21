@@ -67,10 +67,6 @@ public class JwtService {
 
     public Integer extractUserId(String token) {
         Claims claims = extractClaims(token);
-        Integer userId = claims.get("userId", Integer.class);
-        if (userId != null) {
-            return userId;
-        }
         return claims.get("id", Integer.class);
     }
 
