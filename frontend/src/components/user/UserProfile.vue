@@ -19,7 +19,12 @@ const props = defineProps({
   maskPhoneNumber: {
     type: String,
     required: false
-  }
+  },
+  maskBankNo: {
+    type: String,
+    required: false
+  },
+
 })
 
 const route = useRoute()
@@ -79,6 +84,12 @@ const enableEditBtn = computed(() => {
       <div class="w-full h-full bg-white p-10 rounded-2xl max-[450px]:p-5">
         <div class="w-full h-hull">
           <div class="text-2xl my-5">
+            <div class="breadcrumbs text-sm">
+              <ul>
+                <li><router-link :to="{name: 'SaleItemList'}" class="itbms-home">Home</router-link></li>
+                <li><a class="font-semibold">Profile</a></li>
+              </ul>
+            </div>
             <h1>Welcome, <span class="font-medium">{{ oldUser.nickName }}</span></h1>
           </div>
 
@@ -99,16 +110,18 @@ const enableEditBtn = computed(() => {
 
               <div v-if="route.path === '/profile'">
                 <router-link :to="{name: 'UserProfileEdit'}">
-                  <button class="bg-linear-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold max-lg:mt-2">Edit</button>
+                  <button class="itbms-profile-button bg-linear-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold max-lg:mt-2">Edit</button>
                 </router-link>
               </div>
               <div v-if="route.path === '/profile/edit'" class="flex gap-3 max-lg:mt-2">
                 <button
                 @click="$emit('updateUser', currentUser)" 
                 :disabled="!enableEditBtn"
-                :class="enableEditBtn ? 'bg-linear-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold' : 'bg-gray-600 py-2 px-6 rounded-lg hover:opacity-80 text-white font-semibold cursor-not-allowed'">Save</button>
+                :class="enableEditBtn ? 'itbms-save-button bg-linear-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold' : 'itbms-save-button bg-gray-600 py-2 px-6 rounded-lg hover:opacity-80 text-white font-semibold cursor-not-allowed'">
+                Save
+                </button>
                 <router-link :to="{name: 'UserProfile'}">
-                  <button class="bg-gray-400 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Cancel</button>
+                  <button class="itbms-cancel-button bg-gray-400 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Cancel</button>
                 </router-link>
               </div>
             </div>
@@ -120,14 +133,14 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile'">
                 <h1 class="font-semibold">Fullname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.fullName }}</p>
+                  <p class="itbms-fullname max-[450px]:text-sm">{{ currentUser?.fullName }}</p>
                 </div>
               </div>
 
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Fullname</h1>
                 <div>
-                  <input v-model="currentUser.fullName" @change="validateFullname(currentUser.fullName)" type="text" class="w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input v-model="currentUser.fullName" @change="validateFullname(currentUser.fullName)" type="text" class="itbms-fullname w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
                 <p class="text-red-400 text-sm">{{ validateErrorFullname }}</p>
               </div>
@@ -135,14 +148,14 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile'">
                 <h1 class="font-semibold">Nickname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.nickName }}</p>
+                  <p class="itbms-nickname max-[450px]:text-sm">{{ currentUser?.nickName }}</p>
                 </div>
               </div>
 
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Nickname</h1>
                 <div>
-                  <input v-model="currentUser.nickName" @change="validateNickname(currentUser.nickName)" type="text" class="w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input v-model="currentUser.nickName" @change="validateNickname(currentUser.nickName)" type="text" class="itbms-nickname w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
                 <p class="text-red-400 text-sm">{{ validateErrorNickname }}</p>
               </div>
@@ -150,35 +163,35 @@ const enableEditBtn = computed(() => {
               <div>
                 <h1 class="font-semibold">Email</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.email }}</p>
+                  <p class="itbms-email max-[450px]:text-sm">{{ currentUser?.email }}</p>
                 </div>
               </div>
 
               <div v-if="currentUser?.phoneNumber">
                 <h1 class="font-semibold">Phonenumber</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ maskPhoneNumber }}</p>
+                  <p class="itbms-mobile max-[450px]:text-sm">{{ maskPhoneNumber }}</p>
                 </div>
               </div>
 
               <div v-if="currentUser?.bankAccount">
                 <h1 class="font-semibold">Bankaccount</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.bankAccount ? currentUser?.bankAccount : "-" }}</p>
+                  <p class="itbms-bankAccount max-[450px]:text-sm">{{ maskBankNo ? maskBankNo : "-" }}</p>
                 </div>
               </div>
 
               <div v-if="currentUser?.bankName">
                 <h1 class="font-semibold">Bankname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.bankName ? currentUser?.bankName : "-" }}</p>
+                  <p class="itbms-bankName max-[450px]:text-sm">{{ currentUser?.bankName ? currentUser?.bankName : "-" }}</p>
                 </div>
               </div>
 
               <div v-if="currentUser?.userType">
                 <h1 class="font-semibold">User type</h1>
                 <div class="flex justify-between items-center bg-gray-200 p-3 rounded-lg">
-                  <p class="max-[450px]:text-sm">{{ currentUser?.userType}}</p>
+                  <p class="itbms-type max-[450px]:text-sm">{{ currentUser?.userType}}</p>
                 </div>
               </div>
             </div>
