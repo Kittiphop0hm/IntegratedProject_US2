@@ -13,7 +13,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "sale_items")
+@Table(name = "sale_items_seller")
 public class SaleItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,5 +65,10 @@ public class SaleItem {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updatedOn", nullable = false, insertable = false, updatable = false )
     private Instant updatedOn;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sellerId", nullable = false)
+    private User seller;
 
 }

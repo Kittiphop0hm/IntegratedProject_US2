@@ -40,7 +40,7 @@ public class SaleItemController_v2 {
             @RequestParam(defaultValue = "10") Integer size
     ) {
 
-        return ResponseEntity.ok(saleItemServiceV1.mergeFilterAndSortSaleItem(
+        return ResponseEntity.ok(saleItemServiceV1.FilterAndSortSaleItem(
                 searchKeyWord,
                 filterBrands,
                 filterPriceLower,
