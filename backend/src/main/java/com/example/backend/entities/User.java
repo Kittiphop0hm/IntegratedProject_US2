@@ -12,7 +12,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
+@Table(name = "account")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ public class User {
 
     @Size(max = 45)
     @NotNull
-    @Column(name = "userType", nullable = false, length = 45)
+    @Column(name = "accountType", nullable = false, length = 45)
     private String userType;
 
     @Size(max = 45)
@@ -60,14 +60,14 @@ public class User {
     private Instant updatedOn;
 
     @Size(max = 45)
-    @Column(name = "phoneNumber", length = 45)
+    @Column(name = "mobile", length = 45)
     private String phoneNumber;
 
     @Size(max = 45)
-    @Column(name = "bankAccount", length = 45)
+    @Column(name = "bankAccountNo", length = 45)
     private String bankAccount;
 
     @Size(max = 45)
-    @Column(name = "idCardNumber", length = 45)
+    @Column(name = "cardNo", length = 45)
     private String cardNumber;
 }

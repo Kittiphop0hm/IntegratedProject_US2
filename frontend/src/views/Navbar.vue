@@ -69,7 +69,7 @@ const logout = async () => {
             </button>
           </router-link>
           
-          <!-- แสดง dropdown เมื่อ login แล้วเท่านั้น -->
+          
           <div v-if="isLoggedIn" class="dropdown dropdown-center">
             <div tabindex="0" role="button" class="btn m-1">
               {{ nickname }}
@@ -120,7 +120,7 @@ const logout = async () => {
           <router-link to="/">Carts</router-link>
         </div>
         
-        <!-- Mobile - เอาส่วน Register/Login ออก เหลือแค่เมื่อ login แล้ว -->
+        
         <div v-if="isLoggedIn">
           <div class="my-3 hover:opacity-80">
             <router-link :to="{name: 'UserProfile'}">Profile</router-link>
