@@ -198,12 +198,27 @@ public class UserService {
         }
     }
 
-    public UserProfileResponseDto updateUser(Integer id, UserUpdateFormatDto userFormat) {
+    public UserProfileResponseDto updateUser(Integer id, UserUpdateFormatDto userFormat, String accessToken, HttpServletResponse response) {
         if (!repository.existsById(id)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User id: " + id + " not exists");
+        Claims claims = jwtService.extractClaims(accessToken);
+        System.out.println(claims);
         User user = repository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User id: " + id + " not found"));
+        System.out.println(user.getId());
+        System.out.println(claims.getSubject());
         modelMapper.map(userFormat, user);
         User updatedUser = repository.save(user);
-        return modelMapper.map(updatedUser, UserProfileResponseDto.class);
+        String newAccessToken = jwtService.generateAccessToken(updatedUser);
+        String newRefreshToken = jwtService.generateRefreshToken(updatedUser);
+
+        Cookie cookie = new Cookie("refresh_token", newRefreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(cookie);
+
+        UserProfileResponseDto userProfileResponseDto = modelMapper.map(updatedUser, UserProfileResponseDto.class);
+        userProfileResponseDto.setAccessToken(newAccessToken);
+        return userProfileResponseDto;
     }
 
     public ResponseTokenDto refreshAccessToken(String refreshToken) {

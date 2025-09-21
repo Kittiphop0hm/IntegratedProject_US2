@@ -1,7 +1,7 @@
 <script setup>
 import UserProfile from "@/components/user/UserProfile.vue";
 import {onMounted, ref} from "vue";
-import {addItem, editItem, getItemById} from "@/libs/fetchUtil.js";
+import {addItem, editItem, getItemById, editItemWithToken} from "@/libs/fetchUtil.js";
 import {decodeJWT} from "@/libs/decodeJWT.js";
 import { useRoute, useRouter } from "vue-router";
 
@@ -44,7 +44,14 @@ const isSuccess = ref(false)
 const isError = ref(false)
 const editUser = async (currentUser) => {
   if (currentUser) {
-    const updateUser = await editItem(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser) 
+    const accessToken = sessionStorage.getItem("accessToken")
+    console.log("old token:" + accessToken);
+    const updateUser = await editItemWithToken(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser, accessToken) 
+    console.log("new token: " + updateUser.accessToken);
+    const decodeNewToken = decodeJWT(updateUser.accessToken)
+    console.log(decodeNewToken);
+    sessionStorage.setItem("accessToken", updateUser.accessToken)
+    sessionStorage.setItem("nickname", decodeNewToken.nickname)
     router.push({name: 'UserProfile'})
     if (updateUser.status === 200) {
         user.value = updateUser

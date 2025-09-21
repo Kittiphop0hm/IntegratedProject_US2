@@ -14,4 +14,5 @@ public class UserProfileResponseDto {
     private String phoneNumber;
     private String bankName;
     private String bankAccount;
+    private String accessToken;
 }

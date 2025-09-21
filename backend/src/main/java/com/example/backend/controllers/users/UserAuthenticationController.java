@@ -39,8 +39,7 @@ public class UserAuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<ResponseTokenDto> authenticateUser(
-            @Valid @RequestBody RequestLoginDto requestLoginDto,
-            HttpServletResponse response) {
+            @Valid @RequestBody RequestLoginDto requestLoginDto, HttpServletResponse response) {
         System.out.println("authentication called");
         return ResponseEntity.ok(userService.checkLogin(
                 requestLoginDto.getEmail(),

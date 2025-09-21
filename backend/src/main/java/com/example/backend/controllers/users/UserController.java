@@ -44,10 +44,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserProfileResponseDto> updateUserProfile(@PathVariable Integer id, @RequestBody UserUpdateFormatDto userFormat) {
-        return ResponseEntity.ok(userService.updateUser(id, userFormat));
+    public ResponseEntity<UserProfileResponseDto> updateUserProfile(@RequestParam(value = "accessToken", required = false) String accessToken, @PathVariable Integer id, @RequestBody UserUpdateFormatDto userFormat, HttpServletResponse response) {
+        return ResponseEntity.ok(userService.updateUser(id, userFormat, accessToken, response));
     }
-
-
-
 }

@@ -115,6 +115,27 @@ async function getItems(url) {
     }
   }
 
+    async function editItemWithToken(url, id, editItem, accessToken) {
+    try {
+      const res = await fetch(`${url}/${id}?accessToken=${accessToken}`, {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...editItem
+        })
+      })
+      const editedItem = await res.json()
+      return {
+        ...editedItem,
+        status: res.status
+      }
+    } catch (error) {
+      throw new Error('can not edit your item')
+    }
+  }
+
   async function addSaleItemAndImage(url, item, images) {
     try {
       const formdata = new FormData()
@@ -272,4 +293,5 @@ async function getItems(url) {
     register,
     addItemNoBody,
     addItemNoBodyAndNoContent,
+    editItemWithToken,
   };
