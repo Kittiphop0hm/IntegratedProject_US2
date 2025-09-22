@@ -87,7 +87,7 @@ const enableEditBtn = computed(() => {
             <div class="breadcrumbs text-sm">
               <ul>
                 <li><router-link :to="{name: 'SaleItemList'}" class="itbms-home">Home</router-link></li>
-                <li><a class="font-semibold">Profile</a></li>
+                <li><router-link :to="{name: 'UserProfile'}" class="font-semibold">Profile</router-link></li>
               </ul>
             </div>
             <h1>Welcome, <span class="font-medium">{{ oldUser.nickName }}</span></h1>
