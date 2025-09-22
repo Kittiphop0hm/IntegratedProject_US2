@@ -140,7 +140,7 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Fullname</h1>
                 <div>
-                  <input v-model="currentUser.fullName" @change="validateFullname(currentUser.fullName)" type="text" class="itbms-fullname w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input v-model.trim="currentUser.fullName" @change="validateFullname(currentUser.fullName)" type="text" class="itbms-fullname w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
                 <p class="text-red-400 text-sm">{{ validateErrorFullname }}</p>
               </div>
@@ -155,7 +155,7 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Nickname</h1>
                 <div>
-                  <input v-model="currentUser.nickName" @change="validateNickname(currentUser.nickName)" type="text" class="itbms-nickname w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input v-model.trim="currentUser.nickName" @change="validateNickname(currentUser.nickName)" type="text" class="itbms-nickname w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
                 <p class="text-red-400 text-sm">{{ validateErrorNickname }}</p>
               </div>
