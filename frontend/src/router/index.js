@@ -12,6 +12,7 @@ import UserProfileManager from "@/components/user/UserProfileManager.vue";
 const accessToken = sessionStorage.getItem("accessToken");
 import { decodeJWT } from "@/libs/decodeJWT.js";
 const getUser = decodeJWT(accessToken);
+import { watch } from "vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [

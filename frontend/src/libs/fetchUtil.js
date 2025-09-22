@@ -274,9 +274,44 @@ async function getItemsWithToken(url, token) {
   }
 }
 
-
+async function addSaleItemAndImageWithToken(url, item, images , token) {
+  try {
+    const formdata = new FormData();
+    formdata.append("model", item.model);
+    formdata.append("description", item.description);
+    formdata.append("price", item.price);
+    formdata.append("ramGb", item.ramGb);
+    formdata.append("screenSizeInch", item.screenSizeInch);
+    formdata.append("quantity", item.quantity);
+    formdata.append("storageGb", item.storageGb);
+    formdata.append("color", item.color);
+    formdata.append("brand.id", item.brand.id);
+    formdata.append("brand.name", item.brand.name);
+    if (images.length > 0) {
+      for (let i = 0; i < images.length; i++) {
+        formdata.append("images", images[i]);
+      }
+    }
+    const res = await fetch(`${url}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      method: "POST",
+      body: formdata,
+      credentials: "include",
+    });
+    const data = await res.json();
+    return {
+      data: data,
+      status: res.status,
+    };
+  } catch (err) {
+    console.log(err);
+  }
+}
 export {
-  getItemsWithToken ,
+  addSaleItemAndImageWithToken,
+  getItemsWithToken,
   verifyEmail,
   imageUrlToFileObject,
   getItems,
