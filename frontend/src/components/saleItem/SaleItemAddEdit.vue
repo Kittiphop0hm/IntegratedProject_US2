@@ -8,13 +8,17 @@ import {
   getItemById,
   editItem,
   addSaleItemAndImage,
+  addSaleItemAndImageWithToken,
   deleteImageResource,
   imageUrlToFileObject,
   editSaleItemAndImage,
 } from "../../libs/fetchUtil.js";
+import {decodeJWT} from "@/libs/decodeJWT.js";
 const router = useRouter();
 const route = useRoute();
 const brands = ref([]);
+const accessToken = sessionStorage.getItem("accessToken");
+const getUser = decodeJWT(accessToken);
 const validationMessages = ref({
   brand: "",
   model: "",
@@ -203,6 +207,7 @@ onMounted(async () => {
         `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
         route.params.id
       );
+
       const saleItemImages = items.saleItemImages;
       console.log("saleItemImages", saleItemImages);
       if (saleItemImages.length > 0) {
@@ -315,22 +320,20 @@ const isUpdatedImages = computed(() => {
 console.log("isUpdated: " + isUpdated.value);
 console.log("isUpdatedImages: " + isUpdatedImages.value);
 
-
 const imageReadyDeletes = ref([]);
-const retores = ref([])
-
+const retores = ref([]);
 
 const deleteImg = (index) => {
   console.log(index);
 
-    if(Array.isArray(index)){
-      console.log("Delete all images");
-      for (let i = 0; i < index.length; i++) {
-        imageReadyDeletes.value.push(index[i]);
-        images.value.splice(i, 1, "deleted");   
-      }
-      return
+  if (Array.isArray(index)) {
+    console.log("Delete all images");
+    for (let i = 0; i < index.length; i++) {
+      imageReadyDeletes.value.push(index[i]);
+      images.value.splice(i, 1, "deleted");
     }
+    return;
+  }
 
   if (index < 0 || index >= images.value.length) return;
 
@@ -340,20 +343,22 @@ const deleteImg = (index) => {
   console.log("imageReadyDeletes:", imageReadyDeletes.value);
 
   if (img !== "deleted") {
-    retores.value.push({ index: index, value: img })
+    retores.value.push({ index: index, value: img });
     imageReadyDeletes.value.push(img);
     images.value[index] = "deleted";
     imageFile.value[index] = "deleted";
     console.log("Deleted:", images.value, imageReadyDeletes.value);
   } else {
     console.log(index);
-    
-    const deletedIndex = retores.value.findIndex(item => item.index === index);
+
+    const deletedIndex = retores.value.findIndex(
+      (item) => item.index === index
+    );
     if (deletedIndex !== -1) {
       const restored = retores.value[deletedIndex].value;
       images.value[index] = restored;
       imageFile.value[index] = restored;
-      retores.value.splice(deletedIndex, 1)
+      retores.value.splice(deletedIndex, 1);
       imageReadyDeletes.value.splice(deletedIndex, 1);
       console.log("Restored:", images.value);
     }
@@ -379,12 +384,18 @@ const updateImagesStatus = () => {
           currentImages[i].fileName.startsWith(String(route.params.id + "."))
         ) {
           if (currentImages[i].fileName !== previousImages[i].fileName) {
-            console.log("358 MOVE Image order changed for:", currentImages[i].fileName);
+            console.log(
+              "358 MOVE Image order changed for:",
+              currentImages[i].fileName
+            );
             currentImages[i].status = "MOVE";
           } else {
-            console.log(currentImages[i].imageView)
+            console.log(currentImages[i].imageView);
             currentImages[i].status = "ONLINE";
-            console.log("362 ONLINE Image order changed for:", currentImages[i].fileName);
+            console.log(
+              "362 ONLINE Image order changed for:",
+              currentImages[i].fileName
+            );
           }
         } else {
           currentImages[i].status = "NEW";
@@ -394,7 +405,10 @@ const updateImagesStatus = () => {
   }
   // console.log("imageReadyDeletes.value:", imageReadyDeletes.value);
   for (let i = 0; i < imageReadyDeletes.value.length; i++) {
-    console.log("imageReadyDeletes.value before add status:", imageReadyDeletes.value[i].value);
+    console.log(
+      "imageReadyDeletes.value before add status:",
+      imageReadyDeletes.value[i].value
+    );
     imageReadyDeletes.value[i].status = "DELETE";
     // console.log("imageReadyDeletes.value after add status:", imageReadyDeletes.value[i]);
   }
@@ -422,8 +436,6 @@ const isActive = computed(() => {
   return isUpdatedField;
 });
 
-
-
 async function submitForm() {
   isSubmitted.value = true;
   if (!isFormValid()) {
@@ -433,17 +445,19 @@ async function submitForm() {
   if (Number(route.params.id)) {
     const updatedImagesObject = updateImagesStatus();
     for (let index = 0; index < updatedImagesObject.length; index++) {
-      console.log("409 Before Updated imageViewOrder:", updatedImagesObject[index]);
-      if(updatedImagesObject[index].imageViewOrder !== index + 1){
+      console.log(
+        "409 Before Updated imageViewOrder:",
+        updatedImagesObject[index]
+      );
+      if (updatedImagesObject[index].imageViewOrder !== index + 1) {
         updatedImagesObject[index].imageViewOrder = index + 1;
         console.log("412 Updated imageViewOrder:", updatedImagesObject[index]);
       }
     }
     const updatedImagesArr = Object.values(updatedImagesObject);
 
-
     console.log("Updated Images Object:", updatedImagesObject);
-    const imagesArr = [...imageReadyDeletes.value , ...updatedImagesArr];
+    const imagesArr = [...imageReadyDeletes.value, ...updatedImagesArr];
     const imageFileArr = [...imageRecentObject.value, ...imageAddObject.value];
     // if (!isUpdatedImages.value) {
     //   await editItem(
@@ -513,7 +527,7 @@ async function submitForm() {
       imagesForUpdate.value
     );
 
-    console.log("Finished Process 474")
+    console.log("Finished Process 474");
     console.log(editSaleItem.data);
 
     saleItem.value = { ...initSaleItem };
@@ -532,10 +546,16 @@ async function submitForm() {
       imageFile.value.splice(indexOfDeleted, 1);
     }
     try {
-      await addSaleItemAndImage(
-        `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+      // await addSaleItemAndImage(
+      //   `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
+      //   saleItem.value,
+      //   imageFile.value
+      // );
+      await addSaleItemAndImageWithToken(
+        `${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items`,
         saleItem.value,
-        imageFile.value
+        imageFile.value,
+        accessToken
       );
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
@@ -563,17 +583,14 @@ const moveUp = (arr, index) => {
   const deleteImageFile = imageFile.value.splice(index, 1)[0];
   imageFile.value.splice(index - 1, 0, deleteImageFile);
   console.log(arr);
-
-
-
 };
 
 const moveDown = (arr, index) => {
   console.log("516 Moveup: " + arr);
   const moveFrontElement = arr[index + 1];
   const deleteElement = arr.splice(index, 1)[0];
-    if (moveFrontElement !== "deleted") {
-      moveFrontElement.imageViewOrder -= 1;
+  if (moveFrontElement !== "deleted") {
+    moveFrontElement.imageViewOrder -= 1;
   }
   deleteElement.imageViewOrder += 1;
   arr.splice(index + 1, 0, deleteElement);
@@ -779,7 +796,7 @@ function savePreviousPath() {
         </button>
       </template>
       <template #button2>
-        <router-link :to="{ name: 'SaleItemHome' }">
+        <router-link :to="{ name: 'SaleItemList' }">
           <button class="itbms-cancel-button text-white">Cancel</button>
         </router-link>
       </template>
@@ -909,7 +926,7 @@ function savePreviousPath() {
                   index + 1
                 } text-sm font-medium text-slate-700 truncate`"
               >
-                {{ img.fileName }} 
+                {{ img.fileName }}
               </p>
               <p class="text-xs text-slate-500">
                 Image {{ index + 1 }} of {{ images.length }}

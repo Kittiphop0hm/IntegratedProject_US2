@@ -42,11 +42,12 @@ public class SaleItemController {
 
     @PostMapping("")
     public ResponseEntity<?> createProduct(
+            @PathVariable Integer id,
             @ModelAttribute SaleItemDetailForCreateOrUpdateDto newSaleItem ,
             @RequestParam(required = false) List<MultipartFile> images
     ){
         try{
-            ResponseSaleItemsDto result = saleItemServiceV2.createProduct(newSaleItem , images);
+            ResponseSaleItemsDto result = saleItemServiceV2.createProduct(id,newSaleItem , images);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

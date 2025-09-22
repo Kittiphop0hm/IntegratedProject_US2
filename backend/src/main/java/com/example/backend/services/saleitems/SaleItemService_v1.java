@@ -3,10 +3,12 @@ import com.example.backend.dtos.saleItems.*;
 import com.example.backend.dtos.saleItems.sellers.GetSaleItemSellerDto;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
+import com.example.backend.entities.User;
 import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemPageRepository;
 import com.example.backend.repositories.SaleItemRepository;
+import com.example.backend.repositories.UserRepository;
 import com.example.backend.specifications.SaleItemSpecification;
 import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
@@ -16,8 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +42,8 @@ public class SaleItemService_v1 {
     private ListMapper listMapper;
     @Autowired
     private SaleItemPageRepository pageRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<ListSaleItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
@@ -53,6 +60,20 @@ public class SaleItemService_v1 {
         brandRepository.findById(createSaleItemDto.getBrand().getId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
         SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
+        SaleItem savedSaleItem = repository.save(saleItem);
+        entityManager.refresh(savedSaleItem);
+        ResponseSaleItemsDto responseDto = modelMapper.map(savedSaleItem, ResponseSaleItemsDto.class);
+        responseDto.setBrandName(savedSaleItem.getBrand().getName());
+        return responseDto;
+    }
+
+    @Transactional
+    public ResponseSaleItemsDto createSaleItem(SaleItemDetailForCreateOrUpdateDto createSaleItemDto , Integer id) {
+        brandRepository.findById(createSaleItemDto.getBrand().getId())
+                .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
+        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found for this id :: " + id));
+        SaleItem saleItem = modelMapper.map(createSaleItemDto, SaleItem.class);
+        saleItem.setSeller(user);
         SaleItem savedSaleItem = repository.save(saleItem);
         entityManager.refresh(savedSaleItem);
         ResponseSaleItemsDto responseDto = modelMapper.map(savedSaleItem, ResponseSaleItemsDto.class);

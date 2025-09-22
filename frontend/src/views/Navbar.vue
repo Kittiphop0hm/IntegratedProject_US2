@@ -2,12 +2,12 @@
 import { addItemNoBodyAndNoContent } from '@/libs/fetchUtil';
 import { ref, onMounted, watchEffect } from 'vue';
 import { decodeJWT } from '@/libs/decodeJWT';
-
+import { useRouter } from 'vue-router'
 const isBurgerBar = ref(false)
 const isLoggedIn = ref(false);
 const userNickname = ref(sessionStorage.getItem('nickname'))
 const nickname = ref(userNickname.value || '')
-
+const router = useRouter(); 
 watchEffect(() => {
   if (nickname.value) {
     isLoggedIn.value = true;
@@ -24,6 +24,7 @@ const logout = async () => {
   nickname.value = ''
   const logout = await addItemNoBodyAndNoContent(`${import.meta.env.VITE_APP_URL}/v2/auth/logout`)
   console.log(logout.status);
+  router.push({ name: "SaleItemHome" });
 }
 
 </script>

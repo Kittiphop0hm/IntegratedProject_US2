@@ -64,6 +64,12 @@ public class SaleItemService_v2 {
         return findByid(mainDto.getId());
     }
 
+    public ResponseSaleItemsDto createProduct(Integer id,SaleItemDetailForCreateOrUpdateDto createSaleItemDto , List<MultipartFile> images) {
+        ResponseSaleItemsDto mainDto = saleItemServiceV1.createSaleItem(createSaleItemDto , id);
+        fileService.storeList(images , mainDto.getId());
+        return findByid(mainDto.getId());
+    }
+
     public void deleteProduct(Integer id) {
         if(!saleItemRepository.existsById(id)) {
             throw new ItemNotFoundException("Sale item does not exist");
