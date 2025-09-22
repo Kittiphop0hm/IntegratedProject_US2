@@ -1,5 +1,6 @@
 package com.example.backend.utils;
 
+import com.example.backend.exceptions.JwtAuthenticationEntryPoint;
 import com.example.backend.filters.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +25,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 public class SecurityConfig {
-
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
@@ -38,11 +40,11 @@ public class SecurityConfig {
 //                                .requestMatchers("/itb-mshop/v2/auth/**").permitAll()
                                 .requestMatchers("/v2/seller/**").hasAnyAuthority("SELLER")
                                 .anyRequest().permitAll()
-//                                .anyRequest().authenticated()
                                 )
 //                .cors(withDefaults())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex->ex.authenticationEntryPoint((jwtAuthenticationEntryPoint)))
 	            .sessionManagement( session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
