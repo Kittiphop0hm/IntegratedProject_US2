@@ -9,7 +9,9 @@ import BrandManager from "@/components/brand/BrandManager.vue";
 import RegisterAndLoginManager from "@/components/user/RegisterAndLoginManager.vue";
 import EmailVerification from "@/components/user/EmailVerification.vue";
 import UserProfileManager from "@/components/user/UserProfileManager.vue";
-
+const accessToken = sessionStorage.getItem("accessToken");
+import { decodeJWT } from "@/libs/decodeJWT.js";
+const getUser = decodeJWT(accessToken);
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -93,13 +95,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, form) => {
-  // console.log("form.name: " + form.name);
-  // console.log("to.name: " + to.name);
-  if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
-    // console.log("router.beforeEach");
-    sessionStorage.removeItem("pageSize");
-    sessionStorage.removeItem("pageNumber");
+  console.log("form.name: " + form.name);
+  console.log("to.name: " + to.name);
+  if (to.name === "SaleItemList" && getUser.role.toUpperCase() !== "SELLER") {
+    return { name: "SaleItemHome" };
   }
+    if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
+      // console.log("router.beforeEach");
+      sessionStorage.removeItem("pageSize");
+      sessionStorage.removeItem("pageNumber");
+    }
 });
 
 export default router;

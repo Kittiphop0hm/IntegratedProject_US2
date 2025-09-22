@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed , watch} from "vue";
 import { getItems, deleteItemById ,getItemsWithToken } from "../../libs/fetchUtil.js";
 import ListTableModel from "../model/ListTableModel.vue";
 import Navbar from "../../views/Navbar.vue";
@@ -11,26 +11,61 @@ import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SortSaleItemByBrandname from "./SortSaleItemByBrandName.vue";
 import {decodeJWT} from "@/libs/decodeJWT.js";
-
+let pageSizeWatchInitialized = false;
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
 const accessToken = sessionStorage.getItem('accessToken')
 const getUser = decodeJWT(accessToken)
+const pageObj = ref({});
+const pageSize = ref();
+const pageNumber = ref();
+const pageNumberSession = sessionStorage.getItem("pageNumber");
+const pageSizeSession = sessionStorage.getItem("pageSize");
+watch([pageSize, pageNumber], () => {
+  sessionStorage.setItem("pageSize", pageSize.value);
+  sessionStorage.setItem("pageNumber", pageNumber.value);
+  fetchData();
+});
+watch(pageSize, () => {
+  if (!pageSizeWatchInitialized) {
+    pageSizeWatchInitialized = true;
+    return;
+  }
+  pageNumber.value = 0;
+});
+
+const fetchData = async () => {
+  try {
+       const res = await getItemsWithToken(
+// `${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items?page=${pageNumber}&size=${pageSize}` ,
+`${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items?page=${pageNumber.value}&size=${pageSize.value}` ,
+    accessToken
+      )
+      pageObj.value = res
+      saleItems.value = res.content
+     console.log(pageObj.value);
+  } catch (err) {
+    console.log(err);
+  }
+};
 onMounted(async () => {
   try {
+      pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
+  pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
     // saleItems.value = await getItems(
     //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`
     // );
-      saleItems.value = await getItemsWithToken(
-      `${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items?page=2` , accessToken
-      )
+
   } catch (err) {
     console.error("Error fetching sale items:", err);
   }
 });
-
+const fecthItemFromPage = async(index) => {
+  pageNumber.value = index - 1;
+  await fetchData();
+};
 const cancelDelete = () => {
   isDelete.value = false;
 };
@@ -54,10 +89,6 @@ const deleteSaleItem = async (id) => {
     console.error(err);
   }
 };
-function savePreviousPath() {
-  const previousPath = route.fullPath;
-  localStorage.setItem("previousPath", previousPath);
-}
 
 const isSuccess = ref(
   Boolean(route.query.alertAdd || route.query.alertDelete) &&
@@ -70,6 +101,43 @@ const handledelete = (id) => {
   deleteId.value = id;
 };
 
+
+const isFirst = computed(() => {
+  return pageNumber.value === 0;
+});
+
+const isLast = computed(() => {
+  return pageNumber.value === pageObj.value.totalPages - 1;
+});
+
+const computedPageNumberArr = computed(() => {
+  const arr = [];
+  let maxDisplay = 10;
+  console.log("pageNumber.value:", pageNumber.value);
+  console.log("pageObj.value.totalPages:", pageObj.value.totalPages);
+  for (let i = 0; i < pageObj.value.totalPages; i++) {
+    arr.push(i + 1);
+  }
+  if (arr.length > maxDisplay) {
+    let difference = arr.length - pageNumber.value;
+    if (difference > maxDisplay) {
+      arr.splice(
+        arr.length - (difference - maxDisplay),
+        Math.abs(difference - maxDisplay)
+      );
+      if (pageNumber.value !== 0) {
+        arr.splice(0, difference - maxDisplay);
+      }
+    } else {
+      while (arr.length !== maxDisplay) {
+        arr.shift();
+      }
+    }
+  }
+  console.log("133")
+  console.log(arr)
+  return arr;
+});
 </script>
 
 <template>
@@ -98,7 +166,19 @@ const handledelete = (id) => {
         </template>
       </AlertMessageModel>
     </div>
-
+        <div>
+      <span>Show</span>
+      <span class="ml-2">
+        <select
+          class="bg-gray-500 p-2 border itbms-page-size"
+          v-model.number="pageSize"
+        >
+          <option :value="5">5</option>
+          <option :value="10">10</option>
+          <option :value="20">20</option>
+        </select></span
+      >
+    </div>
     <div class="flex justify-between items-center px-10">
       <router-link :to="{ name: 'SaleItemAdd' }">
         <button
@@ -178,6 +258,56 @@ const handledelete = (id) => {
           </span>
         </template>
       </DeletePopupModel>
-    </div>
+      <div class="mb-5"></div>
+    </div class="">
+      <div class="p-10 pt-0" v-show="pageObj.totalPages > 1">
+    <button
+      class="itbms-page-first cursor-pointer bg-gray-600 pl-5 pr-5 pt-3 pb-3"
+      @click="pageNumber = 0"
+      :class="isFirst ? 'opacity-45' : 'bg-gray-600'"
+      :disabled="isFirst"
+    >
+      First
+    </button>
+    <button
+      class="itbms-page-prev cursor-pointer bg-gray-600 pl-5 pr-5 pt-3 pb-3"
+      @click="pageNumber = pageNumber - 1"
+      :class="isFirst ? 'opacity-45' : 'bg-gray-600'"
+      :disabled="isFirst"
+    >
+      Prev
+    </button>
+    <span
+      v-for="index in computedPageNumberArr"
+      :key="index"
+      @click="fecthItemFromPage(index)"
+      :class="`itbms-page-${index - 1} `"
+    >
+      <button
+        class="pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+        :class="
+          index - 1 === pageNumber ? 'bg-green-600 text-white' : 'bg-gray-600'
+        "
+      >
+        {{ index }}
+      </button>
+    </span>
+    <button
+      class="itbms-page-next bg-gray-600 pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      @click="pageNumber = pageNumber + 1"
+      :class="isLast ? 'opacity-45' : 'bg-gray-600'"
+      :disabled="isLast"
+    >
+      Next
+    </button>
+    <button
+      class="itbms-page-last bg-gray-600 pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      @click="pageNumber = pageObj.totalPages - 1"
+      :class="isLast ? 'opacity-45' : 'bg-gray-600'"
+      :disabled="isLast"
+    >
+      Last
+    </button>
+  </div>
   </div>
 </template>
