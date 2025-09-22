@@ -2,6 +2,7 @@ package com.example.backend.filters;
 
 import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.JwtUserDetailsService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,30 +34,37 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain chain
     ) throws IOException, ServletException, java.io.IOException {
+        System.out.println("request");
+        System.out.println(request);
         response.setHeader("request-url", request.getRequestURI());
         final String requestTokenHeader = request.getHeader("Authorization");
+        System.out.println(requestTokenHeader);
         Integer userId = null;
         String jwtToken = null;
-        Map<String, Object> claims = null;
-
+        Claims claims = null;
+        System.out.println("Hello Filter");
         if (requestTokenHeader != null) {
+            System.out.println("requestTokenHeader != null");
             if (requestTokenHeader.startsWith("Bearer")) {
+                System.out.println("requestTokenHeader.startsWith(\"Bearer\")");
                 jwtToken = requestTokenHeader.substring(7);
                 jwtUtils.verifyToken(jwtToken);
                 claims = jwtUtils.extractClaims(jwtToken);
+                System.out.println("claims " + claims);
+                System.out.println(claims);
                 if (jwtUtils.isExpired(claims)) {
                     throw new ResponseStatusException(
                             HttpStatus.UNAUTHORIZED,
                             "JWT token has expired"
                     );
                 }
-                    if (!jwtUtils.isValidClaims(claims) || !"ACCESS_TOKEN".equals(claims.get("typ"))) {
+                    if (!jwtUtils.isValidClaims(claims) || !"ACCESS_TOKEN".equals(claims.get("typ" , String.class))) {
                         throw new ResponseStatusException(
                                 HttpStatus.UNAUTHORIZED,
                                 "Invalid JWT access token"
                         );
                     }
-                    userId = (Integer) claims.get("uid");
+                    userId = claims.get("id", Integer.class);
                 } else {
                     throw new ResponseStatusException(
                             HttpStatus.UNAUTHORIZED,
@@ -64,17 +72,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     );
                 }
             }
-
+            System.out.println("check Authentication");
             Authentication authentication = SecurityContextHolder
                     .getContext().getAuthentication();
+            System.out.println("authentication = " + authentication);
+            System.out.println("userId = " + userId);
             if (userId != null && authentication == null) {
                 UserDetails userDetails = this.jwtUserDetailsService.loadUserById(userId);
-                if (userDetails == null || !userDetails.getUsername().equals(claims.get("sub"))) {
+                System.out.println("userDetails = " + userDetails);
+                if (userDetails == null || !userDetails.getUsername().equals(claims.get("nickname",String.class))) {
                     throw new ResponseStatusException(
                             HttpStatus.UNAUTHORIZED,
                             "Invalid JWT Token"
                     );
                 }
+                System.out.println("set UsernamePasswordAuthenticationToken");
                 UsernamePasswordAuthenticationToken upAuthToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities()
@@ -83,6 +95,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
                 SecurityContextHolder.getContext().setAuthentication(upAuthToken);
+                authentication = SecurityContextHolder.getContext().getAuthentication();
+                System.out.println("Authentication: " + authentication);
             }
             chain.doFilter(request, response);
         }

@@ -38,6 +38,7 @@ public class JwtService {
         claims.put("email", user.getEmail());
         claims.put("role", user.getUserType());
         claims.put("nickname", user.getNickName());
+        claims.put("typ", "ACCESS_TOKEN");
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -64,7 +65,7 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-// อันนี้ไม่เเน่ใจว่าต้องใช้เป็น long เเทนไหม เเต่มีครั้งนึงมัน error เพราะมันให้ใช้เป็น long
+
     public Integer extractUserId(String token) {
         Claims claims = extractClaims(token);
         return claims.get("userId", Integer.class);
@@ -88,18 +89,24 @@ public class JwtService {
         }
     }
 
-    public boolean isExpired(Map<String,Object> jwtClaims) {
-        Date expDate = (Date) jwtClaims.get("exp");
-        return expDate.before(new Date());
+    public boolean isExpired(Claims claims) {
+        return claims.getExpiration().before(new Date());
     }
 
-    public Boolean isValidClaims(Map<String,Object> jwtClaims) {
-        System.out.println(jwtClaims);
-        return jwtClaims.containsKey("iat")
-                && "https://intproj24.sit.kmutt.ac.th/us2/"
-                .equals(jwtClaims.get("iss"))
-                        && jwtClaims.containsKey("uid")
-                        && (Long) jwtClaims.get("uid") > 0 ;
+//
+//    public Boolean isValidClaims(Map<String,Object> jwtClaims) {
+//        System.out.println(jwtClaims);
+//        return jwtClaims.containsKey("iat")
+//                && "https://intproj24.sit.kmutt.ac.th/us2/"
+//                .equals(jwtClaims.get("iss"))
+//                        && jwtClaims.containsKey("uid")
+//                        && (Long) jwtClaims.get("uid") > 0 ;
+//    }
+
+    public Boolean isValidClaims(Claims claims) {
+        return claims.getIssuer().equals("https://intproj24.sit.kmutt.ac.th/us2/")
+                && claims.containsKey("id")
+                && claims.get("id", Integer.class) > 0 ;
     }
 
 

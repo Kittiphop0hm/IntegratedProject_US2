@@ -1,5 +1,6 @@
 package com.example.backend.services.saleitems;
 import com.example.backend.dtos.saleItems.*;
+import com.example.backend.dtos.saleItems.sellers.GetSaleItemSellerDto;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
@@ -143,6 +144,12 @@ public class SaleItemService_v1 {
 
         // Mapping to DTO
         return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
+    }
+
+
+    public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id ,Integer page ,Integer size,String sortField,String sortDirection){
+        Page<SaleItem> saleItems = pageRepository.findBySellerIdOrderByCreatedOnAsc(id, PageRequest.of(page, size));
+        return listMapper.toPageDTO(saleItems, GetSaleItemSellerDto.class, modelMapper, sortField);
     }
 //    // PBI 25 smark
 //    public PageDto<GetSaleItemDto> getSaleItemsBySellerId(
