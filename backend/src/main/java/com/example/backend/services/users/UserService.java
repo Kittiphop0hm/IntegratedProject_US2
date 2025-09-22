@@ -230,7 +230,6 @@ public class UserService {
             System.out.println("new AccessToken: " + newAccessToken);
             ResponseTokenDto tokenDto = new ResponseTokenDto();
             tokenDto.setAccessToken(newAccessToken);
-
             return tokenDto;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid refresh token");

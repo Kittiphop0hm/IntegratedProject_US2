@@ -144,30 +144,30 @@ public class SaleItemService_v1 {
         // Mapping to DTO
         return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
     }
-    // เพิ่มเมธอดนี้สำหรับ PBI 25
-    public PageDto<GetSaleItemDto> getSaleItemsBySellerId(
-            Integer sellerId, int page, int size, String sortField, String sortDirection) {
-
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        Page<SaleItem> saleItemPage = repository.findBySellerId(sellerId, pageRequest);
-
-        List<GetSaleItemDto> saleItemDtos = saleItemPage.getContent().stream()
-                .map(saleItem -> modelMapper.map(saleItem, GetSaleItemDto.class))
-                .collect(Collectors.toList());
-
-        PageDto<GetSaleItemDto> pageDto = new PageDto<>();
-        pageDto.setContent(saleItemDtos);
-        pageDto.setTotalPages(saleItemPage.getTotalPages());
-        pageDto.setTotalElements((int) saleItemPage.getTotalElements());
-        pageDto.setSize(saleItemPage.getSize());
-        pageDto.setNumber(saleItemPage.getNumber());
-        pageDto.setFirst(saleItemPage.isFirst());
-        pageDto.setLast(saleItemPage.isLast());
-        pageDto.setSort(saleItemPage.getSort().toString());
-
-        return pageDto;
-    }
+//    // PBI 25 smark
+//    public PageDto<GetSaleItemDto> getSaleItemsBySellerId(
+//            Integer sellerId, int page, int size, String sortField, String sortDirection) {
+//
+//        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortField);
+//        PageRequest pageRequest = PageRequest.of(page, size, sort);
+//
+//        Page<SaleItem> saleItemPage = repository.findBySellerId(sellerId, pageRequest);
+//
+//        List<GetSaleItemDto> saleItemDtos = saleItemPage.getContent().stream()
+//                .map(saleItem -> modelMapper.map(saleItem, GetSaleItemDto.class))
+//                .collect(Collectors.toList());
+//
+//        PageDto<GetSaleItemDto> pageDto = new PageDto<>();
+//        pageDto.setContent(saleItemDtos);
+//        pageDto.setTotalPages(saleItemPage.getTotalPages());
+//        pageDto.setTotalElements((int) saleItemPage.getTotalElements());
+//        pageDto.setSize(saleItemPage.getSize());
+//        pageDto.setNumber(saleItemPage.getNumber());
+//        pageDto.setFirst(saleItemPage.isFirst());
+//        pageDto.setLast(saleItemPage.isLast());
+//        pageDto.setSort(saleItemPage.getSort().toString());
+//
+//        return pageDto;
+//    }
 
 }
