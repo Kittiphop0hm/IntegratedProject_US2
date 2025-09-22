@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { getItems, deleteItemById } from "../../libs/fetchUtil.js";
+import { getItems, deleteItemById ,getItemsWithToken } from "../../libs/fetchUtil.js";
 import ListTableModel from "../model/ListTableModel.vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
@@ -10,17 +10,22 @@ import DeletePopupModel from "../model/DeletePopupModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SortSaleItemByBrandname from "./SortSaleItemByBrandName.vue";
+import {decodeJWT} from "@/libs/decodeJWT.js";
 
 const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
-
+const accessToken = sessionStorage.getItem('accessToken')
+const getUser = decodeJWT(accessToken)
 onMounted(async () => {
   try {
-    saleItems.value = await getItems(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`
-    );
+    // saleItems.value = await getItems(
+    //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`
+    // );
+      saleItems.value = await getItemsWithToken(
+      `${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items?page=2` , accessToken
+      )
   } catch (err) {
     console.error("Error fetching sale items:", err);
   }

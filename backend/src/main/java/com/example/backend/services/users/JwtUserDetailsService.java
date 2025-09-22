@@ -37,14 +37,14 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
         User user = userRepository.findUserByFullName(username);
-        return new AuthUserDetail(user.getId(), user.getFullName(),
+        return new AuthUserDetail(user.getId(), user.getNickName(),
                 user.getPassword() , getAuthorities(user.getUserType()));
     }
 
     public UserDetails loadUserByEmail(String email)
             throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
-        return new AuthUserDetail(user.getId(), user.getFullName(),
+        return new AuthUserDetail(user.getId(), user.getNickName(),
                 user.getPassword() , getAuthorities(user.getUserType()));
     }
 
@@ -52,7 +52,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow (
                 () -> new ResourceNotFoundException("User id" + id + "does not exist")
       );
-        return new AuthUserDetail(user.getId(), user.getFullName(),
+        return new AuthUserDetail(user.getId(), user.getNickName(),
                 user.getPassword() , getAuthorities(user.getUserType()));
     }
 }
