@@ -64,7 +64,7 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
+// อันนี้ไม่เเน่ใจว่าต้องใช้เป็น long เเทนไหม เเต่มีครั้งนึงมัน error เพราะมันให้ใช้เป็น long
     public Integer extractUserId(String token) {
         Claims claims = extractClaims(token);
         return claims.get("userId", Integer.class);
