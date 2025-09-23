@@ -12,7 +12,10 @@ import UserProfileManager from "@/components/user/UserProfileManager.vue";
 const accessToken = sessionStorage.getItem("accessToken");
 import { decodeJWT } from "@/libs/decodeJWT.js";
 const getUser = decodeJWT(accessToken);
-import { watch } from "vue";
+import { computed } from "vue";
+import { useUserStore } from "../stores/users.js";
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -73,7 +76,7 @@ const router = createRouter({
       component: RegisterAndLoginManager,
     },
     {
-      path: "/login",
+      path: "/signin",
       name: "Login",
       component: RegisterAndLoginManager,
     },
@@ -96,9 +99,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, form) => {
+  const userStore = useUserStore();
+  // console.log("getUser.role: " + getUser.role);
   console.log("form.name: " + form.name);
   console.log("to.name: " + to.name);
-  if (to.name === "SaleItemList" && getUser.role.toUpperCase() !== "SELLER") {
+  console.log("userStore.role: " + userStore.role);
+  if (to.name === "SaleItemList" && !userStore.isSeller) {
     return { name: "SaleItemHome" };
   }
     if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {

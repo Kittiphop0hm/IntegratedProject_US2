@@ -8,6 +8,8 @@ const isLoggedIn = ref(false);
 const userNickname = ref(sessionStorage.getItem('nickname'))
 const nickname = ref(userNickname.value || '')
 const router = useRouter(); 
+import { useUserStore } from '../stores/users.js';
+const userStore = useUserStore();
 watchEffect(() => {
   if (nickname.value) {
     isLoggedIn.value = true;
@@ -22,7 +24,9 @@ const logout = async () => {
   sessionStorage.removeItem("accessToken")
   sessionStorage.removeItem("nickname")
   nickname.value = ''
+  userStore.clearUser();
   const logout = await addItemNoBodyAndNoContent(`${import.meta.env.VITE_APP_URL}/v2/auth/logout`)
+
   console.log(logout.status);
   router.push({ name: "SaleItemHome" });
 }

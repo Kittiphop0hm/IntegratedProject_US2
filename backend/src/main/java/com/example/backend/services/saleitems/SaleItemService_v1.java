@@ -1,6 +1,7 @@
 package com.example.backend.services.saleitems;
 import com.example.backend.dtos.saleItems.*;
 import com.example.backend.dtos.saleItems.sellers.GetSaleItemSellerDto;
+import com.example.backend.entities.AuthUserDetail;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.entities.User;
@@ -9,6 +10,7 @@ import com.example.backend.repositories.BrandRepository;
 import com.example.backend.repositories.SaleItemPageRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.services.users.JwtUserDetailsService;
 import com.example.backend.specifications.SaleItemSpecification;
 import com.example.backend.utils.ListMapper;
 import jakarta.persistence.EntityManager;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -44,6 +47,8 @@ public class SaleItemService_v1 {
     private SaleItemPageRepository pageRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private JwtUserDetailsService jwtUserDetailsService;
 
     public List<ListSaleItemsDto> findAll() {
         List<SaleItem> saleItems = repository.findAllByOrderByCreatedOn();
@@ -168,7 +173,19 @@ public class SaleItemService_v1 {
     }
 
 
-    public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id ,Integer page ,Integer size,String sortField,String sortDirection){
+    public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id , Integer page , Integer size, String sortField, String sortDirection , AuthUserDetail principal ) {
+//        System.out.println(("principal.getId()"));
+//        System.out.println(principal.getId());
+        if (!principal.getId().equals(id)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Seller id not matched with id in access token");
+        }
+        //        UserDetails user1 = jwtUserDetailsService.loadUserById(id);
+//        AuthUserDetail user2 = jwtUserDetailsService.loadUserByIds(id);
+//        System.out.println("user1");
+//        System.out.println(user1);
+//        System.out.println("user2.getId()");
+//        System.out.println(user2.getId());
         Page<SaleItem> saleItems = pageRepository.findBySellerIdOrderByCreatedOnAsc(id, PageRequest.of(page, size));
         return listMapper.toPageDTO(saleItems, GetSaleItemSellerDto.class, modelMapper, sortField);
     }

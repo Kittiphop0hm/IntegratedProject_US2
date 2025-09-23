@@ -4,9 +4,12 @@ import RegisterAndLogin from "./RegisterAndLogin.vue";
 import { onMounted, ref } from "vue";
 import { register, addItem } from "@/libs/fetchUtil";
 import { decodeJWT } from "@/libs/decodeJWT";
-
+import { useUserStore } from '../../stores/users.js';
+const userStore = useUserStore();
 const saveTokens = (accessToken, nickname) => {
   sessionStorage.setItem('accessToken', accessToken);
+  console.log('Saving accessToken to sessionStorage:', accessToken);
+  userStore.setUser(decodeJWT(accessToken));
   sessionStorage.setItem('nickname', nickname);
 };
 
