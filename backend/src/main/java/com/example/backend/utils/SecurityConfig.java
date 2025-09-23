@@ -40,10 +40,10 @@ public class SecurityConfig {
 //                .authorizeHttpRequests( (request) -> request.anyRequest().permitAll())
                 .authorizeHttpRequests( request -> request
                                 .requestMatchers("/v2/auth/**").permitAll()
-                                .requestMatchers("/v1/sale-items").permitAll()
-                                .requestMatchers("/v2/sale-items").permitAll()
-                                .requestMatchers("/v1/brands").permitAll()
-                                .requestMatchers("/v2/users").permitAll()
+                                .requestMatchers("/v1/sale-items/**").permitAll()
+                                .requestMatchers("/v2/sale-items/**").permitAll()
+                                .requestMatchers("/v1/brands/**").permitAll()
+                                .requestMatchers("/v2/users/**").permitAll()
 
 //                                .requestMatchers("/itb-mshop/v2/auth/**").permitAll()
                                 .requestMatchers("/v2/sellers/**").hasAnyAuthority("SELLER")

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.Map;
 
 @Component
@@ -64,6 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             "Invalid JWT access token"
                     );
                 }
+                System.out.println("UserId: " + userId);
                 userId = claims.get("id", Integer.class);
             } else {
                 throw new ResponseStatusException(
@@ -97,7 +100,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(upAuthToken);
             authentication = SecurityContextHolder.getContext().getAuthentication();
             System.out.println("Authentication: " + authentication);
+
         }
+
+
+
         chain.doFilter(request, response);
     }
 }

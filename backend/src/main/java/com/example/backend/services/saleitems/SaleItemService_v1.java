@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -178,8 +179,9 @@ public class SaleItemService_v1 {
 //        System.out.println(principal.getId());
         System.out.println("seller"+principal);
         if (!principal.getId().equals(id)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Seller id not matched with id in access token");
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+//                    "Seller id not matched with id in access token");
+            throw new AccessDeniedException("Not allowed to access other seller's resources");
         }
         //        UserDetails user1 = jwtUserDetailsService.loadUserById(id);
 //        AuthUserDetail user2 = jwtUserDetailsService.loadUserByIds(id);

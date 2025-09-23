@@ -43,7 +43,7 @@ public class UserAuthenticationController {
     public ResponseEntity<ResponseTokenDto> authenticateUser(
             @Valid @RequestBody RequestLoginDto requestLoginDto,
             HttpServletResponse response) {
-        System.out.println("authentication called");
+        System.out.println("authentication Controller called");
         return ResponseEntity.ok(userService.checkLogin(
                 requestLoginDto.getEmail(),
                 requestLoginDto.getPassword(),
