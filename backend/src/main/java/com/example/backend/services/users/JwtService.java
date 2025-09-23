@@ -110,8 +110,8 @@ public class JwtService {
     public Boolean isValidClaims(Claims claims) {
         System.out.println("URI: " + claims.getSubject());
         String issuer = claims.getIssuer();
-        return
-                issuer.equals("https://intproj24.sit.kmutt.ac.th/us2/")
+        return issuer != null
+                && issuer.equals("https://intproj24.sit.kmutt.ac.th/us2/")
                 && claims.containsKey("id")
                 && claims.get("id", Integer.class) > 0;
     }
