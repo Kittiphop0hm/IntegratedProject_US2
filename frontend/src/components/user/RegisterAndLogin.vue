@@ -529,7 +529,7 @@ const enableLoginButton = computed(() => {
             id="email"
             type="text"
             placeholder="Enter your email"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+            class="itbms-email w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
             maxlength="50"
             />
         </div>
@@ -545,7 +545,7 @@ const enableLoginButton = computed(() => {
             :type="isShowPassword ? 'text' : 'password'"
             maxlength="14"
             placeholder="Enter your password"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
+            class="itbms-password w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
           />
           <div class="h-full flex items-center my-1">
             <input v-model.trim="isShowPassword" type="checkbox" />
@@ -561,8 +561,8 @@ const enableLoginButton = computed(() => {
             type="submit"
             :class="
               enableLoginButton
-                ? 'w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1'
-                : 'w-full mx-1 flex-1 bg-gray-600 cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg shadow-lg max-md:my-1'
+                ? 'itbms-signin-button w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1'
+                : 'itbms-signin-button w-full mx-1 flex-1 bg-gray-600 cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg shadow-lg max-md:my-1'
             "
            @click="$emit('login',$event, loginFormat)"
             >

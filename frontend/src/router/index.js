@@ -68,12 +68,12 @@ const router = createRouter({
       component: BrandAddEdit,
     },
     {
-      path: "/signin",
+      path: "/register",
       name: "Register",
       component: RegisterAndLoginManager,
     },
     {
-      path: "/login",
+      path: "/signin",
       name: "Login",
       component: RegisterAndLoginManager,
     },

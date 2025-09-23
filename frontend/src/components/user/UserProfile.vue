@@ -160,41 +160,98 @@ const enableEditBtn = computed(() => {
                 <p class="text-red-400 text-sm">{{ validateErrorNickname }}</p>
               </div>
 
-              <div>
+              <div v-if="route.path === '/profile'">
                 <h1 class="font-semibold">Email</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="itbms-email max-[450px]:text-sm">{{ currentUser?.email }}</p>
                 </div>
               </div>
 
-              <div v-if="currentUser?.phoneNumber">
-                <h1 class="font-semibold">Phonenumber</h1>
+              <div v-if="route.path === '/profile/edit'">
+                <h1 class="font-semibold">Email</h1>
+                <div>
+                  <input disabled v-model.trim="currentUser.email" type="text" class="itbms-email w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                </div>
+              </div>
+
+              <!-- <div>
+                <h1 class="font-semibold">Email</h1>
+                <div class="bg-gray-200 p-3 rounded-lg">
+                  <p class="itbms-email max-[450px]:text-sm">{{ currentUser?.email }}</p>
+                </div>
+              </div> -->
+
+              <div v-if="currentUser?.phoneNumber && route.path === '/profile'">
+                <h1 class="font-semibold">Phone</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="itbms-mobile max-[450px]:text-sm">{{ maskPhoneNumber }}</p>
                 </div>
               </div>
 
-              <div v-if="currentUser?.bankAccount">
+              <div v-if="route.path === '/profile/edit'">
+                <h1 class="font-semibold">Phone</h1>
+                <div>
+                  <input disabled :value="maskPhoneNumber" type="text" class="itbms-mobile w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                </div>
+              </div>
+
+              <!-- <div v-if="currentUser?.phoneNumber">
+                <h1 class="font-semibold">Phonenumber</h1>
+                <div class="bg-gray-200 p-3 rounded-lg">
+                  <p class="itbms-mobile max-[450px]:text-sm">{{ maskPhoneNumber }}</p>
+                </div>
+              </div> -->
+
+              <div v-if="currentUser?.bankAccount && route.path === '/profile'">
+                <h1 class="font-semibold">Bankaccount</h1>
+                <div class="bg-gray-200 p-3 rounded-lg">
+                  <p class="itbms-bankAccount max-[450px]:text-sm">{{ maskBankNo }}</p>
+                </div>
+              </div>
+
+              <div v-if="route.path === '/profile/edit'">
+                <h1 class="font-semibold">Bankaccount</h1>
+                <div>
+                  <input disabled :value="maskBankNo" type="text" class="itbms-bankAccount w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                </div>
+              </div>
+
+              <!-- <div v-if="currentUser?.bankAccount">
                 <h1 class="font-semibold">Bankaccount</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="itbms-bankAccount max-[450px]:text-sm">{{ maskBankNo ? maskBankNo : "-" }}</p>
                 </div>
+              </div> -->
+
+              <div v-if="currentUser?.bankName && route.path === '/profile'">
+                <h1 class="font-semibold">Bankname</h1>
+                <div class="bg-gray-200 p-3 rounded-lg">
+                  <p class="itbms-bankName max-[450px]:text-sm">{{ currentUser?.bankName }}</p>
+                </div>
               </div>
 
-              <div v-if="currentUser?.bankName">
+              <div v-if="route.path === '/profile/edit'">
+                <h1 class="font-semibold">Bankname</h1>
+                <div>
+                  <input disabled :value="currentUser?.bankName" type="text" class="itbms-bankName w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                </div>
+              </div>
+
+              <!-- <div v-if="currentUser?.bankName">
                 <h1 class="font-semibold">Bankname</h1>
                 <div class="bg-gray-200 p-3 rounded-lg">
                   <p class="itbms-bankName max-[450px]:text-sm">{{ currentUser?.bankName ? currentUser?.bankName : "-" }}</p>
                 </div>
-              </div>
+              </div> -->
 
               <div v-if="currentUser?.userType">
                 <h1 class="font-semibold">User type</h1>
                 <div class="flex justify-between items-center bg-gray-200 p-3 rounded-lg">
-                  <p class="itbms-type max-[450px]:text-sm">{{ currentUser?.userType}}</p>
+                  <p class="itbms-type max-[450px]:text-sm">{{ currentUser?.userType === 'BUYER' ? 'Buyer' : 'Seller'}}</p>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
