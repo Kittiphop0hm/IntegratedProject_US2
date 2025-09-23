@@ -1,5 +1,6 @@
 package com.example.backend.utils;
 
+import com.example.backend.exceptions.JwtAccessDeniedHandler;
 import com.example.backend.exceptions.JwtAuthenticationEntryPoint;
 import com.example.backend.filters.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class SecurityConfig {
     @Autowired
+    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    @Autowired
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
@@ -37,14 +40,24 @@ public class SecurityConfig {
 //                .authorizeHttpRequests( (request) -> request.anyRequest().permitAll())
                 .authorizeHttpRequests( request -> request
                                 .requestMatchers("/v2/auth/**").permitAll()
+                                .requestMatchers("/v1/sale-items").permitAll()
+                                .requestMatchers("/v2/sale-items").permitAll()
+                                .requestMatchers("/v1/brands").permitAll()
+                                .requestMatchers("/v2/users").permitAll()
+
 //                                .requestMatchers("/itb-mshop/v2/auth/**").permitAll()
-                                .requestMatchers("/v2/seller/**").hasAnyAuthority("SELLER")
-                                .anyRequest().permitAll()
+                                .requestMatchers("/v2/sellers/**").hasAnyAuthority("SELLER")
+                                .anyRequest().authenticated()
+//                                .anyRequest().permitAll()
                                 )
 //                .cors(withDefaults())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(ex->ex.authenticationEntryPoint((jwtAuthenticationEntryPoint)))
+                .exceptionHandling(ex->ex
+                        .accessDeniedHandler(jwtAccessDeniedHandler)
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
+                )
 	            .sessionManagement( session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }

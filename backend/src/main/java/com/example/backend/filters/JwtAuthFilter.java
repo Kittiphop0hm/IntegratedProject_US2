@@ -58,47 +58,46 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             "JWT token has expired"
                     );
                 }
-                    if (!jwtUtils.isValidClaims(claims) || !"ACCESS_TOKEN".equals(claims.get("typ" , String.class))) {
-                        throw new ResponseStatusException(
-                                HttpStatus.UNAUTHORIZED,
-                                "Invalid JWT access token"
-                        );
-                    }
-                    userId = claims.get("id", Integer.class);
-                } else {
+                if (!jwtUtils.isValidClaims(claims) || !"ACCESS_TOKEN".equals(claims.get("typ" , String.class))) {
                     throw new ResponseStatusException(
                             HttpStatus.UNAUTHORIZED,
-                            "JWT Token does not begin with Bearer String"
+                            "Invalid JWT access token"
                     );
                 }
-            }
-            System.out.println("check Authentication");
-            Authentication authentication = SecurityContextHolder
-                    .getContext().getAuthentication();
-            System.out.println("authentication = " + authentication);
-            System.out.println("userId = " + userId);
-            if (userId != null && authentication == null) {
-                UserDetails userDetails = this.jwtUserDetailsService.loadUserById(userId);
-                System.out.println("userDetails = " + userDetails);
-                if (userDetails == null || !userDetails.getUsername().equals(claims.get("nickname",String.class))) {
-                    throw new ResponseStatusException(
-                            HttpStatus.UNAUTHORIZED,
-                            "Invalid JWT Token"
-                    );
-                }
-                System.out.println("set UsernamePasswordAuthenticationToken");
-                UsernamePasswordAuthenticationToken upAuthToken =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities()
-                        );
-                upAuthToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
+                userId = claims.get("id", Integer.class);
+            } else {
+                throw new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "JWT Token does not begin with Bearer String"
                 );
-                SecurityContextHolder.getContext().setAuthentication(upAuthToken);
-                authentication = SecurityContextHolder.getContext().getAuthentication();
-                System.out.println("Authentication: " + authentication);
             }
-            chain.doFilter(request, response);
         }
+        System.out.println("check Authentication");
+        Authentication authentication = SecurityContextHolder
+                .getContext().getAuthentication();
+        System.out.println("authentication = " + authentication);
+        System.out.println("userId = " + userId);
+        if (userId != null && authentication == null) {
+            UserDetails userDetails = this.jwtUserDetailsService.loadUserById(userId);
+            System.out.println("userDetails = " + userDetails);
+            if (userDetails == null || !userDetails.getUsername().equals(claims.get("nickname",String.class))) {
+                throw new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED,
+                        "Invalid JWT Token"
+                );
+            }
+            System.out.println("set UsernamePasswordAuthenticationToken");
+            UsernamePasswordAuthenticationToken upAuthToken =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+            upAuthToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            SecurityContextHolder.getContext().setAuthentication(upAuthToken);
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+            System.out.println("Authentication: " + authentication);
+        }
+        chain.doFilter(request, response);
     }
-
+}
