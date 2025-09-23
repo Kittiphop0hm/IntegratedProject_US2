@@ -4,6 +4,7 @@ import com.example.backend.entities.AuthUserDetail;
 import com.example.backend.entities.User;
 import com.example.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +21,7 @@ import java.util.List;
 public class JwtUserDetailsService implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
+    private ConversionService conversionService;
 
     private static GrantedAuthority getAuthority(String role) {
         return new SimpleGrantedAuthority(role);
@@ -52,7 +54,9 @@ public class JwtUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow (
                 () -> new ResourceNotFoundException("User id" + id + "does not exist")
       );
+//        System.out.println("id" + user.getId());
         return new AuthUserDetail(user.getId(), user.getNickName(),
                 user.getPassword() , getAuthorities(user.getUserType()));
     }
+
 }

@@ -552,7 +552,7 @@ async function submitForm() {
       //   imageFile.value
       // );
       await addSaleItemAndImageWithToken(
-        `${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items`,
+        `${import.meta.env.VITE_APP_URL}/v2/sellers/${getUser.id}/sale-items`,
         saleItem.value,
         imageFile.value,
         accessToken
@@ -560,7 +560,7 @@ async function submitForm() {
       saleItem.value = { ...initSaleItem };
       router.push({ path: previousPath, query: { alertAdd: "true" } });
       router.push({
-        name: "SaleItemHome",
+        name: "SaleItemList",
         query: { alertAdd: "true" },
       });
     } catch (error) {

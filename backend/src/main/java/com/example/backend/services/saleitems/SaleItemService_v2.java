@@ -60,13 +60,18 @@ public class SaleItemService_v2 {
 
     public ResponseSaleItemsDto createProduct(SaleItemDetailForCreateOrUpdateDto createSaleItemDto , List<MultipartFile> images) {
         ResponseSaleItemsDto mainDto = saleItemServiceV1.createSaleItem(createSaleItemDto);
-        fileService.storeList(images , mainDto.getId());
+        if(images != null ) {
+            fileService.storeList(images , mainDto.getId());
+        }
         return findByid(mainDto.getId());
     }
 
     public ResponseSaleItemsDto createProduct(Integer id,SaleItemDetailForCreateOrUpdateDto createSaleItemDto , List<MultipartFile> images) {
         ResponseSaleItemsDto mainDto = saleItemServiceV1.createSaleItem(createSaleItemDto , id);
-        fileService.storeList(images , mainDto.getId());
+        if(images != null ) {
+            fileService.storeList(images , mainDto.getId());
+        }
+
         return findByid(mainDto.getId());
     }
 
