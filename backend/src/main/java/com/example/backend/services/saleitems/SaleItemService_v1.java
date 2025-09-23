@@ -176,6 +176,7 @@ public class SaleItemService_v1 {
     public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id , Integer page , Integer size, String sortField, String sortDirection , AuthUserDetail principal ) {
 //        System.out.println(("principal.getId()"));
 //        System.out.println(principal.getId());
+        System.out.println("seller"+principal);
         if (!principal.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Seller id not matched with id in access token");
