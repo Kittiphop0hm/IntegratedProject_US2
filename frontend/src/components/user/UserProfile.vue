@@ -170,7 +170,7 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Email</h1>
                 <div>
-                  <input disabled v-model.trim="currentUser.email" type="text" class="itbms-email w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input disabled v-model.trim="currentUser.email" type="text" class="itbms-email w-full bg-gray-200 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
               </div>
 
@@ -191,7 +191,7 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Phone</h1>
                 <div>
-                  <input disabled :value="maskPhoneNumber" type="text" class="itbms-mobile w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input disabled :value="maskPhoneNumber" type="text" class="itbms-mobile w-full bg-gray-200 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
               </div>
 
@@ -212,7 +212,7 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Bankaccount</h1>
                 <div>
-                  <input disabled :value="maskBankNo" type="text" class="itbms-bankAccount w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input disabled :value="maskBankNo" type="text" class="itbms-bankAccount w-full bg-gray-200 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
               </div>
 
@@ -233,7 +233,7 @@ const enableEditBtn = computed(() => {
               <div v-if="route.path === '/profile/edit'">
                 <h1 class="font-semibold">Bankname</h1>
                 <div>
-                  <input disabled :value="currentUser?.bankName" type="text" class="itbms-bankName w-full border-1 border-gray-300 p-3 rounded-lg max-[450px]:text-sm">
+                  <input disabled :value="currentUser?.bankName" type="text" class="itbms-bankName w-full bg-gray-200 p-3 rounded-lg max-[450px]:text-sm">
                 </div>
               </div>
 
