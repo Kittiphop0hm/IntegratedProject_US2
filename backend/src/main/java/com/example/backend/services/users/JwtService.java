@@ -7,9 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import io.jsonwebtoken.security.SignatureException;
 
 import java.security.Key;
-import java.text.ParseException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,17 +77,20 @@ public class JwtService {
     }
 
     public void verifyToken(String token) {
-        try {
+//        try {
             Jwts.parserBuilder()
                     .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(token);
 
-        } catch (ExpiredJwtException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired", e);
-        } catch (MalformedJwtException  | UnsupportedJwtException | IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid JWT token", e);
-        }
+//        } catch (ExpiredJwtException e) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token has expired", e);
+//        } catch (MalformedJwtException  | UnsupportedJwtException | IllegalArgumentException e) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid JWT token", e);
+//        } catch (SignatureException e) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid JWT signature", e);
+//        }
+
     }
 
     public boolean isExpired(Claims claims) {

@@ -1,6 +1,8 @@
 package com.example.backend.dtos.saleItems;
 
 import com.example.backend.dtos.files.ListFilesDto;
+import com.example.backend.entities.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +24,8 @@ public class ResponseSaleItemsDto {
     private Integer storageGb;
     private String color;
     private List<ListFilesDto> saleItemImages;
+    private User seller;
     private Instant createdOn;
     private Instant updatedOn;
+
 };

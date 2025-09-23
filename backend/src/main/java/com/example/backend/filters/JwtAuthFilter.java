@@ -4,6 +4,7 @@ import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.JwtUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.io.IOException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +49,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             if (requestTokenHeader.startsWith("Bearer")) {
                 System.out.println("requestTokenHeader.startsWith(\"Bearer\")");
                 jwtToken = requestTokenHeader.substring(7);
-                jwtUtils.verifyToken(jwtToken);
+                try {
+                    jwtUtils.verifyToken(jwtToken);
+                } catch (SignatureException e) {
+//                    throw new ResponseStatusException(
+//                            HttpStatus.UNAUTHORIZED,
+//                            "Invalid JWT signature"
+//                    );
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT signature");
+                    return;
+                }
                 claims = jwtUtils.extractClaims(jwtToken);
                 System.out.println("claims " + claims);
                 System.out.println(claims);
@@ -58,12 +68,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                             "JWT token has expired"
                     );
                 }
-                    if (!jwtUtils.isValidClaims(claims) || !"ACCESS_TOKEN".equals(claims.get("typ" , String.class))) {
-                        throw new ResponseStatusException(
-                                HttpStatus.UNAUTHORIZED,
-                                "Invalid JWT access token"
-                        );
-                    }
+                if (!jwtUtils.isValidClaims(claims) || !"ACCESS_TOKEN".equals(claims.get("typ" , String.class))) {
+
+                    throw new ResponseStatusException(
+                            HttpStatus.UNAUTHORIZED,
+                            "Invalid JWT access token"
+                    );
+                }
                     userId = claims.get("id", Integer.class);
                 } else {
                     throw new ResponseStatusException(
@@ -97,7 +108,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(upAuthToken);
                 authentication = SecurityContextHolder.getContext().getAuthentication();
                 System.out.println("Authentication: " + authentication);
-            }
+
+//                String path = request.getRequestURI(); // /itb-mshop/v2/sellers/4/sale-items
+//                String[] parts = path.split("/");
+//                if (parts.length > 4) {
+//                    try {
+//                        Integer sellerIdInPath = Integer.valueOf(parts[4]);
+//                        if (!sellerIdInPath.equals(userId)) {
+//                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden: cannot access other seller's items");
+//                            return;
+//                        }
+//                    } catch (NumberFormatException ignored) {
+//                        // ไม่ใช่เลข → ปล่อยผ่าน
+//                    }
+//                }
+//            } else {
+//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT Token does not begin with Bearer String");
+//                return;
+//            }
+
             chain.doFilter(request, response);
         }
     }
