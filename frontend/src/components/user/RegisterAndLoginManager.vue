@@ -98,7 +98,7 @@ const loginForm = async (event, user) => {
       if (accessToken && nickName) {
         saveTokens(accessToken, nickName);
         router.push({ 
-          name: "SaleItemHome",
+          name: "SaleItemList",
           query: { loginSuccess: "true" }
         });
       }
