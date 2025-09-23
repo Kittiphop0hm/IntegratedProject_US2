@@ -44,6 +44,7 @@ public class SaleItemController {
     }
 
 
+
     @PostMapping("")
     public ResponseEntity<?> createProduct(
             @PathVariable Integer id,

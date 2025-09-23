@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -156,10 +157,7 @@ public class UserService {
 
     public ResponseTokenDto checkLogin(String email, String rawPassword, HttpServletResponse response) {
         User user = repository.findUserByEmail(email);
-//        UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(
-//                user.getFullName() , user.getPassword()
-//        );
-//        authenticationManager.authenticate(upat);
+
         if (user == null || !checkPassword(rawPassword, user.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email or Password is incorrect.");
         }
@@ -167,15 +165,18 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You need to activate your account before signing in.");
         }
 
-
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .path("/")
+                .maxAge(24 * 60 * 60)
+                .sameSite("Strict")
+                .secure(false)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
 
         ResponseTokenDto tokenDto = new ResponseTokenDto();
         tokenDto.setAccessToken(accessToken);
@@ -191,12 +192,16 @@ public class UserService {
                 User user = repository.findUserByEmail(claims.getSubject());
                 if (!repository.existsUserByEmail(user.getEmail())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email:" + user.getEmail() + " not found");
                 if (!user.getIsActive()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not active");
-                cookies[i].setHttpOnly(true);
-                cookies[i].setPath("/");
-                cookies[i].setMaxAge(0);
-                response.addCookie(cookies[i]);
             }
         }
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .secure(false)
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 
     public UserProfileResponseDto updateUser(Integer id, UserUpdateFormatDto userFormat) {
