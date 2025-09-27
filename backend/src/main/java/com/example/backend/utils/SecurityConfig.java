@@ -47,7 +47,7 @@ public class SecurityConfig {
 
 //                                .requestMatchers("/itb-mshop/v2/auth/**").permitAll()
                                 .requestMatchers("/v2/sellers/**").hasAnyAuthority("SELLER")
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
 //                                .anyRequest().permitAll()
                                 )
 //                .cors(withDefaults())
