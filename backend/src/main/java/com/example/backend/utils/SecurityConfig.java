@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 .requestMatchers("/v2/sale-items/**").permitAll()
                                 .requestMatchers("/v1/brands/**").permitAll()
                                 .requestMatchers("/v2/users/**").permitAll()
+                                .requestMatchers("/v2/orders/**").permitAll()
 
 //                                .requestMatchers("/itb-mshop/v2/auth/**").permitAll()
                                 .requestMatchers("/v2/sellers/**").hasAnyAuthority("SELLER")
