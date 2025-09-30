@@ -38,8 +38,8 @@ public class OrderService {
     @Autowired
     private ListMapper listMapper;
 
-    public PageDto<PlaceOrderResponseDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField) {
-//        if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
+    public PageDto<PlaceOrderResponseDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
+        if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
         Page<Order> pageOrder = orderRepository.findOrdersBySeller_Id(id, PageRequest.of(page, size));
         PageDto<PlaceOrderResponseDto> placeOrderResponseDtoPageDto = listMapper.toPageDTO(pageOrder, PlaceOrderResponseDto.class, modelMapper, sortField);
         placeOrderResponseDtoPageDto.getContent().forEach((order) -> {

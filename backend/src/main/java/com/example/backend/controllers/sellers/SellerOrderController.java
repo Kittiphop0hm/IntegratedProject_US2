@@ -21,10 +21,10 @@ public class SellerOrderController {
             @PathVariable Integer sid,
             @RequestParam Integer page,
             @RequestParam(defaultValue = "10") Integer size,
-            @RequestParam(defaultValue = "id") String sortField
-//            @AuthenticationPrincipal AuthUserDetail principal
+            @RequestParam(defaultValue = "id") String sortField,
+            @AuthenticationPrincipal AuthUserDetail principal
     ) {
-    return ResponseEntity.ok(orderService.getOrderBySellerId(sid, page, size, sortField));
+    return ResponseEntity.ok(orderService.getOrderBySellerId(sid, page, size, sortField, principal));
 
     }
 
