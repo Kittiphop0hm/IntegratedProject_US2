@@ -1,23 +1,25 @@
 package com.example.backend.services.orders;
 
+import com.example.backend.dtos.orders.OrderItemDto;
 import com.example.backend.dtos.orders.PlaceOrderRequestDto;
 import com.example.backend.dtos.orders.PlaceOrderResponseDto;
 import com.example.backend.dtos.orders.SellerForPlaceOrderDto;
-import com.example.backend.entities.Order;
-import com.example.backend.entities.OrderItem;
-import com.example.backend.entities.SaleItem;
-import com.example.backend.entities.User;
+import com.example.backend.dtos.saleItems.PageDto;
+import com.example.backend.entities.*;
 import com.example.backend.repositories.OrderItemRepository;
 import com.example.backend.repositories.OrderRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,20 @@ public class OrderService {
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ListMapper listMapper;
+
+    public PageDto<PlaceOrderResponseDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField) {
+//        if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
+        Page<Order> pageOrder = orderRepository.findOrdersBySeller_Id(id, PageRequest.of(page, size));
+        PageDto<PlaceOrderResponseDto> placeOrderResponseDtoPageDto = listMapper.toPageDTO(pageOrder, PlaceOrderResponseDto.class, modelMapper, sortField);
+        placeOrderResponseDtoPageDto.getContent().forEach((order) -> {
+            List<OrderItem> orderItems = orderItemRepository.findOrderItemsByOrders_Id(order.getId());
+            List<OrderItemDto> orderItemDtoList = orderItems.stream().map((item) -> modelMapper.map(item, OrderItemDto.class)).toList();
+            order.setOrderItems(orderItemDtoList);
+        });
+        return placeOrderResponseDtoPageDto;
+    }
 
     public List<PlaceOrderResponseDto> createOrder(List<PlaceOrderRequestDto> orders) {
         if (orders.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing request parameters");

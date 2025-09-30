@@ -1,0 +1,32 @@
+package com.example.backend.controllers.sellers;
+
+import com.example.backend.dtos.orders.PlaceOrderResponseDto;
+import com.example.backend.dtos.saleItems.PageDto;
+import com.example.backend.entities.AuthUserDetail;
+import com.example.backend.services.orders.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v2/sellers/{sid}/orders")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
+public class SellerOrderController {
+    @Autowired
+    private OrderService orderService;
+
+    @GetMapping("")
+    public ResponseEntity<PageDto<PlaceOrderResponseDto>> getOrderSellerPage(
+            @PathVariable Integer sid,
+            @RequestParam Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "id") String sortField
+//            @AuthenticationPrincipal AuthUserDetail principal
+    ) {
+    return ResponseEntity.ok(orderService.getOrderBySellerId(sid, page, size, sortField));
+
+    }
+
+
+}

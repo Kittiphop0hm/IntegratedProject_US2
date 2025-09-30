@@ -37,7 +37,6 @@ public class SaleItemController {
             @RequestParam(defaultValue = "id") String sortField,
             @RequestParam(defaultValue = "asc") String sortDirection ,
             @AuthenticationPrincipal AuthUserDetail principal
-
     ) {
 
         return ResponseEntity.ok(saleItemServiceV1.getSaleItemListBySeller(id, page, size, sortField, sortDirection , principal));
