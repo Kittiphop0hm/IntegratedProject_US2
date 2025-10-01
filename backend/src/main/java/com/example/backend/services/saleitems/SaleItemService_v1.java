@@ -1,6 +1,7 @@
 package com.example.backend.services.saleitems;
 import com.example.backend.dtos.saleItems.*;
 import com.example.backend.dtos.saleItems.sellers.GetSaleItemSellerDto;
+import com.example.backend.dtos.saleItems.sellers.ResponseSaleItemsWithSellerDto;
 import com.example.backend.entities.AuthUserDetail;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
@@ -74,7 +75,7 @@ public class SaleItemService_v1 {
     }
 
     @Transactional
-    public ResponseSaleItemsDto createSaleItem(SaleItemDetailForCreateOrUpdateDto createSaleItemDto , Integer id) {
+    public ResponseSaleItemsWithSellerDto createSaleItem(SaleItemDetailForCreateOrUpdateDto createSaleItemDto , Integer id) {
         brandRepository.findById(createSaleItemDto.getBrand().getId())
                 .orElseThrow(() -> new ItemNotFoundException("Brand not found for this id :: " + createSaleItemDto.getBrand().getId()));
         User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found for this id :: " + id));
@@ -82,7 +83,7 @@ public class SaleItemService_v1 {
         saleItem.setSeller(user);
         SaleItem savedSaleItem = repository.save(saleItem);
         entityManager.refresh(savedSaleItem);
-        ResponseSaleItemsDto responseDto = modelMapper.map(savedSaleItem, ResponseSaleItemsDto.class);
+        ResponseSaleItemsWithSellerDto responseDto = modelMapper.map(savedSaleItem, ResponseSaleItemsWithSellerDto.class);
         responseDto.setBrandName(savedSaleItem.getBrand().getName());
         return responseDto;
     }
@@ -128,7 +129,9 @@ public class SaleItemService_v1 {
             String sortField,
             String sortDirection,
             Integer page,
-            Integer size) {
+            Integer size ,
+            AuthUserDetail principal
+            ) {
         List<Integer> filterStorageSizes = new ArrayList<>();
         boolean includeNotSpecified = false;
 
@@ -168,8 +171,19 @@ public class SaleItemService_v1 {
         System.out.println("📄 Page: " + page + ", Size: " + size);
         System.out.println("📈 Total items found: " + saleItems.getTotalElements());
         System.out.println("📊 Total pages: " + saleItems.getTotalPages());
-
-        // Mapping to DTO
+        System.out.println(principal);
+        if(principal != null) {
+//            PageDto<GetSaleItemDto> saleItemPages = modelMapper.map(saleItems, PageDto.class);
+            Page<GetSaleItemDto> dtoPage = saleItems.map(items -> {
+                GetSaleItemDto dto = modelMapper.map(items, GetSaleItemDto.class);
+                dto.setIsOwnedByCurrentUser(items.getSeller().getId().equals(principal.getId()));
+                return dto;
+            });
+            PageDto<GetSaleItemDto> pageDtos = modelMapper.map(dtoPage, PageDto.class);
+            pageDtos.setContent(pageDtos.getContent());
+            pageDtos.setSort(sortField);
+            return pageDtos;
+        }
         return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
     }
 
@@ -177,6 +191,7 @@ public class SaleItemService_v1 {
     public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id , Integer page , Integer size, String sortField, String sortDirection , AuthUserDetail principal ) {
 //        System.out.println(("principal.getId()"));
 //        System.out.println(principal.getId());
+        System.out.println("getSaleItemListBySeller function");
         System.out.println("seller"+principal);
         if (!principal.getId().equals(id)) {
 //            throw new ResponseStatusException(HttpStatus.FORBIDDEN,

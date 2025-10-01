@@ -6,6 +6,8 @@ import com.example.backend.dtos.saleItems.ListSaleItemsDto;
 import com.example.backend.dtos.saleItems.ResponseSaleItemsDto;
 import com.example.backend.dtos.saleItems.SaleItemDetailForCreateOrUpdateDto;
 import com.example.backend.dtos.saleItems.SaleItemWithImageInfo;
+import com.example.backend.dtos.saleItems.sellers.ResponseSaleItemsWithSellerDto;
+import com.example.backend.dtos.users.sellers.GetUserSellerDto;
 import com.example.backend.entities.Picture;
 import com.example.backend.entities.SaleItem;
 import com.example.backend.exceptions.ItemNotFoundException;
@@ -58,6 +60,19 @@ public class SaleItemService_v2 {
         return mainDto;
     }
 
+    public ResponseSaleItemsWithSellerDto findByids(Integer id) {
+        SaleItem saleItem = saleItemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
+        ResponseSaleItemsWithSellerDto mainDto = modelMapper.map(saleItem,ResponseSaleItemsWithSellerDto.class);
+        List<Picture> images = pictureRepository.findBySalesIdOrderByImageViewOrderAsc(id);
+        List<ListFilesDto> listFile = listMapper.mapList(images,ListFilesDto.class,modelMapper);
+        GetUserSellerDto user = modelMapper.map(saleItem.getSeller(),GetUserSellerDto.class);
+        mainDto.setSaleItemImages(listFile);
+        mainDto.setSeller(user);
+        System.out.println("mainDto");
+        System.out.println(mainDto);
+        return mainDto;
+    }
+
     public ResponseSaleItemsDto createProduct(SaleItemDetailForCreateOrUpdateDto createSaleItemDto , List<MultipartFile> images) {
         ResponseSaleItemsDto mainDto = saleItemServiceV1.createSaleItem(createSaleItemDto);
         if(images != null ) {
@@ -66,13 +81,13 @@ public class SaleItemService_v2 {
         return findByid(mainDto.getId());
     }
 
-    public ResponseSaleItemsDto createProduct(Integer id,SaleItemDetailForCreateOrUpdateDto createSaleItemDto , List<MultipartFile> images) {
-        ResponseSaleItemsDto mainDto = saleItemServiceV1.createSaleItem(createSaleItemDto , id);
+    public ResponseSaleItemsWithSellerDto createProduct(Integer id, SaleItemDetailForCreateOrUpdateDto createSaleItemDto , List<MultipartFile> images) {
+        ResponseSaleItemsWithSellerDto mainDto = saleItemServiceV1.createSaleItem(createSaleItemDto , id);
         if(images != null ) {
             fileService.storeList(images , mainDto.getId());
         }
 
-        return findByid(mainDto.getId());
+        return findByids(mainDto.getId());
     }
 
     public void deleteProduct(Integer id) {

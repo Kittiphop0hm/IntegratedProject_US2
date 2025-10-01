@@ -1,19 +1,30 @@
 <script setup>
-import { watch } from "vue";
+import { watch , onMounted , ref , defineEmits  } from "vue";
 import SaleItemListModel from "../model/SaleItemListModel.vue";
+import AlertMessageModel from "../model/AlertMessageModel.vue";
 import { useRoute } from "vue-router";
+import { useUserStore } from "@/stores/users";
 const route = useRoute();
 const props = defineProps({
-    saleItems: {
-        type: Array ,
-        required: true
-    }
-})
-
+  saleItems: {
+    type: Array,
+    required: true,
+  },
+});
+console.log(props)
 function savePreviousPath() {
   const previousPath = route.fullPath;
   localStorage.setItem("previousPath", previousPath);
 }
+const items = ref(props.saleItems);
+
+    const emit = defineEmits(["addToCart"]);
+function checkRole(yourItem) {
+  emit("addToCart", yourItem);
+}
+
+
+
 </script>
 
 <template>
@@ -23,9 +34,7 @@ function savePreviousPath() {
         :to="{ name: 'SaleItemDetail', params: { id: yourItem.id } }"
         class="block"
       >
-        <div
-          class="itbms-row border rounded-xl shadow hover:shadow-md p-4 transition duration-300 ease-in-out cursor-pointer"
-        >
+        <div class="itbms-row relative border rounded-xl shadow hover:shadow-md p-4 transition duration-300 ease-in-out cursor-pointer">
           <img
             src="/images/iPhone14ProMax.jpg"
             alt="phone image"
@@ -47,13 +56,26 @@ function savePreviousPath() {
               <span class="itbms-storageGb-unit">GB</span></span
             >
           </div>
-          <div class=" text-lg font-bold mt-2 itbms-price">
+          <div class="text-lg font-bold mt-2 itbms-price">
             <span class="itbms-price-unit">Baht:</span
             >{{ yourItem.price.toLocaleString("en-US") }}
           </div>
+
+          <!-- <button
+            v-if="yourItem.isOwnedByCurrentUser"
+            class="absolute bottom-3 right-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-1 active:translate-y-0"
+          >
+            Add to cart
+          </button> -->
+          
+          <button
+          @click.stop.prevent="checkRole(yourItem)"
+            class="absolute bottom-3 right-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-1 active:translate-y-0"
+          >
+            Add to cart
+          </button>
         </div>
       </router-link>
     </template>
   </SaleItemListModel>
-
 </template>
