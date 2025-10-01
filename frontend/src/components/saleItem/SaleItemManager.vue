@@ -1,16 +1,20 @@
 <script setup>
 import SaleItemGallery from "../saleItem/SaleItemGallery.vue";
 import { ref, onMounted, computed, watchEffect, watch } from "vue";
-import { getItems } from "../../libs/fetchUtil.js";
-import { useRoute } from "vue-router";
+import { getItems, getItemsWithToken } from "../../libs/fetchUtil.js";
+import { decodeJWT } from "@/libs/decodeJWT.js";
+import { useRouter, useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
-import SearchComponent from "../Search.vue"; 
-
+import SearchComponent from "../Search.vue";
+const accessToken = sessionStorage.getItem("accessToken");
+const getUser = decodeJWT(accessToken);
 const route = useRoute();
 const saleItem = ref([]);
 const pageObj = ref({});
-
+import { useUserStore } from "@/stores/users";
+  const userStore = useUserStore();
+const router = useRouter();
 let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
@@ -22,12 +26,18 @@ const filterPriceSession = sessionStorage.getItem("filterPrice");
 const filterStorageSizeSession = sessionStorage.getItem("filterStorageSize");
 const searchKeywordSession = sessionStorage.getItem("searchKeyword");
 
-const filterBrandR = ref(filterBrandSession ? JSON.parse(filterBrandSession) : []);
-const directionR = ref(directionSession ? directionSession : '');
-const filterPriceR = ref(filterPriceSession ? JSON.parse(filterPriceSession) : null);
-const filterStorageSizeR = ref(filterStorageSizeSession ? JSON.parse(filterStorageSizeSession) : []);
-const searchKeywordR = ref(searchKeywordSession ? searchKeywordSession : ''); // เพิ่ม search keyword
-const fieldR = ref('');
+const filterBrandR = ref(
+  filterBrandSession ? JSON.parse(filterBrandSession) : []
+);
+const directionR = ref(directionSession ? directionSession : "");
+const filterPriceR = ref(
+  filterPriceSession ? JSON.parse(filterPriceSession) : null
+);
+const filterStorageSizeR = ref(
+  filterStorageSizeSession ? JSON.parse(filterStorageSizeSession) : []
+);
+const searchKeywordR = ref(searchKeywordSession ? searchKeywordSession : ""); // เพิ่ม search keyword
+const fieldR = ref("");
 
 const pageNumberSession = sessionStorage.getItem("pageNumber");
 const pageSizeSession = sessionStorage.getItem("pageSize");
@@ -77,53 +87,70 @@ const computedPageNumberArr = computed(() => {
 
 const buildQueryParams = () => {
   const params = new URLSearchParams();
-  
+
   // Add pagination
-  params.append('page', pageNumber.value);
-  params.append('size', pageSize.value);
-  
+  params.append("page", pageNumber.value);
+  params.append("size", pageSize.value);
+
   // Add search keyword (เพิ่มตรงนี้)
   if (searchKeywordR.value && searchKeywordR.value.trim()) {
-    params.append('searchKeyWord', searchKeywordR.value.trim());
+    params.append("searchKeyWord", searchKeywordR.value.trim());
   }
-  
+
   // Add brand filter
   if (filterBrandR.value && filterBrandR.value.length > 0) {
-    params.append('filterBrands', filterBrandR.value.join(','));
+    params.append("filterBrands", filterBrandR.value.join(","));
   }
-  
+
   // Add price filter
   if (filterPriceR.value) {
-    if (filterPriceR.value.min !== null && filterPriceR.value.min !== undefined) {
-      params.append('filterPriceLower', filterPriceR.value.min);
+    if (
+      filterPriceR.value.min !== null &&
+      filterPriceR.value.min !== undefined
+    ) {
+      params.append("filterPriceLower", filterPriceR.value.min);
     }
-    if (filterPriceR.value.max !== null && filterPriceR.value.max !== undefined) {
-      params.append('filterPriceUpper', filterPriceR.value.max);
+    if (
+      filterPriceR.value.max !== null &&
+      filterPriceR.value.max !== undefined
+    ) {
+      params.append("filterPriceUpper", filterPriceR.value.max);
     }
   }
-  
+
   // Add storage size filter
   if (filterStorageSizeR.value && filterStorageSizeR.value.length > 0) {
-    params.append('filterStorages', filterStorageSizeR.value.join(','));
+    params.append("filterStorages", filterStorageSizeR.value.join(","));
   }
-  
+
   // Add sorting
   if (directionR.value && fieldR.value) {
-    params.append('sortField', fieldR.value);
-    params.append('sortDirection', directionR.value);
-  } else if (directionR.value === 'asc' || directionR.value === 'desc') {
-    params.append('sortField', 'brand.name');
-    params.append('sortDirection', directionR.value);
+    params.append("sortField", fieldR.value);
+    params.append("sortDirection", directionR.value);
+  } else if (directionR.value === "asc" || directionR.value === "desc") {
+    params.append("sortField", "brand.name");
+    params.append("sortDirection", directionR.value);
   }
-  
+
   return params.toString();
 };
 
 const fetchData = async () => {
   try {
+    console.log(accessToken)
     const queryString = buildQueryParams();
-    const res = await getItems(`${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`);
-    
+    let res = null;
+    if (!accessToken) {
+      console.log("no token")
+       res = await getItems(
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`
+      );
+    } else {
+       res = await getItemsWithToken(
+        `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`,
+        accessToken
+      );
+    }
     pageObj.value = res;
     console.log("pageObj.value:", pageObj.value);
     saleItem.value = res.content;
@@ -139,15 +166,22 @@ watch([pageSize, pageNumber], () => {
 });
 
 // เพิ่ม searchKeywordR ใน watch
-watch([filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeywordR], () => {
-  sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
-  sessionStorage.setItem("direction", directionR.value);
-  sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
-  sessionStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSizeR.value));
-  sessionStorage.setItem("searchKeyword", searchKeywordR.value); 
-  console.log("Filters changed, resetting to page 0");
-  pageNumber.value = 0;
-}, { deep: true });
+watch(
+  [filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeywordR],
+  () => {
+    sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
+    sessionStorage.setItem("direction", directionR.value);
+    sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
+    sessionStorage.setItem(
+      "filterStorageSize",
+      JSON.stringify(filterStorageSizeR.value)
+    );
+    sessionStorage.setItem("searchKeyword", searchKeywordR.value);
+    console.log("Filters changed, resetting to page 0");
+    pageNumber.value = 0;
+  },
+  { deep: true }
+);
 
 watch(pageSize, () => {
   if (!pageSizeWatchInitialized) {
@@ -158,18 +192,29 @@ watch(pageSize, () => {
 });
 
 const isSuccess = ref(
-  Boolean(route.query.alertAdd || route.query.alertDelete || route.query.alertAddUser) &&
-    !route.query.alert404
+  Boolean(
+    route.query.alertAdd || route.query.alertDelete || route.query.alertAddUser
+  ) && !route.query.alert404
 );
 
-const filterAndSortSaleItem = async (filterBrand, direction, field, filters = {}) => {
-  console.log("filterAndSortSaleItem called with:", { filterBrand, direction, field, filters });
-  
+const filterAndSortSaleItem = async (
+  filterBrand,
+  direction,
+  field,
+  filters = {}
+) => {
+  console.log("filterAndSortSaleItem called with:", {
+    filterBrand,
+    direction,
+    field,
+    filters,
+  });
+
   // Update all filter states
   filterBrandR.value = filterBrand || [];
-  directionR.value = direction || '';
-  fieldR.value = field || '';
-  
+  directionR.value = direction || "";
+  fieldR.value = field || "";
+
   if (filters.brands !== undefined) {
     filterBrandR.value = filters.brands || [];
   }
@@ -179,19 +224,18 @@ const filterAndSortSaleItem = async (filterBrand, direction, field, filters = {}
   if (filters.storageSizes !== undefined) {
     filterStorageSizeR.value = filters.storageSizes || [];
   }
-  
+
   try {
     await fetchData();
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
 };
 
-const fecthItemFromPage = async(index) => {
+const fecthItemFromPage = async (index) => {
   pageNumber.value = index - 1;
   await fetchData();
 };
-
 
 const handleSearch = (keyword) => {
   console.log("Search triggered with keyword:", keyword);
@@ -199,31 +243,61 @@ const handleSearch = (keyword) => {
   pageNumber.value = 0;
   fetchData();
 };
+
+const isShowAlertMessageModel = ref(false);
+const messageAlert = ref("");
+const checkRole = (yourItem) => {
+  if(userStore.role === "") {
+    console.log("no role stupid 250 SaleitemMnaager")
+    router.push({ name: "Login" });
+    return
+  }
+
+  if (yourItem.isOwnedByCurrentUser) {
+    isShowAlertMessageModel.value = true;
+    isSuccess.value = false;
+    messageAlert.value = "You cannot add your own item to the cart.";
+  } else {
+    alert("Item added to cart.");
+  }
+};
+
 </script>
 
 <template>
- 
   <SearchComponent @search="handleSearch" />
 
   <div
     v-show="
-      route.query.alertAdd || route.query.alertDelete || route.query.alert404 || route.query.alertAddUser
+      route.query.alertAdd ||
+      route.query.alertDelete ||
+      route.query.alert404 ||
+      route.query.alertAddUser ||
+      isShowAlertMessageModel === true
     "
     class="p-10 pb-0"
   >
     <AlertMessageModel :isSuccess="isSuccess">
       <template #message>
         <p class="itbms-message" v-show="isSuccess === true">
-          {{ route.query.alertAddUser ? 'The user account has been' : 'The sale item has been'}}
+          {{
+            route.query.alertAddUser
+              ? "The user account has been"
+              : "The sale item has been"
+          }}
           <span class="text-green-400">
             {{
-              route.query.alertAdd ? "successfully added." : "deleted." ||
-              route.query.alertAddUser ? "successfully registered." : "deleted."
-            }}</span
-          >
+              route.query.alertAdd
+                ? "successfully added."
+                : "deleted." || route.query.alertAddUser
+                ? "successfully registered."
+                : "deleted."
+            }}
+          </span>
         </p>
         <p class="itbms-message" v-show="isSuccess === false">
-          The requested sale item does not exist.
+          <p v-if="isShowAlertMessageModel === true && isSuccess === false">{{ messageAlert }}</p>
+          <p v-else>The requested sale item does not exist.</p>
         </p>
       </template>
     </AlertMessageModel>
@@ -252,13 +326,16 @@ const handleSearch = (keyword) => {
     </div>
   </div>
 
-  <FilterSaleItem 
+  <FilterSaleItem
     :brands="filterBrandR"
     :sortDirection="directionR"
     @filterAndSortSaleItem="filterAndSortSaleItem"
   ></FilterSaleItem>
-  
-  <SaleItemGallery :saleItems="saleItem"></SaleItemGallery>
+
+  <SaleItemGallery 
+  :saleItems="saleItem"
+  @addToCart="checkRole"
+  ></SaleItemGallery>
 
   <div class="p-10 pt-0" v-show="pageObj.totalPages > 1">
     <button

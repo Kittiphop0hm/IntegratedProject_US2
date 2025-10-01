@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 .requestMatchers("/v1/brands/**").permitAll()
                                 .requestMatchers("/v2/users/**").permitAll()
                                 .requestMatchers("/v2/orders/**").permitAll()
-
+                                .requestMatchers("/api/files/**").permitAll()
 //                                .requestMatchers("/itb-mshop/v2/auth/**").permitAll()
                                 .requestMatchers("/v2/sellers/**").hasAnyAuthority("SELLER")
                                 .anyRequest().authenticated()
@@ -60,6 +60,7 @@ public class SecurityConfig {
 
                 )
 	            .sessionManagement( session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
 

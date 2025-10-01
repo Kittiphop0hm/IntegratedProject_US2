@@ -104,7 +104,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
 
-
+        System.out.println("JWT Filter checking path: " + request.getRequestURI());
         chain.doFilter(request, response);
     }
 }

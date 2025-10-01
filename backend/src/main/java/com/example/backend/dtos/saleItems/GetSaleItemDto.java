@@ -20,4 +20,5 @@ public class GetSaleItemDto {
     private String color;
     private Instant createdOn;
     private Instant updatedOn;
+    private Boolean isOwnedByCurrentUser;
 }

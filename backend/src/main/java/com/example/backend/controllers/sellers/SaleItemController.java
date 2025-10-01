@@ -5,6 +5,7 @@ import com.example.backend.dtos.saleItems.PageDto;
 import com.example.backend.dtos.saleItems.ResponseSaleItemsDto;
 import com.example.backend.dtos.saleItems.SaleItemDetailForCreateOrUpdateDto;
 import com.example.backend.dtos.saleItems.sellers.GetSaleItemSellerDto;
+import com.example.backend.dtos.saleItems.sellers.ResponseSaleItemsWithSellerDto;
 import com.example.backend.entities.AuthUserDetail;
 import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.services.saleitems.SaleItemService_v2;
@@ -51,7 +52,7 @@ public class SaleItemController {
             @RequestParam(required = false) List<MultipartFile> images
     ){
         try{
-            ResponseSaleItemsDto result = saleItemServiceV2.createProduct(id,newSaleItem , images);
+            ResponseSaleItemsWithSellerDto result = saleItemServiceV2.createProduct(id,newSaleItem , images);
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

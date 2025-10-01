@@ -3,6 +3,7 @@ package com.example.backend.controllers.saleItems;
 import com.example.backend.dtos.saleItems.*;
 
 
+import com.example.backend.dtos.saleItems.sellers.ResponseSaleItemsWithSellerDto;
 import com.example.backend.services.FileService;
 import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.services.saleitems.SaleItemService_v2;
@@ -11,9 +12,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.example.backend.entities.AuthUserDetail;
 import java.util.List;
 
 @RestController
@@ -37,7 +39,8 @@ public class SaleItemController_v2 {
             @RequestParam(defaultValue = "") String sortField,
             @RequestParam(defaultValue = "") String sortDirection,
             @RequestParam Integer page,
-            @RequestParam(defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "10") Integer size ,
+            @AuthenticationPrincipal AuthUserDetail principal
     ) {
 
         return ResponseEntity.ok(saleItemServiceV1.FilterAndSortSaleItem(
@@ -49,7 +52,8 @@ public class SaleItemController_v2 {
                 sortField,
                 sortDirection,
                 page,
-                size
+                size ,
+                principal
         ));
     }
 
@@ -57,6 +61,12 @@ public class SaleItemController_v2 {
     @GetMapping("/{id}")
     public ResponseEntity<ResponseSaleItemsDto> getProductById(@PathVariable Integer id) {
         return ResponseEntity.ok(saleItemServiceV2.findByid(id));
+    }
+
+        @GetMapping("/{id}/sellers")
+    public ResponseEntity<ResponseSaleItemsWithSellerDto> getProductByIdWithSeller(@PathVariable Integer id) {
+        System.out.println("getProductById V2 Called");
+        return ResponseEntity.ok(saleItemServiceV2.findByids(id));
     }
 
     @PostMapping("")

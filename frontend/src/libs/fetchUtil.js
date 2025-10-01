@@ -9,6 +9,7 @@ async function getItems(url) {
     throw new Error("can not get your items");
   }
 }
+
 async function getItemById(url, id) {
   try {
     const data = await fetch(`${url}/${id}`);

@@ -1,21 +1,29 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { ref, onMounted, computed } from "vue";
-import { getItemById, deleteItemById } from "../../libs/fetchUtil";
+import {
+  getItems,
+  deleteItemById,
+  getItemsWithToken,
+} from "../../libs/fetchUtil";
+import { decodeJWT } from "@/libs/decodeJWT.js";
 import Navbar from "../../views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
-
+const accessToken = sessionStorage.getItem("accessToken");
+const getUser = decodeJWT(accessToken);
+import { useUserStore } from "@/stores/users";
+  const userStore = useUserStore();
 const route = useRoute();
 const router = useRouter();
 const item = ref([]);
 const isDelete = ref(false);
+const quantityInCart = ref(1);
 onMounted(async () => {
   try {
-    const data = await getItemById(
-      `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-      route.params.id
+    const data = await getItems(
+      `${import.meta.env.VITE_APP_URL}/v2/sale-items/${route.params.id}/sellers`
     );
     if (data.status === 404) {
       router.push({ name: "SaleItemHome", query: { alert404: "true" } });
@@ -58,21 +66,45 @@ console.log(typeof route.query.alert);
 console.log("typeof Boolean(route.query.alert)");
 console.log(typeof Boolean(route.query.alert));
 
-const id = parseInt(route.params.id)
+const idParam = parseInt(route.params.id);
 // console.log(id);
+const isShowAlertMessageModel = ref(false);
+const messageAlert = ref("");
+const isSuccess = ref(Boolean(route.query.alert));
+const checkRole = () => {
+  console.log("checkRole God 73 SaleItemDetails");
+    console.log(item.value.seller.id);
+  if(userStore.role === "") {
+    console.log("no role stupid 250 SaleitemMnaager")
+    router.push({ name: "Login" });
+    return
+  }
+  if (item.value.seller.id === useUserStore.id) {
+      alert("Item added to cart.");
+  }  else {
+    isShowAlertMessageModel.value = true;
+    isSuccess.value = false;
+    messageAlert.value = "You cannot add your own item to the cart.";
+  }
 
+};
 </script>
 
 <template>
   <Navbar />
-  <div v-show="route.query.alert === 'true'" class="p-10 pb-0">
-    <AlertMessageModel :isSuccess="Boolean(route.query.alert)">
+  <div v-show="route.query.alert === 'true' ||  isShowAlertMessageModel === true" class="p-10 pb-0">
+    <AlertMessageModel :isSuccess="isSuccess">
       <template #message>
+      <p v-show="isSuccess=== true">
         The sale item has been <span class="text-green-400">updated.</span>
+      </p>
+      <p v-show="isSuccess === false">
+        {{ messageAlert }}
+      </p>
       </template>
     </AlertMessageModel>
   </div>
-  <SaleItemDetailModel :saleId="id">
+  <SaleItemDetailModel :saleId="idParam">
     <template #path>
       <span class="itbms-model font-semibold">{{ item.model }}</span>
       <span class="itbms-ramGb font-semibold ml-1"
@@ -82,7 +114,7 @@ const id = parseInt(route.params.id)
         item.color ? item.color : "-"
       }}</span>
     </template>
-    
+
     <template #brand>
       <span class="itbms-brand">{{ item.brandName }}</span>
     </template>
@@ -115,22 +147,29 @@ const id = parseInt(route.params.id)
       <span class="itbms-color">{{ item.color ? item.color : "-" }}</span>
     </template>
     <template #quantity>
-      <span class="itbms-quantity">{{
-        item.quantity 
-      }}</span>
+      <span class="itbms-quantity">{{ item.quantity }}</span>
       <span class="itbms-quantity-unit">units</span></template
     >
     <template #button1>
-     <router-link :to="{ name: 'SaleItemEdit' }">
-  <span class="itbms-edit-button text-white bg-blue-500 hover:bg-blue-700  px-7 py-3 rounded-xl ">
-    Edit
-  </span>
-</router-link>
-
+      <router-link :to="{ name: 'SaleItemEdit' }">
+        <span
+          class="itbms-edit-button text-white bg-blue-500 hover:bg-blue-700 px-7 py-3 rounded-xl"
+        >
+          Edit
+        </span>
+      </router-link>
     </template>
     <template #button2>
       <span @click="isDelete = !isDelete" class="itbms-delete-button text-white"
         >Delete</span
+      >
+    </template>
+    <template #buttonMinus> - </template>
+    <template #quantityInCart> {{ quantityInCart }} </template>
+    <template #buttonPlus> + </template>
+    <template #button3>
+      <span @click="checkRole" class="itbms-add-to-cart-button"
+        >Add to cart</span
       >
     </template>
   </SaleItemDetailModel>

@@ -1,8 +1,8 @@
-package com.example.backend.dtos.saleItems;
+package com.example.backend.dtos.saleItems.sellers;
 
 import com.example.backend.dtos.files.ListFilesDto;
+import com.example.backend.dtos.users.sellers.GetUserSellerDto;
 import com.example.backend.entities.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ResponseSaleItemsDto {
+public class ResponseSaleItemsWithSellerDto {
     private Integer id;
     private String model;
     private String brandName;
@@ -24,7 +24,7 @@ public class ResponseSaleItemsDto {
     private Integer storageGb;
     private String color;
     private List<ListFilesDto> saleItemImages;
-//    private User seller;
+    private GetUserSellerDto seller;
     private Instant createdOn;
     private Instant updatedOn;
 
