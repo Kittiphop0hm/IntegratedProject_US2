@@ -1,9 +1,6 @@
 package com.example.backend.services.orders;
 
-import com.example.backend.dtos.orders.OrderItemDto;
-import com.example.backend.dtos.orders.PlaceOrderRequestDto;
-import com.example.backend.dtos.orders.PlaceOrderResponseDto;
-import com.example.backend.dtos.orders.SellerForPlaceOrderDto;
+import com.example.backend.dtos.orders.*;
 import com.example.backend.dtos.saleItems.PageDto;
 import com.example.backend.entities.*;
 import com.example.backend.exceptions.ConflictException;
@@ -42,16 +39,19 @@ public class OrderService {
     @Autowired
     private ListMapper listMapper;
 
-    public PageDto<PlaceOrderResponseDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
+    public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
         Page<Order> pageOrder = orderRepository.findOrdersBySeller_Id(id, PageRequest.of(page, size));
-        PageDto<PlaceOrderResponseDto> placeOrderResponseDtoPageDto = listMapper.toPageDTO(pageOrder, PlaceOrderResponseDto.class, modelMapper, sortField);
-        placeOrderResponseDtoPageDto.getContent().forEach((order) -> {
+        PageDto<GetAllSellerOrderDto> getAllSellerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllSellerOrderDto.class, modelMapper, sortField);
+        getAllSellerOrderDtoPageDto.getContent().forEach((order) -> {
+            User buyer = userRepository.findById(order.getBuyer().getId()).orElseThrow(() -> new ItemNotFoundException("User (Buyer) not found"));
+            User seller = userRepository.findById(order.getSellerId()).orElseThrow(() -> new ItemNotFoundException("User (Seller) not found"));
+            order.getBuyer().setUsername(buyer.getNickName());
             List<OrderItem> orderItems = orderItemRepository.findOrderItemsByOrders_Id(order.getId());
             List<OrderItemDto> orderItemDtoList = orderItems.stream().map((item) -> modelMapper.map(item, OrderItemDto.class)).toList();
             order.setOrderItems(orderItemDtoList);
         });
-        return placeOrderResponseDtoPageDto;
+        return getAllSellerOrderDtoPageDto;
     }
 
     @Transactional

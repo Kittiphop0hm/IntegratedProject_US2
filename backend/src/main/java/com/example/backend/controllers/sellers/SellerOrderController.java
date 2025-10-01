@@ -1,5 +1,6 @@
 package com.example.backend.controllers.sellers;
 
+import com.example.backend.dtos.orders.GetAllSellerOrderDto;
 import com.example.backend.dtos.orders.PlaceOrderResponseDto;
 import com.example.backend.dtos.saleItems.PageDto;
 import com.example.backend.entities.AuthUserDetail;
@@ -17,7 +18,7 @@ public class SellerOrderController {
     private OrderService orderService;
 
     @GetMapping("")
-    public ResponseEntity<PageDto<PlaceOrderResponseDto>> getOrderSellerPage(
+    public ResponseEntity<PageDto<GetAllSellerOrderDto>> getOrderSellerPage(
             @PathVariable Integer sid,
             @RequestParam Integer page,
             @RequestParam(defaultValue = "10") Integer size,
