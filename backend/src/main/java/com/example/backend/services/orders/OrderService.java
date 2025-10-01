@@ -62,6 +62,7 @@ public class OrderService {
            newOrder.setBuyer(buyer);
            newOrder.setSeller(seller);
            newOrder.setOrderDate(order.getOrderDate());
+           newOrder.setPaymentDate(order.getOrderDate());
            newOrder.setShippingAddress(order.getShippingAddress());
            newOrder.setOrderNote(order.getOrderNote());
            newOrder.setOrderStatus(order.getOrderStatus());
@@ -72,6 +73,7 @@ public class OrderService {
            placeOrder.setBuyerId(buyer.getId());
            placeOrder.setSeller(sellerForPlaceOrderDto);
            placeOrder.setOrderDate(newOrder.getOrderDate());
+           placeOrder.setPaymentDate(newOrder.getPaymentDate());
            placeOrder.setShippingAddress(newOrder.getShippingAddress());
            placeOrder.setOrderNote(newOrder.getOrderNote());
            placeOrder.setOrderStatus(newOrder.getOrderStatus());
