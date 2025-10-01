@@ -31,6 +31,9 @@ public class Order {
     @Column(name = "orderDate")
     private Instant orderDate;
 
+    @Column(name = "paymentDate")
+    private Instant paymentDate;
+
     @Size(max = 45)
     @Column(name = "shippingAddress", length = 45)
     private String shippingAddress;
@@ -42,5 +45,4 @@ public class Order {
     @Size(max = 45)
     @Column(name = "orderStatus", length = 45)
     private String orderStatus;
-
 }

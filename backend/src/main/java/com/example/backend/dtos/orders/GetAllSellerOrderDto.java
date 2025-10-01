@@ -6,15 +6,14 @@ import java.time.Instant;
 import java.util.List;
 
 @Data
-public class PlaceOrderResponseDto {
+public class GetAllSellerOrderDto {
     private Integer id;
-    private Integer buyerId;
-    private SellerForPlaceOrderDto seller;
+    private BuyerForGetAllSellerOrderDto buyer;
+    private Integer sellerId;
     private Instant orderDate;
     private Instant paymentDate;
     private String shippingAddress;
     private String orderNote;
     private List<OrderItemDto> orderItems;
     private String orderStatus;
-
 }
