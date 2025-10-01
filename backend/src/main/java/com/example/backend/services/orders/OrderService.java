@@ -6,6 +6,8 @@ import com.example.backend.dtos.orders.PlaceOrderResponseDto;
 import com.example.backend.dtos.orders.SellerForPlaceOrderDto;
 import com.example.backend.dtos.saleItems.PageDto;
 import com.example.backend.entities.*;
+import com.example.backend.exceptions.ConflictException;
+import com.example.backend.exceptions.ItemNotFoundException;
 import com.example.backend.repositories.OrderItemRepository;
 import com.example.backend.repositories.OrderRepository;
 import com.example.backend.repositories.SaleItemRepository;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +54,13 @@ public class OrderService {
         return placeOrderResponseDtoPageDto;
     }
 
+    @Transactional
     public List<PlaceOrderResponseDto> createOrder(List<PlaceOrderRequestDto> orders) {
         if (orders.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing request parameters");
         List<PlaceOrderResponseDto> placeOrderList = new ArrayList<>();
         orders.forEach((order) -> {
-           User buyer = userRepository.findById(order.getBuyerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Buyer not found"));
-           User seller = userRepository.findById(order.getSellerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Seller not found"));
+           User buyer = userRepository.findById(order.getBuyerId()).orElseThrow(() -> new ItemNotFoundException("Buyer not found"));
+           User seller = userRepository.findById(order.getSellerId()).orElseThrow(() -> new ItemNotFoundException("Seller not found"));
            SellerForPlaceOrderDto sellerForPlaceOrderDto = modelMapper.map(seller, SellerForPlaceOrderDto.class);
            Order newOrder = new Order();
            newOrder.setBuyer(buyer);
@@ -78,7 +82,8 @@ public class OrderService {
            placeOrder.setOrderNote(newOrder.getOrderNote());
            placeOrder.setOrderStatus(newOrder.getOrderStatus());
            order.getOrderItems().forEach((item) -> {
-               SaleItem saleItem = saleItemRepository.findById(item.getSaleItemId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sale item not found"));
+               SaleItem saleItem = saleItemRepository.findById(item.getSaleItemId()).orElseThrow(() -> new ItemNotFoundException("Sale item not found"));
+               if (saleItem.getQuantity() < item.getQuantity()) throw new ConflictException("Quantity sale id: " + saleItem.getId() + " not enough");
                OrderItem orderItem = new OrderItem();
                orderItem.setOrders(newOrder);
                orderItem.setSaleItems(saleItem);
