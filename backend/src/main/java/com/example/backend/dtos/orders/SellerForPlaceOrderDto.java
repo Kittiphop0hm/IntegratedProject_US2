@@ -6,7 +6,4 @@ import lombok.Data;
 public class SellerForPlaceOrderDto {
     private Integer id;
     private String email;
-    private String fullName;
-    private String userType;
-    private String nickName;
 }
