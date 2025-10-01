@@ -10,6 +10,7 @@ import com.example.backend.repositories.OrderItemRepository;
 import com.example.backend.repositories.OrderRepository;
 import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.utils.ListMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +84,9 @@ public class OrderService {
                orderItem.setQuantity(item.getQuantity());
                orderItem.setDescription(item.getDescription());
                orderItemRepository.save(orderItem);
+
+               saleItem.setQuantity(saleItem.getQuantity() - item.getQuantity());
+               saleItemRepository.save(saleItem);
            });
            placeOrder.setOrderItems(order.getOrderItems());
            placeOrderList.add(placeOrder);
