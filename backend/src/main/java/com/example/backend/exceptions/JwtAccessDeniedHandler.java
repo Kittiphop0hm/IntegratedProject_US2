@@ -15,8 +15,7 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException, java.io.IOException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"error\":\"Forbidden\",\"message\":\""
-                + accessDeniedException.getMessage() + "\"}");
+        response.getWriter().write("{\"error\":\"Forbidden\",\"status\":403, \"message\":\"" + accessDeniedException.getMessage() + "\"}");
     }
 }
 
