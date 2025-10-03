@@ -14,6 +14,7 @@ import { decodeJWT } from "@/libs/decodeJWT.js";
 const getUser = decodeJWT(accessToken);
 import { computed } from "vue";
 import { useUserStore } from "../stores/users.js";
+import OrderHistoryManager from "@/components/order/OrderHistoryManager.vue";
 
 
 const router = createRouter({
@@ -94,6 +95,11 @@ const router = createRouter({
       path: "/profile/edit",
       name: "UserProfileEdit",
       component: UserProfileManager,
+    },
+    {
+      path: "/your-orders",
+      name: "OrderHistory",
+      component: OrderHistoryManager,
     },
   ],
 });

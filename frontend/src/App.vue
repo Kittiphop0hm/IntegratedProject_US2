@@ -13,14 +13,18 @@ const isAccessTokenExpired = (accessToken) => {
   return false
 }
 
-setInterval(async () => {
-  const accessToken = ref(sessionStorage.getItem("accessToken"))
+const refreshAccessToken = async () => {
+    const accessToken = ref(sessionStorage.getItem("accessToken"))
   if (accessToken && isAccessTokenExpired(accessToken.value)) {
     const newAccessToken = await addItemNoBody(`${import.meta.env.VITE_APP_URL}/v2/auth/refresh`)
     console.log(newAccessToken.data.access_token);
     sessionStorage.setItem('accessToken', newAccessToken.data.access_token);
     console.log(isAccessTokenExpired(accessToken.value));
   }
+}
+refreshAccessToken()
+setInterval(async () => {
+  refreshAccessToken()
 }, 1 * 60 * 1000)
 </script>
 

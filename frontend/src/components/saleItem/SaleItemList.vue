@@ -40,9 +40,7 @@ const fetchData = async () => {
   try {
        const res = await getItemsWithToken(
 // `${import.meta.env.VITE_APP_URL}/v2/seller/${getUser.id}/sale-items?page=${pageNumber}&size=${pageSize}` ,
-`${import.meta.env.VITE_APP_URL}/v2/sellers/${getUser.id}/sale-items?page=${pageNumber.value}&size=${pageSize.value}` ,
-    accessToken
-      )
+`${import.meta.env.VITE_APP_URL}/v2/sellers/${getUser.id}/sale-items?page=${pageNumber.value}&size=${pageSize.value}` ,accessToken)
       pageObj.value = res
       saleItems.value = res.content
      console.log(pageObj.value);
