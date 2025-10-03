@@ -1,5 +1,5 @@
 <script setup>
-import { watch , onMounted , ref , defineEmits  } from "vue";
+import { watch , onMounted , ref   } from "vue";
 import SaleItemListModel from "../model/SaleItemListModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import { useRoute } from "vue-router";
