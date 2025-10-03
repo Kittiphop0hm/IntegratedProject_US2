@@ -101,4 +101,52 @@ public class OrderService {
         });
         return placeOrderList;
     }
+
+    public GetBuyerOrderDto getBuyerOrderById(Integer orderId, AuthUserDetail principal) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ItemNotFoundException("Order not found"));
+
+        if (!order.getBuyer().getId().equals(principal.getId())
+                && !order.getSeller().getId().equals(principal.getId())) {
+            throw new AccessDeniedException("Not allowed to access this order");
+        }
+
+        GetBuyerOrderDto buyerOrderDto = new GetBuyerOrderDto();
+        buyerOrderDto.setId(order.getId());
+        buyerOrderDto.setBuyerId(order.getBuyer().getId());
+        buyerOrderDto.setOrderDate(order.getOrderDate());
+        buyerOrderDto.setShippingAddress(order.getShippingAddress());
+        buyerOrderDto.setOrderNote(order.getOrderNote());
+        buyerOrderDto.setOrderStatus(order.getOrderStatus());
+
+        User seller = order.getSeller();
+        SellerDtoForGetBuyerOrderById sellerDto = modelMapper.map(seller, SellerDtoForGetBuyerOrderById.class);
+        buyerOrderDto.setSeller(sellerDto);
+
+        List<OrderItem> orderItems = orderItemRepository.findOrderItemsByOrders_Id(order.getId());
+        List<OrderItemDto> orderItemDto = orderItems.stream()
+                .map(item -> modelMapper.map(item, OrderItemDto.class))
+                .toList();
+        buyerOrderDto.setOrderItems(orderItemDto);
+
+        return buyerOrderDto;
+    }
+    public PageDto<GetAllBuyerOrderDto> getAllBuyerOrdersById(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("User not found"));
+
+        Page<Order> pageOrder = orderRepository.findOrdersByBuyer_Id(id, PageRequest.of(page, size));
+        PageDto<GetAllBuyerOrderDto> getAllBuyerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllBuyerOrderDto.class, modelMapper, sortField);
+
+        getAllBuyerOrderDtoPageDto.getContent().forEach((order) -> {
+            User seller = userRepository.findById(order.getSeller().getId()).orElseThrow(() -> new ItemNotFoundException("User (Seller) not found"));
+            order.getSeller().setUsername(seller.getNickName());
+
+            List<OrderItem> orderItems = orderItemRepository.findOrderItemsByOrders_Id(order.getId());
+            List<OrderItemDto> orderItemDtoList = orderItems.stream().map((item) -> modelMapper.map(item, OrderItemDto.class)).toList();
+            order.setOrderItems(orderItemDtoList);
+        });
+
+        return getAllBuyerOrderDtoPageDto;
+    }
+
 }
