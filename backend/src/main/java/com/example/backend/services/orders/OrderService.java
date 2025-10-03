@@ -62,6 +62,7 @@ public class OrderService {
            User buyer = userRepository.findById(order.getBuyerId()).orElseThrow(() -> new ItemNotFoundException("Buyer not found"));
            User seller = userRepository.findById(order.getSellerId()).orElseThrow(() -> new ItemNotFoundException("Seller not found"));
            SellerForPlaceOrderDto sellerForPlaceOrderDto = modelMapper.map(seller, SellerForPlaceOrderDto.class);
+           sellerForPlaceOrderDto.setUsername(seller.getNickName());
            Order newOrder = new Order();
            newOrder.setBuyer(buyer);
            newOrder.setSeller(seller);
