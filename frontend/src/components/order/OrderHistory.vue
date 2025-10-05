@@ -35,7 +35,7 @@ const dateFormat = (isoDate) => {
 }
 
 const totalPrice = (orderItems) => {
-    const total = orderItems.reduce((acc, current) => {
+    const total = orderItems?.reduce((acc, current) => {
         acc += current.price
         return acc
     }, 0)
@@ -57,67 +57,63 @@ const totalPrice = (orderItems) => {
                     </div>
                 </div>
             </div>
-            <div class="w-full h-full bg-gray-200 rounded-2xl p-5">
-                <div>
+            <div class="itbms-row w-full h-full bg-gray-200 rounded-2xl p-5">
                     <div>
                         <div v-if="status === 'completed'" v-for="order in myOrderCompleted" :key="order.id" class="bg-gray-100 mb-3 rounded-2xl p-5">
                             <router-link :to="{name: 'OrderDetail', params: {orderId: order.id}}">
-                                <div v-if="myOrderCompleted.length <= 0" class="w-full text-center">
-                                    <p class="font-semibold text-4xl p-2">No Order</p>
-                                </div>
                                 <div class="flex justify-center items-center text-center space-x-10 mb-5">
                                     <div>
                                         <h1 class="font-semibold">Username</h1>
-                                        <p>{{ order.buyer.username }}</p>
+                                        <p class="itbms-nickname">{{ order.buyer.username }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">OrderNo</h1>
-                                        <p>{{ order.id }}</p>
+                                        <p class="itbms-order-id">{{ order.id }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Order Date</h1>
-                                        <p>{{ dateFormat(order.orderDate) }}</p>
+                                        <p class="itbms-order-date">{{ dateFormat(order.orderDate) }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Payment Date</h1>
-                                        <p>{{ dateFormat(order.paymentDate) }}</p>
+                                        <p class="itbms-payment-date">{{ dateFormat(order.paymentDate) }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Total Price</h1>
-                                        <p>{{ totalPrice(order.orderItems) }}</p>
+                                        <p class="itbms-total-order-price">{{ totalPrice(order.orderItems).toLocaleString() }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Status</h1>
-                                        <p>{{ order.orderStatus }}</p>
+                                        <p class="itbms-order-status">{{ order.orderStatus }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Address</h1>
-                                        <p>{{ order.shippingAddress }}</p>
+                                        <p class="itbms-shipping-address">{{ order.shippingAddress }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Note</h1>
-                                        <p>{{ order.orderNote }}</p>
+                                        <p class="itbms-order-note">{{ order.orderNote }}</p>
                                     </div>
                                 </div>
                                 <div v-for="orderItem in order.orderItems">
                                     <div class="w-full h-full bg-white rounded-lg">
-                                        <div class="w-full h-full flex justify-around items-center p-3 mb-3">
+                                        <div class="itbms-item-row w-full h-full flex justify-around items-center p-3 mb-3">
                                             <div>
                                                 <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
                                             </div>
                                             <div>
-                                                <p>{{ orderItem.description }}</p>
+                                                <p class="itbms-item-description">{{ orderItem.description }}</p>
                                             </div>
                                             <div>
                                                 <p>
                                                     <span class="font-semibold">Qty:</span>
-                                                    {{ orderItem.quantity }}
+                                                    <span class="itbms-item-quantity">{{ orderItem.quantity }}</span>
                                                 </p>
                                             </div>
                                             <div>
                                                 <p>
                                                     <span class="font-semibold">Price:</span>
-                                                    {{ orderItem.price * orderItem.quantity }}
+                                                    <span class="itbms-item-total-price">{{ orderItem.price * orderItem.quantity }}</span>
                                                 </p>
                                             </div>
                                         </div>
@@ -127,41 +123,38 @@ const totalPrice = (orderItems) => {
                         </div>
 
                         <div v-if="status === 'canceled'" v-for="order in myOrderCancel" :key="order.id" class="bg-gray-100 mb-3 rounded-2xl p-5">
-                                <div v-if="myOrderCancel.length <= 0" class="w-full text-center">
-                                    <p class="font-semibold text-4xl p-2">No Order</p>
-                                </div>
                                 <div class="flex justify-center items-center text-center space-x-5 mb-5">
                                     <div>
                                         <h1 class="font-semibold">Username</h1>
-                                        <p>{{ order.buyer.username }}</p>
+                                        <p class="itbms-nickname">{{ order.buyer.username }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">OrderNo</h1>
-                                        <p>{{ order.id }}</p>
+                                        <p class="itbms-order-id">{{ order.id }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Order Date</h1>
-                                        <p>{{ dateFormat(order.orderDate) }}</p>
+                                        <p class="itbms-order-date">{{ dateFormat(order.orderDate) }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Payment Date</h1>
-                                        <p>{{ dateFormat(order.paymentDate) }}</p>
+                                        <p class="itbms-payment-date">{{ dateFormat(order.paymentDate) }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Total Price</h1>
-                                        <p>{{ totalPrice(order.orderItems) }}</p>
+                                        <p class="itbms-total-order-price">{{ totalPrice(order.orderItems) }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Status</h1>
-                                        <p>{{ order.orderStatus }}</p>
+                                        <p class="itbms-order-status">{{ order.orderStatus }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Address</h1>
-                                        <p>{{ order.shippingAddress }}</p>
+                                        <p class="itbms-shipping-address">{{ order.shippingAddress }}</p>
                                     </div>
                                     <div>
                                         <h1 class="font-semibold">Note</h1>
-                                        <p>{{ order.orderNote }}</p>
+                                        <p class="itbms-order-note">{{ order.orderNote }}</p>
                                     </div>
                                 </div>
                             <div v-for="orderItem in order.orderItems">
@@ -171,30 +164,24 @@ const totalPrice = (orderItems) => {
                                             <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
                                         </div>
                                         <div>
-                                            <p>{{ orderItem.description }}</p>
+                                            <p class="itbms-item-description">{{ orderItem.description }}</p>
                                         </div>
                                         <div>
                                             <p>
                                                 <span class="font-semibold">Qty:</span>
-                                                {{ orderItem.quantity }}
+                                                <span class="itbms-item-quantity">{{ orderItem.quantity }}</span>
                                             </p>
                                         </div>
                                         <div>
                                             <p>
                                                 <span class="font-semibold">Price:</span>
-                                                {{ orderItem.price * orderItem.quantity }}
+                                                <span class="itbms-item-total-price">{{ orderItem.price * orderItem.quantity }}</span>
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-                    </div>
                 </div>
             </div>
         </div>
