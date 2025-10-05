@@ -275,6 +275,21 @@ async function getItemsWithToken(url, token) {
   }
 }
 
+async function getItemsByIdWithToken(url, id, token) {
+  try {
+    const data = await fetch(`${url}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json"
+      },
+    });
+    const items = await data.json();
+    return items;
+  } catch (error) {
+    throw new Error("can not get your items");
+  }
+}
+
 async function addSaleItemAndImageWithToken(url, item, images , token) {
   try {
     const formdata = new FormData();
@@ -326,4 +341,5 @@ export {
   register,
   addItemNoBody,
   addItemNoBodyAndNoContent,
+  getItemsByIdWithToken
 };

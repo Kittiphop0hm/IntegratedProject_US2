@@ -51,7 +51,7 @@ const fetchData = async () => {
 onMounted(async () => {
   try {
       pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
-  pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
+      pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
     // saleItems.value = await getItems(
     //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`
     // );
@@ -60,6 +60,7 @@ onMounted(async () => {
     console.error("Error fetching sale items:", err);
   }
 });
+
 const fecthItemFromPage = async(index) => {
   pageNumber.value = index - 1;
   await fetchData();
@@ -146,8 +147,7 @@ const computedPageNumberArr = computed(() => {
       v-show="
         route.query.alertAdd || route.query.alertDelete || route.query.alert404
       "
-      class="p-10 pb-0"
-    >
+      class="p-10 pb-0">
       <AlertMessageModel :isSuccess="isSuccess">
         <template #message>
           <p class="itbms-message" v-show="isSuccess === true">
