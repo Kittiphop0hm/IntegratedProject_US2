@@ -123,6 +123,7 @@ const totalPrice = (orderItems) => {
                         </div>
 
                         <div v-if="status === 'canceled'" v-for="order in myOrderCancel" :key="order.id" class="bg-gray-100 mb-3 rounded-2xl p-5">
+                            <router-link :to="{name: 'OrderDetail', params: {orderId: order.id}}">
                                 <div class="flex justify-center items-center text-center space-x-5 mb-5">
                                     <div>
                                         <h1 class="font-semibold">Username</h1>
@@ -157,30 +158,31 @@ const totalPrice = (orderItems) => {
                                         <p class="itbms-order-note">{{ order.orderNote }}</p>
                                     </div>
                                 </div>
-                            <div v-for="orderItem in order.orderItems">
-                                <div class="w-full h-full bg-white rounded-lg">
-                                    <div class="w-full h-full flex justify-around items-center p-3 mb-3">
-                                        <div>
-                                            <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
-                                        </div>
-                                        <div>
-                                            <p class="itbms-item-description">{{ orderItem.description }}</p>
-                                        </div>
-                                        <div>
-                                            <p>
-                                                <span class="font-semibold">Qty:</span>
-                                                <span class="itbms-item-quantity">{{ orderItem.quantity }}</span>
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p>
-                                                <span class="font-semibold">Price:</span>
-                                                <span class="itbms-item-total-price">{{ orderItem.price * orderItem.quantity }}</span>
-                                            </p>
+                                <div v-for="orderItem in order.orderItems">
+                                    <div class="w-full h-full bg-white rounded-lg">
+                                        <div class="w-full h-full flex justify-around items-center p-3 mb-3">
+                                            <div>
+                                                <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
+                                            </div>
+                                            <div>
+                                                <p class="itbms-item-description">{{ orderItem.description }}</p>
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="font-semibold">Qty:</span>
+                                                    <span class="itbms-item-quantity">{{ orderItem.quantity }}</span>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="font-semibold">Price:</span>
+                                                    <span class="itbms-item-total-price">{{ orderItem.price * orderItem.quantity }}</span>
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </router-link>
                         </div>
                 </div>
             </div>
