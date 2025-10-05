@@ -11,6 +11,7 @@ import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.utils.ListMapper;
+import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
@@ -38,6 +39,8 @@ public class OrderService {
     private ModelMapper modelMapper;
     @Autowired
     private ListMapper listMapper;
+    @Autowired
+    private EntityManager entityManager;
 
     public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
@@ -67,11 +70,12 @@ public class OrderService {
            newOrder.setBuyer(buyer);
            newOrder.setSeller(seller);
            newOrder.setOrderDate(order.getOrderDate());
-           newOrder.setPaymentDate(order.getOrderDate());
+//           newOrder.setPaymentDate(order.getOrderDate());
            newOrder.setShippingAddress(order.getShippingAddress());
            newOrder.setOrderNote(order.getOrderNote());
            newOrder.setOrderStatus(order.getOrderStatus());
            orderRepository.save(newOrder);
+           entityManager.refresh(newOrder);
 
            PlaceOrderResponseDto placeOrder = new PlaceOrderResponseDto();
            placeOrder.setId(newOrder.getId());
