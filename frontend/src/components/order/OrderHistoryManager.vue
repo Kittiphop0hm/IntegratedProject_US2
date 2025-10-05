@@ -7,11 +7,10 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter()
 const orders = ref([])
-const pageData = ref([])
-const page = ref(0)
-const size = ref(10)
 const pageSession = sessionStorage.getItem('pageNumber')
 const sizeSession = sessionStorage.getItem('pageSize')
+const page = ref(0)
+const size = ref()
 
 watch([page, size], () => {
     sessionStorage.setItem('pageNumber', page.value)
@@ -32,7 +31,7 @@ const fetchData = async () => {
 onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
-    await fetchData()
+    console.log(typeof size.value);
 })
 
 const computedPageNumberArr = computed(() => {
@@ -87,6 +86,11 @@ const toPrev = () => {
 const toNext = () => {
     page.value += 1
 }
+
+const changePageSize = (event) => {
+    size.value = Number(event.target.value)
+    page.value = 0
+}
 </script>
 
 <template>
@@ -94,11 +98,14 @@ const toNext = () => {
         <OrderHistory 
         :orders="orders"
         :pageNumber="computedPageNumberArr"
+        :page="page"
+        :pageSize="size"
         @fecthItemFromPage="fecthItemFromPage"
         @toPageFirst="toFirst"
         @toPageLast="toLast"
         @toNextPage="toNext"
         @toPrevPage="toPrev"
+        @changePageSize="changePageSize"
         />
     </div>
 </template>

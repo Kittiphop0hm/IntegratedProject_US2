@@ -3,12 +3,18 @@ import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { ref, watchEffect, computed } from 'vue';
 
-const emits = defineEmits(['fecthItemFromPage', 'toPageFirst', 'toPageLast', 'toNextPage', 'toPrevPage'])
+const emits = defineEmits(['fecthItemFromPage', 'toPageFirst', 'toPageLast', 'toNextPage', 'toPrevPage', 'changePageSize'])
 
 const props = defineProps({
     orders: {
         type: Object,
         required: true
+    },
+    page: {
+        type: Number
+    },
+    pageSize: {
+        type: Number,
     },
     pageNumber: {
         type: Array,
@@ -22,11 +28,13 @@ const myOrders = ref([])
 const myOrderCompleted = ref([])
 const myOrderCancel = ref([])
 const pageNumberArr = ref([])
+const size = ref()
 watchEffect(() => {
     props.orders ? myOrders.value = props.orders : []
     props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETED") : []
     props.orders.content ? myOrderCancel.value = props.orders.content.filter((order) => order.orderStatus === "CANCELED") : []
     props.pageNumber ? pageNumberArr.value = props.pageNumber : []
+    props.pageSize >= 5 ? size.value = props.pageSize : 10
     console.log(pageNumberArr.value);
 })
 const status = ref('completed')
@@ -42,7 +50,7 @@ const dateFormat = (isoDate) => {
 
 const totalPrice = (orderItems) => {
     const total = orderItems?.reduce((acc, current) => {
-        acc += current.price
+        acc += current.price * current.quantity
         return acc
     }, 0)
     return total
@@ -57,11 +65,20 @@ const totalPrice = (orderItems) => {
         <div class="w-full h-full p-5 space-y-3">
             <div class="w-full h-full bg-gray-200 rounded-2xl p-5">
                 <div class="w-full h-[50px] flex items-center">
-                    <div class="space-x-4">
-                        <button @click="changeStatus('completed')"
-                            :class="status === 'completed' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Completed</button>
-                        <button @click="changeStatus('canceled')"
-                            :class="status === 'canceled' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Canceled</button>
+                    <div class="w-full flex justify-between items-center space-x-4 mx-5">
+                        <div class="space-x-4">
+                            <button @click="changeStatus('completed')"
+                                :class="status === 'completed' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Completed</button>
+                            <button @click="changeStatus('canceled')"
+                                :class="status === 'canceled' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Canceled</button>
+                        </div>
+                        <div>
+                            <select v-model="size" @change="$emit('changePageSize', $event)" class="border p-2">
+                                <option :value="5">5</option>
+                                <option :value="10">10</option>
+                                <option :value="20">20</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,7 +222,7 @@ const totalPrice = (orderItems) => {
                             <button @click="$emit('toPrevPage')" class="border py-2 px-4 rounded-2xl cursor-pointer">Perv</button>
                         </div>
                         <div v-for="index in pageNumberArr" :key="index">
-                            <button @click="$emit('fecthItemFromPage', index)" class="border py-2 px-4 rounded-2xl cursor-pointer">
+                            <button @click="$emit('fecthItemFromPage', index)" :class="index - 1 === page ? 'bg-green-600 text-white border py-2 px-4 rounded-2xl cursor-pointer' : 'border py-2 px-4 rounded-2xl cursor-pointer'">
                                 {{ index }}
                             </button>
                         </div>
