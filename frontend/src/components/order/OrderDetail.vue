@@ -79,7 +79,7 @@ const totalPrice = (orderItems) => {
                     </div>
 
                     <div class="w-full h-full">
-                        <div v-for="orderItem in order.orderItems" class="w-full h-[150px] border-2 border-gray-400 rounded-2xl my-2">
+                        <div v-for="orderItem in order.orderItems" class="w-full h-[150px] bg-white rounded-2xl my-2">
                             <div class="w-full h-full flex flex-row justify-around items-center">
                                 <div>
                                     <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
