@@ -119,6 +119,7 @@ public class OrderService {
         buyerOrderDto.setId(order.getId());
         buyerOrderDto.setBuyerId(order.getBuyer().getId());
         buyerOrderDto.setOrderDate(order.getOrderDate());
+        buyerOrderDto.setPaymentDate(order.getPaymentDate());
         buyerOrderDto.setShippingAddress(order.getShippingAddress());
         buyerOrderDto.setOrderNote(order.getOrderNote());
         buyerOrderDto.setOrderStatus(order.getOrderStatus());
