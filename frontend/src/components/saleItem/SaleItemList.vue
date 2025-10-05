@@ -49,6 +49,7 @@ const fetchData = async () => {
   }
 };
 onMounted(async () => {
+  if(!accessToken)router.push({name:'Login'})
   try {
       pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
   pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;

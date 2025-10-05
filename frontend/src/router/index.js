@@ -110,6 +110,14 @@ router.beforeEach((to, form) => {
   console.log("form.name: " + form.name);
   console.log("to.name: " + to.name);
   console.log("userStore.role: " + userStore.role);
+
+
+  if (accessToken && (to.name === "Login" || to.name === "Register")) {
+    return { name: "SaleItemHome" };
+  }
+  if(to.name === "SaleItemList" && !accessToken && form.name !== "Login"){
+    return {name:'Login'}
+  }
   if (to.name === "SaleItemList" && !userStore.isSeller) {
     return { name: "SaleItemHome" };
   }
