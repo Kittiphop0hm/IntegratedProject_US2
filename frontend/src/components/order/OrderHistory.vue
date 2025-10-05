@@ -181,11 +181,6 @@ const totalPrice = (orderItems) => {
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
                     </div>
                 </div>
             </div>
