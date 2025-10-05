@@ -16,7 +16,7 @@ watchEffect(() => {
     props.orders ? myOrders.value = props.orders : []
     console.log(props.orders.content);
     console.log(myOrders.value.content);
-    props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETE") : []
+    props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETED") : []
     props.orders.content ? myOrderCancel.value = props.orders.content.filter((order) => order.orderStatus === "CANCELED") : []
     console.log(myOrderCompleted.value);
     console.log(myOrderCancel.value);
@@ -61,7 +61,11 @@ const totalPrice = (orderItems) => {
                 <div>
                     <div>
                         <div v-if="status === 'completed'" v-for="order in myOrderCompleted" :key="order.id" class="bg-gray-100 mb-3 rounded-2xl p-5">
-                                <div class="flex justify-center items-center text-center space-x-5 mb-5">
+                            <router-link :to="{name: 'OrderDetail', params: {orderId: order.id}}">
+                                <div v-if="myOrderCompleted.length <= 0" class="w-full text-center">
+                                    <p class="font-semibold text-4xl p-2">No Order</p>
+                                </div>
+                                <div class="flex justify-center items-center text-center space-x-10 mb-5">
                                     <div>
                                         <h1 class="font-semibold">Username</h1>
                                         <p>{{ order.buyer.username }}</p>
@@ -95,33 +99,37 @@ const totalPrice = (orderItems) => {
                                         <p>{{ order.orderNote }}</p>
                                     </div>
                                 </div>
-                            <div v-for="orderItem in order.orderItems">
-                                <div class="w-full h-full bg-white rounded-lg">
-                                    <div class="w-full h-full flex justify-around items-center p-3 mb-3">
-                                        <div>
-                                            <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
-                                        </div>
-                                        <div>
-                                            <p>{{ orderItem.description }}</p>
-                                        </div>
-                                        <div>
-                                            <p>
-                                                <span class="font-semibold">Qty:</span>
-                                                {{ orderItem.quantity }}
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <p>
-                                                <span class="font-semibold">Price:</span>
-                                                {{ orderItem.price * orderItem.quantity }}
-                                            </p>
+                                <div v-for="orderItem in order.orderItems">
+                                    <div class="w-full h-full bg-white rounded-lg">
+                                        <div class="w-full h-full flex justify-around items-center p-3 mb-3">
+                                            <div>
+                                                <img src="/images/Iphone 14-pro-1.png" alt="SaleItem-image" width="100">
+                                            </div>
+                                            <div>
+                                                <p>{{ orderItem.description }}</p>
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="font-semibold">Qty:</span>
+                                                    {{ orderItem.quantity }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="font-semibold">Price:</span>
+                                                    {{ orderItem.price * orderItem.quantity }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </router-link>
                         </div>
 
                         <div v-if="status === 'canceled'" v-for="order in myOrderCancel" :key="order.id" class="bg-gray-100 mb-3 rounded-2xl p-5">
+                                <div v-if="myOrderCancel.length <= 0" class="w-full text-center">
+                                    <p class="font-semibold text-4xl p-2">No Order</p>
+                                </div>
                                 <div class="flex justify-center items-center text-center space-x-5 mb-5">
                                     <div>
                                         <h1 class="font-semibold">Username</h1>
