@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class SellerForPlaceOrderDto {
     private Integer id;
-    private String email;
+    private String username;
 }

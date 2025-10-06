@@ -7,20 +7,24 @@ import { addItemNoBody, addItem } from './libs/fetchUtil';
 const isAccessTokenExpired = (accessToken) => {
   if (accessToken) {
     const decode = decodeJWT(accessToken)
-    const currentTime = ref(Math.floor(Date.now() / 1000))
+    const currentTime = Math.floor(Date.now() / 1000)
     if (currentTime > decode.exp) return true
   }
   return false
 }
 
-setInterval(async () => {
-  const accessToken = ref(sessionStorage.getItem("accessToken"))
-  if (accessToken && isAccessTokenExpired(accessToken.value)) {
+const refreshAccessToken = async () => {
+    const accessToken = sessionStorage.getItem("accessToken")
+  if (accessToken && isAccessTokenExpired(accessToken)) {
     const newAccessToken = await addItemNoBody(`${import.meta.env.VITE_APP_URL}/v2/auth/refresh`)
     console.log(newAccessToken.data.access_token);
     sessionStorage.setItem('accessToken', newAccessToken.data.access_token);
-    console.log(isAccessTokenExpired(accessToken.value));
+    console.log(isAccessTokenExpired(accessToken));
   }
+}
+refreshAccessToken()
+setInterval(async () => {
+  refreshAccessToken()
 }, 1 * 60 * 1000)
 </script>
 

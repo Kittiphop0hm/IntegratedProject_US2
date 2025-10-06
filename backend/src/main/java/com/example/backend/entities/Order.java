@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
@@ -31,9 +32,6 @@ public class Order {
     @Column(name = "orderDate")
     private Instant orderDate;
 
-    @Column(name = "paymentDate")
-    private Instant paymentDate;
-
     @Size(max = 45)
     @Column(name = "shippingAddress", length = 45)
     private String shippingAddress;
@@ -45,4 +43,9 @@ public class Order {
     @Size(max = 45)
     @Column(name = "orderStatus", length = 45)
     private String orderStatus;
+
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "paymentDate", nullable = false, insertable = false, updatable = false )
+    private Instant paymentDate;
+
 }

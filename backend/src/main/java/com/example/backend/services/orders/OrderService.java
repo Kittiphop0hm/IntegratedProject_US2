@@ -11,6 +11,7 @@ import com.example.backend.repositories.SaleItemRepository;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.services.saleitems.SaleItemService_v1;
 import com.example.backend.utils.ListMapper;
+import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
@@ -38,6 +39,8 @@ public class OrderService {
     private ModelMapper modelMapper;
     @Autowired
     private ListMapper listMapper;
+    @Autowired
+    private EntityManager entityManager;
 
     public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
@@ -62,15 +65,17 @@ public class OrderService {
            User buyer = userRepository.findById(order.getBuyerId()).orElseThrow(() -> new ItemNotFoundException("Buyer not found"));
            User seller = userRepository.findById(order.getSellerId()).orElseThrow(() -> new ItemNotFoundException("Seller not found"));
            SellerForPlaceOrderDto sellerForPlaceOrderDto = modelMapper.map(seller, SellerForPlaceOrderDto.class);
+           sellerForPlaceOrderDto.setUsername(seller.getNickName());
            Order newOrder = new Order();
            newOrder.setBuyer(buyer);
            newOrder.setSeller(seller);
            newOrder.setOrderDate(order.getOrderDate());
-           newOrder.setPaymentDate(order.getOrderDate());
+//           newOrder.setPaymentDate(order.getOrderDate());
            newOrder.setShippingAddress(order.getShippingAddress());
            newOrder.setOrderNote(order.getOrderNote());
            newOrder.setOrderStatus(order.getOrderStatus());
            orderRepository.save(newOrder);
+           entityManager.refresh(newOrder);
 
            PlaceOrderResponseDto placeOrder = new PlaceOrderResponseDto();
            placeOrder.setId(newOrder.getId());
@@ -114,6 +119,7 @@ public class OrderService {
         buyerOrderDto.setId(order.getId());
         buyerOrderDto.setBuyerId(order.getBuyer().getId());
         buyerOrderDto.setOrderDate(order.getOrderDate());
+        buyerOrderDto.setPaymentDate(order.getPaymentDate());
         buyerOrderDto.setShippingAddress(order.getShippingAddress());
         buyerOrderDto.setOrderNote(order.getOrderNote());
         buyerOrderDto.setOrderStatus(order.getOrderStatus());
