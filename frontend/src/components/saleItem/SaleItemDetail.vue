@@ -14,12 +14,14 @@ import AlertMessageModel from "../model/AlertMessageModel.vue";
 const accessToken = sessionStorage.getItem("accessToken");
 const getUser = decodeJWT(accessToken);
 import { useUserStore } from "@/stores/users";
-  const userStore = useUserStore();
+const userStore = useUserStore();
+import { useCartStore } from "@/stores/carts.js";
+const cartStore = useCartStore();
 const route = useRoute();
 const router = useRouter();
 const item = ref([]);
 const isDelete = ref(false);
-const quantityInCart = ref(1);
+// const quantityInCart = ref(1);
 onMounted(async () => {
   try {
     const data = await getItems(
@@ -71,40 +73,60 @@ const idParam = parseInt(route.params.id);
 const isShowAlertMessageModel = ref(false);
 const messageAlert = ref("");
 const isSuccess = ref(Boolean(route.query.alert));
+const quantityInCart = ref(1);
+
+const displayQuantityInCart = (qty) => {
+  quantityInCart.value = qty;
+};
 const checkRole = () => {
-  console.log("checkRole God 73 SaleItemDetails");
-    console.log(item.value.seller.id);
-  if(userStore.role === "") {
-    console.log("no role stupid 250 SaleitemMnaager")
+  if (userStore.role === "") {
+    console.log("no role stupid 250 SaleitemMnaager");
     router.push({ name: "Login" });
-    return
+    return;
   }
-  if (item.value.seller.id === useUserStore.id) {
-      alert("Item added to cart.");
-  }  else {
+  if (item.value.seller.id === userStore.id) {
     isShowAlertMessageModel.value = true;
     isSuccess.value = false;
     messageAlert.value = "You cannot add your own item to the cart.";
-  }
+  } else {
+    console.log(item.value)
+    let copyItem = JSON.parse(JSON.stringify(item.value));
+    copyItem.quantityEach = quantityInCart.value;
+    const result = cartStore.isMaxQtyInStock( copyItem , quantityInCart.value);
+    console.log("Result check max qty in stock: ", result);
+    if(typeof result === 'string') {
+      isShowAlertMessageModel.value = true;
+      isSuccess.value = false;
+      messageAlert.value = result;
+    }
+    else {
+      console.log("Error mai")
+      cartStore.pushInCart(copyItem , quantityInCart.value);
+      alert("Ok Herbal")
+    }
 
+  }
 };
 </script>
 
 <template>
   <Navbar />
-  <div v-show="route.query.alert === 'true' ||  isShowAlertMessageModel === true" class="p-10 pb-0">
+  <div
+    v-show="route.query.alert === 'true' || isShowAlertMessageModel === true"
+    class="p-10 pb-0"
+  >
     <AlertMessageModel :isSuccess="isSuccess">
       <template #message>
-      <p v-show="isSuccess=== true">
-        The sale item has been <span class="text-green-400">updated.</span>
-      </p>
-      <p v-show="isSuccess === false">
-        {{ messageAlert }}
-      </p>
+        <p v-show="isSuccess === true">
+          The sale item has been <span class="text-green-400">updated.</span>
+        </p>
+        <p v-show="isSuccess === false">
+          {{ messageAlert }}
+        </p>
       </template>
     </AlertMessageModel>
   </div>
-  <SaleItemDetailModel :saleId="idParam">
+  <SaleItemDetailModel :saleId="idParam" @addToCart="displayQuantityInCart">
     <template #path>
       <span class="itbms-model font-semibold">{{ item.model }}</span>
       <span class="itbms-ramGb font-semibold ml-1"
@@ -164,9 +186,13 @@ const checkRole = () => {
         >Delete</span
       >
     </template>
-    <template #buttonMinus> - </template>
+    <!-- <template #buttonMinus >  -->
+    <!-- <span class="w-full border" @click="decreaseQty">-</span>  -->
+    <!-- </template> -->
     <template #quantityInCart> {{ quantityInCart }} </template>
-    <template #buttonPlus> + </template>
+    <!-- <template #buttonPlus>
+      <span @click="quantityInCart++">+</span>
+    </template> -->
     <template #button3>
       <span @click="checkRole" class="itbms-add-to-cart-button"
         >Add to cart</span
