@@ -256,7 +256,7 @@ public class SaleItemService_v1 {
     }
 
 
-    public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id , Integer page , Integer size, String sortField, String sortDirection , AuthUserDetail principal ) {
+    public PageDto<GetSaleItemSellerDto> getSaleItemListBySeller(Integer id , Integer page , Integer size, String sortField, String sortDirection , AuthUserDetail principal) {
 //        System.out.println(("principal.getId()"));
 //        System.out.println(principal.getId());
         System.out.println("getSaleItemListBySeller function");

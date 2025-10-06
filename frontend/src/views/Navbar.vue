@@ -109,10 +109,7 @@ const logout = async () => {
 
         <div class="flex items-center mx-3">
           <!-- ไอคอน User/Register อยู่เสมอ ไม่ว่าจะ login หรือไม่ -->
-          <router-link
-            :to="{ name: 'Register' }"
-            class="cursor-pointer flex justify-center items-center mr-3"
-          >
+          <router-link v-if="!isLoggedIn" :to="{name: 'Register'}" class="cursor-pointer flex justify-center items-center mr-3">
             <button class="cursor-pointer hover:opacity-80">
               <svg
                 class="fill-current hover:opacity-80"
