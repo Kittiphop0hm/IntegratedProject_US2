@@ -5,7 +5,7 @@ export const useUserStore = defineStore(
   "user",
   () => {
     // reactive state
-    const id = ref(null);
+    const id = ref();
     const name = ref("");
     const role = ref("");
 
@@ -14,8 +14,12 @@ export const useUserStore = defineStore(
 
     // actions
     function setUser(user) {
+      console.log(user)
       id.value = user.id;
       role.value = user.role;
+      console.log("Set user in store");
+      console.log(id.value);
+      console.log(role.value);
     }
 
     function clearUser() {

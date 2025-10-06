@@ -20,6 +20,7 @@ const items = ref(props.saleItems);
 
     const emit = defineEmits(["addToCart"]);
 function checkRole(yourItem) {
+      console.log("test GALLERY")
   emit("addToCart", yourItem);
 }
 

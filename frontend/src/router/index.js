@@ -14,6 +14,7 @@ import { decodeJWT } from "@/libs/decodeJWT.js";
 const getUser = decodeJWT(accessToken);
 import { computed } from "vue";
 import { useUserStore } from "../stores/users.js";
+import SaleItemCart from "@/components/saleItem/SaleItemCart.vue";
 import OrderHistoryManager from "@/components/order/OrderHistoryManager.vue";
 import OrderDetail from "@/components/order/OrderDetail.vue";
 
@@ -56,6 +57,11 @@ const router = createRouter({
       path: "/sale-items/list/:id",
       name: "SaleItemListById",
       component: SaleItemDetail,
+    },
+    {
+      path: "/sale-items/cart",
+      name: "SaleItemCart",
+      component: SaleItemCart ,
     },
     {
       path: "/brands",

@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 import { useUserStore } from "../../stores/users.js";
 const userStore = useUserStore();
 const route = useRoute();
-const emit = defineEmits(["fetchImagesForUpdate"]);
+const emit = defineEmits(["fetchImagesForUpdate" , "addToCart"]);
 
 const props = defineProps({
   isActive: {
@@ -32,9 +32,8 @@ const props = defineProps({
 
 const pictures = ref([]);
 const items = ref([]);
-const itemss = ref([]);
 const mainImage = ref();
-
+const quantityInCart = ref(1);
 onMounted(async () => {
   try {
     if (route.params.id) {
@@ -80,6 +79,16 @@ onMounted(async () => {
 const clickShowImage = (index) => {
   mainImage.value = pictures.value[index];
 };
+function addQtyToParent(type) {
+  console.log("addQtyToParent");
+  if (quantityInCart.value > 1 && type === "decrease") {
+    quantityInCart.value--;
+  }
+  if (type === "increase") {
+    quantityInCart.value++;
+  }
+  emit("addToCart", quantityInCart.value);
+}
 </script>
 
 <template>
@@ -204,9 +213,9 @@ const clickShowImage = (index) => {
           class="flex gap-4 border rounded-lg "
            v-if="route.name === 'SaleItemDetail'"
           >
-            <button class="py-2 px-4 bg-red-400 rounded-lg "><slot name="buttonMinus">Input Name buttonMinus</slot></button>
-            <button><slot name="quantityInCart">Input Name quantity</slot></button>
-            <button class="py-2 px-4 bg-amber-600 rounded-lg "><slot name="buttonPlus">Input Name Button3</slot></button>
+            <button @click="addQtyToParent('decrease')" class="py-2 px-4 bg-red-400 rounded-lg "><slot name="buttonMinus">-</slot></button>
+            <button><slot name="quantityInCart">Input Your Quantity</slot></button>
+            <button @click="addQtyToParent('increase')" class="py-2 px-4 bg-amber-600 rounded-lg "><slot name="buttonPlus">+</slot></button>
           </div>
             <button
             v-if="route.name === 'SaleItemDetail'"
