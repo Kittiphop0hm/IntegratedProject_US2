@@ -274,6 +274,26 @@ async function getItemsWithToken(url, token) {
     throw new Error("can not get your items");
   }
 }
+async function addItemWithToken(url, newItem , token) {
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newItem),
+    });
+    const addedItem = await res.json();
+    return {
+      status: res.status,
+      data: addedItem,
+    };
+  } catch (error) {
+    throw new Error("can not add your item");
+  }
+}
+
 
 async function getItemsByIdWithToken(url, id, token) {
   try {
@@ -341,5 +361,6 @@ export {
   register,
   addItemNoBody,
   addItemNoBodyAndNoContent,
-  getItemsByIdWithToken
+  getItemsByIdWithToken,
+  addItemWithToken,
 };
