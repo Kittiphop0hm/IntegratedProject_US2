@@ -1,26 +1,212 @@
 <script setup>
-import { ref } from "vue";
+import { ref, watchEffect, computed } from "vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
 import { useCartStore } from "@/stores/carts.js";
+import { useUserStore } from "@/stores/users";
+import AlertMessageModel from "../model/AlertMessageModel.vue";
+import DeletePopupModel from "../model/DeletePopupModel.vue";
+import { addItem, getItems , addItemWithToken} from "../../libs/fetchUtil.js"
+const userStore = useUserStore()
 const cartStore = useCartStore();
 const arrayCartItems = ref(cartStore.cartObj);
 console.log(arrayCartItems.value);
+const address = ref("");
+const note = ref("");
+const selectAllCheck = ref(false);
+const accessToken = sessionStorage.getItem("accessToken")
+// watch(selectAllCheck, (newVal) => {
+//   // sellerCheck.value = newVal
+//   arrayCartItems.value.forEach( obj => {
+//     obj.checked = newVal
+//     obj.items.forEach( item => { item.checked = newVal })
+//   })
+// })
+// const arrCheckedTrue = computed( () =>
+//   arrayCartItems.value.filter(seller => seller.checked || seller.items.some(item => item.checked))
+// )
+// const totalItems = ref(arrCheckedTrue.value.reduce((acc,cur)))
+
+const totalQuantity = computed(() => {
+  return arrayCartItems.value.reduce((accAll, seller) => {
+    console.log(seller);
+    const totalEachSeller = seller.items.reduce((accEach, item) => {
+      // console.log(typeof item.quantity);
+      // console.log(typeof accEach);
+      return accEach + item.quantity;
+    }, 0);
+    return totalEachSeller + accAll;
+  }, 0);
+});
+
+const totalPrice = computed(() => {
+  return arrayCartItems.value.reduce((accAll, seller) => {
+    console.log(seller);
+    const totalEachSeller = seller.items.reduce((accEach, item) => {
+      // console.log(typeof item.price);
+      // console.log(typeof accEach);
+      return accEach + item.price * item.quantity;
+    }, 0);
+    return totalEachSeller + accAll;
+  }, 0);
+});
+
+watchEffect(() => {
+  console.log(totalQuantity.value);
+});
+
+function checkSelectAll() {
+  arrayCartItems.value.forEach((obj) => {
+    obj.checked = selectAllCheck.value;
+    obj.items.forEach((item) => {
+      item.checked = selectAllCheck.value;
+    });
+  });
+}
+
+function checkSeller(seller) {
+  console.log(seller);
+  seller.items.forEach((item) => {
+    item.checked = seller.checked;
+  });
+  selectAllCheck.value = arrayCartItems.value.every((seller) => seller.checked);
+}
+
+function checkItem(seller) {
+  console.log(seller);
+  seller.checked = seller.items.every((item) => item.checked);
+  // seller.forEach(item => {
+  //   seller.checked =
+  // } )
+  selectAllCheck.value = arrayCartItems.value.every((seller) => seller.checked);
+}
+const isShowAlertMessageModel = ref(false);
+const messageAlert = ref("");
+const isSuccess = ref();
+
+const itemDelete = ref()
+function changeQty(item, value) {
+  const newQty = item.quantity + value;
+  if (newQty < 1) {
+    itemDelete.value = item
+    isDelete.value = true
+  }
+  const result = cartStore.isMaxQtyInStock(item, newQty, "saleItemCart");
+  console.log("Result check max qty in stock: ", result);
+  if (typeof result === "string") {
+    isShowAlertMessageModel.value = true;
+    isSuccess.value = false;
+    messageAlert.value = result;
+    return;
+  }
+  item.quantity = newQty;
+}
+
+const isDelete = ref(false);
+const cancelDelete = () => {
+  isDelete.value = false;
+};
+
+
+const deleteItem = (itemDelete) => {
+  cartStore.cartObj = arrayCartItems.value
+arrayCartItems.value = arrayCartItems.value.map(seller => ({
+  ...seller, 
+  items: seller.items.filter(item => item.saleItemId !== itemDelete.saleItemId)
+}));
+  cartStore.cartObj = arrayCartItems.value
+  cartStore.cartQuantity -= 1
+  isDelete.value = false;
+}
+
+function changeFormattedObject() {
+  const orderData = arrayCartItems.value
+    .filter(seller => seller.checked || seller.items.some(item => item.checked))
+    .map(seller => ({
+      buyerId : userStore.id ,
+      sellerId : seller.sellerId ,
+      orderDate: new Date().toISOString() ,
+      shippingAddress: address.value ,
+      orderNote: note.value ,
+      orderStatus: "COMPLETED" ,
+      // ...seller,
+      orderItems: seller.items.filter(item => item.checked)
+      .map(item => ({
+        saleItemId: item.saleItemId ,
+        price: item.price ,
+        quantity: item.quantity ,
+        description: item.description
+      }))
+    }));
+    
+    return orderData
+
+}
+
+
+
+
+
+async function placeOrder() {
+  const orderData = changeFormattedObject()
+  console.log(orderData)
+console.log(JSON.stringify(orderData, null, 2));
+  const item = await addItemWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`,orderData ,accessToken)
+  console.log(item)
+}
 </script>
 <template>
   <Navbar />
   <Search />
+
+  <div>
+    <DeletePopupModel
+      v-if="isDelete"
+      @cancel-delete="cancelDelete"
+      @delete-sale-item="deleteItem(itemDelete)"
+    >
+      <template #message>
+        <span class="itbms-message font-semibold">
+          Do you want to delete this sale item?
+        </span>
+      </template>
+    </DeletePopupModel>
+  </div>
+
+  <div v-show="isShowAlertMessageModel === true">
+    <AlertMessageModel :isSuccess="isSuccess">
+      <template #message>
+        <p v-show="isSuccess === false">
+          {{ messageAlert }}
+        </p>
+      </template>
+    </AlertMessageModel>
+  </div>
+
   <div class="container border flex justify-between mt-10">
     <div class="border-red-500 border w-[60%]">
       <h1>Shopping Cart</h1>
-      <div class="itbms-select-all"><input type="checkbox" value=""  />Select All</div>
+      <div class="itbms-select-all">
+        <input
+          type="checkbox"
+          value=""
+          v-model="selectAllCheck"
+          @change="checkSelectAll"
+        />Select All
+      </div>
       <div
         v-for="(obj, index) in arrayCartItems"
         :key="index"
-        class="itbms-row border my-5 p-5 flex justify-between flex-col"
+        class="itbms-row  my-5 p-5 flex justify-between flex-col"
       >
-        <div class="mb-5">
-          <input type="checkbox" value="" class="itbms-select-nickname"/>
+        <div class="mb-5" v-if="obj.items.length > 0">
+          <input
+            type="checkbox"
+            value=""
+            class="itbms-select-nickname"
+            v-model="obj.checked"
+            @change="checkSeller(obj)"
+          />
           <span class="itbms-nickname">{{ obj.sellerName }}</span>
         </div>
         <div
@@ -28,38 +214,44 @@ console.log(arrayCartItems.value);
           :key="index"
           class="flex border items-center gap-3 itbms-item-row"
         >
-          <input type="checkbox" value="" class="" />
+          <input
+            type="checkbox"
+            value=""
+            class=""
+            v-model="item.checked"
+            @change="checkItem(obj)"
+          />
           <img
             src="/images/iPhone14ProMax.jpg"
             alt="phone image"
             class="w-20 h-25 object-cover rounded-md mb-4"
           />
           <!-- {{ Object.keys(item) }} -->
-          <div class="">
+          <div class="itbms-item-description">
             {{ item.brandName }}
-          {{ item.model }}
-          ( {{ item.storageGb }} GB , {{ item.color }} )
+            {{ item.model }}
+            ( {{ item.storageGb }} GB , {{ item.color }} )
           </div>
           <button
-            @click="addQtyToParent('decrease')"
-            class="py-2 px-4 bg-red-400 rounded-lg"
+            @click="changeQty(item, -1)"
+            class="itbms-dec-qty-button py-2 px-4 bg-red-400 rounded-lg"
           >
             -
           </button>
-          <button>{{ item.quantity }}</button>
+          <div class="itbms-item-quantity">{{ item.quantity }}</div>
           <button
-            @click="addQtyToParent('increase')"
-            class="py-2 px-4 bg-amber-600 rounded-lg"
+            @click="changeQty(item, 1)"
+            class="itbms-inc-qty-button py-2 px-4 bg-amber-600 rounded-lg"
           >
             +
           </button>
-          Price: {{ item.price }}
+          <div class="itbms-item-total-price">Price: {{ item.price }}</div>
         </div>
       </div>
     </div>
 
     <div class="border-blue-500 border w-[35%]">
-      <h1>Cart Summary</h1>
+      <h1 class="text-3xl">Cart Summary</h1>
       <hr />
       <h2>Shipto</h2>
       <p>
@@ -67,20 +259,29 @@ console.log(arrayCartItems.value);
         District, Province, Postal Code]
       </p>
       <textarea
-        class="border border-gray-300 rounded-md p-2 w-full h-32"
+        v-model="address"
+        class="itbms-shipping-address border border-gray-300 rounded-md p-2 w-full h-32"
         placeholder="พิมพ์ข้อความที่นี่..."
       ></textarea>
       <p class="font-bold">Note</p>
-            <textarea
-        class="border border-gray-300 rounded-md p-2 w-full h-32"
+      <textarea
+        v-model="note"
+        class="itbms-order-not border border-gray-300 rounded-md p-2 w-full h-32"
         placeholder="Additional instructions or requests"
       ></textarea>
 
       <hr />
-      <div><span>Total items:</span> <span></span></div>
-      <div><span>Total price:</span> <span></span></div>
+      <div>
+        <span>Total items:</span>
+        <span class="itbms-total-order-items">{{ totalQuantity }}</span>
+      </div>
+      <div>
+        <span>Total price:</span>
+        <span class="itbms-total-order-price">{{ totalPrice }}</span>
+      </div>
       <button
-        class="w-[100%] bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200"
+      @click="placeOrder"
+        class="itbms-place-order-button w-[100%] bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200"
       >
         Place Order
       </button>
