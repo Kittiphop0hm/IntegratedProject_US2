@@ -2,6 +2,7 @@ package com.example.backend.services.saleitems;
 import com.example.backend.dtos.saleItems.*;
 import com.example.backend.dtos.saleItems.sellers.GetSaleItemSellerDto;
 import com.example.backend.dtos.saleItems.sellers.ResponseSaleItemsWithSellerDto;
+import com.example.backend.dtos.users.sellers.GetUserSellerDto;
 import com.example.backend.entities.AuthUserDetail;
 import com.example.backend.entities.Brand;
 import com.example.backend.entities.SaleItem;
@@ -120,7 +121,74 @@ public class SaleItemService_v1 {
         return repository.findById(id).orElseThrow(() -> new ItemNotFoundException("SaleItem not found for this id :: " + id));
     }
 
-    public PageDto<GetSaleItemDto> FilterAndSortSaleItem(
+//    public PageDto<GetSaleItemDto> FilterAndSortSaleItem(
+//            String searchKeyword,
+//            List<String> filterBrands,
+//            Integer minPrice,
+//            Integer maxPrice,
+//            List<String> filterStorageSizesStr,
+//            String sortField,
+//            String sortDirection,
+//            Integer page,
+//            Integer size ,
+//            AuthUserDetail principal
+//            ) {
+//        List<Integer> filterStorageSizes = new ArrayList<>();
+//        boolean includeNotSpecified = false;
+//
+//        if (filterStorageSizesStr != null) {
+//            for (String s : filterStorageSizesStr) {
+//                if ("Not specified".equalsIgnoreCase(s) || "-1".equals(s) || "0".equals(s)) {
+//                    includeNotSpecified = true;
+//                } else {
+//                    try {
+//                        int val = Integer.parseInt(s);
+//                        if (val > 0) filterStorageSizes.add(val);
+//                    } catch (NumberFormatException ignored) {
+//
+//                    }
+//                }
+//            }
+//        }
+//        Specification<SaleItem> combinedSpec = SaleItemSpecification.buildFilterSpecification(
+//                searchKeyword,
+//                filterBrands,
+//                minPrice,
+//                maxPrice,
+//                filterStorageSizes,
+//                includeNotSpecified,
+//                sortField,
+//                sortDirection
+//        );
+//
+//        Page<SaleItem> saleItems = pageRepository.findAll(combinedSpec, PageRequest.of(page, size));
+//
+//        // Log debug
+//        System.out.println("🔍 Search keyword: " + searchKeyword);
+//        System.out.println("🔧 Brands filter: " + filterBrands);
+//        System.out.println("🔧 Storage filter: " + filterStorageSizes + ", includeNotSpecified=" + includeNotSpecified);
+//        System.out.println("💰 Price range: " + minPrice + " - " + maxPrice);
+//        System.out.println("🔧 Sort: " + sortField + " " + sortDirection);
+//        System.out.println("📄 Page: " + page + ", Size: " + size);
+//        System.out.println("📈 Total items found: " + saleItems.getTotalElements());
+//        System.out.println("📊 Total pages: " + saleItems.getTotalPages());
+//        System.out.println(principal);
+//        if(principal != null) {
+////            PageDto<GetSaleItemDto> saleItemPages = modelMapper.map(saleItems, PageDto.class);
+//            Page<GetSaleItemDto> dtoPage = saleItems.map(items -> {
+//                GetSaleItemDto dto = modelMapper.map(items, GetSaleItemDto.class);
+//                dto.setIsOwnedByCurrentUser(items.getSeller().getId().equals(principal.getId()));
+//                return dto;
+//            });
+//            PageDto<GetSaleItemDto> pageDtos = modelMapper.map(dtoPage, PageDto.class);
+//            pageDtos.setContent(pageDtos.getContent());
+//            pageDtos.setSort(sortField);
+//            return pageDtos;
+//        }
+//        return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
+//    }
+
+    public PageDto<ResponseSaleItemsWithSellerDto> FilterAndSortSaleItem(
             String searchKeyword,
             List<String> filterBrands,
             Integer minPrice,
@@ -131,7 +199,7 @@ public class SaleItemService_v1 {
             Integer page,
             Integer size ,
             AuthUserDetail principal
-            ) {
+    ) {
         List<Integer> filterStorageSizes = new ArrayList<>();
         boolean includeNotSpecified = false;
 
@@ -174,17 +242,17 @@ public class SaleItemService_v1 {
         System.out.println(principal);
         if(principal != null) {
 //            PageDto<GetSaleItemDto> saleItemPages = modelMapper.map(saleItems, PageDto.class);
-            Page<GetSaleItemDto> dtoPage = saleItems.map(items -> {
-                GetSaleItemDto dto = modelMapper.map(items, GetSaleItemDto.class);
-                dto.setIsOwnedByCurrentUser(items.getSeller().getId().equals(principal.getId()));
+            Page<ResponseSaleItemsWithSellerDto> dtoPage = saleItems.map(items -> {
+                ResponseSaleItemsWithSellerDto dto = modelMapper.map(items, ResponseSaleItemsWithSellerDto.class);
+                dto.setSeller(modelMapper.map(items.getSeller() , GetUserSellerDto.class));
                 return dto;
             });
-            PageDto<GetSaleItemDto> pageDtos = modelMapper.map(dtoPage, PageDto.class);
+            PageDto<ResponseSaleItemsWithSellerDto> pageDtos = modelMapper.map(dtoPage, PageDto.class);
             pageDtos.setContent(pageDtos.getContent());
             pageDtos.setSort(sortField);
             return pageDtos;
         }
-        return listMapper.toPageDTO(saleItems, GetSaleItemDto.class, modelMapper, sortField);
+        return listMapper.toPageDTO(saleItems, ResponseSaleItemsWithSellerDto.class, modelMapper, sortField);
     }
 
 

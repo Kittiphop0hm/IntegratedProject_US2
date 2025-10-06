@@ -14,6 +14,8 @@ const saleItem = ref([]);
 const pageObj = ref({});
 import { useUserStore } from "@/stores/users";
   const userStore = useUserStore();
+  import { useCartStore } from "@/stores/carts.js";
+  const cartStore = useCartStore();
 const router = useRouter();
 let pageSizeWatchInitialized = false;
 const pageSize = ref();
@@ -247,18 +249,34 @@ const handleSearch = (keyword) => {
 const isShowAlertMessageModel = ref(false);
 const messageAlert = ref("");
 const checkRole = (yourItem) => {
+  console.log("checkRole called with item:", yourItem);
   if(userStore.role === "") {
     console.log("no role stupid 250 SaleitemMnaager")
     router.push({ name: "Login" });
     return
   }
 
-  if (yourItem.isOwnedByCurrentUser) {
+  if (yourItem.seller.id === userStore.id) {
     isShowAlertMessageModel.value = true;
     isSuccess.value = false;
     messageAlert.value = "You cannot add your own item to the cart.";
+  
   } else {
-    alert("Item added to cart.");
+    console.log("test Manager")
+    console.log("yourItem.quantity:", yourItem.quantity);
+    yourItem.quantityEach = 1
+    const result = cartStore.isMaxQtyInStock( yourItem );
+    console.log("Result from isMaxQtyInStock:", result);
+    if(typeof result === 'string') {
+      isShowAlertMessageModel.value = true;
+      isSuccess.value = false;
+      messageAlert.value = result;
+    }
+    else {
+      console.log("Error mai")
+      cartStore.pushInCart(yourItem);
+      alert("Ok Herbal")
+    }
   }
 };
 

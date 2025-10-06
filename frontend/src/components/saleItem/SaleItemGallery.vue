@@ -1,5 +1,5 @@
 <script setup>
-import { watch , onMounted , ref , defineEmits  } from "vue";
+import { watch , onMounted , ref   } from "vue";
 import SaleItemListModel from "../model/SaleItemListModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import { useRoute } from "vue-router";
@@ -20,6 +20,7 @@ const items = ref(props.saleItems);
 
     const emit = defineEmits(["addToCart"]);
 function checkRole(yourItem) {
+      console.log("test GALLERY")
   emit("addToCart", yourItem);
 }
 
