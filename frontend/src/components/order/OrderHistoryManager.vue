@@ -11,6 +11,7 @@ const pageSession = sessionStorage.getItem('pageNumber')
 const sizeSession = sessionStorage.getItem('pageSize')
 const page = ref(0)
 const size = ref()
+const userRole = ref('') 
 
 watch([page, size], () => {
     sessionStorage.setItem('pageNumber', page.value)
@@ -20,11 +21,21 @@ watch([page, size], () => {
 
 const fetchData = async () => {
     const accessToken = sessionStorage.getItem("accessToken")
-    if (!accessToken) router.push({name: "Login"})
+    if (!accessToken) {
+        router.push({name: "Login"})
+        return 
+    }
     const user = decodeJWT(accessToken)
+    userRole.value = user.role 
+    
     if (user.role === 'SELLER') {
         orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)   
         console.log(orders.value);
+    }
+    
+    else if (user.role === 'BUYER') {
+        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)   
+        console.log('Buyer Orders:', orders.value);
     }
 }
 
@@ -100,6 +111,7 @@ const changePageSize = (event) => {
         :pageNumber="computedPageNumberArr"
         :page="page"
         :pageSize="size"
+        :userRole="userRole"
         @fecthItemFromPage="fecthItemFromPage"
         @toPageFirst="toFirst"
         @toPageLast="toLast"

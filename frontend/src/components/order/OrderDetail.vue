@@ -56,7 +56,7 @@ const totalPrice = (orderItems) => {
                                 <p class="font-semibold">Order Date: <span class="itbms-order-date font-normal">{{ dateFormat(order.orderDate) }}</span></p>
                             </div>
                             <div>
-                                <p class="font-semibold">Order Date: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p>
+                                <p class="font-semibold">total: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p>
                             </div>
                             <div>
                                 <p class="font-semibold">Shipped To: <span class="itbms-shipping-address font-normal">{{ order.shippingAddress }}</span></p>
@@ -70,7 +70,7 @@ const totalPrice = (orderItems) => {
                                 <p class="font-semibold">Payment Date: <span class="itbms-payment-date font-normal">{{ dateFormat(order.paymentDate) }}</span></p>
                             </div>
                             <div>
-                                <p class="font-semibold">Order Date: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p>
+                                <!-- <p class="font-semibold">Order Date: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p> -->
                             </div>
                             <div>
                                 <p class="font-semibold">Status: <span class="itbms-order-status font-normal">{{ order.orderStatus }}</span></p>
