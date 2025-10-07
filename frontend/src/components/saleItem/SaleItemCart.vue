@@ -170,6 +170,7 @@ function changeFormattedObject() {
 
 async function placeOrder() {
   const orderData = changeFormattedObject();
+  console.log(cartStore.cartObj)
   console.log(orderData);
   console.log(JSON.stringify(orderData, null, 2));
   const item = await addItemWithToken(
@@ -177,8 +178,17 @@ async function placeOrder() {
     orderData,
     accessToken
   );
-  cartStore.clearCart();
+  const listSaleItemIds = orderData.flatMap(seller => seller.orderItems.map(item => item.saleItemId));
+  console.log(listSaleItemIds);
+  cartStore.cartObj = cartStore.cartObj.map(seller => ({
+    ...seller,
+    items: seller.items.filter(item => !listSaleItemIds.includes(item.saleItemId))
+  })).filter(seller => seller.items.length > 0);
+  cartStore.cartQuantity = cartStore.cartObj.reduce((acc, seller) => acc + seller.items.length, 0);
   arrayCartItems.value = cartStore.cartObj;
+  // cartStore.cartObj.filter( () =>  )
+  // cartStore.clearCart();
+  // arrayCartItems.value = cartStore.cartObj;
   isShowAlertMessageModel.value = true;
   isSuccess.value = true;
   console.log(item);
