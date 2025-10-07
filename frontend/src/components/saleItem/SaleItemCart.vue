@@ -1,13 +1,13 @@
 <script setup>
-import { ref, watchEffect, computed , watch } from "vue";
+import { ref, watchEffect, computed, watch } from "vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
 import { useCartStore } from "@/stores/carts.js";
 import { useUserStore } from "@/stores/users";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
-import { addItem, getItems , addItemWithToken} from "../../libs/fetchUtil.js"
-const userStore = useUserStore()
+import { addItem, getItems, addItemWithToken } from "../../libs/fetchUtil.js";
+const userStore = useUserStore();
 const cartStore = useCartStore();
 const arrayCartItems = ref(cartStore.cartObj);
 console.log(arrayCartItems.value);
@@ -23,7 +23,7 @@ watch(note, (newVal) => {
 });
 
 const selectAllCheck = ref(false);
-const accessToken = sessionStorage.getItem("accessToken")
+const accessToken = sessionStorage.getItem("accessToken");
 // watch(selectAllCheck, (newVal) => {
 //   // sellerCheck.value = newVal
 //   arrayCartItems.value.forEach( obj => {
@@ -38,27 +38,33 @@ const accessToken = sessionStorage.getItem("accessToken")
 
 const totalQuantity = computed(() => {
   return arrayCartItems.value.reduce((accAll, seller) => {
-    console.log(seller);
-    const totalEachSeller = seller.items.reduce((accEach, item) => {
-      // console.log(typeof item.quantity);
-      // console.log(typeof accEach);
-      return accEach + item.quantity;
-    }, 0);
-    return totalEachSeller + accAll;
+    const totalEachSeller = seller.items
+      .filter((item) => item.checked)
+      .reduce((accEach, item) => accEach + item.quantity, 0);
+    return accAll + totalEachSeller;
   }, 0);
 });
 
 const totalPrice = computed(() => {
   return arrayCartItems.value.reduce((accAll, seller) => {
-    console.log(seller);
-    const totalEachSeller = seller.items.reduce((accEach, item) => {
-      // console.log(typeof item.price);
-      // console.log(typeof accEach);
-      return accEach + item.price * item.quantity;
-    }, 0);
-    return totalEachSeller + accAll;
+    const totalEachSeller = seller.items
+      .filter((item) => item.checked)
+      .reduce((accEach, item) => accEach + item.price * item.quantity, 0);
+    return accAll + totalEachSeller;
   }, 0);
 });
+
+// const totalPrice = computed(() => {
+//   return arrayCartItems.value.reduce((accAll, seller) => {
+//     console.log(seller);
+//     const totalEachSeller = seller.items.reduce((accEach, item) => {
+//       // console.log(typeof item.price);
+//       // console.log(typeof accEach);
+//       return accEach + item.price * item.quantity;
+//     }, 0);
+//     return totalEachSeller + accAll;
+//   }, 0);
+// });
 
 watchEffect(() => {
   console.log(totalQuantity.value);
@@ -93,13 +99,13 @@ const isShowAlertMessageModel = ref(false);
 const messageAlert = ref("");
 const isSuccess = ref();
 
-const itemDelete = ref()
+const itemDelete = ref();
 function changeQty(item, value) {
   const newQty = item.quantity + value;
   if (newQty < 1) {
-    itemDelete.value = item
-    isDelete.value = true
-    return
+    itemDelete.value = item;
+    isDelete.value = true;
+    return;
   }
   const result = cartStore.isMaxQtyInStock(item, newQty, "saleItemCart");
   console.log("Result check max qty in stock: ", result);
@@ -108,9 +114,8 @@ function changeQty(item, value) {
     isSuccess.value = false;
     messageAlert.value = result;
     return;
-  } 
+  }
   item.quantity = newQty;
-
 }
 
 const isDelete = ref(false);
@@ -118,52 +123,55 @@ const cancelDelete = () => {
   isDelete.value = false;
 };
 
-
 const deleteItem = (itemDelete) => {
-  cartStore.cartObj = arrayCartItems.value
-arrayCartItems.value = arrayCartItems.value.map(seller => ({
-  ...seller, 
-  items: seller.items.filter(item => item.saleItemId !== itemDelete.saleItemId)
-}));
-  cartStore.cartObj = arrayCartItems.value
-  cartStore.cartQuantity -= 1
+  cartStore.cartObj = arrayCartItems.value;
+  arrayCartItems.value = arrayCartItems.value.map((seller) => ({
+    ...seller,
+    items: seller.items.filter(
+      (item) => item.saleItemId !== itemDelete.saleItemId
+    ),
+  }));
+  cartStore.cartObj = arrayCartItems.value;
+  cartStore.cartQuantity -= 1;
   isDelete.value = false;
-}
+};
 
 function changeFormattedObject() {
   const orderData = arrayCartItems.value
-    .filter(seller => seller.checked || seller.items.some(item => item.checked))
-    .map(seller => ({
-      buyerId : userStore.id ,
-      sellerId : seller.sellerId ,
-      orderDate: new Date().toISOString() ,
-      shippingAddress: address.value ,
-      orderNote: note.value ,
-      orderStatus: "COMPLETED" ,
+    .filter(
+      (seller) => seller.checked || seller.items.some((item) => item.checked)
+    )
+    .map((seller) => ({
+      buyerId: userStore.id,
+      sellerId: seller.sellerId,
+      orderDate: new Date().toISOString(),
+      shippingAddress: address.value,
+      orderNote: note.value,
+      orderStatus: "COMPLETED",
       // ...seller,
-      orderItems: seller.items.filter(item => item.checked)
-      .map(item => ({
-        saleItemId: item.saleItemId ,
-        price: item.price ,
-        quantity: item.quantity ,
-        description: item.description
-      }))
+      orderItems: seller.items
+        .filter((item) => item.checked)
+        .map((item) => ({
+          saleItemId: item.saleItemId,
+          price: item.price,
+          quantity: item.quantity,
+          description: item.description,
+        })),
     }));
-    
-    return orderData
 
+  return orderData;
 }
 
-
-
-
-
 async function placeOrder() {
-  const orderData = changeFormattedObject()
-  console.log(orderData)
-console.log(JSON.stringify(orderData, null, 2));
-  const item = await addItemWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`,orderData ,accessToken)
-  console.log(item)
+  const orderData = changeFormattedObject();
+  console.log(orderData);
+  console.log(JSON.stringify(orderData, null, 2));
+  const item = await addItemWithToken(
+    `${import.meta.env.VITE_APP_URL}/v2/orders`,
+    orderData,
+    accessToken
+  );
+  console.log(item);
 }
 </script>
 <template>
@@ -208,7 +216,7 @@ console.log(JSON.stringify(orderData, null, 2));
       <div
         v-for="(obj, index) in arrayCartItems"
         :key="index"
-        class="itbms-row  my-5 p-5 flex justify-between flex-col"
+        class="itbms-row my-5 p-5 flex justify-between flex-col"
       >
         <div class="mb-5" v-if="obj.items.length > 0">
           <input
@@ -291,8 +299,9 @@ console.log(JSON.stringify(orderData, null, 2));
         <span class="itbms-total-order-price">{{ totalPrice }}</span>
       </div>
       <button
-      @click="placeOrder"
-        class="itbms-place-order-button w-[100%] bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200"
+        @click="placeOrder"
+        :disabled="totalQuantity === 0"
+        class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:shadow-none"
       >
         Place Order
       </button>
