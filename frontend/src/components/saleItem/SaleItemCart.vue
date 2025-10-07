@@ -183,7 +183,11 @@ async function placeOrder() {
     ...seller,
     items: seller.items.filter(item => !listSaleItemIds.includes(item.saleItemId))
   })).filter(seller => seller.items.length > 0);
-  cartStore.cartQuantity = cartStore.cartObj.reduce((acc, seller) => acc + seller.items.length, 0);
+  cartStore.cartQuantity = cartStore.cartObj.reduce((acc, seller) => {
+    const totalItems = seller.items.reduce((accItems, item) => accItems + item.quantity, 0);
+    return acc + totalItems;
+    // acc + seller.items.length
+  }, 0);
   arrayCartItems.value = cartStore.cartObj;
   // cartStore.cartObj.filter( () =>  )
   // cartStore.clearCart();
