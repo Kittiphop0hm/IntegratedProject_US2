@@ -159,7 +159,7 @@ function changeFormattedObject() {
           saleItemId: item.saleItemId,
           price: item.price,
           quantity: item.quantity,
-          description: item.description,
+          description: item.brandName + " " + item.model + " " + "(" + item.storageGb + "," + item.color + ")"
         })),
     }));
 
@@ -253,7 +253,7 @@ async function placeOrder() {
           <div class="itbms-item-description">
             {{ item.brandName }}
             {{ item.model }}
-            ( {{ item.storageGb }} GB , {{ item.color }} )
+            ( {{ item.storageGb }}GB , {{ item.color }} )
           </div>
           <button
             @click="changeQty(item, -1)"
@@ -268,7 +268,7 @@ async function placeOrder() {
           >
             +
           </button>
-          <div class="itbms-item-total-price">Price: {{ item.price }}</div>
+          <div class="itbms-item-total-price">Price: {{ (item.price * item.quantity).toLocaleString()}}</div>
         </div>
       </div>
     </div>
