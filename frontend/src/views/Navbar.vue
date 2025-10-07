@@ -27,6 +27,7 @@ const logout = async () => {
   sessionStorage.removeItem("nickname");
   nickname.value = "";
   userStore.clearUser();
+  cartStore.clearCart();
   const logout = await addItemNoBodyAndNoContent(
     `${import.meta.env.VITE_APP_URL}/v2/auth/logout`
   );
@@ -85,7 +86,8 @@ const logout = async () => {
         </button>
         <router-link 
         :to="{ name: 'SaleItemCart' }">
-          <button class="relative mx-3 cursor-pointer" >
+          <button class="relative mx-3 cursor-pointer" 
+          :disabled="cartStore.cartObj.length === 0">
           <svg
             class=" border fill-current hover:opacity-80"
             xmlns="http://www.w3.org/2000/svg"

@@ -71,15 +71,21 @@ export const useCartStore = defineStore(
     // actions
     function changeFormatObject(item) {
       return {
+        sellerId: item.seller.id ,
         sellerName: item.seller.fullName.split(" ")[0],
+        checked: false,
         items: [
           {
+            description: item.description ,
+            qtyInstock: item.quantity,
+            saleItemId: item.id ,
             brandName: item.brandName,
             model: item.model,
             storageGb: item.storageGb,
             color: item.color,
             quantity: item.quantityEach,
             price: item.price,
+            checked: false,
           },
         ],
       };
@@ -92,24 +98,37 @@ export const useCartStore = defineStore(
     function findIndexItemCartObj(indexFoundSeller, obj2) {
       let copyObj2 = JSON.parse(JSON.stringify(obj2));
       delete copyObj2.quantity;
+      delete copyObj2.qtyInstock;
       // let cartObjClone = {...cartObj.value}
       let cartObjClone = JSON.parse(JSON.stringify(cartObj.value));
       return cartObjClone[indexFoundSeller].items.findIndex((item) => {
         delete item.quantity;
+        delete item.qtyInstock
         return JSON.stringify(item) === JSON.stringify(copyObj2);
       });
     }
 
-    function isMaxQtyInStock(item, qty = 1) {
+    function isMaxQtyInStock(item, qty = 1 , from = "") {
       console.log(item.quantity);
       console.log(item);
-      const newObjFormat = changeFormatObject(item);
+      let newObjFormat ;
+      if(from === ""){
+        newObjFormat = changeFormatObject(item);
+      } else {
+        newObjFormat = item
+      }
       console.log("------------ isMaxQtyInStock carts.js 83------------");
       console.log(newObjFormat);
-      const qtyInstock = item.quantity;
+      let qtyInstock;
+      if(from===""){
+        qtyInstock = item.quantity;
+      } else{
+        qtyInstock = item.qtyInstock;
+      }
       console.log("qtyInstock:", qtyInstock);
       const indexSellerCartObj = findIndexSellerCartObj(
-        item.seller.fullName.split(" ")[0]
+        // item.seller.fullName.split(" ")[0]
+        newObjFormat.sellerName
       );
       console.log("indexSellerCartObj:", indexSellerCartObj);
       if (indexSellerCartObj === -1) {
@@ -272,6 +291,7 @@ export const useCartStore = defineStore(
       pushInCart,
       cartObj,
       isMaxQtyInStock,
+      clearCart
     };
   },
   {
