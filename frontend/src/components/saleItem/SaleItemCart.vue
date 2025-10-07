@@ -7,6 +7,7 @@ import { useUserStore } from "@/stores/users";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
 import { addItem, getItems, addItemWithToken } from "../../libs/fetchUtil.js";
+import router from "@/router";
 const userStore = useUserStore();
 const cartStore = useCartStore();
 const arrayCartItems = ref(cartStore.cartObj);
@@ -123,7 +124,7 @@ function changeQty(item, value) {
 
 const isDelete = ref(false);
 const cancelDelete = () => {
-  cartStore.cartQuantity += 1;
+  // cartStore.cartQuantity += 1;
   isDelete.value = false;
 };
 
@@ -175,7 +176,14 @@ async function placeOrder() {
     orderData,
     accessToken
   );
+  cartStore.clearCart();
+  arrayCartItems.value = cartStore.cartObj;
+  isShowAlertMessageModel.value = true;
+  isSuccess.value = true;
   console.log(item);
+  setTimeout(() => {
+    router.push({ name: "SaleItemHome" });
+  }, 3000);
 }
 </script>
 <template>
@@ -196,9 +204,12 @@ async function placeOrder() {
     </DeletePopupModel>
   </div>
 
-  <div v-show="isShowAlertMessageModel === true">
+  <div v-show="isShowAlertMessageModel === true" class="container">
     <AlertMessageModel :isSuccess="isSuccess">
       <template #message>
+        <p v-show="isSuccess === true">
+          Your order has been successfully <span class="text-green-400">processed</span>
+          </p>
         <p v-show="isSuccess === false">
           {{ messageAlert }}
         </p>
