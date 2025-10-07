@@ -498,7 +498,7 @@ const enableLoginButton = computed(() => {
   >
     <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-2">Signin Account</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">Sign In Account</h2>
         <p class="text-gray-600 text-[16px]">
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>

@@ -126,7 +126,7 @@ const checkRole = () => {
       </template>
     </AlertMessageModel>
   </div>
-  <SaleItemDetailModel :saleId="idParam" @addToCart="displayQuantityInCart">
+  <SaleItemDetailModel :saleId="idParam" @addToCart="displayQuantityInCart"  :saleItemEach="item">
     <template #path>
       <span class="itbms-model font-semibold">{{ item.model }}</span>
       <span class="itbms-ramGb font-semibold ml-1"

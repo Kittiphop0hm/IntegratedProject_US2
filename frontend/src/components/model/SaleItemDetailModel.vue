@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 import { useUserStore } from "../../stores/users.js";
 const userStore = useUserStore();
 const route = useRoute();
-const emit = defineEmits(["fetchImagesForUpdate" , "addToCart"]);
+const emit = defineEmits(["fetchImagesForUpdate", "addToCart"]);
 
 const props = defineProps({
   isActive: {
@@ -26,6 +26,10 @@ const props = defineProps({
   },
   isAddMode: {
     type: Boolean,
+    default: false,
+  },
+  saleItemEach: {
+    type: Object,
     default: false,
   },
 });
@@ -83,11 +87,17 @@ function addQtyToParent(type) {
   console.log("addQtyToParent");
   if (quantityInCart.value > 1 && type === "decrease") {
     quantityInCart.value--;
+        emit("addToCart", quantityInCart.value);
   }
   if (type === "increase") {
+    if (quantityInCart.value + 1 <= items.value.quantity){
+          console.log(items.value.quantity);
     quantityInCart.value++;
+        emit("addToCart", quantityInCart.value);
+    }
   }
-  emit("addToCart", quantityInCart.value);
+
+
 }
 </script>
 
@@ -210,14 +220,26 @@ function addQtyToParent(type) {
           </button>
           </div> -->
           <div
-          class="flex gap-4 border rounded-lg "
-           v-if="route.name === 'SaleItemDetail'"
+            class="flex gap-4 border rounded-lg"
+            v-if="route.name === 'SaleItemDetail'"
           >
-            <button @click="addQtyToParent('decrease')" class="py-2 px-4 bg-red-400 rounded-lg "><slot name="buttonMinus">-</slot></button>
-            <button><slot name="quantityInCart">Input Your Quantity</slot></button>
-            <button @click="addQtyToParent('increase')" class="py-2 px-4 bg-amber-600 rounded-lg "><slot name="buttonPlus">+</slot></button>
-          </div>
             <button
+              @click="addQtyToParent('decrease')"
+              class="py-2 px-4 bg-red-400 rounded-lg"
+            >
+              <slot name="buttonMinus">-</slot>
+            </button>
+            <button>
+              <slot name="quantityInCart">Input Your Quantity</slot>
+            </button>
+            <button
+              @click="addQtyToParent('increase')"
+              class="py-2 px-4 bg-amber-600 rounded-lg"
+            >
+              <slot name="buttonPlus">+</slot>
+            </button>
+          </div>
+          <button
             v-if="route.name === 'SaleItemDetail'"
             class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-1 active:translate-y-0"
           >
