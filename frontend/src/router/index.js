@@ -117,27 +117,42 @@ const router = createRouter({
   ],
 });
 
-router.beforeEach((to, form) => {
+router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
-  // console.log("getUser.role: " + getUser.role);
-  console.log("form.name: " + form.name);
-  console.log("to.name: " + to.name);
-  console.log("userStore.role: " + userStore.role);
-  
+  const accessToken = sessionStorage.getItem("accessToken");
+  const token = accessToken; // เพื่อให้ชื่อเดิมไม่ error
+
+  console.log("from.name:", from.name);
+  console.log("to.name:", to.name);
+  console.log("userStore.role:", userStore.role);
+
+  // 1️⃣ ถ้ามี token แล้ว และพยายามเข้า Login หรือ Register
   if (accessToken && (to.name === "Login" || to.name === "Register")) {
-    return { name: "SaleItemHome" };
+    // 👉 กลับไปหน้าเดิม (ไม่เปลี่ยนหน้า)
+    next(false);
+    return;
   }
-  if(to.name === "SaleItemList" && !accessToken && form.name !== "Login"){
-    return {name:'Login'}
+
+  // 2️⃣ ถ้าไม่มี token แล้วพยายามเข้าหน้า SaleItemList (ยกเว้นมาจากหน้า Login)
+  if (to.name === "SaleItemList" && !accessToken && from.name !== "Login") {
+    next({ name: "Login" });
+    return;
   }
+
+  // 3️⃣ ถ้าเข้าหน้า SaleItemList แต่ไม่ใช่ Seller → เด้งกลับ Home
   if (to.name === "SaleItemList" && !userStore.isSeller) {
-    return { name: "SaleItemHome" };
+    next({ name: "SaleItemHome" });
+    return;
   }
-    if (form.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
-      // console.log("router.beforeEach");
-      sessionStorage.removeItem("pageSize");
-      sessionStorage.removeItem("pageNumber");
-    }
+
+  // 4️⃣ ถ้ามาจากหน้า SaleItemHome แล้วไปหน้าอื่น (ยกเว้น SaleItemDetail)
+  if (from.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
+    sessionStorage.removeItem("pageSize");
+    sessionStorage.removeItem("pageNumber");
+  }
+
+  // ✅ ผ่านหมดทุกเงื่อนไข → ไปต่อได้เลย
+  next();
 });
 
 export default router;

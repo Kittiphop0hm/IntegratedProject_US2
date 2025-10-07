@@ -12,8 +12,8 @@ const userStore = useUserStore();
 const cartStore = useCartStore();
 const arrayCartItems = ref(cartStore.cartObj);
 console.log(arrayCartItems.value);
-const address = ref(localStorage.getItem("address") || "");
-const note = ref(localStorage.getItem("note") || "");
+const address = ref(localStorage.getItem("address") || null);
+const note = ref(localStorage.getItem("note") || null);
 
 watch(address, (newVal) => {
   localStorage.setItem("address", newVal);
@@ -315,7 +315,7 @@ async function placeOrder() {
       </div>
       <button
         @click="placeOrder"
-        :disabled="totalQuantity === 0"
+        :disabled="totalQuantity === 0 || address === null"
         class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:shadow-none"
       >
         Place Order
