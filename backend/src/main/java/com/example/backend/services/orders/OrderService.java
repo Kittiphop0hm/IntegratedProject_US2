@@ -44,7 +44,7 @@ public class OrderService {
 
     public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
-        Page<Order> pageOrder = orderRepository.findOrdersBySeller_Id(id, PageRequest.of(page, size));
+        Page<Order> pageOrder = orderRepository.findOrdersBySeller_IdOrderByIdDesc(id, PageRequest.of(page, size));
         PageDto<GetAllSellerOrderDto> getAllSellerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllSellerOrderDto.class, modelMapper, sortField);
         getAllSellerOrderDtoPageDto.getContent().forEach((order) -> {
             User buyer = userRepository.findById(order.getBuyer().getId()).orElseThrow(() -> new ItemNotFoundException("User (Buyer) not found"));
@@ -139,7 +139,7 @@ public class OrderService {
     public PageDto<GetAllBuyerOrderDto> getAllBuyerOrdersById(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         User user = userRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("User not found"));
 
-        Page<Order> pageOrder = orderRepository.findOrdersByBuyer_Id(id, PageRequest.of(page, size));
+        Page<Order> pageOrder = orderRepository.findOrdersByBuyer_IdOrderByIdDesc(id, PageRequest.of(page, size));
         PageDto<GetAllBuyerOrderDto> getAllBuyerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllBuyerOrderDto.class, modelMapper, sortField);
 
         getAllBuyerOrderDtoPageDto.getContent().forEach((order) -> {

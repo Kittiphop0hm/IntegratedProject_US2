@@ -4,36 +4,47 @@ import OrderHistory from './OrderHistory.vue';
 import { getItemsWithToken } from '@/libs/fetchUtil';
 import { decodeJWT } from '@/libs/decodeJWT';
 import { useRouter } from 'vue-router';
-
+ 
 const router = useRouter()
 const orders = ref([])
 const pageSession = sessionStorage.getItem('pageNumber')
 const sizeSession = sessionStorage.getItem('pageSize')
 const page = ref(0)
 const size = ref()
-
+const userRole = ref('')
+ 
 watch([page, size], () => {
     sessionStorage.setItem('pageNumber', page.value)
     sessionStorage.setItem('pageSize', size.value)
     fetchData()
 })
-
+ 
 const fetchData = async () => {
     const accessToken = sessionStorage.getItem("accessToken")
-    if (!accessToken) router.push({name: "Login"})
+    if (!accessToken) {
+        router.push({name: "Login"})
+        return
+    }
     const user = decodeJWT(accessToken)
+    userRole.value = user.role
+   
     if (user.role === 'SELLER') {
-        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)   
+        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
         console.log(orders.value);
     }
+   
+    else if (user.role === 'BUYER') {
+        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
+        console.log('Buyer Orders:', orders.value);
+    }
 }
-
+ 
 onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
     console.log(typeof size.value);
 })
-
+ 
 const computedPageNumberArr = computed(() => {
   const arr = [];
   let maxDisplay = 10;
@@ -62,44 +73,45 @@ const computedPageNumberArr = computed(() => {
   console.log(arr)
   return arr;
 });
-
+ 
 const fecthItemFromPage = async(index) => {
   console.log(index);
   page.value = index - 1;
   await fetchData();
 };
-
+ 
 const toFirst = () => {
     console.log('To first');
     page.value = 0;
 }
-
+ 
 const toLast = () => {
     console.log('To last');
     page.value = orders.value.totalPages - 1;
 }
-
+ 
 const toPrev = () => {
     page.value -= 1
 }
-
+ 
 const toNext = () => {
     page.value += 1
 }
-
+ 
 const changePageSize = (event) => {
     size.value = Number(event.target.value)
     page.value = 0
 }
 </script>
-
+ 
 <template>
     <div>
-        <OrderHistory 
+        <OrderHistory
         :orders="orders"
         :pageNumber="computedPageNumberArr"
         :page="page"
         :pageSize="size"
+        :userRole="userRole"
         @fecthItemFromPage="fecthItemFromPage"
         @toPageFirst="toFirst"
         @toPageLast="toLast"
