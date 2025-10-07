@@ -69,6 +69,7 @@ const totalPrice = computed(() => {
 
 watchEffect(() => {
   console.log(totalQuantity.value);
+  console.log(address.value)
 });
 
 function checkSelectAll() {
