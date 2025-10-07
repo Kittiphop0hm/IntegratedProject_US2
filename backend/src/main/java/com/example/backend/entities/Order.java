@@ -32,16 +32,16 @@ public class Order {
     @Column(name = "orderDate")
     private Instant orderDate;
 
-    @Size(max = 45)
-    @Column(name = "shippingAddress", length = 45)
+    @Size(max = 100)
+    @Column(name = "shippingAddress", length = 100)
     private String shippingAddress;
 
-    @Size(max = 45)
-    @Column(name = "orderNote", length = 45)
+    @Size(max = 100)
+    @Column(name = "orderNote", length = 100)
     private String orderNote;
 
-    @Size(max = 45)
-    @Column(name = "orderStatus", length = 45)
+    @Size(max = 100)
+    @Column(name = "orderStatus", length = 100)
     private String orderStatus;
 
     @ColumnDefault("CURRENT_TIMESTAMP")

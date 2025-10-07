@@ -28,8 +28,8 @@ services:
     networks:
       - mynetwork
     depends_on:
-            db:
-              condition: service_healthy
+      db:
+        condition: service_healthy
 
   fe:
     build:
@@ -38,6 +38,10 @@ services:
     container_name: fe-container
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./frontend/ssl:/etc/nginx/ssl
     networks:
       - mynetwork
     depends_on:

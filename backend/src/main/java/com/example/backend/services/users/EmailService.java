@@ -17,8 +17,8 @@ public class EmailService {
         message.setSubject("Confirm your email");
         String messageBody = """
                  Thank you for registration, Please Confirm your email to Get 2000 Robux Free!
-                
-                 http://localhost:5173/verify-email?token=%s
+     http://intproj24.sit.kmutt.ac.th/us2/users/verify-email?token=%s           
+   //              http://localhost:5173/verify-email?token=%s
                 """.formatted(token);
         message.setText(messageBody);
         mailSender.send(message);
