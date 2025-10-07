@@ -102,6 +102,8 @@ const isSuccess = ref();
 const itemDelete = ref();
 function changeQty(item, value) {
   const newQty = item.quantity + value;
+  
+  console.log("New Qty: ", newQty);
   if (newQty < 1) {
     itemDelete.value = item;
     isDelete.value = true;
@@ -116,10 +118,12 @@ function changeQty(item, value) {
     return;
   }
   item.quantity = newQty;
+  cartStore.cartQuantity = cartStore.cartQuantity + value;
 }
 
 const isDelete = ref(false);
 const cancelDelete = () => {
+  cartStore.cartQuantity += 1;
   isDelete.value = false;
 };
 
