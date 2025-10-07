@@ -2,9 +2,9 @@
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { ref, watchEffect, computed } from 'vue';
-
+ 
 const emits = defineEmits(['fecthItemFromPage', 'toPageFirst', 'toPageLast', 'toNextPage', 'toPrevPage', 'changePageSize'])
-
+ 
 const props = defineProps({
     orders: {
         type: Object,
@@ -19,11 +19,15 @@ const props = defineProps({
     pageNumber: {
         type: Array,
         required: true
+    },
+    userRole: {
+        type: String,
+        required: true
     }
 })
 console.log(props.pageNumber);
-
-
+ 
+ 
 const myOrders = ref([])
 const myOrderCompleted = ref([])
 const myOrderCancel = ref([])
@@ -47,7 +51,7 @@ const dateFormat = (isoDate) => {
     const formatted = date.toLocaleDateString('en-US', optionFormat)
     return formatted
 }
-
+ 
 const totalPrice = (orderItems) => {
     const total = orderItems?.reduce((acc, current) => {
         acc += current.price * current.quantity
@@ -55,9 +59,9 @@ const totalPrice = (orderItems) => {
     }, 0)
     return total
 }
-
+ 
 </script>
-
+ 
 <template>
     <div>
         <Navbar />
@@ -88,9 +92,14 @@ const totalPrice = (orderItems) => {
                         class="bg-gray-100 mb-3 rounded-2xl p-5">
                         <router-link :to="{ name: 'OrderDetail', params: { orderId: order.id } }">
                             <div class="flex justify-center items-center text-center space-x-10 mb-5">
-                                <div>
-                                    <h1 class="font-semibold">Username</h1>
-                                    <p class="itbms-nickname">{{ order.buyer.username }}</p>
+                                <!-- เพิ่ม: แสดง username ตาม role -->
+                                <div v-if="userRole === 'BUYER'">
+                                    <h1 class="font-semibold">Seller</h1>
+                                    <p class="itbms-nickname">{{ order.seller?.username }}</p>
+                                </div>
+                                <div v-else-if="userRole === 'SELLER'">
+                                    <h1 class="font-semibold">Buyer</h1>
+                                    <p class="itbms-nickname">{{ order.buyer?.username }}</p>
                                 </div>
                                 <div>
                                     <h1 class="font-semibold">OrderNo</h1>
@@ -105,7 +114,7 @@ const totalPrice = (orderItems) => {
                                     <p class="itbms-payment-date">{{ dateFormat(order.paymentDate) }}</p>
                                 </div>
                                 <div>
-                                    <h1 class="font-semibold">Total Price</h1>
+                                    <h1 class="font-semibold">Total</h1>
                                     <p class="itbms-total-order-price">{{ totalPrice(order.orderItems).toLocaleString()
                                     }}</p>
                                 </div>
@@ -114,7 +123,7 @@ const totalPrice = (orderItems) => {
                                     <p class="itbms-order-status">{{ order.orderStatus }}</p>
                                 </div>
                                 <div>
-                                    <h1 class="font-semibold">Address</h1>
+                                    <h1 class="font-semibold">Shipped to</h1>
                                     <p class="itbms-shipping-address">{{ order.shippingAddress }}</p>
                                 </div>
                                 <div>
@@ -149,7 +158,7 @@ const totalPrice = (orderItems) => {
                             </div>
                         </router-link>
                     </div>
-
+ 
                     <!-- <div v-if="status === 'canceled'" v-for="order in myOrderCancel" :key="order.id"
                         class="bg-gray-100 mb-3 rounded-2xl p-5">
                         <router-link :to="{ name: 'OrderDetail', params: { orderId: order.id } }">

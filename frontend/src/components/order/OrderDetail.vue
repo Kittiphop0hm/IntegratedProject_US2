@@ -4,8 +4,8 @@ import { onMounted, ref } from 'vue';
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { getItemsByIdWithToken } from '@/libs/fetchUtil';
-
-
+ 
+ 
 const route = useRoute()
 console.log(route.params.orderId);
 const orderId = route.params.orderId
@@ -15,14 +15,14 @@ onMounted(async () => {
     order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
     console.log(order.value);
 })
-
+ 
 const dateFormat = (isoDate) => {
     const date = new Date(isoDate)
     const optionFormat = { year: "numeric", month: "long", day: "numeric" }
     const formatted = date.toLocaleDateString('en-US', optionFormat)
     return formatted
 }
-
+ 
 const totalPrice = (orderItems) => {
     const total = orderItems?.reduce((acc, current) => {
         acc += current.price
@@ -30,10 +30,10 @@ const totalPrice = (orderItems) => {
     }, 0)
     return total
 }
-
-
+ 
+ 
 </script>
-
+ 
 <template>
     <div>
         <Navbar />
@@ -56,7 +56,7 @@ const totalPrice = (orderItems) => {
                                 <p class="font-semibold">Order Date: <span class="itbms-order-date font-normal">{{ dateFormat(order.orderDate) }}</span></p>
                             </div>
                             <div>
-                                <p class="font-semibold">Order Date: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p>
+                                <p class="font-semibold">total: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p>
                             </div>
                             <div>
                                 <p class="font-semibold">Shipped To: <span class="itbms-shipping-address font-normal">{{ order.shippingAddress }}</span></p>
@@ -70,14 +70,14 @@ const totalPrice = (orderItems) => {
                                 <p class="font-semibold">Payment Date: <span class="itbms-payment-date font-normal">{{ dateFormat(order.paymentDate) }}</span></p>
                             </div>
                             <div>
-                                <p class="font-semibold">Order Date: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p>
+                                <!-- <p class="font-semibold">Order Date: <span class="itbms-total-order-price font-normal">{{ totalPrice(order.orderItems)?.toLocaleString() }}</span></p> -->
                             </div>
                             <div>
                                 <p class="font-semibold">Status: <span class="itbms-order-status font-normal">{{ order.orderStatus }}</span></p>
                             </div>
                         </div>
                     </div>
-
+ 
                     <div class="w-full h-full">
                         <div v-for="orderItem in order.orderItems" class="w-full h-[150px] bg-white rounded-2xl my-2">
                             <div class="w-full h-full flex flex-row justify-around items-center">
