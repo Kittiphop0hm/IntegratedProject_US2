@@ -13,6 +13,7 @@ const maskPhone = ref('')
 const maskBankNo = ref('')
 
 onMounted(async () => {
+  if(!accessToken)router.push({name:'Login'})
   try {
     const data = await getItemById(`${import.meta.env.VITE_APP_URL}/v2/users`, getUser.id)
     user.value = data
