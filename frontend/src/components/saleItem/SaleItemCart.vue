@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect, computed } from "vue";
+import { ref, watchEffect, computed , watch } from "vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
 import { useCartStore } from "@/stores/carts.js";
@@ -11,8 +11,16 @@ const userStore = useUserStore()
 const cartStore = useCartStore();
 const arrayCartItems = ref(cartStore.cartObj);
 console.log(arrayCartItems.value);
-const address = ref("");
-const note = ref("");
+const address = ref(localStorage.getItem("address") || "");
+const note = ref(localStorage.getItem("note") || "");
+
+watch(address, (newVal) => {
+  localStorage.setItem("address", newVal);
+});
+
+watch(note, (newVal) => {
+  localStorage.setItem("note", newVal);
+});
 const selectAllCheck = ref(false);
 const accessToken = sessionStorage.getItem("accessToken")
 // watch(selectAllCheck, (newVal) => {
