@@ -27,6 +27,7 @@ const logout = async () => {
   sessionStorage.removeItem("nickname");
   nickname.value = "";
   userStore.clearUser();
+  cartStore.clearCart();
   const logout = await addItemNoBodyAndNoContent(
     `${import.meta.env.VITE_APP_URL}/v2/auth/logout`
   );

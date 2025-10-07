@@ -291,6 +291,7 @@ export const useCartStore = defineStore(
       pushInCart,
       cartObj,
       isMaxQtyInStock,
+      clearCart
     };
   },
   {

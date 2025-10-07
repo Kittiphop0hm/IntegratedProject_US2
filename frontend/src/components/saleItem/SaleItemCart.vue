@@ -90,6 +90,7 @@ function changeQty(item, value) {
   if (newQty < 1) {
     itemDelete.value = item
     isDelete.value = true
+    return
   }
   const result = cartStore.isMaxQtyInStock(item, newQty, "saleItemCart");
   console.log("Result check max qty in stock: ", result);
@@ -98,8 +99,9 @@ function changeQty(item, value) {
     isSuccess.value = false;
     messageAlert.value = result;
     return;
-  }
+  } 
   item.quantity = newQty;
+
 }
 
 const isDelete = ref(false);
