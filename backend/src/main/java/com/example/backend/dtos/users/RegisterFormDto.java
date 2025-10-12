@@ -13,16 +13,24 @@ import java.util.List;
 public class RegisterFormDto {
     @NotNull
     private String nickName;
-    @NotNull
+    // t
+    @NotNull(message = "email must not be null")
     private String email;
     @NotNull
     private String password;
     @NotNull
     private String fullName;
-    @NotNull
+    // t
+    @NotNull(message = "userType must not be null")
     private String userType;
+    // t
+    @NotNull(message = "phoneNumber must not be null")
     private String phoneNumber;
+    // t
+    @NotNull(message = "bankAccount must not be null")
     private String bankAccount;
     private String bankName;
+    // t
+    @NotNull(message = "cardNumber must not be null")
     private String cardNumber;
 }

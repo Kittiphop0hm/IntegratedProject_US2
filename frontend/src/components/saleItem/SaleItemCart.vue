@@ -100,7 +100,7 @@ function checkItem(seller) {
 const isShowAlertMessageModel = ref(false);
 const messageAlert = ref("");
 const isSuccess = ref();
-
+const isWarning = ref();
 const itemDelete = ref();
 function changeQty(item, value) {
   const newQty = item.quantity + value;
@@ -111,13 +111,15 @@ function changeQty(item, value) {
     isDelete.value = true;
     return;
   }
+
   const result = cartStore.isMaxQtyInStock(item, newQty, "saleItemCart");
   console.log("Result check max qty in stock: ", result);
   if (typeof result === "string") {
     isShowAlertMessageModel.value = true;
     isSuccess.value = false;
+    isWarning.value = true;
     messageAlert.value = result;
-    return;
+    // return;
   }
   item.quantity = newQty;
   cartStore.cartQuantity = cartStore.cartQuantity + value;
@@ -143,6 +145,8 @@ const deleteItem = (itemDelete) => {
 };
 
 function changeFormattedObject() {
+  console.log("Change Formatted Object");
+  console.log(arrayCartItems.value);
   const orderData = arrayCartItems.value
     .filter(
       (seller) => seller.checked || seller.items.some((item) => item.checked)
@@ -153,11 +157,16 @@ function changeFormattedObject() {
       orderDate: new Date().toISOString(),
       shippingAddress: address.value,
       orderNote: note.value,
-      orderStatus: "COMPLETED",
+      orderStatus: seller.items
+        .filter((item) => item.checked)
+        .some((item) => item.quantity > item.qtyInstock)
+        ? "CANCELLED"
+        : "COMPLETED",
       // ...seller,
       orderItems: seller.items
         .filter((item) => item.checked)
-        .map((item) => ({
+        .map((item) => (
+        {
           saleItemId: item.saleItemId,
           price: item.price,
           quantity: item.quantity,
@@ -220,12 +229,12 @@ async function placeOrder() {
   </div>
 
   <div v-show="isShowAlertMessageModel === true" class="container">
-    <AlertMessageModel :isSuccess="isSuccess">
+    <AlertMessageModel :isWarning="isWarning" :isSuccess="isSuccess">
       <template #message>
         <p v-show="isSuccess === true">
           Your order has been successfully <span class="text-green-400">processed</span>
           </p>
-        <p v-show="isSuccess === false">
+        <p v-show="isWarning === true">
           {{ messageAlert }}
         </p>
       </template>

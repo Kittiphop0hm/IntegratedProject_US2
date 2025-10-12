@@ -1,5 +1,6 @@
 package com.example.backend.exceptions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class MyErrorResponse {
     private final int status;
     private final String message;
     private final String instance;
+    @JsonIgnore
     private Instant timestamp = Instant.now();
     private String stackTrace;
     private List<ValidationError> errors;
