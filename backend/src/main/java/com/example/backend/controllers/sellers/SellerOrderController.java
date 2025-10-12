@@ -26,7 +26,6 @@ public class SellerOrderController {
             @AuthenticationPrincipal AuthUserDetail principal
     ) {
     return ResponseEntity.ok(orderService.getOrderBySellerId(sid, page, size, sortField, principal));
-
     }
 
 

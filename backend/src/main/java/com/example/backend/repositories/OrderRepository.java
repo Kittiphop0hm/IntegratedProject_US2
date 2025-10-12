@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     Page<Order> findOrdersBySeller_IdOrderByIdDesc(Integer sellerId, Pageable pageable);
+    Page<Order> findOrdersBySeller_IdAndOrderStatusOrderByIdDesc(Integer sellerId, String orderStatus, Pageable pageable);
     Page<Order> findOrdersByBuyer_IdOrderByIdDesc(Integer buyerId, Pageable pageable);
 }
