@@ -25,7 +25,7 @@ public class UserAuthenticationController {
     private JwtService jwtService;
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseUserDto> registerUser(@ModelAttribute RegisterFormDto userForm, @RequestParam(required = false) MultipartFile cardFrontImage, @RequestParam(required = false) MultipartFile cardBackImage) {
+    public ResponseEntity<ResponseUserDto> registerUser(@Valid @ModelAttribute RegisterFormDto userForm, @RequestParam(required = false) MultipartFile cardFrontImage, @RequestParam(required = false) MultipartFile cardBackImage) {
         return ResponseEntity.status(201).body(userService.createUser(userForm, cardFrontImage, cardBackImage));
     }
 
