@@ -161,7 +161,7 @@ function changeFormattedObject() {
         .filter((item) => item.checked)
         .some((item) => item.quantity > item.qtyInstock)
         ? "CANCELLED"
-        : "CONFIRMED",
+        : "COMPLETED",
       // ...seller,
       orderItems: seller.items
         .filter((item) => item.checked)
