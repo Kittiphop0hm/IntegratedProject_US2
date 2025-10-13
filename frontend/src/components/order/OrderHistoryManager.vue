@@ -11,15 +11,17 @@ const pageSession = sessionStorage.getItem('pageNumber')
 const sizeSession = sessionStorage.getItem('pageSize')
 const page = ref(0)
 const size = ref()
+const orderStatus = ref('')
 const userRole = ref('')
  
-watch([page, size], () => {
+watch([page, size, orderStatus], () => {
     sessionStorage.setItem('pageNumber', page.value)
     sessionStorage.setItem('pageSize', size.value)
+    sessionStorage.setItem('orderStatus', orderStatus.value)
     fetchData()
 })
  
-const fetchData = async () => {
+const fetchData = async (status) => {
     const accessToken = sessionStorage.getItem("accessToken")
     if (!accessToken) {
         router.push({name: "Login"})
@@ -29,7 +31,7 @@ const fetchData = async () => {
     userRole.value = user.role
    
     if (user.role === 'SELLER') {
-        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
+        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
         console.log(orders.value);
     }
    
@@ -42,7 +44,7 @@ const fetchData = async () => {
 onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
-    console.log(typeof size.value);
+    orderStatus.value = 'all'
 })
  
 const computedPageNumberArr = computed(() => {
@@ -102,6 +104,10 @@ const changePageSize = (event) => {
     size.value = Number(event.target.value)
     page.value = 0
 }
+
+const repostStatus = (status) => {
+  orderStatus.value = status
+}
 </script>
  
 <template>
@@ -112,12 +118,14 @@ const changePageSize = (event) => {
         :page="page"
         :pageSize="size"
         :userRole="userRole"
+        :orderStatus="orderStatus"
         @fecthItemFromPage="fecthItemFromPage"
         @toPageFirst="toFirst"
         @toPageLast="toLast"
         @toNextPage="toNext"
         @toPrevPage="toPrev"
         @changePageSize="changePageSize"
+        @reportOrderStatus="repostStatus"
         />
     </div>
 </template>
