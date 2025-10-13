@@ -105,7 +105,7 @@ const router = createRouter({
       component: UserProfileManager,
     },
     {
-      path: "/your-orders",
+      path: "/sale-orders",
       name: "OrderHistory",
       component: OrderHistoryManager,
     },

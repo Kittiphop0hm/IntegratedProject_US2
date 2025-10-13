@@ -77,10 +77,10 @@ const totalPrice = (orderItems) => {
                         <div class="space-x-4">
                             <button
                                 @click="$emit('reportOrderStatus', 'all')"
-                                :class="orderStatus === 'all' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">All</button>
+                                :class="orderStatus === 'new' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">New</button>
                             <button
                                 @click="$emit('reportOrderStatus', 'completed')"
-                                :class="orderStatus === 'completed' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Completed</button>
+                                :class="orderStatus === 'completed' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">All</button>
                             <button
                                 @click="$emit('reportOrderStatus', 'canceled')"
                                 :class="orderStatus === 'canceled' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Canceled</button>

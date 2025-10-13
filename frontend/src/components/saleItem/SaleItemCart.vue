@@ -6,7 +6,8 @@ import { useCartStore } from "@/stores/carts.js";
 import { useUserStore } from "@/stores/users";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
-import { addItem, getItems, addItemWithToken } from "../../libs/fetchUtil.js";
+import { addItemWithToken } from "../../libs/fetchUtil.js";
+import { decodeJWT } from "@/libs/decodeJWT";
 import router from "@/router";
 const userStore = useUserStore();
 const cartStore = useCartStore();
@@ -170,6 +171,9 @@ function changeFormattedObject() {
 
 async function placeOrder() {
   const orderData = changeFormattedObject();
+  const decode = decodeJWT(accessToken);
+  console.log(decode);
+  
   console.log(cartStore.cartObj)
   console.log(orderData);
   console.log(JSON.stringify(orderData, null, 2));
@@ -178,6 +182,15 @@ async function placeOrder() {
     orderData,
     accessToken
   );
+  if (decode.role === "SELLER") {
+    const getNewOrderInLocal = localStorage.getItem("idSellerNewOrders")
+    const saveIdSellerNewOrder = !getNewOrderInLocal ? [] : [...JSON.parse(getNewOrderInLocal)]
+    item.data.forEach((order) => {
+      saveIdSellerNewOrder.push(order.id)
+    })
+    localStorage.setItem("idSellerNewOrders", JSON.stringify(saveIdSellerNewOrder))
+  }
+
   const listSaleItemIds = orderData.flatMap(seller => seller.orderItems.map(item => item.saleItemId));
   console.log(listSaleItemIds);
   cartStore.cartObj = cartStore.cartObj.map(seller => ({
@@ -187,7 +200,7 @@ async function placeOrder() {
   cartStore.cartQuantity = cartStore.cartObj.reduce((acc, seller) => {
     const totalItems = seller.items.reduce((accItems, item) => accItems + item.quantity, 0);
     return acc + totalItems;
-    // acc + seller.items.length
+    // acc + seller.items.length 
   }, 0);
   arrayCartItems.value = cartStore.cartObj;
   // cartStore.cartObj.filter( () =>  )

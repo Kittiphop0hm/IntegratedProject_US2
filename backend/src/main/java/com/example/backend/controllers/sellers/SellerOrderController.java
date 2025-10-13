@@ -20,7 +20,7 @@ public class SellerOrderController {
     @GetMapping("")
     public ResponseEntity<PageDto<GetAllSellerOrderDto>> getOrderSellerPage(
             @PathVariable Integer sid,
-            @RequestParam(defaultValue = "all") String orderStatus,
+            @RequestParam(defaultValue = "COMPLETED") String orderStatus,
             @RequestParam Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "id") String sortField,

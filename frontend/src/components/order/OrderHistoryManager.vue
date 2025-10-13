@@ -21,7 +21,7 @@ watch([page, size, orderStatus], () => {
     fetchData()
 })
  
-const fetchData = async (status) => {
+const fetchData = async () => {
     const accessToken = sessionStorage.getItem("accessToken")
     if (!accessToken) {
         router.push({name: "Login"})
@@ -31,8 +31,13 @@ const fetchData = async (status) => {
     userRole.value = user.role
    
     if (user.role === 'SELLER') {
-        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
-        console.log(orders.value);
+        if (orderStatus.value === 'new') {
+          orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=COMPLETED`, accessToken)  
+          console.log(orders.value);
+        } else {
+          orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
+          console.log(orders.value);
+        }
     }
    
     else if (user.role === 'BUYER') {
@@ -44,7 +49,7 @@ const fetchData = async (status) => {
 onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
-    orderStatus.value = 'all'
+    orderStatus.value = 'new'
 })
  
 const computedPageNumberArr = computed(() => {
