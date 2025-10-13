@@ -42,9 +42,9 @@ public class OrderService {
     @Autowired
     private EntityManager entityManager;
 
-    public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
+    public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, String orderStatus, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
-        Page<Order> pageOrder = orderRepository.findOrdersBySeller_IdOrderByIdDesc(id, PageRequest.of(page, size));
+        Page<Order> pageOrder = orderStatus.equalsIgnoreCase("all") ? orderRepository.findOrdersBySeller_IdOrderByIdDesc(id, PageRequest.of(page, size)) : orderRepository.findOrdersBySeller_IdAndOrderStatusOrderByIdDesc(id, orderStatus, PageRequest.of(page, size));
         PageDto<GetAllSellerOrderDto> getAllSellerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllSellerOrderDto.class, modelMapper, sortField);
         getAllSellerOrderDtoPageDto.getContent().forEach((order) -> {
             User buyer = userRepository.findById(order.getBuyer().getId()).orElseThrow(() -> new ItemNotFoundException("User (Buyer) not found"));

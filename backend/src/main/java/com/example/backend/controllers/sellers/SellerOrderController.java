@@ -20,12 +20,13 @@ public class SellerOrderController {
     @GetMapping("")
     public ResponseEntity<PageDto<GetAllSellerOrderDto>> getOrderSellerPage(
             @PathVariable Integer sid,
+            @RequestParam(defaultValue = "all") String orderStatus,
             @RequestParam Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "id") String sortField,
             @AuthenticationPrincipal AuthUserDetail principal
     ) {
-    return ResponseEntity.ok(orderService.getOrderBySellerId(sid, page, size, sortField, principal));
+    return ResponseEntity.ok(orderService.getOrderBySellerId(sid, orderStatus, page, size, sortField, principal));
     }
 
 
