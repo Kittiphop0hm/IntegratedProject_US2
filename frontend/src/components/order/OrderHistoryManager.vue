@@ -33,7 +33,13 @@ const fetchData = async () => {
     if (user.role === 'SELLER') {
         if (orderStatus.value === 'new') {
           orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=COMPLETED`, accessToken)  
-          console.log(orders.value);
+          const getNewOrderId = JSON.parse(localStorage.getItem("idSellerNewOrders"))
+          const filterNewOrder =  orders.value.content.filter((order) => {
+            return getNewOrderId.includes(order.id)
+          })
+          orders.value.content = filterNewOrder
+          console.log(orders.value.content);
+          
         } else {
           orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
           console.log(orders.value);

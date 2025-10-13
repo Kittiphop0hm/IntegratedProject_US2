@@ -32,7 +32,6 @@ const props = defineProps({
     },
 
 })
-console.log(props.pageNumber);
  
  
 const myOrders = ref([])
@@ -40,6 +39,7 @@ const myOrderCompleted = ref([])
 const myOrderCancel = ref([])
 const pageNumberArr = ref([])
 const size = ref()
+const newOrder = JSON.parse(localStorage.getItem("idSellerNewOrders"))
 watchEffect(() => {
     props.orders ? myOrders.value = props.orders : []
     props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETED") : []
@@ -48,7 +48,6 @@ watchEffect(() => {
     props.pageSize >= 5 ? size.value = props.pageSize : 10
     console.log(pageNumberArr.value);
 })
-const status = ref('completed')
 const dateFormat = (isoDate) => {
     const date = new Date(isoDate)
     const optionFormat = { year: "numeric", month: "long", day: "numeric" }
@@ -74,10 +73,15 @@ const totalPrice = (orderItems) => {
             <div class="w-full h-full bg-gray-200 rounded-2xl p-5">
                 <div class="w-full h-[50px] flex items-center">
                     <div class="w-full flex justify-between items-center space-x-4 mx-5">
-                        <div class="space-x-4">
+                        <div class="w-full h-full space-x-4">
                             <button
-                                @click="$emit('reportOrderStatus', 'all')"
-                                :class="orderStatus === 'new' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">New</button>
+                                @click="$emit('reportOrderStatus', 'new')"
+                                :class="orderStatus === 'new' ? 'relative border-b font-semibold pt-3' : 'relative cursor-pointer hover:border-b pt-3'">
+                                <div class="w-4 h-4 absolute top-0 right-0 bg-red-400 rounded-full">
+                                    <p class="text-[12px]">{{ newOrder.length }}</p>
+                                </div>
+                                    New
+                            </button>
                             <button
                                 @click="$emit('reportOrderStatus', 'completed')"
                                 :class="orderStatus === 'completed' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">All</button>
