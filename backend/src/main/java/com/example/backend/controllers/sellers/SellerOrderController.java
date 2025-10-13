@@ -29,5 +29,14 @@ public class SellerOrderController {
     return ResponseEntity.ok(orderService.getOrderBySellerId(sid, orderStatus, page, size, sortField, principal));
     }
 
+    @GetMapping("/{oid}")
+    public ResponseEntity<GetAllSellerOrderDto> getSellerOrderDetail(
+            @PathVariable Integer sid,
+            @PathVariable Integer oid,
+            @AuthenticationPrincipal AuthUserDetail principal
+    ) {
+        return ResponseEntity.ok(orderService.getOrderSellerByOrderId(oid, principal));
+    }
+
 
 }
