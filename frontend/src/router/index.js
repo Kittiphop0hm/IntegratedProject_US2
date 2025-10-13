@@ -110,6 +110,11 @@ const router = createRouter({
       component: OrderHistoryManager,
     },
     {
+      path: "/sale-orders/:orderId",
+      name: "SellerOrderDetail",
+      component: OrderDetail,
+    },
+    {
       path: "/your-orders/:orderId",
       name: "OrderDetail",
       component: OrderDetail,

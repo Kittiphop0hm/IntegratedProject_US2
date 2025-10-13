@@ -103,7 +103,7 @@ const totalPrice = (orderItems) => {
                 <div>
                     <div v-for="order in orders.content" :key="order.id"
                         class="bg-gray-100 mb-3 rounded-2xl p-5">
-                        <router-link :to="{ name: 'OrderDetail', params: { orderId: order.id } }">
+                        <router-link :to="{ name: 'SellerOrderDetail', params: { orderId: order.id } }">
                             <div class="flex justify-center items-center text-center space-x-10 mb-5">
                                 <!-- เพิ่ม: แสดง username ตาม role -->
                                 <div v-if="userRole === 'BUYER'">
