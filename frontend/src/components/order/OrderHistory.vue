@@ -32,14 +32,12 @@ const props = defineProps({
     },
 
 })
- 
- 
+
 const myOrders = ref([])
 const myOrderCompleted = ref([])
 const myOrderCancel = ref([])
 const pageNumberArr = ref([])
 const size = ref()
-const newOrder = JSON.parse(localStorage.getItem("idSellerNewOrders"))
 watchEffect(() => {
     props.orders ? myOrders.value = props.orders : []
     props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETED") : []
@@ -77,9 +75,6 @@ const totalPrice = (orderItems) => {
                             <button
                                 @click="$emit('reportOrderStatus', 'new')"
                                 :class="orderStatus === 'new' ? 'relative border-b font-semibold pt-3' : 'relative cursor-pointer hover:border-b pt-3'">
-                                <div class="w-4 h-4 absolute top-0 right-0 bg-red-400 rounded-full">
-                                    <p class="text-[12px]">{{ newOrder.length }}</p>
-                                </div>
                                     New
                             </button>
                             <button

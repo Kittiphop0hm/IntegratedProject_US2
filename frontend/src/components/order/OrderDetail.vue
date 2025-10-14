@@ -30,8 +30,6 @@ const totalPrice = (orderItems) => {
     }, 0)
     return total
 }
- 
- 
 </script>
  
 <template>

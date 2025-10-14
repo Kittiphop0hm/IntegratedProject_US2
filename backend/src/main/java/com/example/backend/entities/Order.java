@@ -48,4 +48,6 @@ public class Order {
     @Column(name = "paymentDate", nullable = false, insertable = false, updatable = false )
     private Instant paymentDate;
 
+    @Column(name = "isNewOrder")
+    private Boolean isNewOrder;
 }

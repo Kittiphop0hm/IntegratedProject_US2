@@ -155,6 +155,7 @@ function changeFormattedObject() {
       shippingAddress: address.value,
       orderNote: note.value,
       orderStatus: "COMPLETED",
+      isNewOrder: true,
       // ...seller,
       orderItems: seller.items
         .filter((item) => item.checked)
@@ -182,14 +183,6 @@ async function placeOrder() {
     orderData,
     accessToken
   );
-  if (decode.role === "SELLER") {
-    const getNewOrderInLocal = localStorage.getItem("idSellerNewOrders")
-    const saveIdSellerNewOrder = !getNewOrderInLocal ? [] : [...JSON.parse(getNewOrderInLocal)]
-    item.data.forEach((order) => {
-      saveIdSellerNewOrder.push(order.id)
-    })
-    localStorage.setItem("idSellerNewOrders", JSON.stringify(saveIdSellerNewOrder))
-  }
 
   const listSaleItemIds = orderData.flatMap(seller => seller.orderItems.map(item => item.saleItemId));
   console.log(listSaleItemIds);

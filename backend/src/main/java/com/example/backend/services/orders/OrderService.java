@@ -70,10 +70,10 @@ public class OrderService {
            newOrder.setBuyer(buyer);
            newOrder.setSeller(seller);
            newOrder.setOrderDate(order.getOrderDate());
-//           newOrder.setPaymentDate(order.getOrderDate());
            newOrder.setShippingAddress(order.getShippingAddress());
            newOrder.setOrderNote(order.getOrderNote());
            newOrder.setOrderStatus(order.getOrderStatus());
+           newOrder.setIsNewOrder(order.getIsNewOrder());
            orderRepository.save(newOrder);
            entityManager.refresh(newOrder);
 
