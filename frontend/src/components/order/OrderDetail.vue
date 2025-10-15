@@ -4,6 +4,8 @@ import { onMounted, ref } from 'vue';
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { getItemsByIdWithToken } from '@/libs/fetchUtil';
+import { useCountNewOrder } from '@/stores/countNewOrder';
+const { fetchCountNewOrder, setCountNewOrder, getCountNewOrder, updateCountNewOrder  } = useCountNewOrder()
  
  
 const route = useRoute()
@@ -14,6 +16,7 @@ onMounted(async () => {
     const accessToken = sessionStorage.getItem('accessToken')
     order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
     console.log(order.value);
+    updateCountNewOrder(orderId, false)
 })
  
 const dateFormat = (isoDate) => {

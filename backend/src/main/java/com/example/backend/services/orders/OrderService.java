@@ -176,4 +176,14 @@ public class OrderService {
         return orders.toArray().length;
     }
 
+    public PlaceOrderResponseDto changeIsNewOrderStatus(Integer oid, Boolean isNewOrder) {
+        Order order = orderRepository.findById(oid).orElseThrow(() -> new ItemNotFoundException("order not found"));
+        User seller = userRepository.findById(order.getSeller().getId()).orElseThrow(() -> new ItemNotFoundException("seller not found"));
+        order.setIsNewOrder(isNewOrder);
+        Order updateOrder = orderRepository.save(order);
+        PlaceOrderResponseDto placeOrderResponseDto = modelMapper.map(updateOrder, PlaceOrderResponseDto.class);
+        placeOrderResponseDto.getSeller().setUsername(seller.getNickName());
+        return placeOrderResponseDto;
+    }
+
 }

@@ -50,5 +50,12 @@ public class SellerOrderController {
         return ResponseEntity.ok(orderService.getCountCompletedAndNewOrder(orderStatus, isNewOrder, sid));
     }
 
-
+    @PutMapping("/change/newOrder/{oid}")
+    public ResponseEntity<PlaceOrderResponseDto> changeIsNewOrder(
+            @PathVariable Integer sid,
+            @PathVariable Integer oid,
+            @RequestParam Boolean isNewOrder
+    ) {
+        return ResponseEntity.ok(orderService.changeIsNewOrderStatus(oid, isNewOrder));
+    }
 }
