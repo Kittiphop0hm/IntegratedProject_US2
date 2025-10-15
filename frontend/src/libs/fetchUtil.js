@@ -195,17 +195,6 @@ async function imageUrlToFileObject(url, filename) {
   }
 }
 
-async function getImage(url) {
-  try {
-    const data = await fetch(url);
-    const item = await data.blob();
-    return item;
-  } catch (error) {
-    if (data.status === 404) return undefined;
-    throw new Error("can not get your item");
-  }
-}
-
 async function register(url, user, files) {
   try {
     const formdata = new FormData();
@@ -274,6 +263,7 @@ async function getItemsWithToken(url, token) {
     throw new Error("can not get your items");
   }
 }
+
 async function addItemWithToken(url, newItem , token) {
   try {
     const res = await fetch(url, {

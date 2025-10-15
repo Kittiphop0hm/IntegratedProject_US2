@@ -13,13 +13,15 @@ const route = useRoute();
 const saleItem = ref([]);
 const pageObj = ref({});
 import { useUserStore } from "@/stores/users";
-  const userStore = useUserStore();
-  import { useCartStore } from "@/stores/carts.js";
-  const cartStore = useCartStore();
+const userStore = useUserStore();
+import { useCartStore } from "@/stores/carts.js";
+import { useCountNewOrder } from "@/stores/countNewOrder";
+const cartStore = useCartStore();
 const router = useRouter();
 let pageSizeWatchInitialized = false;
 const pageSize = ref();
 const pageNumber = ref();
+const {fetchCountNewOrder} = useCountNewOrder()
 
 // Updated filter states - เพิ่ม searchKeyword
 const filterBrandSession = sessionStorage.getItem("filterBrand");
@@ -44,9 +46,10 @@ const fieldR = ref("");
 const pageNumberSession = sessionStorage.getItem("pageNumber");
 const pageSizeSession = sessionStorage.getItem("pageSize");
 
-onMounted(() => {
+onMounted(async () => {
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
   pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
+  await fetchCountNewOrder()
 });
 
 function savePreviousPath() {
@@ -212,7 +215,6 @@ const filterAndSortSaleItem = async (
     filters,
   });
 
-  // Update all filter states
   filterBrandR.value = filterBrand || [];
   directionR.value = direction || "";
   fieldR.value = field || "";

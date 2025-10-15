@@ -4,6 +4,8 @@ import OrderHistory from './OrderHistory.vue';
 import { getItemsWithToken } from '@/libs/fetchUtil';
 import { decodeJWT } from '@/libs/decodeJWT';
 import { useRouter } from 'vue-router';
+import { useCountNewOrder } from '@/stores/countNewOrder.js';
+import { storeToRefs } from 'pinia';
  
 const router = useRouter()
 const orders = ref([])
@@ -13,7 +15,7 @@ const page = ref(0)
 const size = ref()
 const orderStatus = ref('')
 const userRole = ref('')
-const countNewOrder = ref()
+const { getCountNewOrder, fetchCountNewOrder } = useCountNewOrder()
 
 watch([page, size, orderStatus], () => {
     sessionStorage.setItem('pageNumber', page.value)
@@ -34,13 +36,13 @@ const fetchData = async () => {
     if (user.role === 'SELLER') {
         if (orderStatus.value === 'new') {
           orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=COMPLETED`, accessToken)  
-          console.log(orders.value.content);
+          const newOrders = orders.value.content.filter((order) => order.isNewOrder)
+          orders.value.content = newOrders
         } else {
           orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
           console.log(orders.value);
         }
     }
-   
     else if (user.role === 'BUYER') {
         orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
         console.log('Buyer Orders:', orders.value);
@@ -51,6 +53,7 @@ onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
     orderStatus.value = 'new'
+    console.log(fetchCountNewOrder())
 })
  
 const computedPageNumberArr = computed(() => {

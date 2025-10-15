@@ -171,4 +171,9 @@ public class OrderService {
         return sellerOrderDto;
     }
 
+    public Integer getCountCompletedAndNewOrder(String orderStatus, Boolean isNewOrder, Integer sellerId) {
+        List<Order> orders = orderRepository.findOrdersByOrderStatusAndIsNewOrderAndSeller_Id(orderStatus, isNewOrder, sellerId);
+        return orders.toArray().length;
+    }
+
 }

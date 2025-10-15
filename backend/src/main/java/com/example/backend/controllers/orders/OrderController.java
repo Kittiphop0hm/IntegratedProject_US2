@@ -4,6 +4,7 @@ import com.example.backend.dtos.orders.GetBuyerOrderDto;
 import com.example.backend.dtos.orders.PlaceOrderRequestDto;
 import com.example.backend.dtos.orders.PlaceOrderResponseDto;
 import com.example.backend.entities.AuthUserDetail;
+import com.example.backend.entities.Order;
 import com.example.backend.services.orders.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

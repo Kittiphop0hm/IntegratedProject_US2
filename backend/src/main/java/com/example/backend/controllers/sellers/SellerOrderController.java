@@ -4,11 +4,14 @@ import com.example.backend.dtos.orders.GetAllSellerOrderDto;
 import com.example.backend.dtos.orders.PlaceOrderResponseDto;
 import com.example.backend.dtos.saleItems.PageDto;
 import com.example.backend.entities.AuthUserDetail;
+import com.example.backend.entities.Order;
 import com.example.backend.services.orders.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v2/sellers/{sid}/orders")
@@ -36,6 +39,15 @@ public class SellerOrderController {
             @AuthenticationPrincipal AuthUserDetail principal
     ) {
         return ResponseEntity.ok(orderService.getOrderSellerByOrderId(oid, principal));
+    }
+
+    @GetMapping("/count/newOrder")
+    public ResponseEntity<Integer> getNewOrders(
+            @PathVariable Integer sid,
+            @RequestParam String orderStatus,
+            @RequestParam Boolean isNewOrder
+    ) {
+        return ResponseEntity.ok(orderService.getCountCompletedAndNewOrder(orderStatus, isNewOrder, sid));
     }
 
 

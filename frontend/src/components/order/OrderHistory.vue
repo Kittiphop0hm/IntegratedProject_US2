@@ -44,7 +44,6 @@ watchEffect(() => {
     props.orders.content ? myOrderCancel.value = props.orders.content.filter((order) => order.orderStatus === "CANCELED") : []
     props.pageNumber ? pageNumberArr.value = props.pageNumber : []
     props.pageSize >= 5 ? size.value = props.pageSize : 10
-    console.log(pageNumberArr.value);
 })
 const dateFormat = (isoDate) => {
     const date = new Date(isoDate)
