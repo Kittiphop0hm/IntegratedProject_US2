@@ -106,6 +106,11 @@ const router = createRouter({
     },
     {
       path: "/sale-orders",
+      name: "SellerOrderHistory",
+      component: OrderHistoryManager,
+    },
+    {
+      path: "/your-orders",
       name: "OrderHistory",
       component: OrderHistoryManager,
     },

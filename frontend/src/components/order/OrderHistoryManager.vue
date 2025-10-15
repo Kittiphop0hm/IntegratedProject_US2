@@ -1,13 +1,14 @@
 <script setup>
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, watchEffect } from 'vue';
 import OrderHistory from './OrderHistory.vue';
 import { getItemsWithToken } from '@/libs/fetchUtil';
 import { decodeJWT } from '@/libs/decodeJWT';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useCountNewOrder } from '@/stores/countNewOrder.js';
 import { storeToRefs } from 'pinia';
  
 const router = useRouter()
+const route = useRoute()
 const orders = ref([])
 const pageSession = sessionStorage.getItem('pageNumber')
 const sizeSession = sessionStorage.getItem('pageSize')
@@ -23,6 +24,14 @@ watch([page, size, orderStatus], () => {
     sessionStorage.setItem('orderStatus', orderStatus.value)
     fetchData()
 })
+
+watch([route], () => {
+  if (route.path === '/sale-orders') {
+    orderStatus.value = 'new'
+  } else if (route.path === '/your-orders') {
+    orderStatus.value = 'completed'
+  }
+})
  
 const fetchData = async () => {
     const accessToken = sessionStorage.getItem("accessToken")
@@ -33,8 +42,9 @@ const fetchData = async () => {
     const user = decodeJWT(accessToken)
     userRole.value = user.role
    
-    if (user.role === 'SELLER') {
+    if (route.path === '/sale-orders') {
         if (orderStatus.value === 'new') {
+          console.log(size.value);
           orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=COMPLETED`, accessToken)  
           const newOrders = orders.value.content.filter((order) => order.isNewOrder)
           orders.value.content = newOrders
@@ -43,7 +53,7 @@ const fetchData = async () => {
           console.log(orders.value);
         }
     }
-    else if (user.role === 'BUYER') {
+    else if (route.path === '/your-orders') {
         orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
         console.log('Buyer Orders:', orders.value);
     }
@@ -52,8 +62,11 @@ const fetchData = async () => {
 onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
-    orderStatus.value = 'new'
-    console.log(fetchCountNewOrder())
+    if (route.path === '/sale-orders') {
+      orderStatus.value = 'new'
+    } else if (route.path === '/your-orders') {
+      orderStatus.value = 'completed'
+    }
 })
  
 const computedPageNumberArr = computed(() => {

@@ -13,7 +13,11 @@ import { useCartStore } from "@/stores/carts.js";
 import { useCountNewOrder } from "@/stores/countNewOrder.js";
 const userStore = useUserStore();
 const cartStore = useCartStore();
+const { isSeller } = useUserStore()
 const { getCountNewOrder, fetchCountNewOrder, setCountNewOrder } = useCountNewOrder()
+
+console.log(isSeller);
+
 
 watchEffect(() => {
   if (nickname.value) {
@@ -110,12 +114,18 @@ const logout = async () => {
           </div>
         </button>
         </router-link>
-        <router-link :to="{name: 'OrderHistory'}" class="w-full h-full">
+        <router-link v-if="isSeller" :to="{name: 'SellerOrderHistory'}" class="w-full h-full tooltip tooltip-bottom" data-tip="Sale orders">
           <button class="relative w-full h-full p-1 cursor-pointer hover:opacity-80">
             <div v-if="getCountNewOrder() > 0" class="w-4 h-4 absolute top-0 right-0 bg-red-400 rounded-full">
               <p class="text-[12px]">{{ getCountNewOrder() }}</p>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"><path fill="#000000" d="m17.371 19.827l2.84-2.796l-.626-.627l-2.214 2.183l-.956-.975l-.627.632l1.583 1.583ZM6.77 8.73h10.462v-1H6.769v1ZM18 22.115q-1.671 0-2.836-1.164T14 18.115q0-1.67 1.164-2.835T18 14.115q1.671 0 2.836 1.165T22 18.115q0 1.672-1.164 2.836Q19.67 22.115 18 22.115ZM4 20.77V5.615q0-.67.472-1.143Q4.944 4 5.615 4h12.77q.67 0 1.143.472q.472.472.472 1.143v5.945q-.244-.09-.485-.154q-.24-.064-.515-.1v-5.69q0-.231-.192-.424Q18.615 5 18.385 5H5.615q-.23 0-.423.192Q5 5.385 5 5.615V19.05h6.344q.068.41.176.802q.109.392.303.748l-.035.035l-1.134-.827l-1.346.961l-1.346-.961l-1.347.961l-1.346-.961L4 20.769Zm2.77-4.5h4.709q.056-.275.138-.515q.083-.24.193-.485H6.77v1Zm0-3.769h7.31q.49-.387 1.05-.645q.56-.259 1.197-.355H6.769v1ZM5 19.05V5v14.05Z"/></svg>
+          </button>
+        </router-link>
+
+        <router-link :to="{name: 'OrderHistory'}" class="w-full h-full tooltip tooltip-bottom" data-tip="Your orders">
+          <button class="relative w-full h-full p-1 cursor-pointer hover:opacity-80">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="#000000" d="M19 21h-6a3 3 0 0 0-3 3v2h2v-2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2h2v-2a3 3 0 0 0-3-3zm-3-1a4 4 0 1 0-4-4a4 4 0 0 0 4 4zm0-6a2 2 0 1 1-2 2a2 2 0 0 1 2-2z"/><path fill="#000000" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2ZM12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"/></svg>
           </button>
         </router-link>
 

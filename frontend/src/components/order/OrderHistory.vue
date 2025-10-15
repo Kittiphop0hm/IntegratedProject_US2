@@ -1,7 +1,8 @@
 <script setup>
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
-import { ref, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
+import { useRoute } from 'vue-router';
  
 const emits = defineEmits([
     'fecthItemFromPage', 'toPageFirst', 'toPageLast', 'toNextPage', 'toPrevPage', 'changePageSize', 'reportOrderStatus'
@@ -33,11 +34,19 @@ const props = defineProps({
 
 })
 
+const route = useRoute()
 const myOrders = ref([])
 const myOrderCompleted = ref([])
 const myOrderCancel = ref([])
 const pageNumberArr = ref([])
 const size = ref()
+console.log(route.path);
+
+onMounted(() => {
+    console.log(props.orderStatus);
+    
+})
+
 watchEffect(() => {
     props.orders ? myOrders.value = props.orders : []
     props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETED") : []
@@ -72,8 +81,11 @@ const totalPrice = (orderItems) => {
                     <div class="w-full flex justify-between items-center space-x-4 mx-5">
                         <div class="w-full h-full space-x-4">
                             <button
+                                v-if="route.path === '/sale-orders'"
                                 @click="$emit('reportOrderStatus', 'new')"
-                                :class="orderStatus === 'new' ? 'relative border-b font-semibold pt-3' : 'relative cursor-pointer hover:border-b pt-3'">
+                                :class="orderStatus === 'new' ? 'relative border-b font-semibold pt-3' : 'relative cursor-pointer hover:border-b pt-3'"
+                                > 
+                                
                                     New
                             </button>
                             <button
