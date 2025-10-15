@@ -169,8 +169,8 @@ const totalPrice = (orderItems) => {
                 <div class="w-full h-full flex justify-center items-center p-5">
                     <div class="flex justify-center items-center space-x-2">
                         <div class="space-x-2">
-                            <button @click="$emit('toPageFirst')" class="border py-2 px-4 rounded-2xl cursor-pointer">First</button>
-                            <button @click="$emit('toPrevPage')" class="border py-2 px-4 rounded-2xl cursor-pointer">Perv</button>
+                            <button :disabled="!orders.content?.length" @click="$emit('toPageFirst')" :class="!orders.content?.length ? 'border py-2 px-4 rounded-2xl cursor-not-allowed' : 'border py-2 px-4 rounded-2xl cursor-pointer'">First</button>
+                            <button :disabled="!orders.content?.length" @click="$emit('toPrevPage')" :class="!orders.content?.length ? 'border py-2 px-4 rounded-2xl cursor-not-allowed' : 'border py-2 px-4 rounded-2xl cursor-pointer'">Perv</button>
                         </div>
                         <div v-for="index in pageNumberArr" :key="index">
                             <button @click="$emit('fecthItemFromPage', index)" :class="index - 1 === page ? 'bg-green-600 text-white border py-2 px-4 rounded-2xl cursor-pointer' : 'border py-2 px-4 rounded-2xl cursor-pointer'">
@@ -178,10 +178,10 @@ const totalPrice = (orderItems) => {
                             </button>
                         </div>
                         <div>
-                            <button @click="$emit('toNextPage')" class="border py-2 px-4 rounded-2xl cursor-pointer">Next</button>
+                            <button :disabled="!orders.content?.length" @click="$emit('toNextPage')" :class="!orders.content?.length ? 'border py-2 px-4 rounded-2xl cursor-not-allowed' : 'border py-2 px-4 rounded-2xl cursor-pointer'">Next</button>
                         </div>
                         <div>
-                            <button @click="$emit('toPageLast')" class="border py-2 px-4 rounded-2xl cursor-pointer">Last</button>
+                            <button :disabled="!orders.content?.length" @click="$emit('toPageLast')" :class="!orders.content?.length ? 'border py-2 px-4 rounded-2xl cursor-not-allowed' : 'border py-2 px-4 rounded-2xl cursor-pointer'">Last</button>
                         </div>
                     </div>
                 </div>
