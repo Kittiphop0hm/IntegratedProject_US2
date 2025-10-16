@@ -38,7 +38,7 @@ public class SellerOrderController {
             @PathVariable Integer oid,
             @AuthenticationPrincipal AuthUserDetail principal
     ) {
-        return ResponseEntity.ok(orderService.getOrderSellerByOrderId(oid, principal));
+        return ResponseEntity.ok(orderService.getOrderSellerByOrderId(sid, oid, principal));
     }
 
     @GetMapping("/count/newOrder")

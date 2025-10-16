@@ -5,7 +5,14 @@ import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { getItemsByIdWithToken } from '@/libs/fetchUtil';
 import { useCountNewOrder } from '@/stores/countNewOrder';
-const { fetchCountNewOrder, setCountNewOrder, getCountNewOrder, updateCountNewOrder  } = useCountNewOrder()
+import { useUserStore } from '@/stores/users';
+import { decodeJWT } from '@/libs/decodeJWT';
+
+
+const {  updateCountNewOrder  } = useCountNewOrder()
+const { isSeller } = useUserStore()
+console.log(isSeller);
+
  
  
 const route = useRoute()
@@ -14,9 +21,14 @@ const orderId = route.params.orderId
 const order = ref({})
 onMounted(async () => {
     const accessToken = sessionStorage.getItem('accessToken')
-    order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
-    console.log(order.value);
-    updateCountNewOrder(orderId, false)
+    if (route.path.includes('your-orders')) {
+        order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
+    } else {
+        const accessToken = sessionStorage.getItem('accessToken')
+        const decode = decodeJWT(accessToken)
+        order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${decode.id}/orders`, orderId, accessToken)
+        updateCountNewOrder(orderId, false)
+    }
 })
  
 const dateFormat = (isoDate) => {
@@ -43,7 +55,7 @@ const totalPrice = (orderItems) => {
             <div class="w-full h-full bg-gray-200 rounded-2xl p-5">
                 <div class="breadcrumbs text-sm">
                     <ul>
-                        <li><router-link :to="{name: 'OrderHistory'}" class="text-lg">Your order</router-link></li>
+                        <li><router-link :to="route.path.includes('your-orders') ? {name: 'OrderHistory'} : {name: 'SellerOrderHistory'}" class="text-lg">Your order</router-link></li>
                         <li><p class="font-semibold text-lg">Order detail</p></li>
                     </ul>
                 </div>

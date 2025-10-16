@@ -154,9 +154,9 @@ public class OrderService {
         return getAllBuyerOrderDtoPageDto;
     }
 
-    public GetAllSellerOrderDto getOrderSellerByOrderId(Integer oId, AuthUserDetail principal) {
+    public GetAllSellerOrderDto getOrderSellerByOrderId(Integer sid, Integer oId, AuthUserDetail principal) {
         Order order = orderRepository.findById(oId).orElseThrow(() -> new ItemNotFoundException("order not found!!"));
-        if (!order.getSeller().getId().equals(principal.getId())) throw new AccessDeniedException("Not allowed to access other seller's resources");
+        if (!sid.equals(principal.getId())) throw new AccessDeniedException("Not allowed to access other seller's resources");
         GetAllSellerOrderDto sellerOrderDto = modelMapper.map(order, GetAllSellerOrderDto.class);
 
         User buyer = userRepository.findById(order.getBuyer().getId()).orElseThrow(() -> new ItemNotFoundException("Buyer not found!!"));
@@ -167,6 +167,7 @@ public class OrderService {
         List<OrderItem> orderItems = orderItemRepository.findOrderItemsByOrders_Id(order.getId());
         List<OrderItemDto> orderItemDtoList = orderItems.stream().map((item) -> modelMapper.map(item, OrderItemDto.class)).toList();
         sellerOrderDto.setOrderItems(orderItemDtoList);
+        sellerOrderDto.setOrderNote(order.getOrderNote());
 
         return sellerOrderDto;
     }
