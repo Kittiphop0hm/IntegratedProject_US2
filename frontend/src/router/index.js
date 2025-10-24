@@ -17,6 +17,7 @@ import { useUserStore } from "../stores/users.js";
 import SaleItemCart from "@/components/saleItem/SaleItemCart.vue";
 import OrderHistoryManager from "@/components/order/OrderHistoryManager.vue";
 import OrderDetail from "@/components/order/OrderDetail.vue";
+import ForgetPassword from "@/components/user/ForgetPassword.vue";
 
 
 
@@ -124,6 +125,17 @@ const router = createRouter({
       name: "OrderDetail",
       component: OrderDetail,
     },
+    {
+      path: "/forgot-password",
+      name: "ForgetPassword",
+      component: ForgetPassword
+    },
+    {
+      path: '/new-password',
+      name: 'NewPassword',
+      component: ForgetPassword
+    }
+
   ],
 });
 

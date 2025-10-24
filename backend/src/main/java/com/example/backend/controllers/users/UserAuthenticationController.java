@@ -1,9 +1,6 @@
 package com.example.backend.controllers.users;
 
-import com.example.backend.dtos.users.RegisterFormDto;
-import com.example.backend.dtos.users.RequestLoginDto;
-import com.example.backend.dtos.users.ResponseTokenDto;
-import com.example.backend.dtos.users.ResponseUserDto;
+import com.example.backend.dtos.users.*;
 import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.UserFileService;
 import com.example.backend.services.users.UserService;
@@ -39,6 +36,11 @@ public class UserAuthenticationController {
         return ResponseEntity.ok(user);
     }
 
+    @PostMapping("/request-forgot")
+    public void sendRequestForgotPassword(@RequestParam String email) {
+        userService.sendRequestForgotPassword(email);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ResponseTokenDto> authenticateUser(
             @Valid @RequestBody RequestLoginDto requestLoginDto,
@@ -60,5 +62,11 @@ public class UserAuthenticationController {
     public ResponseEntity<ResponseTokenDto> refreshAccessToken(
             @CookieValue(value = "refresh_token", required = false) String refreshToken) {
         return ResponseEntity.ok(userService.refreshAccessToken(refreshToken));
+    }
+
+    @PutMapping("/new-password")
+    public void newPassword(
+            @RequestBody RequestChangePasswordDto request) {
+        userService.changePassword(request);
     }
 }

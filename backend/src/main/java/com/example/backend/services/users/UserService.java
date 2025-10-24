@@ -12,7 +12,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -239,5 +238,21 @@ public class UserService {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
         }
+    }
+
+    public void sendRequestForgotPassword(String email) {
+        User user = repository.findUserByEmail(email);
+        String token = jwtService.generateJwtToken(user.getId(), user.getEmail());
+        emailService.sendEmailForgotPassword(user.getEmail(), token);
+        System.out.println(user.getEmail());
+    }
+
+    public void changePassword(RequestChangePasswordDto request) {
+        System.out.println(request.getEmail());
+        System.out.println(request.getNewPassword());
+        User user = repository.findUserByEmail(request.getEmail());
+        String encoded = encodePassword(request.getNewPassword());
+        user.setPassword(encoded);
+        repository.save(user);
     }
 }

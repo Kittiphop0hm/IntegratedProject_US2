@@ -11,14 +11,26 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     //     http://intproj24.sit.kmutt.ac.th/us2/users/verify-email?token=%s
+    //     http://intproj24.sit.kmutt.ac.th/us2/users/new-password?token=%s
     public void sendEmail(String to, String token) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Confirm your email");
         String messageBody = """
-                 Thank you for registration, Please Confirm your email to Get 2000 Robux Free!
-     http://intproj24.sit.kmutt.ac.th/us2/users/verify-email?token=%s           
-   //              http://localhost:5173/verify-email?token=%s
+                 Thank you for registration, Please Confirm your email to Get 2000 Robux Free!        
+                 http://localhost:5173/verify-email?token=%s
+                """.formatted(token);
+        message.setText(messageBody);
+        mailSender.send(message);
+    }
+
+    public void sendEmailForgotPassword(String to, String token) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Change Password");
+        String messageBody = """
+                 Click this link for changing password
+                 http://localhost:5173/new-password?token=%s
                 """.formatted(token);
         message.setText(messageBody);
         mailSender.send(message);

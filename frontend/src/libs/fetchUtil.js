@@ -116,6 +116,23 @@ async function editItem(url, id, editItem) {
   }
 }
 
+async function editForgotPassword(url, editItem) {
+  try {
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        ...editItem,
+      }),
+    });
+    return res.status
+  } catch (error) {
+    throw new Error("can not edit your item");
+  }
+}
+
 async function addSaleItemAndImage(url, item, images) {
   try {
     const formdata = new FormData();
@@ -353,4 +370,5 @@ export {
   addItemNoBodyAndNoContent,
   getItemsByIdWithToken,
   addItemWithToken,
+  editForgotPassword
 };

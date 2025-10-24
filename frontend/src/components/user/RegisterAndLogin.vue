@@ -153,9 +153,6 @@ const addBackImage = (event) => {
   const backImages = Array.from(event.target.files);
   backImageShowname.value = backImages[0].name;
   userFormat.value.files[1] = backImages[0];
-  console.log(userFormat.value.files);
-  console.log(backImageShowname.value);
-  console.log(backImages);
   event.target.value = null;
 };
 
@@ -182,18 +179,6 @@ watchEffect(() => {
     userFormat.value.idCardNumber = "";
     userFormat.value.files = [];
   }
-
-  console.log("nickname", userFormat.value.nickname);
-  console.log("email", userFormat.value.email);
-  console.log("password", userFormat.value.password);
-  console.log("fullname", userFormat.value.fullname);
-  console.log("role", userFormat.value.role);
-  console.log("userPhone", userFormat.value.userPhone);
-  console.log("bankAccount", userFormat.value.bankAccount);
-  console.log("idCardNumber", userFormat.value.idCardNumber);
-  console.log("files", userFormat.value.files);
-  console.log(enableSaveButtonForSeller.value);
-  console.log(typeof userFormat.value.idCardNumber);
 });
 
 const enableLoginButton = computed(() => {
@@ -494,8 +479,7 @@ const enableLoginButton = computed(() => {
 
   <div
     v-if="pathName === 'Login'"
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6"
-  >
+    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
     <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-gray-800 mb-2">Sign In Account</h2>
@@ -518,7 +502,6 @@ const enableLoginButton = computed(() => {
       </template>
     </AlertMessageModel>
   </div>
-
       <form class="space-y-6">
         <div class="space-y-1">
           <label for="email" class="block text-sm font-medium text-gray-700"
@@ -547,9 +530,14 @@ const enableLoginButton = computed(() => {
             placeholder="Enter your password"
             class="itbms-password w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
           />
-          <div class="h-full flex items-center my-1">
-            <input v-model.trim="isShowPassword" type="checkbox" />
-            <label class="text-[12px] mx-1 text-center">Show password</label>
+          <div class="h-full flex justify-between items-center my-1">
+            <div>
+              <input v-model.trim="isShowPassword" type="checkbox" />
+              <label class="text-[12px] mx-1 text-center">Show password</label>
+            </div>
+            <div>
+              <router-link :to="{name: 'ForgetPassword'}" class="text-[12px] underline cursor-pointer hover:opacity-80">Forgot password</router-link>
+          </div>
           </div>
         </div>
 
