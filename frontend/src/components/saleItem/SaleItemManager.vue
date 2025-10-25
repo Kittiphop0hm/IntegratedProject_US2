@@ -7,7 +7,7 @@ import { useRouter, useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SearchComponent from "../Search.vue";
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 const getUser = decodeJWT(accessToken);
 const route = useRoute();
 const saleItem = ref([]);
@@ -24,11 +24,11 @@ const pageNumber = ref();
 const {fetchCountNewOrder} = useCountNewOrder()
 
 // Updated filter states - เพิ่ม searchKeyword
-const filterBrandSession = sessionStorage.getItem("filterBrand");
-const directionSession = sessionStorage.getItem("direction");
-const filterPriceSession = sessionStorage.getItem("filterPrice");
-const filterStorageSizeSession = sessionStorage.getItem("filterStorageSize");
-const searchKeywordSession = sessionStorage.getItem("searchKeyword");
+const filterBrandSession = localStorage.getItem("filterBrand");
+const directionSession = localStorage.getItem("direction");
+const filterPriceSession = localStorage.getItem("filterPrice");
+const filterStorageSizeSession = localStorage.getItem("filterStorageSize");
+const searchKeywordSession = localStorage.getItem("searchKeyword");
 
 const filterBrandR = ref(
   filterBrandSession ? JSON.parse(filterBrandSession) : []
@@ -43,8 +43,8 @@ const filterStorageSizeR = ref(
 const searchKeywordR = ref(searchKeywordSession ? searchKeywordSession : ""); // เพิ่ม search keyword
 const fieldR = ref("");
 
-const pageNumberSession = sessionStorage.getItem("pageNumber");
-const pageSizeSession = sessionStorage.getItem("pageSize");
+const pageNumberSession = localStorage.getItem("pageNumber");
+const pageSizeSession = localStorage.getItem("pageSize");
 
 onMounted(async () => {
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
@@ -54,7 +54,7 @@ onMounted(async () => {
 
 function savePreviousPath() {
   const previousPath = route.fullPath;
-  sessionStorage.setItem("previousPath", previousPath);
+  localStorage.setItem("previousPath", previousPath);
 }
 
 const isFirst = computed(() => {
@@ -165,8 +165,8 @@ const fetchData = async () => {
 };
 
 watch([pageSize, pageNumber], () => {
-  sessionStorage.setItem("pageSize", pageSize.value);
-  sessionStorage.setItem("pageNumber", pageNumber.value);
+  localStorage.setItem("pageSize", pageSize.value);
+  localStorage.setItem("pageNumber", pageNumber.value);
   fetchData();
 });
 
@@ -174,14 +174,14 @@ watch([pageSize, pageNumber], () => {
 watch(
   [filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeywordR],
   () => {
-    sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
-    sessionStorage.setItem("direction", directionR.value);
-    sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
-    sessionStorage.setItem(
+    localStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
+    localStorage.setItem("direction", directionR.value);
+    localStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
+    localStorage.setItem(
       "filterStorageSize",
       JSON.stringify(filterStorageSizeR.value)
     );
-    sessionStorage.setItem("searchKeyword", searchKeywordR.value);
+    localStorage.setItem("searchKeyword", searchKeywordR.value);
     console.log("Filters changed, resetting to page 0");
     pageNumber.value = 0;
   },

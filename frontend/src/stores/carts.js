@@ -296,7 +296,7 @@ export const useCartStore = defineStore(
   },
   {
     persist: {
-      storage: sessionStorage,
+      storage: localStorage,
       paths: [""],
     },
   }

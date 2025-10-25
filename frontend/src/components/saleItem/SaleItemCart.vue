@@ -25,7 +25,7 @@ watch(note, (newVal) => {
 });
 
 const selectAllCheck = ref(false);
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 // watch(selectAllCheck, (newVal) => {
 //   // sellerCheck.value = newVal
 //   arrayCartItems.value.forEach( obj => {

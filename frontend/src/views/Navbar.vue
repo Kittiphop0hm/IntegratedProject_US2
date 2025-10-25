@@ -5,7 +5,7 @@ import { decodeJWT } from "@/libs/decodeJWT";
 import { useRouter } from "vue-router";
 const isBurgerBar = ref(false);
 const isLoggedIn = ref(false);
-const userNickname = ref(sessionStorage.getItem("nickname"));
+const userNickname = ref(localStorage.getItem("nickname"));
 const nickname = ref(userNickname.value || "");
 const router = useRouter();
 import { useUserStore } from "../stores/users.js";
@@ -28,10 +28,10 @@ watchEffect(() => {
 });
 
 const logout = async () => {
-  const decodeSession = decodeJWT(sessionStorage.getItem("accessToken"));
+  const decodeSession = decodeJWT(localStorage.getItem("accessToken"));
   decodeSession.exp = 0;
-  sessionStorage.removeItem("accessToken");
-  sessionStorage.removeItem("nickname");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("nickname");
   nickname.value = "";
   userStore.clearUser();
   cartStore.clearCart();

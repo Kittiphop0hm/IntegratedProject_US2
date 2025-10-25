@@ -10,8 +10,8 @@ import { storeToRefs } from 'pinia';
 const router = useRouter()
 const route = useRoute()
 const orders = ref([])
-const pageSession = sessionStorage.getItem('pageNumber')
-const sizeSession = sessionStorage.getItem('pageSize')
+const pageSession = localStorage.getItem('pageNumber')
+const sizeSession = localStorage.getItem('pageSize')
 const page = ref(0)
 const size = ref()
 const orderStatus = ref('')
@@ -19,9 +19,9 @@ const userRole = ref('')
 const { getCountNewOrder, fetchCountNewOrder } = useCountNewOrder()
 
 watch([page, size, orderStatus], () => {
-    sessionStorage.setItem('pageNumber', page.value)
-    sessionStorage.setItem('pageSize', size.value)
-    sessionStorage.setItem('orderStatus', orderStatus.value)
+    localStorage.setItem('pageNumber', page.value)
+    localStorage.setItem('pageSize', size.value)
+    localStorage.setItem('orderStatus', orderStatus.value)
     fetchData()
 })
 
@@ -34,7 +34,7 @@ watch([route], () => {
 })
  
 const fetchData = async () => {
-    const accessToken = sessionStorage.getItem("accessToken")
+    const accessToken = localStorage.getItem("accessToken")
     if (!accessToken) {
         router.push({name: "Login"})
         return
