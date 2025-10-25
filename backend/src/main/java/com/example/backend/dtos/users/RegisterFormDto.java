@@ -1,36 +1,34 @@
 package com.example.backend.dtos.users;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import com.example.backend.validation.ValidSellerFields;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
+@ValidSellerFields
 @Data
 public class RegisterFormDto {
-    @NotNull
+    @NotBlank(message = "nickName must not be blank")
     private String nickName;
-    // t
-    @NotNull(message = "email must not be null")
+
+    @NotBlank(message = "email must not be blank")
+    @Email(message = "email must be valid")
     private String email;
-    @NotNull
+
+    @NotBlank(message = "password must not be blank")
+    @Size(min = 6, message = "password must be at least 6 characters")
     private String password;
-    @NotNull
+
+    @NotBlank(message = "fullName must not be blank")
     private String fullName;
-    // t
-    @NotNull(message = "userType must not be null")
+
+    @NotBlank(message = "userType must not be blank")
     private String userType;
-    // t
-    @NotNull(message = "phoneNumber must not be null")
+
+    // conditional: เอา annotation บังคับออก ให้ validator ระดับ class ตรวจ
     private String phoneNumber;
-    // t
-    @NotNull(message = "bankAccount must not be null")
     private String bankAccount;
     private String bankName;
-    // t
-    @NotNull(message = "cardNumber must not be null")
     private String cardNumber;
 }
