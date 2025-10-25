@@ -45,7 +45,7 @@ public class JwtService {
                 .setClaims(claims)
                 .setIssuer("https://intproj24.sit.kmutt.ac.th/us2/")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 1))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -54,7 +54,7 @@ public class JwtService {
         return Jwts.builder()
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60  * 3))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
