@@ -42,9 +42,9 @@ public class OrderService {
     @Autowired
     private EntityManager entityManager;
 
-    public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
+    public PageDto<GetAllSellerOrderDto> getOrderBySellerId(Integer id, String orderStatus, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         if (!principal.getId().equals(id)) throw new AccessDeniedException("Not allowed to access other seller's resources");
-        Page<Order> pageOrder = orderRepository.findOrdersBySeller_IdOrderByIdDesc(id, PageRequest.of(page, size));
+        Page<Order> pageOrder = orderRepository.findOrdersBySeller_IdAndOrderStatusOrderByIdDesc(id, orderStatus, PageRequest.of(page, size));
         PageDto<GetAllSellerOrderDto> getAllSellerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllSellerOrderDto.class, modelMapper, sortField);
         getAllSellerOrderDtoPageDto.getContent().forEach((order) -> {
             User buyer = userRepository.findById(order.getBuyer().getId()).orElseThrow(() -> new ItemNotFoundException("User (Buyer) not found"));
@@ -70,10 +70,10 @@ public class OrderService {
            newOrder.setBuyer(buyer);
            newOrder.setSeller(seller);
            newOrder.setOrderDate(order.getOrderDate());
-//           newOrder.setPaymentDate(order.getOrderDate());
            newOrder.setShippingAddress(order.getShippingAddress());
            newOrder.setOrderNote(order.getOrderNote());
            newOrder.setOrderStatus(order.getOrderStatus());
+           newOrder.setIsNewOrder(order.getIsNewOrder());
            orderRepository.save(newOrder);
            entityManager.refresh(newOrder);
 
@@ -152,6 +152,39 @@ public class OrderService {
         });
 
         return getAllBuyerOrderDtoPageDto;
+    }
+
+    public GetAllSellerOrderDto getOrderSellerByOrderId(Integer sid, Integer oId, AuthUserDetail principal) {
+        Order order = orderRepository.findById(oId).orElseThrow(() -> new ItemNotFoundException("order not found!!"));
+        if (!sid.equals(principal.getId())) throw new AccessDeniedException("Not allowed to access other seller's resources");
+        GetAllSellerOrderDto sellerOrderDto = modelMapper.map(order, GetAllSellerOrderDto.class);
+
+        User buyer = userRepository.findById(order.getBuyer().getId()).orElseThrow(() -> new ItemNotFoundException("Buyer not found!!"));
+        BuyerForGetAllSellerOrderDto buyerDto = modelMapper.map(buyer, BuyerForGetAllSellerOrderDto.class);
+        buyerDto.setUsername(buyer.getNickName());
+        sellerOrderDto.setBuyer(buyerDto);
+
+        List<OrderItem> orderItems = orderItemRepository.findOrderItemsByOrders_Id(order.getId());
+        List<OrderItemDto> orderItemDtoList = orderItems.stream().map((item) -> modelMapper.map(item, OrderItemDto.class)).toList();
+        sellerOrderDto.setOrderItems(orderItemDtoList);
+        sellerOrderDto.setOrderNote(order.getOrderNote());
+
+        return sellerOrderDto;
+    }
+
+    public Integer getCountCompletedAndNewOrder(String orderStatus, Boolean isNewOrder, Integer sellerId) {
+        List<Order> orders = orderRepository.findOrdersByOrderStatusAndIsNewOrderAndSeller_Id(orderStatus, isNewOrder, sellerId);
+        return orders.toArray().length;
+    }
+
+    public PlaceOrderResponseDto changeIsNewOrderStatus(Integer oid, Boolean isNewOrder) {
+        Order order = orderRepository.findById(oid).orElseThrow(() -> new ItemNotFoundException("order not found"));
+        User seller = userRepository.findById(order.getSeller().getId()).orElseThrow(() -> new ItemNotFoundException("seller not found"));
+        order.setIsNewOrder(isNewOrder);
+        Order updateOrder = orderRepository.save(order);
+        PlaceOrderResponseDto placeOrderResponseDto = modelMapper.map(updateOrder, PlaceOrderResponseDto.class);
+        placeOrderResponseDto.getSeller().setUsername(seller.getNickName());
+        return placeOrderResponseDto;
     }
 
 }

@@ -15,4 +15,5 @@ public class PlaceOrderRequestDto {
     private String orderNote;
     private List<OrderItemDto> orderItems;
     private String orderStatus;
+    private Boolean isNewOrder;
 }

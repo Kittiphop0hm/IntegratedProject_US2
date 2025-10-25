@@ -11,6 +11,7 @@ import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SortSaleItemByBrandname from "./SortSaleItemByBrandName.vue";
 import {decodeJWT} from "@/libs/decodeJWT.js";
+import { useCountNewOrder } from "@/stores/countNewOrder.js";
 let pageSizeWatchInitialized = false;
 const route = useRoute();
 const saleItems = ref([]);
@@ -23,6 +24,7 @@ const pageSize = ref();
 const pageNumber = ref();
 const pageNumberSession = localStorage.getItem("pageNumber");
 const pageSizeSession = localStorage.getItem("pageSize");
+const {fetchCountNewOrder} = useCountNewOrder()
 watch([pageSize, pageNumber], () => {
   localStorage.setItem("pageSize", pageSize.value);
   localStorage.setItem("pageNumber", pageNumber.value);
@@ -53,6 +55,7 @@ onMounted(async () => {
   try {
       pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
       pageNumber.value = pageNumberSession ? Number(pageNumberSession) : 0;
+      await fetchCountNewOrder()
     // saleItems.value = await getItems(
     //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`
     // );
