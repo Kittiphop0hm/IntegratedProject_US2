@@ -236,7 +236,7 @@ const enableLoginButton = computed(() => {
           <label for="password" class="block text-[20px] font-semibold text-white"
             >Password</label
           >
-          <div class="w-full h-full relative">
+            <div class="w-full h-full relative">
             <input
               v-model.trim="userFormat.password"
               @blur="validatePassword(userFormat.password)"
@@ -672,11 +672,11 @@ const enableLoginButton = computed(() => {
 <!-- Login -->
   <div
     v-if="pathName === 'Login'"
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6">
-    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    class="min-h-screen bg-white flex items-center justify-center p-6">
+    <div class="bg-[#796254] text-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-2">Sign In Account</h2>
-        <p class="text-gray-600 text-[16px]">
+        <h2 class="text-3xl font-bold mb-2">Sign In Account</h2>
+        <p class="text-[16px] font-bold">
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
@@ -697,7 +697,7 @@ const enableLoginButton = computed(() => {
   </div>
       <form class="space-y-6">
         <div class="space-y-1">
-          <label for="email" class="block text-sm font-medium text-gray-700"
+          <label for="email" class="block text-[20px] text-white font-semibold"
             >Email</label
           >
           <input
@@ -705,13 +705,36 @@ const enableLoginButton = computed(() => {
             id="email"
             type="text"
             placeholder="Enter your email"
-            class="itbms-email w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+            class="itbms-email w-full px-4 py-3 bg-white text-black rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
             maxlength="50"
             />
         </div>
 
         <div class="space-y-1">
-          <label for="password" class="block text-sm font-medium text-gray-700"
+          <label for="password" class="block text-[20px] font-semibold text-white"
+            >Password</label
+          >
+            <div class="w-full h-full relative">
+            <input
+              v-model.trim="loginFormat.password"
+              @blur="validatePassword(userFormat.password)"
+              id="password"
+              :type="isShowPassword ? 'text' : 'password'"
+              placeholder="Enter your password"
+              class="itbms-password w-full px-4 py-3 bg-white text-black rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-[#9D8A7C]"
+            />
+              <div @click="isShowPassword = !isShowPassword" class="absolute top-0 right-2 cursor-pointer h-full flex justify-center items-center">
+                <svg v-if="isShowPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48"><path fill="#000000" d="M41.56 26.13a1.251 1.251 0 0 0 1.57.81c.65-.21 1.02-.91.81-1.57l-.001-.003C43.85 25.1 38.841 10 23.999 10C9.16 10 4.15 25.1 4.062 25.367l-.001.003c-.21.66.15 1.36.81 1.57c.66.21 1.36-.15 1.57-.81c.18-.56 4.51-13.63 17.56-13.63c13.05 0 17.38 13.07 17.56 13.63ZM24 36a9 9 0 1 0 0-18a9 9 0 0 0 0 18Z"/></svg>
+                <svg v-if="!isShowPassword" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 16 16"><path fill="#000000" d="M1.48 1.48a.5.5 0 0 0-.049.65l.049.057l2.69 2.69A6.657 6.657 0 0 0 1.533 8.71a.5.5 0 0 0 .97.242a5.66 5.66 0 0 1 2.386-3.356l1.207 1.207a2.667 2.667 0 0 0 3.771 3.771l3.946 3.946a.5.5 0 0 0 .756-.65l-.049-.057l-4.075-4.076v-.001l-.8-.799l-1.913-1.913h.001l-1.92-1.919v-.001l-.755-.754l-2.871-2.87a.5.5 0 0 0-.707 0Zm5.323 6.03l2.356 2.357A1.667 1.667 0 0 1 6.802 7.51ZM8 3.667c-.667 0-1.314.098-1.926.283l.825.824a5.669 5.669 0 0 1 6.6 4.181a.5.5 0 0 0 .97-.242A6.669 6.669 0 0 0 8 3.667Zm.13 2.34l2.534 2.533A2.668 2.668 0 0 0 8.13 6.006Z"/></svg>
+                <!-- <input v-model.trim="isShowPassword" type="checkbox" />
+                <label class="text-[12px] mx-1 text-center">Show password</label> -->
+              </div>
+            </div>
+            <p class="text-[12px] text-red-500">{{ validateErrorPassword }}</p>
+          </div>
+
+        <!-- <div class="space-y-1">
+          <label for="password" class="block text-[20px] text-white font-semibold"
             >Password</label
           >
           <input
@@ -721,7 +744,7 @@ const enableLoginButton = computed(() => {
             :type="isShowPassword ? 'text' : 'password'"
             maxlength="14"
             placeholder="Enter your password"
-            class="itbms-password w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
+            class="itbms-password w-full px-4 py-3 bg-white text-black rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
           />
           <div class="h-full flex justify-between items-center my-1">
             <div>
@@ -732,7 +755,7 @@ const enableLoginButton = computed(() => {
               <router-link :to="{name: 'ForgetPassword'}" class="text-[12px] underline cursor-pointer hover:opacity-80">Forgot password</router-link>
           </div>
           </div>
-        </div>
+        </div> -->
 
         <div
           class="w-full flex flex-row justify-center items-center pt-4 max-md:flex-col"
@@ -742,8 +765,8 @@ const enableLoginButton = computed(() => {
             type="submit"
             :class="
               enableLoginButton
-                ? 'itbms-signin-button w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1'
-                : 'itbms-signin-button w-full mx-1 flex-1 bg-gray-600 cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg shadow-lg max-md:my-1'
+                ? 'itbms-signin-button w-full mx-1 flex-1 bg-[#2D1E17] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] cursor-pointer hover:opacity-80 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] max-md:my-1'
+                : 'itbms-signin-button w-full mx-1 flex-1 bg-[#2D1E17] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg max-md:my-1'
             "
            @click="$emit('login',$event, loginFormat)"
             >
@@ -751,19 +774,19 @@ const enableLoginButton = computed(() => {
           </button>
           <router-link
             :to="{ name: 'SaleItemHome' }"
-            class="w-full text-center mx-1 flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] border border-gray-300"
+            class="w-full text-center mx-1 flex-1 bg-gray-100 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] border border-gray-300"
           >
             <button type="button" class="cursor-pointer">Cancel</button>
           </router-link>
         </div>
       </form>
-      <div class="mt-8 pt-6 border-t border-gray-200 text-center">
-        <p class="text-sm text-white">
+      <div class="mt-8 pt-6 text-center">
+        <p class="text-sm text-white font-semibold">
           Don't have an account?
           <router-link
             :to="{ name: 'Register' }"
             href="#"
-            class="text-blue-600 hover:text-blue-700 font-medium"
+            class="text-[#2D1E17] hover:opacity-80 font-bold"
             >Register</router-link
           >
         </p>
