@@ -39,7 +39,7 @@ onMounted( async () => {
                             <p class="text-lg">฿{{ item.price.toLocaleString('th-TH') }}</p>
                         </div>
                     <router-link to="/sale-items">
-                        <button class="w-[188px] h-[48px] mt-3 bg-black text-white rounded-lg cursor-pointer hover:border-2 hover:border-black hover:bg-gray-200 hover:text-black">
+                        <button class="w-[188px] h-[48px] mt-3 bg-[#523F31] text-white rounded-lg cursor-pointer hover:border-2 hover:border-black hover:bg-gray-200 hover:text-black">
                             Buy now
                         </button>
                     </router-link>

@@ -94,8 +94,8 @@ function addQtyToParent(type) {
 
 <template>
   <Search />
-  <div class="min-h-screen flex justify-center items-center bg-white rounded-lg">
-  <div class=" rounded-2xl shadow-2xl p-6 bg-[#9D8A7C]">
+  <div class="w-full min-h-screen flex justify-center items-center bg-white rounded-lg">
+  <div class="w-[90%] rounded-2xl shadow-2xl p-6 bg-[#9D8A7C]">
   <div class="container bg-[#9D8A7C] mx-auto px-6 mt-10 mb-10 p-5 rounded-lg">
     <router-link :to="{name: 'SaleItemHome'}">
       <div class="w-20 h-15">
@@ -104,7 +104,7 @@ function addQtyToParent(type) {
         </div>
       </div>
     </router-link>
-    <div class="w-[40%] bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg font-semibold bg-opacity-70 p-4 mb-4 mt-7">
+    <div class="w-[40%] max-lg:w-full bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg font-semibold bg-opacity-70 p-4 mb-4 mt-7">
       <p class="text-white">
         <router-link :to="{ name: 'SaleItemHome' }">
           <span class="itbms-home-button text-white hover:underline">Home</span>
@@ -118,12 +118,12 @@ function addQtyToParent(type) {
 
     <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
       <div class="lg:w-1/2">
-        <div class="w-[500px] h-[290px] flex justify-center items-center relative rounded-md p-2 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-white">
+        <div class="w-[500px] h-[290px] max-md:w-full flex justify-center items-center relative rounded-md p-2 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-white">
           <img :src="!mainImage ? '/images/carbon_no-image-gray.png' : mainImage" alt="main image" class="w-50 h-50" />
         </div>
 
         <div class="w-[500px] flex justify-center items-center">
-          <div class="w-full text-center grid grid-cols-4 gap-2 mt-4">
+          <div class="w-full text-center grid grid-cols-4 gap-2 mt-4 max-md:grid-cols-2">
             <div
               @click="clickShowImage(0)"
               class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
@@ -239,7 +239,7 @@ function addQtyToParent(type) {
           </button>
           </div> -->
           <div
-            class="flex gap-4 rounded-lg bg-[#796254] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)]"
+            class="flex justify-center items-center gap-4 rounded-lg bg-[#796254] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)]"
             v-if="route.name === 'SaleItemDetail'"
           >
             <button
@@ -268,9 +268,6 @@ function addQtyToParent(type) {
           >
             <slot name="button3">Input Name Button3</slot>
           </button>
-          <!-- <div v-if="items.seller">
-            {{ items.seller.id }}
-          </div> -->
         </div>
       </div>
     </div>

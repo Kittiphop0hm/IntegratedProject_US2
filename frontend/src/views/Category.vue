@@ -65,12 +65,12 @@ const IsOppoActive = () => {
             <div class="mb-5 w-full flex flex-col justify-center items-center">
                 <h1 class="text-4xl font-bold">Special Offers</h1>
                 <div class="w-[50%] my-5 font-semibold flex flex-row justify-around items-center max-lg:w-full max-[426px]:flex-col">
-                    <button @click="IsAppleActive" :class="isApple ? 'border-b-2 cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Apple</button>
-                    <button @click="IsSamsungActive" :class="isSamsung ? 'border-b-2 cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Samsung</button>
-                    <button @click="IsXiaomiActive" :class="isXiaomi ? 'border-b-2 cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Xiaomi</button>
-                    <button @click="IsHuaweiActive" :class="isHuawei ? 'border-b-2 cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Huawei</button>
-                    <button @click="IsAsusActive" :class="isAsus ? 'border-b-2 cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">ASUS</button>
-                    <button @click="IsOppoActive" :class="isOppo ? 'border-b-2 cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">OPPO</button>
+                    <button @click="IsAppleActive" :class="isApple ? 'border-b-2 border-[#523F31] text-[#523F31] cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Apple</button>
+                    <button @click="IsSamsungActive" :class="isSamsung ? 'border-b-2 border-[#523F31] text-[#523F31] cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Samsung</button>
+                    <button @click="IsXiaomiActive" :class="isXiaomi ? 'border-b-2 border-[#523F31] text-[#523F31] cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Xiaomi</button>
+                    <button @click="IsHuaweiActive" :class="isHuawei ? 'border-b-2 border-[#523F31] text-[#523F31] cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">Huawei</button>
+                    <button @click="IsAsusActive" :class="isAsus ? 'border-b-2 border-[#523F31] text-[#523F31] cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">ASUS</button>
+                    <button @click="IsOppoActive" :class="isOppo ? 'border-b-2 border-[#523F31] text-[#523F31] cursor-pointer hover:opacity-70' : 'cursor-pointer hover:opacity-70'">OPPO</button>
                 </div>
             </div>
 
