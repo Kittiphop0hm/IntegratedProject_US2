@@ -1,5 +1,4 @@
 package com.example.backend.entities;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -48,4 +47,6 @@ public class Order {
     @Column(name = "paymentDate", nullable = false, insertable = false, updatable = false )
     private Instant paymentDate;
 
+    @Column(name = "isNewOrder")
+    private Boolean isNewOrder;
 }

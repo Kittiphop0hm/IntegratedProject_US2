@@ -1,22 +1,36 @@
 <script setup>
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, ref, watch, computed, watchEffect } from 'vue';
 import OrderHistory from './OrderHistory.vue';
 import { getItemsWithToken } from '@/libs/fetchUtil';
 import { decodeJWT } from '@/libs/decodeJWT';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { useCountNewOrder } from '@/stores/countNewOrder.js';
+import { storeToRefs } from 'pinia';
  
 const router = useRouter()
+const route = useRoute()
 const orders = ref([])
 const pageSession = localStorage.getItem('pageNumber')
 const sizeSession = localStorage.getItem('pageSize')
 const page = ref(0)
 const size = ref()
+const orderStatus = ref('')
 const userRole = ref('')
- 
-watch([page, size], () => {
+const { getCountNewOrder, fetchCountNewOrder } = useCountNewOrder()
+
+watch([page, size, orderStatus], () => {
     localStorage.setItem('pageNumber', page.value)
     localStorage.setItem('pageSize', size.value)
+    localStorage.setItem('orderStatus', orderStatus.value)
     fetchData()
+})
+
+watch([route], () => {
+  if (route.path === '/sale-orders') {
+    orderStatus.value = 'new'
+  } else if (route.path === '/your-orders') {
+    orderStatus.value = 'completed'
+  }
 })
  
 const fetchData = async () => {
@@ -28,12 +42,18 @@ const fetchData = async () => {
     const user = decodeJWT(accessToken)
     userRole.value = user.role
    
-    if (user.role === 'SELLER') {
-        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
-        console.log(orders.value);
+    if (route.path === '/sale-orders') {
+        if (orderStatus.value === 'new') {
+          console.log(size.value);
+          orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=COMPLETED`, accessToken)  
+          const newOrders = orders.value.content.filter((order) => order.isNewOrder)
+          orders.value.content = newOrders
+        } else {
+          orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
+          console.log(orders.value);
+        }
     }
-   
-    else if (user.role === 'BUYER') {
+    else if (route.path === '/your-orders') {
         orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
         console.log('Buyer Orders:', orders.value);
     }
@@ -42,7 +62,11 @@ const fetchData = async () => {
 onMounted(async () => {
     size.value = sizeSession ? Number(sizeSession) : 10;
     page.value = pageSession ? Number(pageSession) : 0;
-    console.log(typeof size.value);
+    if (route.path === '/sale-orders') {
+      orderStatus.value = 'new'
+    } else if (route.path === '/your-orders') {
+      orderStatus.value = 'completed'
+    }
 })
  
 const computedPageNumberArr = computed(() => {
@@ -102,6 +126,10 @@ const changePageSize = (event) => {
     size.value = Number(event.target.value)
     page.value = 0
 }
+
+const repostStatus = (status) => {
+  orderStatus.value = status
+}
 </script>
  
 <template>
@@ -112,12 +140,14 @@ const changePageSize = (event) => {
         :page="page"
         :pageSize="size"
         :userRole="userRole"
+        :orderStatus="orderStatus"
         @fecthItemFromPage="fecthItemFromPage"
         @toPageFirst="toFirst"
         @toPageLast="toLast"
         @toNextPage="toNext"
         @toPrevPage="toPrev"
         @changePageSize="changePageSize"
+        @reportOrderStatus="repostStatus"
         />
     </div>
 </template>

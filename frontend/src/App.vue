@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from 'vue';
+import { onMounted, ref, watchEffect } from 'vue';
 import { RouterLink, RouterView } from 'vue-router'
 import { decodeJWT } from './libs/decodeJWT';
 import { addItemNoBody, addItem } from './libs/fetchUtil';

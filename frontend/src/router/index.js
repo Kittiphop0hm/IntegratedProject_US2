@@ -17,6 +17,7 @@ import { useUserStore } from "../stores/users.js";
 import SaleItemCart from "@/components/saleItem/SaleItemCart.vue";
 import OrderHistoryManager from "@/components/order/OrderHistoryManager.vue";
 import OrderDetail from "@/components/order/OrderDetail.vue";
+import ForgetPassword from "@/components/user/ForgetPassword.vue";
 
 
 
@@ -105,15 +106,36 @@ const router = createRouter({
       component: UserProfileManager,
     },
     {
+      path: "/sale-orders",
+      name: "SellerOrderHistory",
+      component: OrderHistoryManager,
+    },
+    {
       path: "/your-orders",
       name: "OrderHistory",
       component: OrderHistoryManager,
+    },
+    {
+      path: "/sale-orders/:orderId",
+      name: "SellerOrderDetail",
+      component: OrderDetail,
     },
     {
       path: "/your-orders/:orderId",
       name: "OrderDetail",
       component: OrderDetail,
     },
+    {
+      path: "/forgot-password",
+      name: "ForgetPassword",
+      component: ForgetPassword
+    },
+    {
+      path: '/new-password',
+      name: 'NewPassword',
+      component: ForgetPassword
+    }
+
   ],
 });
 

@@ -16,4 +16,5 @@ public class GetAllSellerOrderDto {
     private String orderNote;
     private List<OrderItemDto> orderItems;
     private String orderStatus;
+    private Boolean isNewOrder;
 }

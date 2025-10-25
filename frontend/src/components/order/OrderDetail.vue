@@ -4,6 +4,15 @@ import { onMounted, ref } from 'vue';
 import Navbar from '@/views/Navbar.vue';
 import Search from '../Search.vue';
 import { getItemsByIdWithToken } from '@/libs/fetchUtil';
+import { useCountNewOrder } from '@/stores/countNewOrder';
+import { useUserStore } from '@/stores/users';
+import { decodeJWT } from '@/libs/decodeJWT';
+
+
+const {  updateCountNewOrder  } = useCountNewOrder()
+const { isSeller } = useUserStore()
+console.log(isSeller);
+
  
  
 const route = useRoute()
@@ -11,9 +20,16 @@ console.log(route.params.orderId);
 const orderId = route.params.orderId
 const order = ref({})
 onMounted(async () => {
-    const accessToken = localStorage.getItem.getItem.getItem('accessToken')
-    order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
-    console.log(order.value);
+    if (route.path.includes('your-orders')) {
+        const accessToken = localStorage.getItem.getItem.getItem('accessToken')
+        order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
+        console.log(order.value);
+    } else {
+        const accessToken = localStorage.getItem('accessToken')
+        const decode = decodeJWT(accessToken)
+        order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${decode.id}/orders`, orderId, accessToken)
+        updateCountNewOrder(orderId, false)
+    }
 })
  
 const dateFormat = (isoDate) => {
@@ -30,8 +46,6 @@ const totalPrice = (orderItems) => {
     }, 0)
     return total
 }
- 
- 
 </script>
  
 <template>
@@ -42,7 +56,7 @@ const totalPrice = (orderItems) => {
             <div class="w-full h-full bg-gray-200 rounded-2xl p-5">
                 <div class="breadcrumbs text-sm">
                     <ul>
-                        <li><router-link :to="{name: 'OrderHistory'}" class="text-lg">Your order</router-link></li>
+                        <li><router-link :to="route.path.includes('your-orders') ? {name: 'OrderHistory'} : {name: 'SellerOrderHistory'}" class="text-lg">Your order</router-link></li>
                         <li><p class="font-semibold text-lg">Order detail</p></li>
                     </ul>
                 </div>
