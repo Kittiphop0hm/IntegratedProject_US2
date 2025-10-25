@@ -326,16 +326,16 @@ const checkRole = (yourItem) => {
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
         @click="savePreviousPath"
-        class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        class="flex justify-center items-center gap-x-2 itbms-sale-item-add px-4 py-4 bg-[#523F31] text-white font-semibold cursor-pointer rounded-md hover:opacity-90"
       >
-        Add Sale Item
+        <p>Add SaleItem</p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><g fill="none"><circle cx="12" cy="12" r="9" fill="#ffffff"/><path stroke="#000000" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.2" d="M12 8v8m4-4H8"/></g></svg>
       </button>
     </router-link>
     <div>
-      <span>Show</span>
       <span class="ml-2">
         <select
-          class="bg-gray-500 p-2 border itbms-page-size"
+          defaultValue="Pick a color" className="select bg-[#523F31] text-white font-semibold"
           v-model.number="pageSize"
         >
           <option :value="5">5</option>
@@ -357,19 +357,19 @@ const checkRole = (yourItem) => {
   @addToCart="checkRole"
   ></SaleItemGallery>
 
-  <div class="p-10 pt-0" v-show="pageObj.totalPages > 1">
+  <div class="p-10 pt-0 text-white" v-show="pageObj.totalPages > 1">
     <button
-      class="itbms-page-first cursor-pointer bg-gray-600 pl-5 pr-5 pt-3 pb-3"
+      class="itbms-page-first cursor-pointer bg-[#523F31] pl-5 pr-5 pt-3 pb-3 rounded-l-lg"
       @click="pageNumber = 0"
-      :class="isFirst ? 'opacity-45' : 'bg-gray-600'"
+      :class="isFirst ? 'opacity-45' : 'bg-[#523F31]'"
       :disabled="isFirst"
     >
       First
     </button>
     <button
-      class="itbms-page-prev cursor-pointer bg-gray-600 pl-5 pr-5 pt-3 pb-3"
+      class="itbms-page-prev cursor-pointer bg-[#523F31] pl-5 pr-5 pt-3 pb-3"
       @click="pageNumber = pageNumber - 1"
-      :class="isFirst ? 'opacity-45' : 'bg-gray-600'"
+      :class="isFirst ? 'opacity-45' : 'bg-[#523F31]'"
       :disabled="isFirst"
     >
       Prev
@@ -383,24 +383,24 @@ const checkRole = (yourItem) => {
       <button
         class="pl-5 pr-5 pt-3 pb-3 cursor-pointer"
         :class="
-          index - 1 === pageNumber ? 'bg-green-600 text-white' : 'bg-gray-600'
+          index - 1 === pageNumber ? 'bg-[#9D8A7C] text-white' : 'bg-[#523F31]'
         "
       >
         {{ index }}
       </button>
     </span>
     <button
-      class="itbms-page-next bg-gray-600 pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      class="itbms-page-next bg-[#523F31] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
       @click="pageNumber = pageNumber + 1"
-      :class="isLast ? 'opacity-45' : 'bg-gray-600'"
+      :class="isLast ? 'opacity-45' : 'bg-[#523F31]'"
       :disabled="isLast"
     >
       Next
     </button>
     <button
-      class="itbms-page-last bg-gray-600 pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      class="itbms-page-last rounded-r-lg bg-[#523F31] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
       @click="pageNumber = pageObj.totalPages - 1"
-      :class="isLast ? 'opacity-45' : 'bg-gray-600'"
+      :class="isLast ? 'opacity-45' : 'bg-[#523F31]'"
       :disabled="isLast"
     >
       Last
