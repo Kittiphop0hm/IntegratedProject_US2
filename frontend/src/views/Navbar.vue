@@ -148,9 +148,9 @@ const logout = async () => {
     </div>
   </nav>
 
-  <div v-show="isBurgerBar" class="w-full h-full md:hidden">
+  <div v-show="isBurgerBar" class="fixed z-[90] top-5 w-full h-full md:hidden">
     <div
-      class="flex flex-col justify-center items-center bg-[#523F31] text-white p-3"
+      class="flex flex-col justify-center items-center bg-linear-to-r from-[#2D1E17] to-[#796254] text-white p-3"
     >
       <div v-if="nickname" class="my-3 text-sm font-medium text-gray-700">
         Welcome, {{ nickname }}
@@ -160,7 +160,7 @@ const logout = async () => {
         <router-link to="/">Home</router-link>
       </div>
       <div class="my-3 hover:opacity-80">
-        <router-link to="/sale-items">SaleItem</router-link>
+        <router-link to="/sale-items">SaleItems</router-link>
       </div>
       <div class="my-3 hover:opacity-80">
         <router-link :to="{name: 'BrandManager'}">Brand</router-link>
@@ -169,21 +169,21 @@ const logout = async () => {
         <router-link to="/sale-items/list">My SaleItem</router-link>
       </div>
       <div class="my-3 hover:opacity-80">
-        <router-link :to="{name: 'OrderHistory'}"> Carts </router-link>
+        <router-link :to="{name: 'OrderHistory'}">Carts</router-link>
       </div>
-      <div class="my-3 hover:opacity-80">
+      <div v-if="!isLoggedIn" class="my-3 hover:opacity-80">
         <router-link :to="{name: 'Register'}">SignIn</router-link>
       </div>
-      <div class="my-3 hover:opacity-80">
+      <div v-if="!isLoggedIn" class="my-3 hover:opacity-80">
         <router-link :to="{name: 'Login'}">SignUp</router-link>
       </div>
 
-      <div v-if="isLoggedIn">
+      <div v-if="isLoggedIn" class="flex flex-col justify-center items-center">
         <div class="my-3 hover:opacity-80">
           <router-link :to="{ name: 'UserProfile' }">Profile</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <a @click="logout" class="cursor-pointer text-red-600">Logout</a>
+          <a @click="logout" class="cursor-pointer">Logout</a>
         </div>
       </div>
     </div>
