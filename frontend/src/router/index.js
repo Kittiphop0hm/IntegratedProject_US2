@@ -9,7 +9,7 @@ import BrandManager from "@/components/brand/BrandManager.vue";
 import RegisterAndLoginManager from "@/components/user/RegisterAndLoginManager.vue";
 import EmailVerification from "@/components/user/EmailVerification.vue";
 import UserProfileManager from "@/components/user/UserProfileManager.vue";
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 import { decodeJWT } from "@/libs/decodeJWT.js";
 const getUser = decodeJWT(accessToken);
 import { computed } from "vue";
@@ -119,7 +119,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
-  const accessToken = sessionStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("accessToken");
   const token = accessToken; // เพื่อให้ชื่อเดิมไม่ error
 
   console.log("from.name:", from.name);
@@ -147,8 +147,8 @@ router.beforeEach((to, from, next) => {
 
   // 4️⃣ ถ้ามาจากหน้า SaleItemHome แล้วไปหน้าอื่น (ยกเว้น SaleItemDetail)
   if (from.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
-    sessionStorage.removeItem("pageSize");
-    sessionStorage.removeItem("pageNumber");
+    localStorage.removeItem("pageSize");
+    localStorage.removeItem("pageNumber");
   }
 
   // ✅ ผ่านหมดทุกเงื่อนไข → ไปต่อได้เลย

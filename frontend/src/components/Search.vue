@@ -5,9 +5,9 @@ const searchKeyword = ref('');
 
 const emit = defineEmits(['search']);
 
-// โหลด search keyword จาก sessionStorage
+// โหลด search keyword จาก localStorage
 onMounted(() => {
-  const savedSearch = sessionStorage.getItem("searchKeyword");
+  const savedSearch = localStorage.getItem("searchKeyword");
   if (savedSearch) {
     searchKeyword.value = savedSearch;
   }
@@ -16,14 +16,14 @@ onMounted(() => {
 // ฟังก์ชันค้นหา
 const handleSearch = () => {
   const keyword = searchKeyword.value.trim();
-  sessionStorage.setItem("searchKeyword", keyword);
+  localStorage.setItem("searchKeyword", keyword);
   emit('search', keyword);
 };
 
 // ฟังก์ชัน Clear search
 const handleClearSearch = () => {
   searchKeyword.value = '';
-  sessionStorage.setItem("searchKeyword", '');
+  localStorage.setItem("searchKeyword", '');
   emit('search', '');
 };
 

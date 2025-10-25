@@ -11,7 +11,7 @@ console.log(route.params.orderId);
 const orderId = route.params.orderId
 const order = ref({})
 onMounted(async () => {
-    const accessToken = sessionStorage.getItem('accessToken')
+    const accessToken = localStorage.getItem.getItem.getItem('accessToken')
     order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
     console.log(order.value);
 })
