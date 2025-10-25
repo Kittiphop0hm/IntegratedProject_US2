@@ -1,6 +1,7 @@
 package com.example.backend.controllers.users;
 
 import com.example.backend.dtos.users.*;
+import com.example.backend.entities.AuthUserDetail;
 import com.example.backend.services.users.JwtService;
 import com.example.backend.services.users.UserFileService;
 import com.example.backend.services.users.UserService;
@@ -48,6 +49,15 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(id, userFormat));
     }
 
+    @PutMapping("/{id}/change-password")
+    public void changePassword(
+            @PathVariable Integer id,
+            @Valid @RequestBody ChangePasswordDto changePasswordDto,
+            Authentication authentication) {
 
+        AuthUserDetail userDetails = (AuthUserDetail) authentication.getPrincipal();
+        userService.changePassword(id, userDetails.getId(), changePasswordDto);
+
+    }
 
 }
