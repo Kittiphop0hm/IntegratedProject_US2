@@ -333,7 +333,7 @@ const checkRole = (yourItem) => {
       </button>
     </router-link>
     <div>
-      <span class="ml-2">
+      <span class="ml-2 z-0">
         <select
           defaultValue="Pick a color" className="select bg-[#523F31] text-white font-semibold"
           v-model.number="pageSize"
@@ -341,7 +341,8 @@ const checkRole = (yourItem) => {
           <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="20">20</option>
-        </select></span
+        </select>
+      </span
       >
     </div>
   </div>

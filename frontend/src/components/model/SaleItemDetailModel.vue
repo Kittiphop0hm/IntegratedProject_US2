@@ -41,27 +41,18 @@ const quantityInCart = ref(1);
 onMounted(async () => {
   try {
     if (route.params.id) {
-      // items.value = await getItems(`${import.meta.env.VITE_APP_URL}/api/files/imageSale/${route.params.id}`)
-      console.log("userStore.isSeller Test");
       if (userStore.isSeller) {
-        console.log("seller saleitemdetail model");
         items.value = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items/${
             route.params.id
           }/sellers`
         );
       } else {
-        console.log("not seller saleitemdetail model");
         items.value = await getItems(
           `${import.meta.env.VITE_APP_URL}/v2/sale-items/${route.params.id}`
         );
       }
-
-      console.log("test");
-      console.log(items.value);
       const saleItemImages = items.value.saleItemImages;
-      // console.log(saleItemImages);
-      // console.log(itemss.value.saleItemImages);
       emit("fetchImagesForUpdate", saleItemImages);
       if (saleItemImages && saleItemImages.length > 0) {
         saleItemImages.forEach((item) => {
@@ -103,6 +94,8 @@ function addQtyToParent(type) {
 
 <template>
   <Search />
+  <div class="min-h-screen flex justify-center items-center bg-white rounded-lg">
+  <div class=" rounded-2xl shadow-2xl p-6 bg-[#9D8A7C]">
   <div class="container bg-[#9D8A7C] mx-auto px-6 mt-10 mb-10 p-5 rounded-lg">
     <router-link :to="{name: 'SaleItemHome'}">
       <div class="w-20 h-15">
@@ -257,7 +250,7 @@ function addQtyToParent(type) {
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48"><mask id="ipSReduceOne0"><g fill="none" stroke-linejoin="round" stroke-width="4"><path fill="#ffffff" stroke="#ffffff" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20Z"/><path stroke="#000000" stroke-linecap="round" d="M16 24h16"/></g></mask><path fill="#ffffff" d="M0 0h48v48H0z" mask="url(#ipSReduceOne0)"/></svg>
               </slot>
             </button>
-            <button class="text-white">
+            <button class="text-white font-semibold">
               <slot name="quantityInCart">Input Your Quantity</slot>
             </button>
             <button
@@ -281,5 +274,7 @@ function addQtyToParent(type) {
         </div>
       </div>
     </div>
+  </div>
+  </div>
   </div>
 </template>
