@@ -103,14 +103,19 @@ function addQtyToParent(type) {
 
 <template>
   <Search />
-  <div class="container mx-auto px-6 mt-10 mb-10">
-    <div class="text-gray-800 bg-white bg-opacity-70 p-2 mb-4">
-      <p>
+  <div class="container bg-[#9D8A7C] mx-auto px-6 mt-10 mb-10 p-5 rounded-lg">
+    <div class="w-20 h-15">
+      <div class="w-full h-full flex justify-center items-center bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg cursor-pointer hover:opacity-80">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 17 16"><path fill="#ffffff" fill-rule="evenodd" d="m1.307 5.988l5.309-4.645c.411-.41.891-.479 1.302-.068v3.132l.229-.001c5.016 0 8.738 3.563 8.738 8.41c0 1.688-.774 1.073-1.097.484c-1.522-2.78-4.197-4.677-7.681-4.677l-.19.001v3.065c-.411.41-.941.361-1.302.068L1.306 7.474a1.052 1.052 0 0 1 .001-1.486z"/></svg>
+      </div>
+    </div>
+    <div class="w-[40%] bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg font-semibold bg-opacity-70 p-4 mb-4 mt-7">
+      <p class="text-white">
         <router-link :to="{ name: 'SaleItemHome' }">
-          <span class="itbms-home-button text-blue-600">Home</span>
+          <span class="itbms-home-button text-white hover:underline">Home</span>
         </router-link>
         &gt;
-        <span class="font-semibold">
+        <span class="font-semibold text-white">
           <slot name="path"></slot>
         </span>
       </p>
@@ -118,86 +123,105 @@ function addQtyToParent(type) {
 
     <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
       <div class="lg:w-1/2">
-        <div class="relative rounded-md p-2 bg-white">
-          <!-- <button class="absolute top-1 right-2 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-          <img :src="mainImage" alt="main image" class="w-full" />
+        <div class="w-[500px] h-[290px] flex justify-center items-center relative rounded-md p-2 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-white">
+          <img :src="!mainImage ? '/images/carbon_no-image-gray.png' : mainImage" alt="main image" class="w-50 h-50" />
         </div>
 
-        <div class="grid grid-cols-4 gap-2 mt-4">
-          <div
-            @click="clickShowImage(0)"
-            class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer"
-          >
-            <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-            <img :src="pictures[0]" alt="thumb 1" class="w-30 mx-auto" />
-          </div>
-          <div
-            @click="clickShowImage(1)"
-            class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer"
-          >
-            <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-            <img :src="pictures[1]" alt="thumb 2" class="w-30 mx-auto" />
-          </div>
-          <div
-            @click="clickShowImage(2)"
-            class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer"
-          >
-            <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-            <img :src="pictures[2]" alt="thumb 3" class="w-30 mx-auto" />
-          </div>
-          <div
-            @click="clickShowImage(3)"
-            class="relative border border-gray-300 rounded p-1 hover:border-gray-400 cursor-pointer"
-          >
-            <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-            <img :src="pictures[3]" alt="thumb 4" class="w-30 mx-auto" />
+        <div class="w-[500px] flex justify-center items-center">
+          <div class="w-full text-center grid grid-cols-4 gap-2 mt-4">
+            <div
+              @click="clickShowImage(0)"
+              class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
+            >
+              <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
+              <img :src="!pictures[0] ? '/images/carbon_no-image-gray.png' : pictures[0]" alt="thumb 1" class="w-[74px] h-[74px] mx-auto" />
+            </div>
+            <div
+              @click="clickShowImage(1)"
+              class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
+            >
+              <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
+              <img :src="!pictures[1] ? '/images/carbon_no-image-gray.png' : pictures[1]" alt="thumb 2" class="w-[74px] h-[74px] mx-auto" />
+            </div>
+            <div
+              @click="clickShowImage(2)"
+              class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
+            >
+              <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
+              <img :src="!pictures[2] ? '/images/carbon_no-image-gray.png' : pictures[2]" alt="thumb 3" class="w-[74px] h-[74px] mx-auto" />
+            </div>
+            <div
+              @click="clickShowImage(3)"
+              class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
+            >
+              <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
+              <img :src="!pictures[4] ? '/images/carbon_no-image-gray.png' : pictures[4]" alt="thumb 4" class="w-[74px] h-[74px] mx-auto" />
+            </div>
           </div>
         </div>
       </div>
 
       <div class="lg:w-1/2 mt-8 lg:mt-0">
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Brand:
-          <slot name="brand">Input Brand Name</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="brand">Input Brand Name</slot>
+          </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Model:
-          <slot name="model">input Model</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="model">input Model</slot>
+          </span>
         </p>
-        <p class="text-lg mt-2">
-          <slot name="price">Input Price</slot>
+        <p class="text-lg mt-2 text-white font-semibold">
+          <span class="text-[#2D1E17]">
+            <slot name="price">Input Price</slot>
+          </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Description: <br />
-          <slot name="desc">Input Description</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="desc">Input Description</slot>
+          </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           RAM:
-          <slot name="ram">Input Ram and Unit</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="ram">Input Ram and Unit</slot>
+        </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Screen size:
-          <slot name="screen">Input Screen Size</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="screen">Input Screen Size</slot>
+        </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Storage:
-          <slot name="storage">Input Storage</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="storage">Input Storage</slot>
+        </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Color:
-          <slot name="color">Input Color</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="color">Input Color</slot>
+        </span>
         </p>
-        <p class="text-lg mt-2">
+        <p class="text-lg mt-2 text-white font-semibold">
           Available quantity:
-          <slot name="quantity">Input Quantity</slot>
+          <span class="text-[#2D1E17]">
+            <slot name="quantity">Input Quantity</slot>
+          </span>
         </p>
         <div class="gap-4 mt-3 flex">
           <div class="gap-4 flex" v-if="userStore.isSeller">
             <button
-              class="rounded-md text-white"
+              class="px-[20px] py-[10px] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-md text-white font-semibold"
               :class="{
-                'bg-blue-500': isActive && isUpdated,
-                'bg-gray-500 opacity-75 cursor-not-allowed':
+                'bg-[#796254]': isActive && isUpdated,
+                'bg-[#796254] opacity-75 cursor-not-allowed':
                   !isActive || !isUpdated,
               }"
               :disabled="!isActive || !isUpdated"
@@ -205,7 +229,7 @@ function addQtyToParent(type) {
               <slot name="button1">Input Name Button1</slot>
             </button>
             <button
-              class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 cursor-pointer"
+              class="px-[20px] py-[10px] bg-[#8B3A3A] text-white font-semibold rounded-md hover:opacity-80 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] cursor-pointer"
             >
               <slot name="button2">Input Name Button2</slot>
             </button>

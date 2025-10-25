@@ -175,14 +175,14 @@ const checkRole = () => {
     <template #button1>
       <router-link :to="{ name: 'SaleItemEdit' }">
         <span
-          class="itbms-edit-button text-white bg-blue-500 hover:bg-blue-700 px-7 py-3 rounded-xl"
+          class="itbms-edit-button"
         >
           Edit
         </span>
       </router-link>
     </template>
     <template #button2>
-      <span @click="isDelete = !isDelete" class="itbms-delete-button text-white"
+      <span @click="isDelete = !isDelete" class="itbms-delete-button"
         >Delete</span
       >
     </template>
