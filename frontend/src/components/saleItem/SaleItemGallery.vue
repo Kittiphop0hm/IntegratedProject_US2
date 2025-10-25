@@ -35,10 +35,17 @@ function checkRole(yourItem) {
         :to="{ name: 'SaleItemDetail', params: { id: yourItem.id } }"
         class="block"
       >
-        <div class="w-full itbms-row relative bg-[#9D8A7C] inset-shadow-sm inset-shadow-black rounded-xl shadow hover:-translate-y-1 active:translate-y-0 p-4 transition duration-300 ease-in-out cursor-pointer">
+        <div class="w-full itbms-row relative bg-white  rounded-xl shadow-sm hover:-translate-y-1 active:translate-y-0 p-6 transition duration-300 ease-in-out cursor-pointer"
+        style="
+        box-shadow:
+          inset -6px 6px 6.5px rgba(45, 30, 10, 0.04),
+          0 4px 4px rgba(82, 63, 49, 0.1),
+          0 8px 12px rgba(0, 0, 0, 0.1);
+        "
+        >
           <div class="w-full flex justify-center items-center">
           <img
-            src="/images/carbon_no-image.png"
+            src="/images/carbon_no-image-gray.png"
             alt="phone image"
             class="w-25 h-25 object-cover rounded-md mb-4"
           />

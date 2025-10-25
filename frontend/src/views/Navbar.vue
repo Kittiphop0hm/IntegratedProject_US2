@@ -46,7 +46,7 @@ const logout = async () => {
 <template>
   <nav class="w-full max-h-[90px]">
     <div
-      class="w-full h-[90px] bg-[#523F31] text-white px-10 flex justify-between items-center"
+      class="fixed top-0 w-full h-[90px] bg-[#523F31] text-white px-10 flex justify-between items-center"
     >
       <router-link to="/">
         <h1 class="font-bold text-xl cursor-pointer hover:opacity-70">

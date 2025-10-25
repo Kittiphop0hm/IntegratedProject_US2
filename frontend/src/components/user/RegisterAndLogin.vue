@@ -1,7 +1,9 @@
 <script setup>
 import { computed, ref, watchEffect } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
+import Navbar from "@/views/Navbar.vue";
+
 const emits = defineEmits(["register" , "login"]);
 const route = useRoute();
 const pathName = ref("");
@@ -189,21 +191,22 @@ const enableLoginButton = computed(() => {
 </script>
 
 <template>
+  <Navbar />
   <div
     v-if="pathName === 'Register'"
-    class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-6"
+    class="min-h-screen bg-white flex items-center justify-center p-6"
   >
-    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+    <div class="bg-[#796254] text-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-2">Create Account</h2>
-        <p class="text-gray-600 text-[16px]">
+        <h2 class="text-3xl font-bold mb-2">Create Account</h2>
+        <p class="text-[16px]">
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
 
       <form class="space-y-6">
         <div class="space-y-1">
-          <label for="nickname" class="block text-sm font-medium text-gray-700"
+          <label for="nickname" class="block text-sm font-medium"
             >Nickname</label
           >
           <input
@@ -211,7 +214,7 @@ const enableLoginButton = computed(() => {
             id="nickname"
             type="text"
             placeholder="Enter your nickname"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
+            class="w-full px-4 py-3 bg-white rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
           />
         </div>
 
@@ -272,7 +275,7 @@ const enableLoginButton = computed(() => {
             v-model.trim="userFormat.role"
             @change="inputForUserRole"
             id="UserType"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 bg-white cursor-pointer hover:border-gray-400"
+            class="select w-full h-full px-4 py-3 rounded-lg focus:ring-2 transition-colors duration-200 bg-white cursor-pointer hover:border-gray-400"
           >
             <option disabled selected value="" class="text-gray-400">
               Select your types

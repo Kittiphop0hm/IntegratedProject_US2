@@ -359,17 +359,17 @@ const checkRole = (yourItem) => {
 
   <div class="p-10 pt-0 text-white" v-show="pageObj.totalPages > 1">
     <button
-      class="itbms-page-first cursor-pointer bg-[#523F31] pl-5 pr-5 pt-3 pb-3 rounded-l-lg"
+      class="itbms-page-first cursor-pointer bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3 rounded-l-lg"
       @click="pageNumber = 0"
-      :class="isFirst ? 'opacity-45' : 'bg-[#523F31]'"
+      :class="isFirst ? 'opacity-60' : 'bg-[#796254]'"
       :disabled="isFirst"
     >
       First
     </button>
     <button
-      class="itbms-page-prev cursor-pointer bg-[#523F31] pl-5 pr-5 pt-3 pb-3"
+      class="itbms-page-prev cursor-pointer bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3"
       @click="pageNumber = pageNumber - 1"
-      :class="isFirst ? 'opacity-45' : 'bg-[#523F31]'"
+      :class="isFirst ? 'opacity-60' : 'bg-[#796254]'"
       :disabled="isFirst"
     >
       Prev
@@ -381,26 +381,26 @@ const checkRole = (yourItem) => {
       :class="`itbms-page-${index - 1} `"
     >
       <button
-        class="pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+        class="pl-5 pr-5 pt-3 pb-3 inset-shadow-xs shadow-black font-semibold shadow-[0_4px_6px_rgba(82,63,90,1)] cursor-pointer"
         :class="
-          index - 1 === pageNumber ? 'bg-[#9D8A7C] text-white' : 'bg-[#523F31]'
+          index - 1 === pageNumber ? 'bg-[#523F31] text-white' : 'bg-[#796254]'
         "
       >
         {{ index }}
       </button>
     </span>
     <button
-      class="itbms-page-next bg-[#523F31] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      class="itbms-page-next bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
       @click="pageNumber = pageNumber + 1"
-      :class="isLast ? 'opacity-45' : 'bg-[#523F31]'"
+      :class="isLast ? 'opacity-60' : 'bg-[#523F31]'"
       :disabled="isLast"
     >
       Next
     </button>
     <button
-      class="itbms-page-last rounded-r-lg bg-[#523F31] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      class="itbms-page-last rounded-r-lg bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
       @click="pageNumber = pageObj.totalPages - 1"
-      :class="isLast ? 'opacity-45' : 'bg-[#523F31]'"
+      :class="isLast ? 'opacity-60' : 'bg-[#523F31]'"
       :disabled="isLast"
     >
       Last
