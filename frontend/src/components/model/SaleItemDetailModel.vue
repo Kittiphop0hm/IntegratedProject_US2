@@ -104,11 +104,13 @@ function addQtyToParent(type) {
 <template>
   <Search />
   <div class="container bg-[#9D8A7C] mx-auto px-6 mt-10 mb-10 p-5 rounded-lg">
-    <div class="w-20 h-15">
-      <div class="w-full h-full flex justify-center items-center bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg cursor-pointer hover:opacity-80">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 17 16"><path fill="#ffffff" fill-rule="evenodd" d="m1.307 5.988l5.309-4.645c.411-.41.891-.479 1.302-.068v3.132l.229-.001c5.016 0 8.738 3.563 8.738 8.41c0 1.688-.774 1.073-1.097.484c-1.522-2.78-4.197-4.677-7.681-4.677l-.19.001v3.065c-.411.41-.941.361-1.302.068L1.306 7.474a1.052 1.052 0 0 1 .001-1.486z"/></svg>
+    <router-link :to="{name: 'SaleItemHome'}">
+      <div class="w-20 h-15">
+        <div class="w-full h-full flex justify-center items-center bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg cursor-pointer hover:opacity-80">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 17 16"><path fill="#ffffff" fill-rule="evenodd" d="m1.307 5.988l5.309-4.645c.411-.41.891-.479 1.302-.068v3.132l.229-.001c5.016 0 8.738 3.563 8.738 8.41c0 1.688-.774 1.073-1.097.484c-1.522-2.78-4.197-4.677-7.681-4.677l-.19.001v3.065c-.411.41-.941.361-1.302.068L1.306 7.474a1.052 1.052 0 0 1 .001-1.486z"/></svg>
+        </div>
       </div>
-    </div>
+    </router-link>
     <div class="w-[40%] bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg font-semibold bg-opacity-70 p-4 mb-4 mt-7">
       <p class="text-white">
         <router-link :to="{ name: 'SaleItemHome' }">
@@ -244,28 +246,32 @@ function addQtyToParent(type) {
           </button>
           </div> -->
           <div
-            class="flex gap-4 border rounded-lg"
+            class="flex gap-4 rounded-lg bg-[#796254] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)]"
             v-if="route.name === 'SaleItemDetail'"
           >
             <button
               @click="addQtyToParent('decrease')"
-              class="py-2 px-4 bg-red-400 rounded-lg"
+              class="py-2 px-4 rounded-lg cursor-pointer hover:opacity-80"
             >
-              <slot name="buttonMinus">-</slot>
+              <slot name="buttonMinus">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 48 48"><mask id="ipSReduceOne0"><g fill="none" stroke-linejoin="round" stroke-width="4"><path fill="#ffffff" stroke="#ffffff" d="M24 44c11.046 0 20-8.954 20-20S35.046 4 24 4S4 12.954 4 24s8.954 20 20 20Z"/><path stroke="#000000" stroke-linecap="round" d="M16 24h16"/></g></mask><path fill="#ffffff" d="M0 0h48v48H0z" mask="url(#ipSReduceOne0)"/></svg>
+              </slot>
             </button>
-            <button>
+            <button class="text-white">
               <slot name="quantityInCart">Input Your Quantity</slot>
             </button>
             <button
               @click="addQtyToParent('increase')"
-              class="py-2 px-4 bg-amber-600 rounded-lg"
+              class="py-2 px-4 rounded-lg cursor-pointer hover:opacity-80"
             >
-              <slot name="buttonPlus">+</slot>
+              <slot name="buttonPlus">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"><path fill="#ffffff" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+              </slot>
             </button>
           </div>
           <button
             v-if="route.name === 'SaleItemDetail'"
-            class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition transform hover:-translate-y-1 active:translate-y-0"
+            class="w-[104px] h-[44px] flex justify-center items-center bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] hover:opacity-80 cursor-pointer text-white py-[10px] px-[20px] rounded-lg hover:shadow-lg transition transform hover:-translate-y-1 active:translate-y-0"
           >
             <slot name="button3">Input Name Button3</slot>
           </button>
