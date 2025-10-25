@@ -7,20 +7,20 @@ import { useRouter } from 'vue-router';
  
 const router = useRouter()
 const orders = ref([])
-const pageSession = sessionStorage.getItem('pageNumber')
-const sizeSession = sessionStorage.getItem('pageSize')
+const pageSession = localStorage.getItem('pageNumber')
+const sizeSession = localStorage.getItem('pageSize')
 const page = ref(0)
 const size = ref()
 const userRole = ref('')
  
 watch([page, size], () => {
-    sessionStorage.setItem('pageNumber', page.value)
-    sessionStorage.setItem('pageSize', size.value)
+    localStorage.setItem('pageNumber', page.value)
+    localStorage.setItem('pageSize', size.value)
     fetchData()
 })
  
 const fetchData = async () => {
-    const accessToken = sessionStorage.getItem("accessToken")
+    const accessToken = localStorage.getItem("accessToken")
     if (!accessToken) {
         router.push({name: "Login"})
         return

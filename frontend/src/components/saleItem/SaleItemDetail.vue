@@ -11,7 +11,7 @@ import Navbar from "../../views/Navbar.vue";
 import SaleItemDetailModel from "../model/SaleItemDetailModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 const getUser = decodeJWT(accessToken);
 import { useUserStore } from "@/stores/users";
 const userStore = useUserStore();

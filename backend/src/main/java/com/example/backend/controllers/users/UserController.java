@@ -50,14 +50,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}/change-password")
-    public void changePassword(
+    public ResponseEntity<Void> changePassword(
             @PathVariable Integer id,
             @Valid @RequestBody ChangePasswordDto changePasswordDto,
             Authentication authentication) {
 
         AuthUserDetail userDetails = (AuthUserDetail) authentication.getPrincipal();
         userService.changePassword(id, userDetails.getId(), changePasswordDto);
-
+        return ResponseEntity.noContent().build();
     }
 
 }

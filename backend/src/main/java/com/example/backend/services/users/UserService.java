@@ -242,75 +242,58 @@ public class UserService {
     }
     @Transactional
     public void changePassword(Integer targetUserId, Integer currentUserId, ChangePasswordDto request) {
-        // ตรวจสอบว่า user ที่ login สามารถเปลี่ยนรหัสผ่านของตัวเองเท่านั้น
         if (!currentUserId.equals(targetUserId)) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "You can only change your own password");
         }
 
-        // ดึงข้อมูล user จาก database
         User user = repository.findById(targetUserId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found"));
 
-        // ตรวจสอบว่า user active หรือไม่
         if (!user.getIsActive()) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "User account is not active");
         }
 
-        // ตรวจสอบรหัสผ่านเก่าว่าถูกต้องหรือไม่
         if (!checkPassword(request.getCurrentPassword(), user.getPassword())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Current password is incorrect");
         }
 
-        // ตรวจสอบว่ารหัสผ่านใหม่ตรงกับการยืนยันหรือไม่
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "New password and confirm password do not match");
         }
 
-        // ตรวจสอบว่ารหัสผ่านใหม่ไม่เหมือนรหัสผ่านเก่า
         if (checkPassword(request.getNewPassword(), user.getPassword())) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "New password must be different from current password");
         }
 
-        // Validate ความแข็งแรงของรหัสผ่านใหม่
         validatePasswordStrength(request.getNewPassword());
 
-        // เข้ารหัสและบันทึกรหัสผ่านใหม่
         user.setPassword(encodePassword(request.getNewPassword()));
         repository.save(user);
     }
 
     private void validatePasswordStrength(String password) {
-        // ตรวจสอบความยาวอย่างน้อย 8 ตัวอักษร
         if (password.length() < 8) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Password must be at least 8 characters");
         }
-
-        // ตรวจสอบมีตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว
         if (!password.matches(".*[A-Z].*")) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Password must contain at least one uppercase letter");
         }
-
-        // ตรวจสอบมีตัวพิมพ์เล็กอย่างน้อย 1 ตัว
         if (!password.matches(".*[a-z].*")) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Password must contain at least one lowercase letter");
         }
-
-        // ตรวจสอบมีตัวเลขอย่างน้อย 1 ตัว
         if (!password.matches(".*\\d.*")) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Password must contain at least one number");
         }
-
-        // ตรวจสอบมีอักขระพิเศษอย่างน้อย 1 ตัว
         if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Password must contain at least one special character");

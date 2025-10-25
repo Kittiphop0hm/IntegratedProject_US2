@@ -2,7 +2,8 @@
 import { computed, ref, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
-const emits = defineEmits(["register" , "login"]);
+
+const emits = defineEmits(["register", "login"]);
 const route = useRoute();
 const pathName = ref("");
 const props = defineProps({
@@ -25,7 +26,6 @@ const props = defineProps({
   }
 });
 
-
 watchEffect(() => {
   if (route.name === "Register") {
     pathName.value = "Register";
@@ -33,7 +33,6 @@ watchEffect(() => {
     pathName.value = "Login";
   }
 });
-
 
 const validateErrorEmail = ref("");
 const validateEmail = (value) => {
@@ -44,16 +43,43 @@ const validateEmail = (value) => {
   }
 };
 
+
 const validateErrorPassword = ref("");
 const validatePassword = (value) => {
-  const regex =
-    /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%&*?./_])[a-zA-Z0-9!@#$%&*?./_]{8,50}$/;
-  if (!value || regex.test(value)) {
+  if (!value) {
     validateErrorPassword.value = "";
-  } else {
-    validateErrorPassword.value =
-      "Least 8 characters and at least one uppercase, lowercase, number, and special character.";
+    return;
   }
+  
+  if (value.length < 8) {
+    validateErrorPassword.value = "Password must be at least 8 characters";
+    return;
+  }
+  
+  if (!/[A-Z]/.test(value)) {
+    validateErrorPassword.value = "Password must contain at least one uppercase letter";
+    return;
+  }
+  
+
+  if (!/[a-z]/.test(value)) {
+    validateErrorPassword.value = "Password must contain at least one lowercase letter";
+    return;
+  }
+  
+
+  if (!/\d/.test(value)) {
+    validateErrorPassword.value = "Password must contain at least one number";
+    return;
+  }
+  
+
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(value)) {
+    validateErrorPassword.value = "Password must contain at least one special character";
+    return;
+  }
+  
+  validateErrorPassword.value = "";
 };
 
 const validateErrorFullname = ref("");
@@ -84,11 +110,13 @@ const loginFormat = ref({
   email: "",
   password: "",
 });
+
 const isSeller = ref(false);
 const inputForUserRole = () =>
   userFormat.value.role === "SELLER"
     ? (isSeller.value = true)
     : (isSeller.value = false);
+
 const enableSaveButton = computed(() => {
   const isEmptyField =
     userFormat.value.nickname.length > 0 &&
@@ -106,12 +134,11 @@ const enableSaveButton = computed(() => {
 });
 
 const enableSaveButtonForSeller = computed(() => {
+  if(userFormat.value.role !== "SELLER") {
+    return enableSaveButton.value
+  }
 
-    if(userFormat.value.role !== "SELLER") {
-        return enableSaveButton.value
-    }
-
-    const isEmptyField =
+  const isEmptyField =
     userFormat.value.nickname.length > 0 &&
     userFormat.value.email.length > 0 &&
     userFormat.value.password.length > 0 &&
@@ -255,6 +282,7 @@ const enableLoginButton = computed(() => {
             id="password"
             :type="isShowPassword ? 'text' : 'password'"
             placeholder="Enter your password"
+            maxlength="50"
             class="itbms-password w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
           />
           <div class="h-full flex items-center my-1">
@@ -503,21 +531,21 @@ const enableLoginButton = computed(() => {
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
-    <div v-show="props.is401 || props.is400 || props.is403" class="itbms-message mb-3">
-    <AlertMessageModel :isSuccess="false">
-      <template #message>
-        <p class="text-red-400">
-          {{ 
-            props.is403 
-              ? 'You need to activate your account before signing in.' 
-              : props.is401 || props.is400 
-                ? 'Email or Password is Incorrect.' 
-                : 'There is a problem. Please try again later.' 
-          }}
-        </p>
-      </template>
-    </AlertMessageModel>
-  </div>
+      <div v-show="props.is401 || props.is400 || props.is403" class="itbms-message mb-3">
+        <AlertMessageModel :isSuccess="false">
+          <template #message>
+            <p class="text-red-400">
+              {{ 
+                props.is403 
+                  ? 'You need to activate your account before signing in.' 
+                  : props.is401 || props.is400 
+                    ? 'Email or Password is Incorrect.' 
+                    : 'There is a problem. Please try again later.' 
+              }}
+            </p>
+          </template>
+        </AlertMessageModel>
+      </div>
 
       <form class="space-y-6">
         <div class="space-y-1">
@@ -531,7 +559,7 @@ const enableLoginButton = computed(() => {
             placeholder="Enter your email"
             class="itbms-email w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 placeholder-gray-400 hover:border-gray-400"
             maxlength="50"
-            />
+          />
         </div>
 
         <div class="space-y-1">
@@ -540,10 +568,9 @@ const enableLoginButton = computed(() => {
           >
           <input
             v-model="loginFormat.password"
-            @blur="validatePassword(userFormat.password)"
             id="password"
             :type="isShowPassword ? 'text' : 'password'"
-            maxlength="14"
+            maxlength="50"
             placeholder="Enter your password"
             class="itbms-password w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 transition-colors duration-200 hover:border-gray-400 placeholder-gray-400"
           />
@@ -564,8 +591,8 @@ const enableLoginButton = computed(() => {
                 ? 'itbms-signin-button w-full mx-1 flex-1 bg-blue-600 cursor-pointer hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg max-md:my-1'
                 : 'itbms-signin-button w-full mx-1 flex-1 bg-gray-600 cursor-no-drop text-white font-semibold py-3 px-6 rounded-lg shadow-lg max-md:my-1'
             "
-           @click="$emit('login',$event, loginFormat)"
-            >
+            @click="$emit('login',$event, loginFormat)"
+          >
             Submit
           </button>
           <router-link

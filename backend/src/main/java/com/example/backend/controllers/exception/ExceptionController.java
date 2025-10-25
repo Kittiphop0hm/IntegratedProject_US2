@@ -36,14 +36,12 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(myErrorResponse);
     }
 
-    //✅ เพิ่ม method นี้
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<MyErrorResponse> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
         MyErrorResponse myErrorResponse = new MyErrorResponse(ex.getStatusCode().value(), ex.getReason(), request.getRequestURI());
         return ResponseEntity.status(ex.getStatusCode()).body(myErrorResponse);
     }
 
-    // ✅ เพิ่ม method นี้ (optional แต่แนะนำ)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MyErrorResponse> handleGlobalException(Exception ex, HttpServletRequest request) {
         MyErrorResponse myErrorResponse = new MyErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An unexpected error occurred: " + ex.getMessage(), request.getRequestURI());
