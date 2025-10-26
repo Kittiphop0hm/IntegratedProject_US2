@@ -164,6 +164,7 @@ function changeFormattedObject() {
         ? "CANCELLED"
         : "COMPLETED",
       // ...seller,
+      isNewOrder: true,
       orderItems: seller.items
         .filter((item) => item.checked)
         .map((item) => (
