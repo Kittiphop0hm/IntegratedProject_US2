@@ -106,31 +106,33 @@ public class SaleItemService_v2 {
     public ResponseSaleItemsDto updateProduct(Integer id, SaleItemWithImageInfo data) {
         saleItemServiceV1.updateSaleItem(id,data.getSaleItem());
         List<SaleItemImageRequest>imageInfos = data.getImageInfos();
-        imageInfos.forEach(
-                imageInfo -> {
-                    switch (imageInfo.getStatus()) {
-                        case "ONLINE":
-                            break;
-                        case "DELETE":
-                            fileService.removeFile(imageInfo.getFileName());
-                            break;
-                        case "MOVE":
+        if(data.getImageInfos() != null) {
+            imageInfos.forEach(
+                    imageInfo -> {
+                        switch (imageInfo.getStatus()) {
+                            case "ONLINE":
+                                break;
+                            case "DELETE":
+                                fileService.removeFile(imageInfo.getFileName());
+                                break;
+                            case "MOVE":
 //                            String originalName = StringUtils.cleanPath(imageInfo.getImageFile().getOriginalFilename());
 //                            String extension = originalName.substring(originalName.lastIndexOf("."));
 //                            String newName = imageInfo.getOrder() + extension;
-                            Picture pic = pictureRepository.findPictureByFileName(imageInfo.getFileName());
+                                Picture pic = pictureRepository.findPictureByFileName(imageInfo.getFileName());
 //                            fileService.renameFile(imageInfo.getFileName(), newName);
-                            pic.setImageViewOrder(imageInfo.getOrder());
+                                pic.setImageViewOrder(imageInfo.getOrder());
 //                            pic.setFileName(newName);
-                            pictureRepository.save(pic);
-                            break;
-                        case "NEW":
-                            fileService.store(imageInfo.getImageFile(), id , imageInfo.getOrder());
-                            break;
+                                pictureRepository.save(pic);
+                                break;
+                            case "NEW":
+                                fileService.store(imageInfo.getImageFile(), id , imageInfo.getOrder());
+                                break;
+                        }
                     }
-                }
 
-        );
+            );
+        }
 //            imageInfos.forEach(
 //                    imageInfo -> {
 //                        Picture picCheck  = pictureRepository.findBySalesIdAndImageViewOrder(id, imageInfo.getOrder());
