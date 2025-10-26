@@ -167,17 +167,11 @@ const cancelDelete = () => {
     </AlertMessageModel>
   </div>
 
-  <div class="pt-5 px-10">
+  <div class="pt-5 px-10 mt-10">
     <div class="flex items-center">
-      <router-link
-        to="/sale-items/list"
-        class="itbms-item-list flex items-center mr-2 text-blue-500 hover:text-blue-300"
-      >
-        Sale item List
-      </router-link>
       <router-link :to="{ name: 'BrandAdd' }" class="flex items-center">
         <button
-          class="itbms-add-button ml-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 cursor-pointer"
+          class="itbms-add-button px-4 py-2 bg-[#523F31] text-white rounded-md hover:opacity-80 cursor-pointer"
         >
           Add Brand
         </button>

@@ -24,7 +24,7 @@ public class SaleItemController_v1 {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<GetSaleItemDto> getSaleItemById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.findById(id));
     }

@@ -17,8 +17,8 @@ const props = defineProps({
   <div class="px-10">
     <ListTableModel :items="brands">
       <template #listItem="{ yourItem }">
-        <td class="border px-2 py-1 itbms-id">{{ yourItem.id ?? "-" }}</td>
-        <td class="border px-2 py-1 itbms-name">
+        <td class="text-center border px-2 py-1 itbms-id font-semibold">{{ yourItem.id ?? "-" }}</td>
+        <td class="text-center border px-2 py-1 itbms-name font-semibold">
           {{ yourItem.name ?? "-" }}
         </td>
       </template>
@@ -26,7 +26,7 @@ const props = defineProps({
       <template #action="{ yourItem }">
         <div class="w-full py-2 flex justify-center">
           <router-link :to="{ name: 'BrandEdit', params: { id: yourItem.id } }">
-            <button class="itbms-edit-button btn btn-info mr-2">
+            <button class="itbms-edit-button btn border border-[#523F31] hover:bg-[#523F31] text-[#523F31] hover:text-white mr-2">
               <svg
                 class="fill-current"
                 xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +42,7 @@ const props = defineProps({
             </button>
           </router-link>
           <button
-            class="btn btn-error ml-2 itbms-delete-button"
+            class="btn border border-[#796254] hover:bg-[#796254] text-[#796254] hover:text-white ml-2 itbms-delete-button"
             @click="$emit('deleteProduct',yourItem)"
           >
           <!-- @click="showDeleteConfirm(yourItem)" -->
@@ -62,21 +62,5 @@ const props = defineProps({
         </div>
       </template>
     </ListTableModel>
-    
-    <!-- <DeletePopupModel
-      v-if="confirmDelete"
-      @cancel-delete="cancelDelete"
-      @delete-sale-item="deleteBrand"
-    >
-      <template #message>
-        <span class="itbms-message font-semibold">
-          Do you want to delete {{ selectedBrandName }} brand?
-        </span>
-      </template>
-    </DeletePopupModel> -->
-
-
-
-
   </div>
 </template>

@@ -6,7 +6,7 @@ import { useCartStore } from "@/stores/carts.js";
 import { useUserStore } from "@/stores/users";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import DeletePopupModel from "../model/DeletePopupModel.vue";
-import { addItemWithToken } from "../../libs/fetchUtil.js";
+import { addItemWithToken, getItemById } from "../../libs/fetchUtil.js";
 import { decodeJWT } from "@/libs/decodeJWT";
 import router from "@/router";
 const userStore = useUserStore();
@@ -128,7 +128,6 @@ function changeQty(item, value) {
 
 const isDelete = ref(false);
 const cancelDelete = () => {
-  // cartStore.cartQuantity += 1;
   isDelete.value = false;
 };
 
@@ -145,9 +144,24 @@ const deleteItem = (itemDelete) => {
   isDelete.value = false;
 };
 
-function changeFormattedObject() {
+async function changeFormattedObject() {
   console.log("Change Formatted Object");
   console.log(arrayCartItems.value);
+  for(const seller of arrayCartItems.value) {
+    console.log(seller.sellerName);
+    for(const item of seller.items) {
+      console.log("Checking item: ", item.saleItemId, item.model);
+      console.log("typeof saleItemId:" + typeof item.saleItemId);
+      const data = await getItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.saleItemId)
+      console.log("Qty in stock: ", item.qtyInstock);
+      console.log("Data from API: ", data);
+      console.log(data)
+      if(data !== item.qtyInstock) { 
+        item.qtyInstock = data.quantity;
+      }
+      console.log("Updated Qty in stock: ", item.qtyInstock);
+    }
+  }
   const orderData = arrayCartItems.value
     .filter(
       (seller) => seller.checked || seller.items.some((item) => item.checked)
@@ -158,13 +172,13 @@ function changeFormattedObject() {
       orderDate: new Date().toISOString(),
       shippingAddress: address.value,
       orderNote: note.value,
-      isNewOrder: true,
       orderStatus: seller.items
         .filter((item) => item.checked)
         .some((item) => item.quantity > item.qtyInstock)
         ? "CANCELLED"
         : "COMPLETED",
       // ...seller,
+      isNewOrder: true,
       orderItems: seller.items
         .filter((item) => item.checked)
         .map((item) => (
@@ -180,7 +194,7 @@ function changeFormattedObject() {
 }
 
 async function placeOrder() {
-  const orderData = changeFormattedObject();
+  const orderData = await changeFormattedObject();
   const decode = decodeJWT(accessToken);
   console.log(decode);
   

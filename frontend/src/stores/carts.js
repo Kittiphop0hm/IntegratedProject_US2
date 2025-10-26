@@ -283,6 +283,7 @@ export const useCartStore = defineStore(
       cartQuantity.value = 0;
       cartObj.value = [];
     }
+    
 
     return {
       cartQuantity,
