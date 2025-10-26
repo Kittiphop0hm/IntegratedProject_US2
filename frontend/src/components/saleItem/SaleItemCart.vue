@@ -235,6 +235,7 @@ async function placeOrder() {
   <Navbar />
   <Search />
 
+  <!-- Popup ลบสินค้า -->
   <div>
     <DeletePopupModel
       v-if="isDelete"
@@ -249,23 +250,29 @@ async function placeOrder() {
     </DeletePopupModel>
   </div>
 
+  <!-- Popup แจ้งเตือน -->
   <div v-show="isShowAlertMessageModel" class="container my-5">
     <AlertMessageModel :isWarning="isWarning" :isSuccess="isSuccess">
       <template #message>
-        <p v-show="isSuccess" class="text-[#796254] font-semibold">
-          Your order has been successfully <span class="text-[#9D8A7C]">processed</span>
+        <p v-show="isSuccess" class="text-[#796254] font-semibold text-center">
+          Your order has been successfully
+          <span class="text-[#9D8A7C]">processed</span>
         </p>
-        <p v-show="isWarning" class="text-red-500 font-semibold">
+        <p v-show="isWarning" class="text-red-500 font-semibold text-center">
           {{ messageAlert }}
         </p>
       </template>
     </AlertMessageModel>
   </div>
 
-  <div class="container flex gap-6 ">
+  <!-- Cart Layout -->
+  <div class="container flex flex-col lg:flex-row gap-6 px-4 lg:px-0 mb-10">
     <!-- Cart Items -->
-    <div class="w-3/5 border border-[#796254] rounded-lg p-6 bg-[#ebe8e8]">
-      <h1 class="text-2xl font-bold text-[#523F31] mb-4">Shopping Cart</h1>
+    <div class="w-full lg:w-3/5 border border-[#796254] rounded-lg p-4 md:p-6 bg-[#ebe8e8]">
+      <h1 class="text-xl md:text-2xl font-bold text-[#523F31] mb-4 text-center md:text-left">
+        Shopping Cart
+      </h1>
+
       <div class="flex items-center mb-4 gap-2">
         <input
           type="checkbox"
@@ -273,7 +280,7 @@ async function placeOrder() {
           @change="checkSelectAll"
           class="w-5 h-5 accent-[#9D8A7C]"
         />
-        <span class="text-[#523F31] font-semibold">Select All</span>
+        <span class="text-[#523F31] font-semibold text-sm md:text-base">Select All</span>
       </div>
 
       <div v-for="(obj, index) in arrayCartItems" :key="index" class="mb-6">
@@ -284,45 +291,52 @@ async function placeOrder() {
             @change="checkSeller(obj)"
             class="w-5 h-5 accent-[#9D8A7C]"
           />
-          <span class="font-semibold text-[#523F31]">{{ obj.sellerName }}</span>
+          <span class="font-semibold text-[#523F31] text-sm md:text-base">{{ obj.sellerName }}</span>
         </div>
 
+        <!-- แต่ละสินค้า -->
         <div
-          v-for="(item, index) in obj.items"
-          :key="index"
-          class="flex items-center gap-3 border border-[#796254] p-3 rounded-lg mb-3 bg-white"
+          v-for="(item, idx) in obj.items"
+          :key="idx"
+          class="flex flex-col sm:flex-row items-center sm:items-start gap-3 border border-[#796254] p-3 rounded-lg mb-3 bg-white"
         >
-          <input
-            type="checkbox"
-            v-model="item.checked"
-            @change="checkItem(obj)"
-            class="w-5 h-5 accent-[#9D8A7C]"
-          />
-          <img
-            src="/images/iPhone14ProMax.jpg"
-            alt="phone image"
-            class="w-24 h-24 object-cover rounded-md"
-          />
-          <div class="flex-1 text-[#523F31] font-medium">
-            {{ item.brandName }} {{ item.model }} 
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <input
+              type="checkbox"
+              v-model="item.checked"
+              @change="checkItem(obj)"
+              class="w-5 h-5 accent-[#9D8A7C]"
+            />
+            <img
+              src="/images/iPhone14ProMax.jpg"
+              alt="phone image"
+              class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
+            />
+          </div>
+
+          <div class="flex-1 text-[#523F31] font-medium text-center sm:text-left">
+            {{ item.brandName }} {{ item.model }}
             ({{ item.storageGb }}GB, {{ item.color }})
           </div>
-          <div class="flex items-center gap-2">
+
+          <!-- ปุ่มปรับจำนวน -->
+          <div class="flex items-center justify-center gap-2 mt-2 sm:mt-0">
             <button
               @click="changeQty(item, -1)"
-              class="px-3 py-1 bg-[#9D8A7C] text-white rounded hover:bg-[#796254]"
+              class="px-2 py-1 sm:px-3 bg-[#9D8A7C] text-white rounded hover:bg-[#796254] text-sm sm:text-base"
             >
               -
             </button>
-            <span class="w-6 text-center">{{ item.quantity }}</span>
+            <span class="w-6 text-center text-[#523F31]">{{ item.quantity }}</span>
             <button
               @click="changeQty(item, 1)"
-              class="px-3 py-1 bg-[#9D8A7C] text-white rounded hover:bg-[#796254]"
+              class="px-2 py-1 sm:px-3 bg-[#9D8A7C] text-white rounded hover:bg-[#796254] text-sm sm:text-base"
             >
               +
             </button>
           </div>
-          <div class="font-semibold text-[#523F31]">
+
+          <div class="font-semibold text-[#523F31] mt-2 sm:mt-0 text-sm sm:text-base">
             {{ (item.price * item.quantity).toLocaleString() }} ฿
           </div>
         </div>
@@ -330,29 +344,31 @@ async function placeOrder() {
     </div>
 
     <!-- Cart Summary -->
-    <div class="w-2/5 border border-[#796254] rounded-lg p-6 bg-[#ebe8e8]">
-      <h1 class="text-3xl font-bold text-[#523F31] mb-4">Cart Summary</h1>
+    <div class="w-full lg:w-2/5 border border-[#796254] rounded-lg p-4 md:p-6 bg-[#ebe8e8] h-fit">
+      <h1 class="text-2xl md:text-3xl font-bold text-[#523F31] mb-4 text-center md:text-left">
+        Cart Summary
+      </h1>
       <hr class="border-[#796254] mb-4" />
 
-      <h2 class="text-[#523F31] font-semibold">Ship To</h2>
+      <h2 class="text-[#523F31] font-semibold mb-1">Ship To</h2>
       <textarea
         v-model="address"
-        class="w-full p-3 border border-[#796254] rounded-md mb-4 text-[#523F31]"
-        placeholder="พิมพ์ข้อความที่นี่..."
+        class="w-full p-2 md:p-3 border border-[#796254] rounded-md mb-4 text-[#523F31] text-sm md:text-base"
+        placeholder="Enter shipping address..."
       ></textarea>
 
-      <h2 class="text-[#523F31] font-semibold">Note</h2>
+      <h2 class="text-[#523F31] font-semibold mb-1">Note</h2>
       <textarea
         v-model="note"
-        class="w-full p-3 border border-[#796254] rounded-md mb-4 text-[#523F31]"
+        class="w-full p-2 md:p-3 border border-[#796254] rounded-md mb-4 text-[#523F31] text-sm md:text-base"
         placeholder="Additional instructions or requests"
       ></textarea>
 
-      <div class="mb-2 flex justify-between text-[#523F31] font-semibold">
+      <div class="mb-2 flex justify-between text-[#523F31] font-semibold text-sm md:text-base">
         <span>Total items:</span>
         <span>{{ totalQuantity }}</span>
       </div>
-      <div class="mb-4 flex justify-between text-[#523F31] font-semibold">
+      <div class="mb-4 flex justify-between text-[#523F31] font-semibold text-sm md:text-base">
         <span>Total price:</span>
         <span>{{ totalPrice.toLocaleString() }} ฿</span>
       </div>
@@ -360,7 +376,7 @@ async function placeOrder() {
       <button
         @click="placeOrder"
         :disabled="totalQuantity === 0 || !address"
-        class="w-full py-2 px-4 rounded-lg font-semibold text-white shadow-md transition-all duration-200 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+        class="w-full py-2 px-4 rounded-lg font-semibold text-white shadow-md transition-all duration-200 text-sm md:text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
         :class="totalQuantity > 0 && address ? 'bg-[#9D8A7C] hover:bg-[#796254]' : ''"
       >
         Place Order
@@ -368,6 +384,14 @@ async function placeOrder() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+</style>
+
 
 <style scoped>
 .container {
