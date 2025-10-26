@@ -57,7 +57,6 @@ public class OrderService {
         return getAllSellerOrderDtoPageDto;
     }
 
-    @Transactional
     public List<PlaceOrderResponseDto> createOrder(List<PlaceOrderRequestDto> orders) {
         if (orders.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing request parameters");
         List<PlaceOrderResponseDto> placeOrderList = new ArrayList<>();
@@ -75,7 +74,7 @@ public class OrderService {
            newOrder.setOrderStatus(order.getOrderStatus());
            newOrder.setIsNewOrder(order.getIsNewOrder());
            orderRepository.save(newOrder);
-           entityManager.refresh(newOrder);
+//           entityManager.refresh(newOrder);
 
            PlaceOrderResponseDto placeOrder = new PlaceOrderResponseDto();
            placeOrder.setId(newOrder.getId());
@@ -96,9 +95,13 @@ public class OrderService {
                orderItem.setQuantity(item.getQuantity());
                orderItem.setDescription(item.getDescription());
                orderItemRepository.save(orderItem);
-
-               saleItem.setQuantity(saleItem.getQuantity() - item.getQuantity());
-               saleItemRepository.save(saleItem);
+               System.out.println(newOrder.getOrderStatus());
+               System.out.println(order.getOrderStatus());
+               if (newOrder.getOrderStatus().equals("COMPLETED")) {
+                   System.out.println("- quantity");
+                   saleItem.setQuantity(saleItem.getQuantity() - item.getQuantity());
+                   saleItemRepository.save(saleItem);
+               }
            });
            placeOrder.setOrderItems(order.getOrderItems());
            placeOrderList.add(placeOrder);
