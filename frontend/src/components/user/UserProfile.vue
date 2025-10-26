@@ -532,7 +532,7 @@ watchEffect(() => {
             :disabled="!canSubmitPassword"
             :class="canSubmitPassword 
               ? 'bg-amber-900 hover:opacity-80 cursor-pointer' 
-              : 'bg-gray-400 cursor-not-allowed'"
+              : 'bg-[#9D8A7C] cursor-not-allowed'"
             class="flex-1 text-white font-semibold py-3 rounded-lg transition-opacity">
             Change Password
           </button>
