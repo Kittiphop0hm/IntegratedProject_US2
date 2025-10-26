@@ -220,8 +220,8 @@ const enableLoginButton = computed(() => {
   <Navbar />
   <div
     v-if="pathName === 'Register'"
-    class="w-full h-screen bg-white flex flex-row items-center justify-center px-10">
-    <div class="w-full h-[75%] bg-[#796254] text-white rounded-2xl p-8 max-w-md [box-shadow:inset_0px_10px_20px_rgba(0,0,0,0.5),0px_10px_20px_rgba(0,0,0,0.5)]">
+    class="w-full h-screen bg-white flex flex-row items-center justify-center px-10 mt-[150px]">
+    <div class="w-full h-full bg-[#796254] text-white rounded-2xl p-8 max-w-md [box-shadow:inset_0px_10px_20px_rgba(0,0,0,0.5),0px_10px_20px_rgba(0,0,0,0.5)]">
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold mb-2">Create Account</h2>
         <p class="text-[16px] font-extrabold">
@@ -516,7 +516,7 @@ const enableLoginButton = computed(() => {
       </div>
     </div>
 
-    <div v-if="isSeller" class="w-full h-[75%] bg-[#796254] text-white rounded-2xl shadow-xl p-8 max-w-md [box-shadow:inset_0px_10px_20px_rgba(0,0,0,0.5),0px_10px_20px_rgba(0,0,0,0.5)]">
+    <div v-if="isSeller" class="w-full h-full bg-[#796254] text-white rounded-2xl shadow-xl p-8 max-w-md [box-shadow:inset_0px_10px_20px_rgba(0,0,0,0.5),0px_10px_20px_rgba(0,0,0,0.5)]">
       <form class="space-y-6">
         <div class="space-y-1">
           <label for="userPhone" class="block text-sm font-medium text-white text-[20px]"
