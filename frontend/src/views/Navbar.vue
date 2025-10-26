@@ -11,12 +11,15 @@ const router = useRouter();
 import { useUserStore } from "../stores/users.js";
 import { useCartStore } from "@/stores/carts.js";
 import { useCountNewOrder } from "@/stores/countNewOrder.js";
+
 const userStore = useUserStore();
 const cartStore = useCartStore();
 const { isSeller } = useUserStore()
 const { getCountNewOrder, fetchCountNewOrder, setCountNewOrder } = useCountNewOrder()
-
+fetchCountNewOrder()
 console.log(isSeller);
+console.log(getCountNewOrder());
+
 
 
 watchEffect(() => {
