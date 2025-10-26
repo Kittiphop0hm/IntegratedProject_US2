@@ -698,7 +698,17 @@ const enableLoginButton = computed(() => {
 <!-- Login -->
   <div
     v-if="pathName === 'Login'"
-    class="min-h-screen bg-white flex items-center justify-center p-6">
+    class="relative min-h-screen bg-white flex items-center justify-center p-6">
+
+    <div class="absolute bottom-5 right-0">
+      <div role="alert" class="alert alert-success rounded-r-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="text-white font-semibold">Login Successfully!!</span>
+      </div>
+    </div>
+    
     <div class="bg-[#796254] text-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold mb-2">Sign In Account</h2>

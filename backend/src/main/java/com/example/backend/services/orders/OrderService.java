@@ -88,7 +88,6 @@ public class OrderService {
            placeOrder.setOrderStatus(newOrder.getOrderStatus());
            order.getOrderItems().forEach((item) -> {
                SaleItem saleItem = saleItemRepository.findById(item.getSaleItemId()).orElseThrow(() -> new ItemNotFoundException("Sale item not found"));
-               if (saleItem.getQuantity() < item.getQuantity()) throw new ConflictException("Quantity sale id: " + saleItem.getId() + " not enough");
                OrderItem orderItem = new OrderItem();
                orderItem.setOrders(newOrder);
                orderItem.setSaleItems(saleItem);
