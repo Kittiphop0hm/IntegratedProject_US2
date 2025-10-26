@@ -220,7 +220,7 @@ const enableLoginButton = computed(() => {
   <Navbar />
   <div
     v-if="pathName === 'Register'"
-    class="w-full h-screen bg-white flex flex-row items-center justify-center px-10 mt-[150px]">
+    class="w-full h-full bg-white flex flex-row items-center justify-center px-10 mt-[150px]">
     <div class="w-full h-full bg-[#796254] text-white rounded-2xl p-8 max-w-md [box-shadow:inset_0px_10px_20px_rgba(0,0,0,0.5),0px_10px_20px_rgba(0,0,0,0.5)]">
       <div class="text-center mb-8">
         <h2 class="text-3xl font-bold mb-2">Create Account</h2>
@@ -495,9 +495,7 @@ const enableLoginButton = computed(() => {
             <button type="button" class="cursor-pointer">Cancel</button>
           </router-link>
         </div>
-      </form>
-
-      <div class="mt-8 pt-6 text-center">
+        <div class="mt-8 pt-6 text-center">
         <p class="text-sm text-white font-semibold ">
           Already have an account?
           <router-link
@@ -508,6 +506,7 @@ const enableLoginButton = computed(() => {
           >
         </p>
       </div>
+      </form>
     </div>
 
     <div v-if="isSeller">
