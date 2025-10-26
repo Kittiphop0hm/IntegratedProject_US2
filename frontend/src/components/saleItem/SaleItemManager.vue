@@ -151,11 +151,15 @@ const fetchData = async () => {
         `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`
       );
     } else {
+      console.log("have token")
        res = await getItemsWithToken(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`,
         accessToken
       );
     }
+    //  res = await getItems(
+    //     `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`
+    //   );
     pageObj.value = res;
     console.log("pageObj.value:", pageObj.value);
     saleItem.value = res.content;

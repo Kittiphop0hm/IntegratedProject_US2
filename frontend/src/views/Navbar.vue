@@ -26,8 +26,9 @@ watchEffect(() => {
 });
 
 const logout = async () => {
-  const decodeSession = decodeJWT(localStorage.getItem("accessToken"));
-  decodeSession.exp = 0;
+  // const decodeSession = decodeJWT(localStorage.getItem("accessToken"));
+  // decodeSession.exp = 0;
+  
   localStorage.removeItem("accessToken");
   localStorage.removeItem("nickname");
   nickname.value = "";
