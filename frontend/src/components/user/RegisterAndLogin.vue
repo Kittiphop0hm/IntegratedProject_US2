@@ -699,15 +699,6 @@ const enableLoginButton = computed(() => {
   <div
     v-if="pathName === 'Login'"
     class="relative min-h-screen bg-white flex items-center justify-center p-6">
-
-    <div class="absolute bottom-5 right-0">
-      <div role="alert" class="alert alert-success rounded-r-none">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current text-white" fill="none" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <span class="text-white font-semibold">Login Successfully!!</span>
-      </div>
-    </div>
     
     <div class="bg-[#796254] text-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
@@ -716,7 +707,7 @@ const enableLoginButton = computed(() => {
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
       </div>
-    <div v-show="props.is401 || props.is400 || props.is403" class="itbms-message mb-3">
+      <div v-show="props.is401 || props.is400 || props.is403" class="itbms-message mb-3">
     <AlertMessageModel :isSuccess="false">
       <template #message>
         <p class="text-red-400">

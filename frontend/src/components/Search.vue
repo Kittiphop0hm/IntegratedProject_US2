@@ -36,7 +36,7 @@ const handleKeyPress = (event) => {
 </script>
 
 <template>
-  <div class="mt-10 flex items-center justify-center w-full">
+  <div class="mt-[150px] flex items-center justify-center w-full">
     <div class="flex items-center space-x-4 w-full max-w-4xl px-8">
       <h1 class="text-2xl font-bold text-[#523F31] whitespace-nowrap">
         ITBMS Shop

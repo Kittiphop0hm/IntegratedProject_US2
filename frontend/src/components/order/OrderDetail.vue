@@ -8,7 +8,6 @@ import { useCountNewOrder } from '@/stores/countNewOrder';
 import { useUserStore } from '@/stores/users';
 import { decodeJWT } from '@/libs/decodeJWT';
 
-
 const {  updateCountNewOrder  } = useCountNewOrder()
 const { isSeller } = useUserStore()
 console.log(isSeller);
@@ -78,7 +77,7 @@ const totalPrice = (orderItems) => {
                         </div>
                         <div>
                             <div>
-                                <p class="font-semibold">Seller: <span class="itbms-nickname font-normal">{{ order.seller?.nickName }}</span></p>
+                                <p class="font-semibold">{{ isSeller ? 'Buyer: ' : 'Seller: ' }}<span class="itbms-nickname font-normal">{{ isSeller ? order.buyer?.username : order.seller?.nickName }}</span></p>
                             </div>
                             <div>
                                 <p class="font-semibold">Payment Date: <span class="itbms-payment-date font-normal">{{ dateFormat(order.paymentDate) }}</span></p>

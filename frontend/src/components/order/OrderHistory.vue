@@ -185,7 +185,7 @@ const totalPrice = (orderItems) => {
                             <button :disabled="!orders.content?.length" @click="$emit('toPrevPage')" :class="!orders.content?.length ? 'border py-2 px-4 rounded-2xl cursor-not-allowed' : 'border py-2 px-4 rounded-2xl cursor-pointer'">Perv</button>
                         </div>
                         <div v-for="index in pageNumberArr" :key="index">
-                            <button @click="$emit('fecthItemFromPage', index)" :class="index - 1 === page ? 'bg-green-600 text-white border py-2 px-4 rounded-2xl cursor-pointer' : 'border py-2 px-4 rounded-2xl cursor-pointer'">
+                            <button @click="$emit('fecthItemFromPage', index)" :class="index - 1 === page ? 'bg-[#523F31] text-white border py-2 px-4 rounded-2xl cursor-pointer' : 'border py-2 px-4 rounded-2xl cursor-pointer'">
                                 {{ index }}
                             </button>
                         </div>
