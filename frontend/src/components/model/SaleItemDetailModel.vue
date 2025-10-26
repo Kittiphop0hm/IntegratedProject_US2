@@ -261,7 +261,7 @@ function addQtyToParent(type) {
             </button>
           </div>
           <button
-            v-if="route.name === 'SaleItemDetail'"
+            v-if="route.name === 'SaleItemDetail' "
             class="w-[104px] h-[44px] flex justify-center items-center bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] hover:opacity-80 cursor-pointer text-white py-[10px] px-[20px] rounded-lg hover:shadow-lg transition transform hover:-translate-y-1 active:translate-y-0"
           >
             <slot name="button3">Input Name Button3</slot>
