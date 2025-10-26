@@ -74,7 +74,6 @@ public class OrderService {
            newOrder.setOrderStatus(order.getOrderStatus());
            newOrder.setIsNewOrder(order.getIsNewOrder());
            orderRepository.save(newOrder);
-//           entityManager.refresh(newOrder);
 
            PlaceOrderResponseDto placeOrder = new PlaceOrderResponseDto();
            placeOrder.setId(newOrder.getId());

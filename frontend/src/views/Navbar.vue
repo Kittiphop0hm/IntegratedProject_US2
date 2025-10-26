@@ -17,7 +17,7 @@ const cartStore = useCartStore()
 const { isSeller } = useUserStore()
 const { getCountNewOrder, fetchCountNewOrder, setCountNewOrder } = useCountNewOrder()
 
-
+fetchCountNewOrder()
 
 watchEffect(() => {
   if (nickname.value) {
