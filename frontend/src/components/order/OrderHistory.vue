@@ -50,7 +50,7 @@ onMounted(() => {
 watchEffect(() => {
     props.orders ? myOrders.value = props.orders : []
     props.orders.content ? myOrderCompleted.value = props.orders.content.filter((order) => order.orderStatus === "COMPLETED") : []
-    props.orders.content ? myOrderCancel.value = props.orders.content.filter((order) => order.orderStatus === "CANCELED") : []
+    props.orders.content ? myOrderCancel.value = props.orders.content.filter((order) => order.orderStatus === "CANCELLED") : []
     props.pageNumber ? pageNumberArr.value = props.pageNumber : []
     props.pageSize >= 5 ? size.value = props.pageSize : 10
 })
@@ -89,11 +89,11 @@ const totalPrice = (orderItems) => {
                                     New
                             </button>
                             <button
-                                @click="$emit('reportOrderStatus', 'completed')"
-                                :class="orderStatus === 'completed' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">All</button>
+                                @click="$emit('reportOrderStatus', 'COMPLETED')"
+                                :class="orderStatus === 'COMPLETED' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">All</button>
                             <button
-                                @click="$emit('reportOrderStatus', 'canceled')"
-                                :class="orderStatus === 'canceled' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Canceled</button>
+                                @click="$emit('reportOrderStatus', 'CANCELLED')"
+                                :class="orderStatus === 'CANCELLED' ? 'border-b font-semibold' : 'cursor-pointer hover:border-b'">Canceled</button>
                         </div>
                         <div>
                             <select v-model="size" @change="$emit('changePageSize', $event)" class="border p-2">

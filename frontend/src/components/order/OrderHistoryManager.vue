@@ -51,10 +51,12 @@ const fetchData = async () => {
         } else {
           orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
           console.log(orders.value);
+
+          
         }
     }
     else if (route.path === '/your-orders') {
-        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}`, accessToken)  
+        orders.value = await getItemsWithToken(`${import.meta.env.VITE_APP_URL}/v2/users/${user.id}/orders?page=${page.value}&size=${size.value}&orderStatus=${orderStatus.value}`, accessToken)  
         console.log('Buyer Orders:', orders.value);
     }
 }
