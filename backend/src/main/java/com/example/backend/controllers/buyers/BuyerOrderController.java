@@ -22,8 +22,9 @@ public class BuyerOrderController {
             @RequestParam Integer page,
             @RequestParam(defaultValue = "10") Integer size,
             @RequestParam(defaultValue = "id") String sortField,
+            @RequestParam(defaultValue = "COMPLETED") String orderStatus,
             @AuthenticationPrincipal AuthUserDetail principal
     ) {
-        return ResponseEntity.ok(orderService.getAllBuyerOrdersById(id, page, size, sortField, principal));
+        return ResponseEntity.ok(orderService.getAllBuyerOrdersById(id, orderStatus, page, size, sortField, principal));
     }
 }

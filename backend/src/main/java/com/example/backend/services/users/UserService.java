@@ -186,11 +186,15 @@ public class UserService {
         Cookie[] cookies = request.getCookies();
         if (cookies == null || cookies.length == 0) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid token");
         for (int i = 0; i < cookies.length; i++) {
-            if ("refresh_token".equalsIgnoreCase(cookies[i].getName())) {
-                Claims claims = jwtService.extractClaims(cookies[i].getValue());
-                User user = repository.findUserByEmail(claims.getSubject());
-                if (!repository.existsUserByEmail(user.getEmail())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email:" + user.getEmail() + " not found");
-                if (!user.getIsActive()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not active");
+            try {
+                if ("refresh_token".equalsIgnoreCase(cookies[i].getName())) {
+                    Claims claims = jwtService.extractClaims(cookies[i].getValue());
+                    User user = repository.findUserByEmail(claims.getSubject());
+                    if (!repository.existsUserByEmail(user.getEmail())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User email:" + user.getEmail() + " not found");
+                    if (!user.getIsActive()) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not active");
+                }
+            }catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No access token");
             }
         }
         ResponseCookie cookie = ResponseCookie.from("refresh_token", "")
@@ -236,7 +240,7 @@ public class UserService {
             tokenDto.setAccessToken(newAccessToken);
             return tokenDto;
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No refresh token");
         }
     }
 
