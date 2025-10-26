@@ -15,9 +15,7 @@ const userStore = useUserStore();
 const cartStore = useCartStore();
 const { isSeller } = useUserStore()
 const { getCountNewOrder, fetchCountNewOrder, setCountNewOrder } = useCountNewOrder()
-
-console.log(isSeller);
-
+fetchCountNewOrder()
 
 watchEffect(() => {
   if (nickname.value) {
@@ -46,7 +44,7 @@ const logout = async () => {
 <template>
   <nav class="w-full max-h-[90px]">
     <div
-      class="fixed top-0 w-full h-[90px] bg-[#523F31] text-white px-10 flex justify-between items-center"
+      class="fixed z-[98] top-0 w-full h-[90px] bg-linear-to-r from-[#2D1E17] to-[#796254] text-white px-10 flex justify-between items-center"
     >
       <router-link to="/">
         <h1 class="font-bold text-xl cursor-pointer hover:opacity-70">
@@ -86,7 +84,7 @@ const logout = async () => {
         </button>
         </router-link>
 
-        <!-- <router-link v-if="isSeller" :to="{name: 'SellerOrderHistory'}" class="w-full h-full tooltip tooltip-bottom" data-tip="Sale orders">
+        <router-link v-if="isSeller" :to="{name: 'SellerOrderHistory'}" class="w-full h-full tooltip tooltip-bottom" data-tip="Sale orders">
           <button class="relative w-full h-full p-1 cursor-pointer hover:opacity-80">
             <div v-if="getCountNewOrder() > 0" class="w-4 h-4 absolute top-0 right-0 bg-red-400 rounded-full">
               <p class="text-[12px]">{{ getCountNewOrder() }}</p>
@@ -99,7 +97,7 @@ const logout = async () => {
           <button class="relative w-full h-full p-1 cursor-pointer hover:opacity-80">
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 32 32"><path fill="#ffffff" d="M19 21h-6a3 3 0 0 0-3 3v2h2v-2a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2h2v-2a3 3 0 0 0-3-3zm-3-1a4 4 0 1 0-4-4a4 4 0 0 0 4 4zm0-6a2 2 0 1 1-2 2a2 2 0 0 1 2-2z"/><path fill="#ffffff" d="M25 5h-3V4a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v1H7a2 2 0 0 0-2 2v21a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2ZM12 4h8v4h-8Zm13 24H7V7h3v3h12V7h3Z"/></svg>
           </button>
-        </router-link> -->
+        </router-link>
 
         <div class="flex items-center mx-3">
           <!-- ไอคอน User/Register อยู่เสมอ ไม่ว่าจะ login หรือไม่ -->
@@ -148,9 +146,9 @@ const logout = async () => {
     </div>
   </nav>
 
-  <div v-show="isBurgerBar" class="w-full h-full md:hidden">
+  <div v-show="isBurgerBar" class="fixed z-[90] top-5 w-full h-full md:hidden">
     <div
-      class="flex flex-col justify-center items-center bg-[#523F31] text-white p-3"
+      class="flex flex-col justify-center items-center bg-linear-to-r from-[#2D1E17] to-[#796254] text-white p-3"
     >
       <div v-if="nickname" class="my-3 text-sm font-medium text-gray-700">
         Welcome, {{ nickname }}
@@ -160,7 +158,7 @@ const logout = async () => {
         <router-link to="/">Home</router-link>
       </div>
       <div class="my-3 hover:opacity-80">
-        <router-link to="/sale-items">SaleItem</router-link>
+        <router-link to="/sale-items">SaleItems</router-link>
       </div>
       <div class="my-3 hover:opacity-80">
         <router-link :to="{name: 'BrandManager'}">Brand</router-link>
@@ -169,21 +167,21 @@ const logout = async () => {
         <router-link to="/sale-items/list">My SaleItem</router-link>
       </div>
       <div class="my-3 hover:opacity-80">
-        <router-link :to="{name: 'OrderHistory'}"> Carts </router-link>
+        <router-link :to="{name: 'OrderHistory'}">Carts</router-link>
       </div>
-      <div class="my-3 hover:opacity-80">
+      <div v-if="!isLoggedIn" class="my-3 hover:opacity-80">
         <router-link :to="{name: 'Register'}">SignIn</router-link>
       </div>
-      <div class="my-3 hover:opacity-80">
+      <div v-if="!isLoggedIn" class="my-3 hover:opacity-80">
         <router-link :to="{name: 'Login'}">SignUp</router-link>
       </div>
 
-      <div v-if="isLoggedIn">
+      <div v-if="isLoggedIn" class="flex flex-col justify-center items-center">
         <div class="my-3 hover:opacity-80">
           <router-link :to="{ name: 'UserProfile' }">Profile</router-link>
         </div>
         <div class="my-3 hover:opacity-80">
-          <a @click="logout" class="cursor-pointer text-red-600">Logout</a>
+          <a @click="logout" class="cursor-pointer">Logout</a>
         </div>
       </div>
     </div>

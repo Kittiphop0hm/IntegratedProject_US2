@@ -1,4 +1,5 @@
 <script setup>
+import Navbar from '@/views/Navbar.vue';
 import { ref, watchEffect, computed } from 'vue';
 import {useRoute} from "vue-router";
 
@@ -272,11 +273,11 @@ watchEffect(() => {
             <h1>Welcome, <span class="font-medium">{{ oldUser.nickName }}</span></h1>
           </div>
 
-          <div class="w-full h-[100px] bg-linear-to-r from-cyan-500 to-blue-500 rounded-2xl"></div>
+          <div class="w-full h-[100px] bg-linear-to-r from-[#523F31] to-[#B88D6E] rounded-2xl"></div>
 
           <div class="flex items-center mt-5 max-lg:flex-col max-lg:justify-center max-lg:text-center">
             <div class="avatar avatar-placeholder">
-              <div class="bg-neutral text-neutral-content w-24 rounded-full">
+              <div class="bg-[#2D1E17] text-neutral-content w-24 rounded-full">
                 <span class="text-3xl">{{ oldUser.fullName?.charAt(0) }}</span>
               </div>
             </div>
@@ -290,11 +291,11 @@ watchEffect(() => {
               <div v-if="route.path === '/profile'" class="flex gap-3 max-lg:mt-2">
                 <button 
                   @click="openChangePasswordModal"
-                  class="itbms-change-password-button bg-gradient-to-r from-green-400 to-green-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">
+                  class="itbms-change-password-button bg-[#796254] py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">
                   Change Password
                 </button>
                 <router-link :to="{name: 'UserProfileEdit'}">
-                  <button class="itbms-profile-button bg-gradient-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Edit</button>
+                  <button class="itbms-profile-button bg-[#796254] py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold">Edit</button>
                 </router-link>
               </div>
 
@@ -302,7 +303,7 @@ watchEffect(() => {
                 <button
                 @click="$emit('updateUser', currentUser)" 
                 :disabled="!enableEditBtn"
-                :class="enableEditBtn ? 'itbms-save-button bg-gradient-to-r from-blue-400 to-blue-600 py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold' : 'itbms-save-button bg-gray-600 py-2 px-6 rounded-lg hover:opacity-80 text-white font-semibold cursor-not-allowed'">
+                :class="enableEditBtn ? 'itbms-save-button bg-[#796254] py-2 px-6 rounded-lg cursor-pointer hover:opacity-80 text-white font-semibold' : 'itbms-save-button bg-gray-600 py-2 px-6 rounded-lg hover:opacity-80 text-white font-semibold cursor-not-allowed'">
                 Save
                 </button>
                 <router-link :to="{name: 'UserProfile'}">

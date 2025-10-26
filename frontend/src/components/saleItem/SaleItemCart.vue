@@ -158,6 +158,7 @@ function changeFormattedObject() {
       orderDate: new Date().toISOString(),
       shippingAddress: address.value,
       orderNote: note.value,
+      isNewOrder: true,
       orderStatus: seller.items
         .filter((item) => item.checked)
         .some((item) => item.quantity > item.qtyInstock)

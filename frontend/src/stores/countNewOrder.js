@@ -13,7 +13,7 @@ export const useCountNewOrder = defineStore("countNewOrder", () => {
 
     const fetchCountNewOrder = async () => {
         try {
-            const accessToken = sessionStorage.getItem("accessToken")
+            const accessToken = localStorage.getItem("accessToken")
             if (accessToken) {
                 const decodeToken = decodeJWT(accessToken)
                 if (decodeToken.role === "SELLER") {  
