@@ -25,8 +25,6 @@ export const useCountNewOrder = defineStore("countNewOrder", () => {
                     })
                     const items = await data.json()
                     setCountNewOrder(items)
-                    console.log(countNewOrder);
-                    
                 }
             }
         } catch(error) {
