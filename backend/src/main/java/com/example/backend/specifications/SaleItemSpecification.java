@@ -19,7 +19,7 @@ import java.util.List;
 public class SaleItemSpecification {
 
     /**
-     * กรองตาม brand name
+     * กรองตาม brand nam-e
      * SQL ที่ได้: SELECT * FROM sale_item si JOIN brand b ON si.brand_id = b.id WHERE b.name IN (...)
      */
     public static Specification<SaleItem> withSearchKeyword(String searchKeyword) {
