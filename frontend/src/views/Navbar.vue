@@ -28,8 +28,9 @@ watchEffect(() => {
 });
 
 const logout = async () => {
-  const decodeSession = decodeJWT(localStorage.getItem("accessToken"));
-  decodeSession.exp = 0;
+  // const decodeSession = decodeJWT(localStorage.getItem("accessToken"));
+  // decodeSession.exp = 0;
+  
   localStorage.removeItem("accessToken");
   localStorage.removeItem("nickname");
   nickname.value = "";
@@ -46,7 +47,7 @@ const logout = async () => {
 <template>
   <nav class="w-full max-h-[90px]">
     <div
-      class="fixed top-0 w-full h-[90px] bg-[#523F31] text-white px-10 flex justify-between items-center"
+      class="fixed top-0 w-full h-[90px] bg-gradient-to-r from-[#523F31] to-[#B88D6E] text-white px-10 flex justify-between items-center"
     >
       <router-link to="/">
         <h1 class="font-bold text-xl cursor-pointer hover:opacity-70">

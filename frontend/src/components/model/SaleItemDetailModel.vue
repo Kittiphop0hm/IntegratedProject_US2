@@ -106,12 +106,12 @@ function addQtyToParent(type) {
   <div class="container bg-[#9D8A7C] mx-auto px-6 mt-10 mb-10 p-5 rounded-lg">
     <router-link :to="{name: 'SaleItemHome'}">
       <div class="w-20 h-15">
-        <div class="w-full h-full flex justify-center items-center bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg cursor-pointer hover:opacity-80">
+        <div class="w-full h-full flex justify-center items-center bg-gradient-to-r from-[#523F31] to-[#B88D6E] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg cursor-pointer hover:opacity-80">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 17 16"><path fill="#ffffff" fill-rule="evenodd" d="m1.307 5.988l5.309-4.645c.411-.41.891-.479 1.302-.068v3.132l.229-.001c5.016 0 8.738 3.563 8.738 8.41c0 1.688-.774 1.073-1.097.484c-1.522-2.78-4.197-4.677-7.681-4.677l-.19.001v3.065c-.411.41-.941.361-1.302.068L1.306 7.474a1.052 1.052 0 0 1 .001-1.486z"/></svg>
         </div>
       </div>
     </router-link>
-    <div class="w-[40%] bg-[#523F31] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg font-semibold bg-opacity-70 p-4 mb-4 mt-7">
+    <div class="w-[40%] bg-gradient-to-r from-[#523F31] to-[#B88D6E] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-lg font-semibold bg-opacity-70 p-4 mb-4 mt-7">
       <p class="text-white">
         <router-link :to="{ name: 'SaleItemHome' }">
           <span class="itbms-home-button text-white hover:underline">Home</span>

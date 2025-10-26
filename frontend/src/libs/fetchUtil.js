@@ -1,3 +1,6 @@
+import router from "@/router";
+import { useCartStore } from "@/stores/carts";
+import { useUserStore } from "@/stores/users";
 import { includes } from "lodash";
 
 async function getItems(url) {
@@ -127,7 +130,7 @@ async function editForgotPassword(url, editItem) {
         ...editItem,
       }),
     });
-    return res.status
+    return res.status;
   } catch (error) {
     throw new Error("can not edit your item");
   }
@@ -268,20 +271,31 @@ async function verifyEmail(url) {
 
 async function getItemsWithToken(url, token) {
   try {
-    const data = await fetch(url, {
+    let response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: "application/json"
+        Accept: "application/json",
       },
     });
-    const items = await data.json();
+
+    if (response.status === 401) {
+      const newAccessToken = await refreshAccessToken();
+      response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+          Accept: "application/json",
+        },
+      });
+    }
+    const items = await response.json();
     return items;
   } catch (error) {
-    throw new Error("can not get your items");
+    console.error(error);
+    throw new Error("Cannot get your items");
   }
 }
 
-async function addItemWithToken(url, newItem , token) {
+async function addItemWithToken(url, newItem, token) {
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -291,6 +305,17 @@ async function addItemWithToken(url, newItem , token) {
       },
       body: JSON.stringify(newItem),
     });
+    if (res.status === 401) {
+      const newAccessToken = await refreshAccessToken();
+      res = await fetch(url, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(newItem),
+      });
+    }
     const addedItem = await res.json();
     return {
       status: res.status,
@@ -301,15 +326,23 @@ async function addItemWithToken(url, newItem , token) {
   }
 }
 
-
 async function getItemsByIdWithToken(url, id, token) {
   try {
     const data = await fetch(`${url}/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        Accept: "application/json"
+        Accept: "application/json",
       },
     });
+    if (data.status === 401) {
+      const newAccessToken = await refreshAccessToken();
+      data = await fetch(`${url}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+          Accept: "application/json",
+        },
+      });
+    }
     const items = await data.json();
     return items;
   } catch (error) {
@@ -317,7 +350,7 @@ async function getItemsByIdWithToken(url, id, token) {
   }
 }
 
-async function addSaleItemAndImageWithToken(url, item, images , token) {
+async function addSaleItemAndImageWithToken(url, item, images, token) {
   try {
     const formdata = new FormData();
     formdata.append("model", item.model);
@@ -343,6 +376,17 @@ async function addSaleItemAndImageWithToken(url, item, images , token) {
       body: formdata,
       credentials: "include",
     });
+    if (res.status === 401) {
+      const newAccessToken = await refreshAccessToken();
+      res = await fetch(`${url}`, {
+        headers: {
+          Authorization: `Bearer ${newAccessToken}`,
+        },
+        method: "POST",
+        body: formdata,
+        credentials: "include",
+      });
+    }
     const data = await res.json();
     return {
       data: data,
@@ -352,6 +396,37 @@ async function addSaleItemAndImageWithToken(url, item, images , token) {
     console.log(err);
   }
 }
+async function refreshAccessToken() {
+  try {
+    console.log("refresh token called access Token")
+    const response = await fetch(
+      `${import.meta.env.VITE_APP_URL}/v2/auth/refresh`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        credentials: "include",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("invalid Token");
+    }
+    const data = await response.json();
+    const newToken = data?.access_token;
+    localStorage.setItem("accessToken", newToken);
+    return newToken;
+  } catch (error) {
+    const userStore = useUserStore();
+    const cartStore = useCartStore();
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("nickname");
+    userStore.clearUser();
+    cartStore.clearCart();
+    router.push("/signin");
+  }
+}
+
 export {
   addSaleItemAndImageWithToken,
   getItemsWithToken,
@@ -370,5 +445,5 @@ export {
   addItemNoBodyAndNoContent,
   getItemsByIdWithToken,
   addItemWithToken,
-  editForgotPassword
+  editForgotPassword,
 };
