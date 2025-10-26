@@ -34,7 +34,7 @@ export const useCountNewOrder = defineStore("countNewOrder", () => {
 
     const updateCountNewOrder = async (orderId, isNewOrder) => {
         try {
-            const accessToken = sessionStorage.getItem("accessToken")
+            const accessToken = localStorage.getItem("accessToken")
             if (accessToken) {
                 const decodeToken = decodeJWT(accessToken)
                 const data = await fetch(`${import.meta.env.VITE_APP_URL}/v2/sellers/${decodeToken.id}/orders/change/newOrder/${orderId}?isNewOrder=${isNewOrder}`, {

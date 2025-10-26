@@ -765,6 +765,11 @@ const enableLoginButton = computed(() => {
                 <!-- <input v-model.trim="isShowPassword" type="checkbox" />
                 <label class="text-[12px] mx-1 text-center">Show password</label> -->
               </div>
+              <router-link :to="{name: 'ForgetPassword'}">
+              <div>
+                forgot password
+              </div>
+              </router-link>
             </div>
             <p class="text-[12px] text-red-500">{{ validateErrorPassword }}</p>
           </div>

@@ -35,6 +35,8 @@ const sendNewPasswordConfirm = async () => {
             email: localStorage.getItem('emailForChangePassword'),
             newPassword: newPassword.value
         }
+        console.log(request);
+        
         const changeNewPassword = await editForgotPassword(`${import.meta.env.VITE_APP_URL}/v2/auth/new-password`, request)
         console.log(changeNewPassword);
         if (changeNewPassword === 200) {
@@ -66,7 +68,7 @@ const sendNewPasswordConfirm = async () => {
         </div>
 
         <div v-if="route.path === '/new-password'" class="w-full h-full flex justify-center items-center bg-linear-to-r from-cyan-500 to-blue-500">
-            <div class="w-[30%] h-[30%] bg-white rounded-2xl">
+            <div class="w-full h-full bg-white rounded-2xl">
                 <div class="w-full h-full flex flex-col justify-center items-center px-6 gap-y-6">
                     <div class="w-full flex flex-col justify-center items-center">
                         <input v-model="newPassword" :type="showNewPassword ? 'text' : 'password'" placeholder="New password" class="w-full h-[50px] input text-sm" />

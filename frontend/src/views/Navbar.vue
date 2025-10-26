@@ -3,6 +3,7 @@ import { addItemNoBodyAndNoContent } from "@/libs/fetchUtil";
 import { ref, watchEffect } from "vue";
 import { decodeJWT } from "@/libs/decodeJWT";
 import { useRouter } from "vue-router";
+
 const isBurgerBar = ref(false);
 const isLoggedIn = ref(false);
 const userNickname = ref(localStorage.getItem("nickname"));
@@ -11,11 +12,12 @@ const router = useRouter();
 import { useUserStore } from "../stores/users.js";
 import { useCartStore } from "@/stores/carts.js";
 import { useCountNewOrder } from "@/stores/countNewOrder.js";
-const userStore = useUserStore();
-const cartStore = useCartStore();
+const userStore = useUserStore()
+const cartStore = useCartStore()
 const { isSeller } = useUserStore()
 const { getCountNewOrder, fetchCountNewOrder, setCountNewOrder } = useCountNewOrder()
-fetchCountNewOrder()
+
+
 
 watchEffect(() => {
   if (nickname.value) {
@@ -26,9 +28,6 @@ watchEffect(() => {
 });
 
 const logout = async () => {
-  // const decodeSession = decodeJWT(localStorage.getItem("accessToken"));
-  // decodeSession.exp = 0;
-  
   localStorage.removeItem("accessToken");
   localStorage.removeItem("nickname");
   nickname.value = "";
