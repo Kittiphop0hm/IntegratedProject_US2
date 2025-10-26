@@ -136,10 +136,10 @@ public class OrderService {
 
         return buyerOrderDto;
     }
-    public PageDto<GetAllBuyerOrderDto> getAllBuyerOrdersById(Integer id, Integer page, Integer size, String sortField, AuthUserDetail principal) {
+    public PageDto<GetAllBuyerOrderDto> getAllBuyerOrdersById(Integer id, String status, Integer page, Integer size, String sortField, AuthUserDetail principal) {
         User user = userRepository.findById(id).orElseThrow(() -> new ItemNotFoundException("User not found"));
 
-        Page<Order> pageOrder = orderRepository.findOrdersByBuyer_IdOrderByIdDesc(id, PageRequest.of(page, size));
+        Page<Order> pageOrder = orderRepository.findOrdersByBuyer_IdAndOrderStatusOrderByIdDesc(id, status, PageRequest.of(page, size));
         PageDto<GetAllBuyerOrderDto> getAllBuyerOrderDtoPageDto = listMapper.toPageDTO(pageOrder, GetAllBuyerOrderDto.class, modelMapper, sortField);
 
         getAllBuyerOrderDtoPageDto.getContent().forEach((order) -> {
