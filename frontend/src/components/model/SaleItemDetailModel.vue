@@ -87,8 +87,6 @@ function addQtyToParent(type) {
         emit("addToCart", quantityInCart.value);
     }
   }
-
-
 }
 </script>
 

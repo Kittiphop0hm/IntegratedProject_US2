@@ -1,4 +1,5 @@
 <script setup>
+import Navbar from '@/views/Navbar.vue';
 import { ref, watchEffect, computed } from 'vue';
 import {useRoute} from "vue-router";
 
