@@ -7,7 +7,7 @@ import { useRouter, useRoute } from "vue-router";
 import AlertMessageModel from "../model/AlertMessageModel.vue";
 import FilterSaleItem from "./FilterSortSaleItem.vue";
 import SearchComponent from "../Search.vue";
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 const getUser = decodeJWT(accessToken);
 const route = useRoute();
 const saleItem = ref([]);
@@ -24,11 +24,11 @@ const pageNumber = ref();
 const {fetchCountNewOrder} = useCountNewOrder()
 
 // Updated filter states - เพิ่ม searchKeyword
-const filterBrandSession = sessionStorage.getItem("filterBrand");
-const directionSession = sessionStorage.getItem("direction");
-const filterPriceSession = sessionStorage.getItem("filterPrice");
-const filterStorageSizeSession = sessionStorage.getItem("filterStorageSize");
-const searchKeywordSession = sessionStorage.getItem("searchKeyword");
+const filterBrandSession = localStorage.getItem("filterBrand");
+const directionSession = localStorage.getItem("direction");
+const filterPriceSession = localStorage.getItem("filterPrice");
+const filterStorageSizeSession = localStorage.getItem("filterStorageSize");
+const searchKeywordSession = localStorage.getItem("searchKeyword");
 
 const filterBrandR = ref(
   filterBrandSession ? JSON.parse(filterBrandSession) : []
@@ -43,8 +43,8 @@ const filterStorageSizeR = ref(
 const searchKeywordR = ref(searchKeywordSession ? searchKeywordSession : ""); // เพิ่ม search keyword
 const fieldR = ref("");
 
-const pageNumberSession = sessionStorage.getItem("pageNumber");
-const pageSizeSession = sessionStorage.getItem("pageSize");
+const pageNumberSession = localStorage.getItem("pageNumber");
+const pageSizeSession = localStorage.getItem("pageSize");
 
 onMounted(async () => {
   pageSize.value = pageSizeSession ? Number(pageSizeSession) : 10;
@@ -54,7 +54,7 @@ onMounted(async () => {
 
 function savePreviousPath() {
   const previousPath = route.fullPath;
-  sessionStorage.setItem("previousPath", previousPath);
+  localStorage.setItem("previousPath", previousPath);
 }
 
 const isFirst = computed(() => {
@@ -165,8 +165,8 @@ const fetchData = async () => {
 };
 
 watch([pageSize, pageNumber], () => {
-  sessionStorage.setItem("pageSize", pageSize.value);
-  sessionStorage.setItem("pageNumber", pageNumber.value);
+  localStorage.setItem("pageSize", pageSize.value);
+  localStorage.setItem("pageNumber", pageNumber.value);
   fetchData();
 });
 
@@ -174,14 +174,14 @@ watch([pageSize, pageNumber], () => {
 watch(
   [filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeywordR],
   () => {
-    sessionStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
-    sessionStorage.setItem("direction", directionR.value);
-    sessionStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
-    sessionStorage.setItem(
+    localStorage.setItem("filterBrand", JSON.stringify(filterBrandR.value));
+    localStorage.setItem("direction", directionR.value);
+    localStorage.setItem("filterPrice", JSON.stringify(filterPriceR.value));
+    localStorage.setItem(
       "filterStorageSize",
       JSON.stringify(filterStorageSizeR.value)
     );
-    sessionStorage.setItem("searchKeyword", searchKeywordR.value);
+    localStorage.setItem("searchKeyword", searchKeywordR.value);
     console.log("Filters changed, resetting to page 0");
     pageNumber.value = 0;
   },
@@ -326,16 +326,16 @@ const checkRole = (yourItem) => {
     <router-link :to="{ name: 'SaleItemAdd' }">
       <button
         @click="savePreviousPath"
-        class="itbms-sale-item-add px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        class="flex justify-center items-center gap-x-2 itbms-sale-item-add px-4 py-4 bg-[#523F31] text-white font-semibold cursor-pointer rounded-md hover:opacity-90"
       >
-        Add Sale Item
+        <p>Add SaleItem</p>
+        <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 24 24"><g fill="none"><circle cx="12" cy="12" r="9" fill="#ffffff"/><path stroke="#000000" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.2" d="M12 8v8m4-4H8"/></g></svg>
       </button>
     </router-link>
     <div>
-      <span>Show</span>
       <span class="ml-2">
         <select
-          class="bg-gray-500 p-2 border itbms-page-size"
+          defaultValue="Pick a color" className="select bg-[#523F31] text-white font-semibold"
           v-model.number="pageSize"
         >
           <option :value="5">5</option>
@@ -357,19 +357,19 @@ const checkRole = (yourItem) => {
   @addToCart="checkRole"
   ></SaleItemGallery>
 
-  <div class="p-10 pt-0" v-show="pageObj.totalPages > 1">
+  <div class="p-10 pt-0 text-white" v-show="pageObj.totalPages > 1">
     <button
-      class="itbms-page-first cursor-pointer bg-gray-600 pl-5 pr-5 pt-3 pb-3"
+      class="itbms-page-first cursor-pointer bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3 rounded-l-lg"
       @click="pageNumber = 0"
-      :class="isFirst ? 'opacity-45' : 'bg-gray-600'"
+      :class="isFirst ? 'opacity-60' : 'bg-[#796254]'"
       :disabled="isFirst"
     >
       First
     </button>
     <button
-      class="itbms-page-prev cursor-pointer bg-gray-600 pl-5 pr-5 pt-3 pb-3"
+      class="itbms-page-prev cursor-pointer bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3"
       @click="pageNumber = pageNumber - 1"
-      :class="isFirst ? 'opacity-45' : 'bg-gray-600'"
+      :class="isFirst ? 'opacity-60' : 'bg-[#796254]'"
       :disabled="isFirst"
     >
       Prev
@@ -381,26 +381,26 @@ const checkRole = (yourItem) => {
       :class="`itbms-page-${index - 1} `"
     >
       <button
-        class="pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+        class="pl-5 pr-5 pt-3 pb-3 inset-shadow-xs shadow-black font-semibold shadow-[0_4px_6px_rgba(82,63,90,1)] cursor-pointer"
         :class="
-          index - 1 === pageNumber ? 'bg-green-600 text-white' : 'bg-gray-600'
+          index - 1 === pageNumber ? 'bg-[#523F31] text-white' : 'bg-[#796254]'
         "
       >
         {{ index }}
       </button>
     </span>
     <button
-      class="itbms-page-next bg-gray-600 pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      class="itbms-page-next bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
       @click="pageNumber = pageNumber + 1"
-      :class="isLast ? 'opacity-45' : 'bg-gray-600'"
+      :class="isLast ? 'opacity-60' : 'bg-[#523F31]'"
       :disabled="isLast"
     >
       Next
     </button>
     <button
-      class="itbms-page-last bg-gray-600 pl-5 pr-5 pt-3 pb-3 cursor-pointer"
+      class="itbms-page-last rounded-r-lg bg-[#796254] inset-shadow-xs shadow-black shadow-[0_4px_6px_rgba(82,63,90,1)] pl-5 pr-5 pt-3 pb-3 cursor-pointer"
       @click="pageNumber = pageObj.totalPages - 1"
-      :class="isLast ? 'opacity-45' : 'bg-gray-600'"
+      :class="isLast ? 'opacity-60' : 'bg-[#523F31]'"
       :disabled="isLast"
     >
       Last

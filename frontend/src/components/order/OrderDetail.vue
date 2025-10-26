@@ -20,11 +20,12 @@ console.log(route.params.orderId);
 const orderId = route.params.orderId
 const order = ref({})
 onMounted(async () => {
-    const accessToken = sessionStorage.getItem('accessToken')
     if (route.path.includes('your-orders')) {
+        const accessToken = localStorage.getItem.getItem.getItem('accessToken')
         order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/orders`, orderId, accessToken)
+        console.log(order.value);
     } else {
-        const accessToken = sessionStorage.getItem('accessToken')
+        const accessToken = localStorage.getItem('accessToken')
         const decode = decodeJWT(accessToken)
         order.value = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/sellers/${decode.id}/orders`, orderId, accessToken)
         updateCountNewOrder(orderId, false)

@@ -5,9 +5,9 @@ const searchKeyword = ref('');
 
 const emit = defineEmits(['search']);
 
-// โหลด search keyword จาก sessionStorage
+// โหลด search keyword จาก localStorage
 onMounted(() => {
-  const savedSearch = sessionStorage.getItem("searchKeyword");
+  const savedSearch = localStorage.getItem("searchKeyword");
   if (savedSearch) {
     searchKeyword.value = savedSearch;
   }
@@ -16,14 +16,14 @@ onMounted(() => {
 // ฟังก์ชันค้นหา
 const handleSearch = () => {
   const keyword = searchKeyword.value.trim();
-  sessionStorage.setItem("searchKeyword", keyword);
+  localStorage.setItem("searchKeyword", keyword);
   emit('search', keyword);
 };
 
 // ฟังก์ชัน Clear search
 const handleClearSearch = () => {
   searchKeyword.value = '';
-  sessionStorage.setItem("searchKeyword", '');
+  localStorage.setItem("searchKeyword", '');
   emit('search', '');
 };
 
@@ -38,7 +38,7 @@ const handleKeyPress = (event) => {
 <template>
   <div class="mt-10 flex items-center justify-center w-full">
     <div class="flex items-center space-x-4 w-full max-w-4xl px-8">
-      <h1 class="text-2xl font-bold text-gray-800 whitespace-nowrap">
+      <h1 class="text-2xl font-bold text-[#523F31] whitespace-nowrap">
         ITBMS Shop
       </h1>
 
@@ -48,30 +48,20 @@ const handleKeyPress = (event) => {
           @keypress="handleKeyPress"
           type="text"
           placeholder="Search for products..."
-          class="itbms-search-text px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
+          class="itbms-search-text px-4 py-2 border border-[#523F31] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
         />
         <button 
           @click="handleSearch"
-          class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          class="px-4 py-2 bg-[#523F31] text-white rounded-md cursor-pointer hover:opacity-90"
         >
-          Search
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32"><path fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="m5 27l7.5-7.5M28 13a9 9 0 1 1-18 0a9 9 0 0 1 18 0Z"/></svg>
         </button>
         <button 
           @click="handleClearSearch"
-          class="itbms-search-clear-button px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+          class="itbms-search-clear-button px-4 py-2 cursor-pointer bg-[#523F31] text-white font-semibold rounded-md hover:opacity-90"
         >
           Clear
         </button>
-      </div>
-
-      <!-- Add Profile and Cart Icons -->
-      <div class="flex space-x-4">
-        <div class="cursor-pointer">
-          <i class="fas fa-user text-gray-600 text-2xl"></i>
-        </div>
-        <div class="cursor-pointer">
-          <i class="fas fa-shopping-cart text-gray-600 text-2xl"></i>
-        </div>
       </div>
     </div>
   </div>

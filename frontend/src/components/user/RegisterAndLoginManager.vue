@@ -5,13 +5,13 @@ import { onMounted, ref } from "vue";
 import { register, addItem } from "@/libs/fetchUtil";
 import { decodeJWT } from "@/libs/decodeJWT";
 import { useUserStore } from '../../stores/users.js';
-const accessToken = sessionStorage.getItem('accessToken')
+const accessToken = localStorage.getItem('accessToken')
 const userStore = useUserStore();
 const saveTokens = (accessToken, nickname) => {
-  sessionStorage.setItem('accessToken', accessToken);
-  console.log('Saving accessToken to sessionStorage:', accessToken);
+  localStorage.setItem('accessToken', accessToken);
+  console.log('Saving accessToken to localStorage:', accessToken);
   userStore.setUser(decodeJWT(accessToken));
-  sessionStorage.setItem('nickname', nickname);
+  localStorage.setItem('nickname', nickname);
 };
 onMounted(()=>{
   if(accessToken){

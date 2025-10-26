@@ -255,4 +255,63 @@ public class UserService {
         user.setPassword(encoded);
         repository.save(user);
     }
+    @Transactional
+    public void changePassword(Integer targetUserId, Integer currentUserId, ChangePasswordDto request) {
+        if (!currentUserId.equals(targetUserId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You can only change your own password");
+        }
+
+        User user = repository.findById(targetUserId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!user.getIsActive()) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "User account is not active");
+        }
+
+        if (!checkPassword(request.getCurrentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Current password is incorrect");
+        }
+
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "New password and confirm password do not match");
+        }
+
+        if (checkPassword(request.getNewPassword(), user.getPassword())) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "New password must be different from current password");
+        }
+
+        validatePasswordStrength(request.getNewPassword());
+
+        user.setPassword(encodePassword(request.getNewPassword()));
+        repository.save(user);
+    }
+
+    private void validatePasswordStrength(String password) {
+        if (password.length() < 8) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Password must be at least 8 characters");
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Password must contain at least one uppercase letter");
+        }
+        if (!password.matches(".*[a-z].*")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Password must contain at least one lowercase letter");
+        }
+        if (!password.matches(".*\\d.*")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Password must contain at least one number");
+        }
+        if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Password must contain at least one special character");
+        }
+    }
 }

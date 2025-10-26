@@ -17,7 +17,7 @@ import {decodeJWT} from "@/libs/decodeJWT.js";
 const router = useRouter();
 const route = useRoute();
 const brands = ref([]);
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 const getUser = decodeJWT(accessToken);
 const validationMessages = ref({
   brand: "",

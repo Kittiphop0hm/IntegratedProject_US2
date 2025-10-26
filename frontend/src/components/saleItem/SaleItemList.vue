@@ -17,17 +17,17 @@ const route = useRoute();
 const saleItems = ref([]);
 const isDelete = ref(false);
 const router = useRouter();
-const accessToken = sessionStorage.getItem('accessToken')
+const accessToken = localStorage.getItem('accessToken')
 const getUser = decodeJWT(accessToken)
 const pageObj = ref({});
 const pageSize = ref();
 const pageNumber = ref();
-const pageNumberSession = sessionStorage.getItem("pageNumber");
-const pageSizeSession = sessionStorage.getItem("pageSize");
+const pageNumberSession = localStorage.getItem("pageNumber");
+const pageSizeSession = localStorage.getItem("pageSize");
 const {fetchCountNewOrder} = useCountNewOrder()
 watch([pageSize, pageNumber], () => {
-  sessionStorage.setItem("pageSize", pageSize.value);
-  sessionStorage.setItem("pageNumber", pageNumber.value);
+  localStorage.setItem("pageSize", pageSize.value);
+  localStorage.setItem("pageNumber", pageNumber.value);
   fetchData();
 });
 watch(pageSize, () => {

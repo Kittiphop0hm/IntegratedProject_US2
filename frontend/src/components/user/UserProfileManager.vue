@@ -6,7 +6,7 @@ import {decodeJWT} from "@/libs/decodeJWT.js";
 import { useRoute, useRouter } from "vue-router";
 
 const router = useRouter()
-const accessToken = sessionStorage.getItem('accessToken')
+const accessToken = localStorage.getItem('accessToken')
 const getUser = decodeJWT(accessToken)
 const user = ref({})
 const maskPhone = ref('')
@@ -47,7 +47,7 @@ const editUser = async (currentUser) => {
   if (currentUser) {
     const updateUser = await editItem(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser) 
     console.log(updateUser);
-    sessionStorage.setItem("nickname", updateUser.nickName)
+    localStorage.setItem("nickname", updateUser.nickName)
      
     router.push({name: 'UserProfile'})
     if (updateUser.status === 200) {
@@ -64,18 +64,76 @@ const editUser = async (currentUser) => {
     }
   }
 }
+
+
+const isChangePasswordSuccess = ref(false)
+const isChangePasswordError = ref(false)
+const changePasswordErrorMessage = ref('')
+const showChangePasswordModal = ref(false)
+
+const handleChangePassword = async (passwordData) => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_APP_URL}/v2/users/${getUser.id}/change-password`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      credentials: 'include',
+      body: JSON.stringify(passwordData)
+    })
+
+    if (response.ok || response.status === 200) {
+      
+      isChangePasswordSuccess.value = true
+      isChangePasswordError.value = false
+      changePasswordErrorMessage.value = ''
+      showChangePasswordModal.value = false // ปิด modal
+      
+      setTimeout(() => {
+        isChangePasswordSuccess.value = false
+      }, 5000)
+    } else {
+     
+      const errorData = await response.json()
+      isChangePasswordError.value = true
+      isChangePasswordSuccess.value = false
+      
+      changePasswordErrorMessage.value = errorData.message || 'Failed to change password'
+      
+      setTimeout(() => {
+        isChangePasswordError.value = false
+        changePasswordErrorMessage.value = ''
+      }, 5000)
+    }
+  } catch (error) {
+    console.error('Error changing password:', error)
+    isChangePasswordError.value = true
+    isChangePasswordSuccess.value = false
+    changePasswordErrorMessage.value = 'Network error. Please try again.'
+    
+    setTimeout(() => {
+      isChangePasswordError.value = false
+      changePasswordErrorMessage.value = ''
+    }, 5000)
+  }
+}
 </script>
 
 <template>
   <UserProfile 
-  :user="user" 
-  :maskPhoneNumber="maskPhone"
-  :maskBankNo="maskBankNo" 
-  :isSuccess="isSuccess" 
-  :isError="isError"
-  @updateUser="editUser" />
+    :user="user" 
+    :maskPhoneNumber="maskPhone"
+    :maskBankNo="maskBankNo" 
+    :isSuccess="isSuccess" 
+    :isError="isError"
+    :isChangePasswordSuccess="isChangePasswordSuccess"
+    :isChangePasswordError="isChangePasswordError"
+    :changePasswordErrorMessage="changePasswordErrorMessage"
+    v-model:showChangePasswordModal="showChangePasswordModal"
+    @updateUser="editUser"
+    @changePassword="handleChangePassword" />
 </template>
 
 <style scoped>
-
 </style>

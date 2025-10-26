@@ -25,7 +25,7 @@ watch(note, (newVal) => {
 });
 
 const selectAllCheck = ref(false);
-const accessToken = sessionStorage.getItem("accessToken");
+const accessToken = localStorage.getItem("accessToken");
 // watch(selectAllCheck, (newVal) => {
 //   // sellerCheck.value = newVal
 //   arrayCartItems.value.forEach( obj => {
@@ -128,7 +128,6 @@ function changeQty(item, value) {
 
 const isDelete = ref(false);
 const cancelDelete = () => {
-  // cartStore.cartQuantity += 1;
   isDelete.value = false;
 };
 
