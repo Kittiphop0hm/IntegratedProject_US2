@@ -697,7 +697,7 @@ const enableLoginButton = computed(() => {
 <!-- Login -->
   <div
     v-if="pathName === 'Login'"
-    class="relative min-h-screen bg-white flex items-center justify-center p-6">
+    class="relative min-h-screen mt-[50px] bg-white flex items-center justify-center p-6">
     
     <div class="bg-[#796254] text-white rounded-2xl shadow-xl p-8 w-full max-w-md">
       <div class="text-center mb-8">
