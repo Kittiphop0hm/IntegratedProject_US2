@@ -38,11 +38,7 @@ const pictures = ref([]);
 const items = ref([]);
 const mainImage = ref();
 const quantityInCart = ref(1);
-// const defaultImage = '/images/carbon_no-image-gray.png'
-
-const getImageByIndex = (image) => {
-  return !image ? '/images/carbon_no-image-gray.png' : image
-}
+const defaultImage = '/us2/images/carbon_no-image-gray.png'
 
 onMounted(async () => {
   try {
@@ -123,7 +119,7 @@ function addQtyToParent(type) {
     <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
       <div class="lg:w-1/2">
         <div class="w-[500px] h-[290px] max-md:w-full flex justify-center items-center relative rounded-md p-2 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-white">
-          <img :src="!mainImage ? '/images/carbon_no-image-gray.png' : mainImage" alt="main image" class="w-50 h-50" />
+          <img :src="!mainImage ? '/us2/images/carbon_no-image-gray.png' : mainImage" alt="main image" class="w-50 h-50" />
         </div>
 
         <div class="w-[500px] flex justify-center items-center">
@@ -133,28 +129,28 @@ function addQtyToParent(type) {
               class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
             >
               <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-              <img :src="getImageByIndex(pictures[0])" alt="thumb 1" class="w-[74px] h-[74px] mx-auto" />
+              <img :src="!pictures[0] ? defaultImage : pictures[0]" alt="thumb 1" class="w-[74px] h-[74px] mx-auto" />
             </div>
             <div
               @click="clickShowImage(1)"
               class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
             >
               <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-              <img :src="getImageByIndex(pictures[1])" alt="thumb 2" class="w-[74px] h-[74px] mx-auto" />
+              <img :src="!pictures[1] ? defaultImage : pictures[1]" alt="thumb 2" class="w-[74px] h-[74px] mx-auto" />
             </div>
             <div
               @click="clickShowImage(2)"
               class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
             >
               <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-              <img :src="getImageByIndex(pictures[2])" alt="thumb 3" class="w-[74px] h-[74px] mx-auto" />
+              <img :src="!pictures[2] ?  defaultImage : pictures[2]" alt="thumb 3" class="w-[74px] h-[74px] mx-auto" />
             </div>
             <div
               @click="clickShowImage(3)"
               class="w-[100px] h-[100px] flex justify-center items-center relative shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-[#796254] rounded p-1 hover:opacity-80 cursor-pointer"
             >
               <!-- <button class="absolute top-0 right-1 text-red-500 font-bold cursor-pointer hover:opacity-70">X</button> -->
-              <img :src="getImageByIndex(pictures[3])" alt="thumb 4" class="w-[74px] h-[74px] mx-auto" />
+              <img :src="!pictures[3] ? defaultImage : pictures[3]"/>
             </div>
           </div>
         </div>
