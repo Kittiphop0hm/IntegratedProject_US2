@@ -58,32 +58,27 @@ public class UserService {
 
         try {
             if (userForm.getUserType().equalsIgnoreCase("SELLER")) {
-                // ตรวจสอบอีเมลซ้ำ
+
                 if (repository.existsUserByEmail(userForm.getEmail())) {
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email: " + userForm.getEmail() + " is exists.");
                 }
 
-                // สร้าง User object
                 User user = modelMapper.map(userForm, User.class);
                 user.setPassword(encodePassword(userForm.getPassword()));
                 user.setIsActive(false);
                 user.setUserType(user.getUserType().toUpperCase());
 
-                // บันทึก user และ commit transaction ทันที
-                User addUser = repository.saveAndFlush(user); // ใช้ saveAndFlush()
 
-                // Debug logging
+                User addUser = repository.saveAndFlush(user);
+
                 System.out.println("กำลังจะบันทึกไฟล์สำหรับ user ID: " + addUser.getId());
                 System.out.println("User มีอยู่ในฐานข้อมูล: " + repository.existsById(addUser.getId()));
 
-                // ตอนนี้ค่อยเก็บไฟล์
                 userFileService.store(cardImageFront, addUser.getId(), "FRONT");
                 userFileService.store(cardImageBack, addUser.getId(), "BACK");
 
-                // Refresh หลังจากเก็บไฟล์เสร็จแล้ว
                 entityManager.refresh(addUser);
 
-                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token (ใช้ method เดิมสำหรับ email verification)
                 User checkUser = repository.findUserByEmail(userForm.getEmail());
                 String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
                 emailService.sendEmail(userForm.getEmail(), token);
@@ -91,23 +86,22 @@ public class UserService {
                 return modelMapper.map(addUser, ResponseUserDto.class);
 
             } else {
-                // กรณี UserType ไม่ใช่ SELLER
+
                 User user = modelMapper.map(userForm, User.class);
                 user.setIsActive(false);
                 user.setPassword(encodePassword(userForm.getPassword()));
                 user.setUserType(user.getUserType().toUpperCase());
 
-                // บันทึก user
-                User addUser = repository.saveAndFlush(user); // ใช้ saveAndFlush()
 
-                // ตรวจสอบ ID
+                User addUser = repository.saveAndFlush(user);
+
+
                 if (addUser.getId() == null) {
                     throw new RuntimeException("User ID is null after save operation");
                 }
 
                 entityManager.refresh(addUser);
 
-                // ดึงข้อมูล user อีกครั้งเพื่อสร้าง token (ใช้ method เดิมสำหรับ email verification)
                 User checkUser = repository.findUserByEmail(userForm.getEmail());
                 String token = jwtService.generateJwtToken(checkUser.getId(), checkUser.getEmail());
                 emailService.sendEmail(userForm.getEmail(), token);
@@ -120,7 +114,7 @@ public class UserService {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ไม่สามารถสร้างผู้ใช้ได้ เนื่องจากข้อมูลไม่ถูกต้อง");
         } catch (ResponseStatusException e) {
-            // Re-throw ResponseStatusException ที่เรา throw เอง
+
             throw e;
         } catch (Exception e) {
             System.err.println("Unexpected error during user creation: " + e.getMessage());

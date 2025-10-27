@@ -7,6 +7,7 @@ import { decodeJWT } from "@/libs/decodeJWT";
 import { useUserStore } from '../../stores/users.js';
 const accessToken = localStorage.getItem('accessToken')
 const userStore = useUserStore();
+
 const saveTokens = (accessToken, nickname) => {
   localStorage.setItem('accessToken', accessToken);
   console.log('Saving accessToken to localStorage:', accessToken);

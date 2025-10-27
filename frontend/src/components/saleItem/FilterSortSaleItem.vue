@@ -8,12 +8,12 @@ const props = defineProps({
 });
 const filterBrand = ref(props.brands);
 const sortDirection = ref(props.sortDirection);
-const filterPrice = ref(0); // เก็บช่วงราคาที่เลือก
+const filterPrice = ref(0); 
 const filterStorageSize = ref([]);
 
 watchEffect(() => {
   console.log(filterStorageSize.value);
-})// เปลี่ยนเป็น array เพื่อเก็บหลายค่า
+})
 
 const emit = defineEmits([
   "filterSaleItemByBrand",
@@ -27,7 +27,7 @@ const isDropFilterStorageSize = ref(false);
 const brands = ref([]);
 const storageSizes = ref([]);
 
-// ช่วงราคาที่กำหนด
+
 const priceRanges = [
   { label: "0-5,000", min: 0, max: 5000 },
   { label: "5,001-10,000", min: 5001, max: 10000 },
@@ -37,26 +37,25 @@ const priceRanges = [
   { label: "40,001-50,000", min: 40001, max: 50000 },
 ];
 
-// สำหรับ custom price range
+
 const customPriceMin = ref('');
 const customPriceMax = ref('');
 
-// ฟังก์ชันเรียงลำดับ storage size
+
 const sortStorageSizes = (sizes) => {
   return sizes.sort((a, b) => {
-    // "Not specified" ไว้ท้ายสุด
+    
     if (a.name === "Not specified") return 1;
     if (b.name === "Not specified") return -1;
     
-    // แปลงค่าเป็นตัวเลขสำหรับการเรียงลำดับ
     const getValue = (size) => {
       const name = size.name.toLowerCase();
       if (name.includes('tb')) {
-        return parseFloat(name) * 1024; // แปลง TB เป็น GB
+        return parseFloat(name) * 1024; 
       } else if (name.includes('gb')) {
         return parseFloat(name);
       } else {
-        return parseFloat(name) / 1024; // สมมติว่าเป็น MB แปลงเป็น GB
+        return parseFloat(name) / 1024;
       }
     };
     
@@ -73,11 +72,9 @@ const mockStorageSizes = ref([
     { id: 6, name: "1Tb", value: 1024},
     { id: 7, name: "Not specified", value: 0} 
 ]);
-
-// ฟังก์ชันแปลงค่าสำหรับส่งไป backend
+ 
 const convertStorageSizesForBackend = (storageSizes) => {
   return storageSizes.map(size => {
-    // ถ้าค่าเป็น 0 ให้ส่งเป็น "0"
     if (size === 0) {
       return "0";
     }
@@ -85,7 +82,6 @@ const convertStorageSizesForBackend = (storageSizes) => {
   });
 };
 
-// ฟังก์ชันหลักสำหรับ emit ข้อมูล
 const emitFilterAndSort = () => {
   const convertedStorageSizes = convertStorageSizesForBackend(filterStorageSize.value);
   emit("filterAndSortSaleItem", filterBrand.value, sortDirection.value, "", {
@@ -97,11 +93,10 @@ const emitFilterAndSort = () => {
 
 onMounted(async () => {
   try {
-    // ดึงข้อมูล brands
+  
     brands.value = await getItems(`${import.meta.env.VITE_APP_URL}/v1/brands`);
     brands.value.sort((a, b) => a.name.localeCompare(b.name));
   
-    // โหลด filters จาก localStorage
     const savedBrandFilter = localStorage.getItem("filterBrand");
     const savedPriceFilter = localStorage.getItem("filterPrice");
     const savedStorageSizeFilter = localStorage.getItem("filterStorageSize");
@@ -120,11 +115,11 @@ onMounted(async () => {
   }
 });
 
-// ล้างทั้ง brand, price และ storage size filters
+
 const clearAllFilters = () => {
   filterBrand.value = [];
   filterPrice.value = null;
-  filterStorageSize.value = []; // ล้างเป็น array ว่าง
+  filterStorageSize.value = []; 
   customPriceMin.value = '';
   customPriceMax.value = '';
   isDropFilterBrand.value = false;
@@ -142,7 +137,6 @@ const deleteBrand = (index) => {
   emitFilterAndSort();
 };
 
-// เลือกช่วงราคา
 const selectPriceRange = (range) => {
   filterPrice.value = range;
   customPriceMin.value = '';
@@ -152,13 +146,13 @@ const selectPriceRange = (range) => {
   emitFilterAndSort();
 };
 
-// ตั้งค่า custom price range
+
 const setCustomPriceRange = () => {
   const minPrice = customPriceMin.value ? parseFloat(customPriceMin.value) : null;
   const maxPrice = customPriceMax.value ? parseFloat(customPriceMax.value) : null;
   
   if (minPrice !== null && maxPrice !== null && maxPrice < minPrice) {
-    return; // ไม่ทำอะไรถ้าราคาสูงสุดน้อยกว่าต่ำสุด
+    return; 
   }
   
   if (minPrice !== null || maxPrice !== null) {
@@ -178,14 +172,14 @@ const setCustomPriceRange = () => {
   }
 };
 
-// ลบช่วงราคาที่เลือก
+
 const removePriceFilter = () => {
   filterPrice.value = null;
   localStorage.removeItem("filterPrice");
   emitFilterAndSort();
 };
 
-// ลบ storage size ที่เลือกเฉพาะรายการ
+
 const removeStorageSizeFilter = (storageToRemove) => {
   const index = filterStorageSize.value.indexOf(storageToRemove);
   if (index > -1) {
@@ -195,7 +189,7 @@ const removeStorageSizeFilter = (storageToRemove) => {
   }
 };
 
-// ล้าง storage size ทั้งหมด
+
 const clearAllStorageSizeFilters = () => {
   filterStorageSize.value = [];
   localStorage.removeItem("filterStorageSize");
@@ -213,7 +207,7 @@ const setFilterSortSaleItems = (brands, direction, field) => {
   });
 };
 
-// ฟังก์ชันสำหรับการเปลี่ยนแปลง storage size filter
+
 const onStorageSizeChange = () => {
   localStorage.setItem("filterStorageSize", JSON.stringify(filterStorageSize.value));
   emitFilterAndSort();
@@ -222,11 +216,11 @@ const onStorageSizeChange = () => {
 
 <template>
   <div class="relative top-10 px-10 mb-5">
-    <!-- แถว Brand + Price + Storage Size + Clear + Sort -->
+   
     <div class="flex items-start justify-between mb-2">
-      <!-- ปุ่ม Brand + Price + Storage Size + Clear -->
+    
       <div class="flex items-center space-x-4">
-        <!-- ปุ่ม Brand -->
+       
         <button
           @click="isDropFilterBrand = !isDropFilterBrand"
           class="itbms-brand-filter flex items-center justify-start bg-white border-2 border-gray-300 text-gray-700 px-5 py-3 hover:border-gray-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg transition-all duration-200"
@@ -250,7 +244,7 @@ const onStorageSizeChange = () => {
           </span>
         </button>
 
-        <!-- ปุ่ม Price -->
+     
         <button
           @click="isDropFilterPrice = !isDropFilterPrice"
           class="itbms-price-filter flex items-center justify-start bg-white border-2 border-gray-300 text-gray-700 px-5 py-3 hover:border-gray-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg transition-all duration-200"
@@ -274,7 +268,7 @@ const onStorageSizeChange = () => {
           </span>
         </button>
 
-        <!-- ปุ่ม Storage Size -->
+      
         <button
           @click="isDropFilterStorageSize = !isDropFilterStorageSize"
           class="itbms-storage-size-filter flex items-center justify-start bg-white border-2 border-gray-300 text-gray-700 px-5 py-3 hover:border-gray-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-lg transition-all duration-200"
@@ -298,7 +292,7 @@ const onStorageSizeChange = () => {
           </span>
         </button>
 
-        <!-- ปุ่ม Clear -->
+       
         <button
           @click="clearAllFilters"
           class="itbms-brand-filter-clear bg-white border-2 border-gray-300 text-gray-700 px-5 py-3 hover:border-red-400 hover:text-red-600 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-red-200 rounded-lg transition-all duration-200 font-medium"
@@ -307,7 +301,7 @@ const onStorageSizeChange = () => {
         </button>
       </div>
 
-      <!-- Sort ด้านขวา -->
+     
       <div class="flex items-center space-x-2">
         <span class="text-sm text-gray-600 font-medium mr-2">Sort:</span>
         <div class="itbms-brand-sort flex border-2 border-gray-300 rounded-lg overflow-hidden shadow-sm bg-white">
@@ -368,11 +362,11 @@ const onStorageSizeChange = () => {
       </div>
     </div>
 
-    <!-- Filter tags -->
+    
     <div class="flex flex-wrap items-center gap-3 p-4 bg-gray-50 rounded-lg mb-4 shadow-sm border border-gray-200">
       <span class="text-sm font-medium text-gray-600">Active Filters:</span>
       
-      <!-- Brand Filter Tags -->
+      
       <span
         v-for="(brand, index) in filterBrand"
         :key="'brand-' + index"
@@ -397,7 +391,6 @@ const onStorageSizeChange = () => {
         </button>
       </span>
 
-      <!-- Price Filter Tag -->
       <span
         v-if="filterPrice"
         class="itbms-price-item bg-white border-2 border-gray-300 rounded-full px-4 py-2 text-sm text-gray-800 shadow-sm hover:shadow-md transition-all duration-200 flex items-center"
@@ -423,7 +416,7 @@ const onStorageSizeChange = () => {
         </button>
       </span>
 
-      <!-- Storage Size Filter Tags - แสดงแต่ละรายการที่เลือก -->
+      
       <span
         v-for="(storage, index) in filterStorageSize"
         :key="'storage-' + index"
@@ -448,7 +441,7 @@ const onStorageSizeChange = () => {
         </button>
       </span>
 
-      <!-- แสดงข้อความเมื่อไม่มี filter -->
+     
       <span 
         v-if="filterBrand.length === 0 && !filterPrice && filterStorageSize.length === 0" 
         class="text-sm text-gray-400 italic"
@@ -457,14 +450,14 @@ const onStorageSizeChange = () => {
       </span>
     </div>
 
-    <!-- Combined Dropdown - Brand, Price และ Storage Size ในกรอบเดียวกัน -->
+   
     <div
       v-if="isDropFilterBrand || isDropFilterPrice || isDropFilterStorageSize"
       class="w-auto bg-white border border-gray-300 p-4 shadow-md mt-2 rounded-lg max-h-64 overflow-y-auto"
     >
       <div class="flex space-x-6">
         
-        <!-- Brand Section -->
+       
         <div v-if="isDropFilterBrand" class="flex-1 min-w-48">
           <h3 class="text-sm font-semibold text-gray-700 mb-3 border-b pb-2">Brand</h3>
           <div class="flex flex-col space-y-2">
@@ -488,11 +481,11 @@ const onStorageSizeChange = () => {
           </div>
         </div>
 
-        <!-- Price Section -->
+       
         <div v-if="isDropFilterPrice" class="flex-1 min-w-48">
           <h3 class="text-sm font-semibold text-gray-700 mb-3 border-b pb-2">Price Range</h3>
           
-          <!-- Predefined Price Ranges -->
+        
           <div class="mb-4">
             <div class="flex flex-col space-y-2">
               <div
@@ -518,7 +511,7 @@ const onStorageSizeChange = () => {
             </div>
           </div>
 
-          <!-- Custom Price Range -->
+     
           <div class="border-t pt-3">
             <div class="flex items-center space-x-2 mb-2">
               <input
@@ -544,7 +537,7 @@ const onStorageSizeChange = () => {
           </div>
         </div>
 
-        <!-- Storage Size Section - เปลี่ยนเป็นใช้ checkbox แทน radio -->
+        
         <div v-if="isDropFilterStorageSize" class="flex-1 min-w-48">
           <div class="flex items-center justify-between mb-3 border-b pb-2">
             <h3 class="text-sm font-semibold text-gray-700">Storage Size</h3>

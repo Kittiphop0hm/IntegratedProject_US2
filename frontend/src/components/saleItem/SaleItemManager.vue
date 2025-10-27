@@ -93,21 +93,18 @@ const computedPageNumberArr = computed(() => {
 const buildQueryParams = () => {
   const params = new URLSearchParams();
 
-  // Add pagination
+  
   params.append("page", pageNumber.value);
   params.append("size", pageSize.value);
 
-  // Add search keyword (เพิ่มตรงนี้)
   if (searchKeywordR.value && searchKeywordR.value.trim()) {
     params.append("searchKeyWord", searchKeywordR.value.trim());
   }
 
-  // Add brand filter
   if (filterBrandR.value && filterBrandR.value.length > 0) {
     params.append("filterBrands", filterBrandR.value.join(","));
   }
 
-  // Add price filter
   if (filterPriceR.value) {
     if (
       filterPriceR.value.min !== null &&
@@ -123,12 +120,10 @@ const buildQueryParams = () => {
     }
   }
 
-  // Add storage size filter
   if (filterStorageSizeR.value && filterStorageSizeR.value.length > 0) {
     params.append("filterStorages", filterStorageSizeR.value.join(","));
   }
 
-  // Add sorting
   if (directionR.value && fieldR.value) {
     params.append("sortField", fieldR.value);
     params.append("sortDirection", directionR.value);
@@ -174,7 +169,7 @@ watch([pageSize, pageNumber], () => {
   fetchData();
 });
 
-// เพิ่ม searchKeywordR ใน watch
+
 watch(
   [filterBrandR, directionR, filterPriceR, filterStorageSizeR, searchKeywordR],
   () => {
@@ -257,7 +252,7 @@ const messageAlert = ref("");
 const checkRole = (yourItem) => {
   console.log("checkRole called with item:", yourItem);
   if(userStore.role === "") {
-    console.log("no role stupid 250 SaleitemMnaager")
+    console.log("no role 250 SaleitemMnaager")
     router.push({ name: "Login" });
     return
   }
