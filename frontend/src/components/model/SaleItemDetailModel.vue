@@ -34,11 +34,12 @@ const props = defineProps({
   },
 });
 
+// const pictures = ref([import.meta.env.BASE_URL+"images/huawei.png"]);
 const pictures = ref([]);
 const items = ref([]);
 const mainImage = ref();
 const quantityInCart = ref(1);
-const defaultImage = '/us2/images/carbon_no-image-gray.png'
+const defaultImage = import.meta.env.BASE_URL+'images/carbon_no-image-gray.png'
 
 onMounted(async () => {
   try {
@@ -119,7 +120,7 @@ function addQtyToParent(type) {
     <div class="itbms-row flex flex-col lg:flex-row lg:space-x-10">
       <div class="lg:w-1/2">
         <div class="w-[500px] h-[290px] max-md:w-full flex justify-center items-center relative rounded-md p-2 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] bg-white">
-          <img :src="!mainImage ? '/us2/images/carbon_no-image-gray.png' : mainImage" alt="main image" class="w-50 h-50" />
+          <img :src="!mainImage ? defaultImage : mainImage" alt="main image" class="w-50 h-50" />
         </div>
 
         <div class="w-[500px] flex justify-center items-center">
