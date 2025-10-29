@@ -59,13 +59,13 @@ const logout = async () => {
           <router-link to="/">Home</router-link>
         </div>
         <div class="mx-3 hover:opacity-80">
-          <router-link :to="{ name: 'SaleItemHome' }">SaleItems</router-link>
+          <router-link :to="{ name: 'SaleItemHome' }">Sale Items</router-link>
         </div>
-        <div class="mx-3 hover:opacity-80">
+        <div v-show="useUserStore.role === 'Admin'" class="mx-3 hover:opacity-80">
           <router-link :to="{ name: 'BrandManager' }">Brand</router-link>
         </div>
         <div class="mx-3 hover:opacity-80 itbms-seller">
-          <router-link :to="{ name: 'SaleItemList' }">My SaleItem</router-link>
+          <router-link :to="{ name: 'SaleItemList' }">My Sale Item</router-link>
         </div>
       </div>
 

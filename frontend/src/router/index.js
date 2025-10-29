@@ -162,7 +162,10 @@ router.beforeEach((to, from, next) => {
   }
 
   // 3️⃣ ถ้าเข้าหน้า SaleItemList แต่ไม่ใช่ Seller → เด้งกลับ Home
-  if (to.name === "SaleItemList" && !userStore.isSeller) {
+  if (
+    to.name === "SaleItemList" &&
+    !userStore.isSeller 
+  ) {
     next({ name: "SaleItemHome" });
     return;
   }
@@ -171,6 +174,13 @@ router.beforeEach((to, from, next) => {
   if (from.name === "SaleItemHome" && to.name !== "SaleItemDetail") {
     localStorage.removeItem("pageSize");
     localStorage.removeItem("pageNumber");
+  }
+
+  if(to.name === "BrandManager" || to.name === "BrandAdd" || to.name === "BrandEdit") {
+    if(!userStore.isAdmin) {
+      next({ name: "SaleItemHome" });
+      return;
+    }
   }
 
   // ✅ ผ่านหมดทุกเงื่อนไข → ไปต่อได้เลย

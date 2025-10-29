@@ -104,6 +104,8 @@ const isSuccess = ref();
 const isWarning = ref();
 const itemDelete = ref();
 function changeQty(item, value) {
+  console.log(item.quantity)
+  console.log("Change Qty by: ", value);
   const newQty = item.quantity + value;
   
   console.log("New Qty: ", newQty);
@@ -120,7 +122,7 @@ function changeQty(item, value) {
     isSuccess.value = false;
     isWarning.value = true;
     messageAlert.value = result;
-    // return;
+    newQty = item.quantity;
   }
   item.quantity = newQty;
   cartStore.cartQuantity = cartStore.cartQuantity + value;
@@ -233,10 +235,9 @@ async function placeOrder() {
 
 <template>
   <Navbar />
-  <Search />
 
   <!-- Popup ลบสินค้า -->
-  <div>
+  <div class="">
     <DeletePopupModel
       v-if="isDelete"
       @cancel-delete="cancelDelete"
@@ -250,15 +251,15 @@ async function placeOrder() {
     </DeletePopupModel>
   </div>
 
-  <!-- Popup แจ้งเตือน -->
-  <div v-show="isShowAlertMessageModel" class="container my-5">
-    <AlertMessageModel :isWarning="isWarning" :isSuccess="isSuccess">
+<div class="mt-[150px]  h-[100vh]">
+    <div v-show="isShowAlertMessageModel" class="container my-5">
+    <AlertMessageModel  :isSuccess="isSuccess">
       <template #message>
         <p v-show="isSuccess" class="text-[#796254] font-semibold text-center">
           Your order has been successfully
           <span class="text-[#9D8A7C]">processed</span>
         </p>
-        <p v-show="isWarning" class="text-red-500 font-semibold text-center">
+        <p v-show="!isSuccess" class="text-red-500 font-semibold text-center">
           {{ messageAlert }}
         </p>
       </template>
@@ -383,6 +384,8 @@ async function placeOrder() {
       </button>
     </div>
   </div>
+</div>
+
 </template>
 
 <style scoped>

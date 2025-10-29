@@ -94,7 +94,6 @@ function addQtyToParent(type) {
 </script>
 
 <template>
-  <Search />
   <div class="w-full min-h-screen flex justify-center items-center bg-white rounded-lg">
   <div class="w-[90%] rounded-2xl shadow-2xl p-6 bg-[#9D8A7C]">
   <div class="container bg-[#9D8A7C] mx-auto px-6 mt-10 mb-10 p-5 rounded-lg">
