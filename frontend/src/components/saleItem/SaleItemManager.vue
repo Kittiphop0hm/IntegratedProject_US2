@@ -246,7 +246,8 @@ const handleSearch = (keyword) => {
   pageNumber.value = 0;
   fetchData();
 };
-
+const addToCartSuccess = ref(false);
+const countAddToCartSuccess = ref(0);
 const isShowAlertMessageModel = ref(false);
 const messageAlert = ref("");
 const checkRole = (yourItem) => {
@@ -274,9 +275,18 @@ const checkRole = (yourItem) => {
       messageAlert.value = result;
     }
     else {
+      let n = 1000
       console.log("Error mai")
       cartStore.pushInCart(yourItem);
-      alert("Ok Herbal")
+      addToCartSuccess.value = true;
+      if(addToCartSuccess.value = true){
+        countAddToCartSuccess.value += 1;
+        n += 1000
+      }
+      setTimeout(() => {
+        addToCartSuccess.value = false;
+        countAddToCartSuccess.value = 0;
+      }, n);
     }
   }
 };
@@ -284,6 +294,23 @@ const checkRole = (yourItem) => {
 </script>
 
 <template>
+<div class="relative border" >
+  <transition
+    enter-active-class="transition-all  ease-out"
+    enter-from-class="opacity-0 translate-y-5"
+    enter-to-class="opacity-100 translate-y-0"
+    leave-active-class="transition-all  ease-in"
+    leave-from-class="opacity-100 translate-y-0"
+    leave-to-class="opacity-0 translate-y-5"
+  >
+    <!-- Notification -->
+    <div
+      v-if="addToCartSuccess"
+      class="fixed right-5 bottom-5 border p-4 bg-green-600 text-white rounded-lg shadow-lg z-20"
+    >
+      Add to cart successfully! <span >({{ countAddToCartSuccess }})</span>
+    </div>
+  </transition>
   <SearchComponent @search="handleSearch" />
 
   <div
@@ -406,6 +433,11 @@ const checkRole = (yourItem) => {
       Last
     </button>
   </div>
+</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+
+
+</style>

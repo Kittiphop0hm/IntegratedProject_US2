@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 .requestMatchers("/v2/auth/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/v1/sale-items/**").permitAll()
                                 .requestMatchers(HttpMethod.GET,"/v2/sale-items/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/v1/brands/**").permitAll()
                                 .requestMatchers(HttpMethod.POST,"/v1/sale-items/**").hasAnyAuthority("SELLER")
                                 .requestMatchers(HttpMethod.PUT,"/v1/sale-items/**").hasAnyAuthority("SELLER")
                                 .requestMatchers(HttpMethod.DELETE,"/v1/sale-items/**").hasAnyAuthority("SELLER")

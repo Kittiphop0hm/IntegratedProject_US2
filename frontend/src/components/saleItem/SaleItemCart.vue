@@ -70,7 +70,7 @@ const totalPrice = computed(() => {
 
 watchEffect(() => {
   console.log(totalQuantity.value);
-  console.log(address.value)
+  console.log(address.value);
 });
 
 function checkSelectAll() {
@@ -104,10 +104,10 @@ const isSuccess = ref();
 const isWarning = ref();
 const itemDelete = ref();
 function changeQty(item, value) {
-  console.log(item.quantity)
+  console.log(item.quantity);
   console.log("Change Qty by: ", value);
   const newQty = item.quantity + value;
-  
+
   console.log("New Qty: ", newQty);
   if (newQty < 1) {
     itemDelete.value = item;
@@ -149,16 +149,19 @@ const deleteItem = (itemDelete) => {
 async function changeFormattedObject() {
   console.log("Change Formatted Object");
   console.log(arrayCartItems.value);
-  for(const seller of arrayCartItems.value) {
+  for (const seller of arrayCartItems.value) {
     console.log(seller.sellerName);
-    for(const item of seller.items) {
+    for (const item of seller.items) {
       console.log("Checking item: ", item.saleItemId, item.model);
       console.log("typeof saleItemId:" + typeof item.saleItemId);
-      const data = await getItemById(`${import.meta.env.VITE_APP_URL}/v1/sale-items`, item.saleItemId)
+      const data = await getItemById(
+        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+        item.saleItemId
+      );
       console.log("Qty in stock: ", item.qtyInstock);
       console.log("Data from API: ", data);
-      console.log(data)
-      if(data !== item.qtyInstock) { 
+      console.log(data);
+      if (data !== item.qtyInstock) {
         item.qtyInstock = data.quantity;
       }
       console.log("Updated Qty in stock: ", item.qtyInstock);
@@ -183,12 +186,20 @@ async function changeFormattedObject() {
       isNewOrder: true,
       orderItems: seller.items
         .filter((item) => item.checked)
-        .map((item) => (
-        {
+        .map((item) => ({
           saleItemId: item.saleItemId,
           price: item.price,
           quantity: item.quantity,
-          description: item.brandName + " " + item.model + " " + "(" + item.storageGb + "," + item.color + ")"
+          description:
+            item.brandName +
+            " " +
+            item.model +
+            " " +
+            "(" +
+            item.storageGb +
+            "," +
+            item.color +
+            ")",
         })),
     }));
 
@@ -199,8 +210,8 @@ async function placeOrder() {
   const orderData = await changeFormattedObject();
   const decode = decodeJWT(accessToken);
   console.log(decode);
-  
-  console.log(cartStore.cartObj)
+
+  console.log(cartStore.cartObj);
   console.log(orderData);
   console.log(JSON.stringify(orderData, null, 2));
   const item = await addItemWithToken(
@@ -209,16 +220,25 @@ async function placeOrder() {
     accessToken
   );
 
-  const listSaleItemIds = orderData.flatMap(seller => seller.orderItems.map(item => item.saleItemId));
+  const listSaleItemIds = orderData.flatMap((seller) =>
+    seller.orderItems.map((item) => item.saleItemId)
+  );
   console.log(listSaleItemIds);
-  cartStore.cartObj = cartStore.cartObj.map(seller => ({
-    ...seller,
-    items: seller.items.filter(item => !listSaleItemIds.includes(item.saleItemId))
-  })).filter(seller => seller.items.length > 0);
+  cartStore.cartObj = cartStore.cartObj
+    .map((seller) => ({
+      ...seller,
+      items: seller.items.filter(
+        (item) => !listSaleItemIds.includes(item.saleItemId)
+      ),
+    }))
+    .filter((seller) => seller.items.length > 0);
   cartStore.cartQuantity = cartStore.cartObj.reduce((acc, seller) => {
-    const totalItems = seller.items.reduce((accItems, item) => accItems + item.quantity, 0);
+    const totalItems = seller.items.reduce(
+      (accItems, item) => accItems + item.quantity,
+      0
+    );
     return acc + totalItems;
-    // acc + seller.items.length 
+    // acc + seller.items.length
   }, 0);
   arrayCartItems.value = cartStore.cartObj;
   // cartStore.cartObj.filter( () =>  )
@@ -231,6 +251,33 @@ async function placeOrder() {
     router.push({ name: "SaleItemHome" });
   }, 3000);
 }
+const isDelete2 = ref(false);
+function deleteSelectedItem() {
+  if (selectAllCheck.value) {
+    cartStore.cartQuantity = 0;
+    arrayCartItems.value = [];
+  }
+  console.log("Delete selected item");
+  console.log(arrayCartItems.value);
+  for (const seller of arrayCartItems.value) {
+    if (seller.checked) {
+      seller.items.reduce((acc, item) => {
+        cartStore.cartQuantity -= item.quantity;
+      }, 0);
+      seller.items = [];
+    } else {
+      seller.items.reduce((acc, item) => {
+        if (item.checked) {
+          cartStore.cartQuantity -= item.quantity;
+        }
+      }, 0);
+      seller.items = seller.items.filter((item) => !item.checked);
+    }
+  }
+  cartStore.cartObj = arrayCartItems.value;
+  isDelete2.value = false;
+}
+
 </script>
 
 <template>
@@ -251,141 +298,191 @@ async function placeOrder() {
     </DeletePopupModel>
   </div>
 
-<div class="mt-[150px]  h-[100vh]">
-    <div v-show="isShowAlertMessageModel" class="container my-5">
-    <AlertMessageModel  :isSuccess="isSuccess">
+  <div class="">
+    <DeletePopupModel
+      v-if="isDelete2"
+      @cancel-delete="cancelDelete"
+      @delete-sale-item="deleteSelectedItem(itemDelete)"
+    >
       <template #message>
-        <p v-show="isSuccess" class="text-[#796254] font-semibold text-center">
-          Your order has been successfully
-          <span class="text-[#9D8A7C]">processed</span>
-        </p>
-        <p v-show="!isSuccess" class="text-red-500 font-semibold text-center">
-          {{ messageAlert }}
-        </p>
+        <span class="font-semibold text-[#523F31]">
+          Do you want to delete the selected of sale items?
+        </span>
       </template>
-    </AlertMessageModel>
+    </DeletePopupModel>
   </div>
 
-  <!-- Cart Layout -->
-  <div class="container flex flex-col lg:flex-row gap-6 px-4 lg:px-0 mb-10">
-    <!-- Cart Items -->
-    <div class="w-full lg:w-3/5 border border-[#796254] rounded-lg p-4 md:p-6 bg-[#ebe8e8]">
-      <h1 class="text-xl md:text-2xl font-bold text-[#523F31] mb-4 text-center md:text-left">
-        Shopping Cart
-      </h1>
+  <div class="mt-[150px] h-[100vh]">
+    <div v-show="isShowAlertMessageModel" class="container my-5">
+      <AlertMessageModel :isSuccess="isSuccess">
+        <template #message>
+          <p
+            v-show="isSuccess"
+            class="text-[#796254] font-semibold text-center"
+          >
+            Your order has been successfully
+            <span class="text-[#9D8A7C]">processed</span>
+          </p>
+          <p v-show="!isSuccess" class="text-red-500 font-semibold text-center">
+            {{ messageAlert }}
+          </p>
+        </template>
+      </AlertMessageModel>
+    </div>
 
-      <div class="flex items-center mb-4 gap-2">
-        <input
-          type="checkbox"
-          v-model="selectAllCheck"
-          @change="checkSelectAll"
-          class="w-5 h-5 accent-[#9D8A7C]"
-        />
-        <span class="text-[#523F31] font-semibold text-sm md:text-base">Select All</span>
-      </div>
+    <!-- Cart Layout -->
+    <div class="container flex flex-col lg:flex-row gap-6 px-4 lg:px-0 mb-10">
+      <!-- Cart Items -->
+      <div
+        class="relative w-full lg:w-3/5 border border-[#796254] rounded-lg p-4 md:p-6 bg-[#ebe8e8]"
+      >
+        <div
+          @click="isDelete2 = true"
+          class="absolute right-10 top-10 bg-red-300 text-white font-medium px-4 py-2 rounded-lg shadow-lg border  hover:scale-105 active:scale-95 transition-all duration-300 ease-out cursor-pointer"
+          :class="totalQuantity > 0 ? 'border-red-700 hover:bg-red-700 bg-red-500' : ''"
+        >
+          Delete
+        </div>
 
-      <div v-for="(obj, index) in arrayCartItems" :key="index" class="mb-6">
-        <div v-if="obj.items.length > 0" class="flex items-center gap-2 mb-2">
+        <h1
+          class="text-xl md:text-2xl font-bold text-[#523F31] mb-4 text-center md:text-left"
+        >
+          Shopping Cart
+        </h1>
+
+        <div class="flex items-center mb-4 gap-2">
           <input
             type="checkbox"
-            v-model="obj.checked"
-            @change="checkSeller(obj)"
+            v-model="selectAllCheck"
+            @change="checkSelectAll"
             class="w-5 h-5 accent-[#9D8A7C]"
           />
-          <span class="font-semibold text-[#523F31] text-sm md:text-base">{{ obj.sellerName }}</span>
+          <span class="text-[#523F31] font-semibold text-sm md:text-base"
+            >Select All</span
+          >
         </div>
 
-        <!-- แต่ละสินค้า -->
-        <div
-          v-for="(item, idx) in obj.items"
-          :key="idx"
-          class="flex flex-col sm:flex-row items-center sm:items-start gap-3 border border-[#796254] p-3 rounded-lg mb-3 bg-white"
-        >
-          <div class="flex items-center gap-3 w-full sm:w-auto">
+        <div v-for="(obj, index) in arrayCartItems" :key="index" class="mb-6">
+          <div v-if="obj.items.length > 0" class="flex items-center gap-2 mb-2">
             <input
               type="checkbox"
-              v-model="item.checked"
-              @change="checkItem(obj)"
+              v-model="obj.checked"
+              @change="checkSeller(obj)"
               class="w-5 h-5 accent-[#9D8A7C]"
             />
-            <img
-              src="/images/iPhone14ProMax.jpg"
-              alt="phone image"
-              class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
-            />
+            <span class="font-semibold text-[#523F31] text-sm md:text-base">{{
+              obj.sellerName
+            }}</span>
           </div>
 
-          <div class="flex-1 text-[#523F31] font-medium text-center sm:text-left">
-            {{ item.brandName }} {{ item.model }}
-            ({{ item.storageGb }}GB, {{ item.color }})
-          </div>
+          <!-- แต่ละสินค้า -->
+          <div
+            v-for="(item, idx) in obj.items"
+            :key="idx"
+            class="flex flex-col sm:flex-row items-center sm:items-start gap-3 border border-[#796254] p-3 rounded-lg mb-3 bg-white"
+          >
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <input
+                type="checkbox"
+                v-model="item.checked"
+                @change="checkItem(obj)"
+                class="w-5 h-5 accent-[#9D8A7C]"
+              />
+              <img
+                src="/images/iPhone14ProMax.jpg"
+                alt="phone image"
+                class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md"
+              />
+            </div>
 
-          <!-- ปุ่มปรับจำนวน -->
-          <div class="flex items-center justify-center gap-2 mt-2 sm:mt-0">
-            <button
-              @click="changeQty(item, -1)"
-              class="px-2 py-1 sm:px-3 bg-[#9D8A7C] text-white rounded hover:bg-[#796254] text-sm sm:text-base"
+            <div
+              class="flex-1 text-[#523F31] font-medium text-center sm:text-left"
             >
-              -
-            </button>
-            <span class="w-6 text-center text-[#523F31]">{{ item.quantity }}</span>
-            <button
-              @click="changeQty(item, 1)"
-              class="px-2 py-1 sm:px-3 bg-[#9D8A7C] text-white rounded hover:bg-[#796254] text-sm sm:text-base"
-            >
-              +
-            </button>
-          </div>
+              {{ item.brandName }} {{ item.model }} ({{ item.storageGb }}GB,
+              {{ item.color }})
+            </div>
 
-          <div class="font-semibold text-[#523F31] mt-2 sm:mt-0 text-sm sm:text-base">
-            {{ (item.price * item.quantity).toLocaleString() }} ฿
+            <!-- ปุ่มปรับจำนวน -->
+            <div class="flex items-center justify-center gap-2 mt-2 sm:mt-0">
+              <button
+                @click="changeQty(item, -1)"
+                class="px-2 py-1 sm:px-3 bg-[#9D8A7C] text-white rounded hover:bg-[#796254] text-sm sm:text-base"
+              >
+                -
+              </button>
+              <span class="w-6 text-center text-[#523F31]">{{
+                item.quantity
+              }}</span>
+              <button
+                @click="changeQty(item, 1)"
+                class="px-2 py-1 sm:px-3 bg-[#9D8A7C] text-white rounded hover:bg-[#796254] text-sm sm:text-base"
+              >
+                +
+              </button>
+            </div>
+
+            <div
+              class="font-semibold text-[#523F31] mt-2 sm:mt-0 text-sm sm:text-base"
+            >
+              {{ (item.price * item.quantity).toLocaleString() }} ฿
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Cart Summary -->
-    <div class="w-full lg:w-2/5 border border-[#796254] rounded-lg p-4 md:p-6 bg-[#ebe8e8] h-fit">
-      <h1 class="text-2xl md:text-3xl font-bold text-[#523F31] mb-4 text-center md:text-left">
-        Cart Summary
-      </h1>
-      <hr class="border-[#796254] mb-4" />
-
-      <h2 class="text-[#523F31] font-semibold mb-1">Ship To</h2>
-      <textarea
-        v-model="address"
-        class="w-full p-2 md:p-3 border border-[#796254] rounded-md mb-4 text-[#523F31] text-sm md:text-base"
-        placeholder="Enter shipping address..."
-      ></textarea>
-
-      <h2 class="text-[#523F31] font-semibold mb-1">Note</h2>
-      <textarea
-        v-model="note"
-        class="w-full p-2 md:p-3 border border-[#796254] rounded-md mb-4 text-[#523F31] text-sm md:text-base"
-        placeholder="Additional instructions or requests"
-      ></textarea>
-
-      <div class="mb-2 flex justify-between text-[#523F31] font-semibold text-sm md:text-base">
-        <span>Total items:</span>
-        <span>{{ totalQuantity }}</span>
-      </div>
-      <div class="mb-4 flex justify-between text-[#523F31] font-semibold text-sm md:text-base">
-        <span>Total price:</span>
-        <span>{{ totalPrice.toLocaleString() }} ฿</span>
-      </div>
-
-      <button
-        @click="placeOrder"
-        :disabled="totalQuantity === 0 || !address"
-        class="w-full py-2 px-4 rounded-lg font-semibold text-white shadow-md transition-all duration-200 text-sm md:text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-        :class="totalQuantity > 0 && address ? 'bg-[#9D8A7C] hover:bg-[#796254]' : ''"
+      <!-- Cart Summary -->
+      <div
+        class="w-full lg:w-2/5 border border-[#796254] rounded-lg p-4 md:p-6 bg-[#ebe8e8] h-fit"
       >
-        Place Order
-      </button>
+        <h1
+          class="text-2xl md:text-3xl font-bold text-[#523F31] mb-4 text-center md:text-left"
+        >
+          Cart Summary
+        </h1>
+        <hr class="border-[#796254] mb-4" />
+
+        <h2 class="text-[#523F31] font-semibold mb-1">Ship To</h2>
+        <textarea
+          v-model="address"
+          class="w-full p-2 md:p-3 border border-[#796254] rounded-md mb-4 text-[#523F31] text-sm md:text-base"
+          placeholder="Enter shipping address..."
+        ></textarea>
+
+        <h2 class="text-[#523F31] font-semibold mb-1">Note</h2>
+        <textarea
+          v-model="note"
+          class="w-full p-2 md:p-3 border border-[#796254] rounded-md mb-4 text-[#523F31] text-sm md:text-base"
+          placeholder="Additional instructions or requests"
+        ></textarea>
+
+        <div
+          class="mb-2 flex justify-between text-[#523F31] font-semibold text-sm md:text-base"
+        >
+          <span>Total items:</span>
+          <span>{{ totalQuantity }}</span>
+        </div>
+        <div
+          class="mb-4 flex justify-between text-[#523F31] font-semibold text-sm md:text-base"
+        >
+          <span>Total price:</span>
+          <span>{{ totalPrice.toLocaleString() }} ฿</span>
+        </div>
+
+        <button
+          @click="placeOrder"
+          :disabled="totalQuantity === 0 || !address"
+          class="w-full py-2 px-4 rounded-lg font-semibold text-white shadow-md transition-all duration-200 text-sm md:text-base disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+          :class="
+            totalQuantity > 0 && address
+              ? 'bg-[#9D8A7C] hover:bg-[#796254]'
+              : ''
+          "
+        >
+          Place Order
+        </button>
+      </div>
     </div>
   </div>
-</div>
-
 </template>
 
 <style scoped>
@@ -394,7 +491,6 @@ async function placeOrder() {
   margin: 0 auto;
 }
 </style>
-
 
 <style scoped>
 .container {
