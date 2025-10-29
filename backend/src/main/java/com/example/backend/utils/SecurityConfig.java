@@ -42,7 +42,7 @@ public class SecurityConfig {
                                 .requestMatchers("/v2/auth/**").permitAll()
                                 .requestMatchers("/v1/sale-items/**").permitAll()
                                 .requestMatchers("/v2/sale-items/**").permitAll()
-                                .requestMatchers("/v1/brands/**").permitAll()
+                                .requestMatchers("/v1/brands/**").hasAnyAuthority("Admin")
                                 .requestMatchers("/v2/users/**").permitAll()
                                 .requestMatchers("/v2/orders/**").permitAll()
                                 .requestMatchers("/api/files/**").permitAll()
