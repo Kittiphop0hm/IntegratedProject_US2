@@ -276,6 +276,7 @@ function deleteSelectedItem() {
   }
   cartStore.cartObj = arrayCartItems.value;
   isDelete2.value = false;
+
 }
 
 </script>
@@ -283,7 +284,6 @@ function deleteSelectedItem() {
 <template>
   <Navbar />
 
-  <!-- Popup ลบสินค้า -->
   <div class="">
     <DeletePopupModel
       v-if="isDelete"

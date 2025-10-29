@@ -97,7 +97,7 @@ function addQtyToParent(type) {
 
 <template>
   <div
-    class="w-full min-h-screen flex justify-center items-center bg-white rounded-lg"
+    class=" w-full flex justify-center items-center bg-white rounded-lg"
   >
     <div class="w-[90%] rounded-2xl shadow-2xl p-6 bg-[#9D8A7C]">
       <div

@@ -141,12 +141,12 @@ const fetchData = async () => {
     const queryString = buildQueryParams();
     let res = null;
     if (!accessToken) {
-      console.log("no token")
+      // console.log("no token")
        res = await getItems(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`
       );
     } else {
-      console.log("have token")
+      // console.log("have token")
        res = await getItemsWithToken(
         `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`,
         accessToken
@@ -156,7 +156,7 @@ const fetchData = async () => {
     //     `${import.meta.env.VITE_APP_URL}/v2/sale-items?${queryString}`
     //   );
     pageObj.value = res;
-    console.log("pageObj.value:", pageObj.value);
+    // console.log("pageObj.value:", pageObj.value);
     saleItem.value = res.content;
   } catch (err) {
     console.log(err);
@@ -181,7 +181,7 @@ watch(
       JSON.stringify(filterStorageSizeR.value)
     );
     localStorage.setItem("searchKeyword", searchKeywordR.value);
-    console.log("Filters changed, resetting to page 0");
+    // console.log("Filters changed, resetting to page 0");
     pageNumber.value = 0;
   },
   { deep: true }
@@ -241,19 +241,60 @@ const fecthItemFromPage = async (index) => {
 };
 
 const handleSearch = (keyword) => {
-  console.log("Search triggered with keyword:", keyword);
+  // console.log("Search triggered with keyword:", keyword);
   searchKeywordR.value = keyword;
   pageNumber.value = 0;
   fetchData();
 };
 const addToCartSuccess = ref(false);
 const countAddToCartSuccess = ref(0);
+const timeoutId = ref(null);
+const extraMsPerClick = 1000; // เพิ่มทีละ 1s
+const maxDuration = 10_000; // ถ้าต้องการจำกัดเวลา (10s)
+const endTime = ref(null);
+const extendPopup = () => {
+  const now = Date.now();
+
+  if (!addToCartSuccess.value) {
+    addToCartSuccess.value = true;
+  }
+  countAddToCartSuccess.value += 1;
+
+
+  if (!timeoutId.value) {
+
+    endTime.value = now + extraMsPerClick;
+  } else {
+
+    endTime.value = Math.min(endTime.value + extraMsPerClick, now + maxDuration);
+
+  }
+
+
+  const remaining = Math.max(0, endTime.value - now);
+
+
+  if (timeoutId.value) {
+    clearTimeout(timeoutId.value);
+  }
+
+  timeoutId.value = setTimeout(() => {
+
+    addToCartSuccess.value = false;
+    countAddToCartSuccess.value = 0;
+    timeoutId.value = null;
+    endTime.value = null;
+  }, remaining);
+};
+
+
+
 const isShowAlertMessageModel = ref(false);
 const messageAlert = ref("");
 const checkRole = (yourItem) => {
-  console.log("checkRole called with item:", yourItem);
+
   if(userStore.role === "") {
-    console.log("no role 250 SaleitemMnaager")
+
     router.push({ name: "Login" });
     return
   }
@@ -264,29 +305,18 @@ const checkRole = (yourItem) => {
     messageAlert.value = "You cannot add your own item to the cart.";
   
   } else {
-    console.log("test Manager")
-    console.log("yourItem.quantity:", yourItem.quantity);
+
     yourItem.quantityEach = 1
     const result = cartStore.isMaxQtyInStock( yourItem );
-    console.log("Result from isMaxQtyInStock:", result);
+
     if(typeof result === 'string') {
       isShowAlertMessageModel.value = true;
       isSuccess.value = false;
       messageAlert.value = result;
     }
     else {
-      let n = 1000
-      console.log("Error mai")
       cartStore.pushInCart(yourItem);
-      addToCartSuccess.value = true;
-      if(addToCartSuccess.value = true){
-        countAddToCartSuccess.value += 1;
-        n += 1000
-      }
-      setTimeout(() => {
-        addToCartSuccess.value = false;
-        countAddToCartSuccess.value = 0;
-      }, n);
+        extendPopup();
     }
   }
 };
@@ -308,7 +338,7 @@ const checkRole = (yourItem) => {
       v-if="addToCartSuccess"
       class="fixed right-5 bottom-5 border p-4 bg-green-600 text-white rounded-lg shadow-lg z-20"
     >
-      Add to cart successfully! <span >({{ countAddToCartSuccess }})</span>
+      Add to cart successfully! <span v-show="countAddToCartSuccess > 1">({{ countAddToCartSuccess }})</span>
     </div>
   </transition>
   <SearchComponent @search="handleSearch" />
