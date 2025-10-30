@@ -6,12 +6,9 @@ import { useRouter, useRoute } from "vue-router";
 import {
   getItems,
   getItemById,
-  editItem,
-  addSaleItemAndImage,
   addSaleItemAndImageWithToken,
-  deleteImageResource,
   imageUrlToFileObject,
-  editSaleItemAndImage,
+  editSaleItemAndImageWithToken,
 } from "../../libs/fetchUtil.js";
 import {decodeJWT} from "@/libs/decodeJWT.js";
 const router = useRouter();
@@ -142,7 +139,7 @@ const initSaleItem = {
 };
 
 const saleItem = ref({ ...initSaleItem });
-
+const saleItemEach = ref();
 const saleItemForchecking = ref({ ...initSaleItem });
 const isEditMode = ref(false);
 const isAddMode = ref(false);
@@ -161,10 +158,15 @@ onMounted(async () => {
   }
   if (Number(route.params.id)) {
     try {
-      const data = await getItemById(
-        `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
-        route.params.id
+      // const data = await getItemById(
+      //   `${import.meta.env.VITE_APP_URL}/v1/sale-items`,
+      //   route.params.id
+      // );
+
+      const data = await getItems(
+      `${import.meta.env.VITE_APP_URL}/v2/sale-items/${route.params.id}/sellers`
       );
+      saleItemEach.value = data;
       if (data.status === 404) {
         alert("The requested sale item does not exist.");
         router.back();
@@ -520,11 +522,12 @@ async function submitForm() {
     console.log(imagesForUpdate.value);
     console.log(saleItemImageObjectFormats);
     console.log(saleItemImageObjectFormats.ramGb);
-    const editSaleItem = await editSaleItemAndImage(
+    const editSaleItem = await editSaleItemAndImageWithToken(
       `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
       route.params.id,
       saleItemImageObjectFormats,
-      imagesForUpdate.value
+      imagesForUpdate.value ,
+      accessToken
     );
 
     console.log("Finished Process 474");
@@ -611,6 +614,7 @@ function savePreviousPath() {
     <SaleItemDetailModel
       :isActive="isActive"
       :isUpdated="isUpdated"
+      :saleItemEach="saleItemEach"
       @fetchImagesForUpdate="fetchImagesForupdate"
     >
       <template #path>
@@ -790,7 +794,7 @@ function savePreviousPath() {
         <button
           type="submit"
           :disabled="!isActive || !isUpdated || isSubmitted"
-          class="itbms-save-button text-white rounded-md px-4 py-2"
+          class="itbms-save-button text-white rounded-md "
         >
           Save
         </button>

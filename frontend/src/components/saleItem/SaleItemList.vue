@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed , watch} from "vue";
-import { getItems, deleteItemById ,getItemsWithToken } from "../../libs/fetchUtil.js";
+import { getItems, deleteItemByIdWithToken ,getItemsWithToken } from "../../libs/fetchUtil.js";
 import ListTableModel from "../model/ListTableModel.vue";
 import Navbar from "../../views/Navbar.vue";
 import Search from "../Search.vue";
@@ -75,9 +75,10 @@ const cancelDelete = () => {
 
 const deleteSaleItem = async (id) => {
   try {
-    const deleteStatus = await deleteItemById(
+    const deleteStatus = await deleteItemByIdWithToken(
       `${import.meta.env.VITE_APP_URL}/v2/sale-items`,
-      id
+      id ,
+      accessToken
     );
     if (deleteStatus === 204) {
       const removeIndex = saleItems.value.findIndex((item) => item.id === id);

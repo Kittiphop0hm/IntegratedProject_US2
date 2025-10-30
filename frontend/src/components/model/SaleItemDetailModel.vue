@@ -1,6 +1,6 @@
 <script setup>
 import Search from "../Search.vue";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed , watch } from "vue";
 import { getItems } from "@/libs/fetchUtil";
 import { useRoute } from "vue-router";
 import { useUserStore } from "../../stores/users.js";
@@ -29,11 +29,21 @@ const props = defineProps({
     default: false,
   },
   saleItemEach: {
-    type: Object,
+    type: [Object,Boolean],
     default: false,
   },
 });
+
 const idSellerFromSaleItemEach = computed(() => props.saleItemEach?.seller?.id);
+watch(idSellerFromSaleItemEach, () => {
+  
+  console.log("idSellerFromSaleItemEach changed:", idSellerFromSaleItemEach.value);
+  console.log("props.saleItemEach changed:", props.saleItemEach);
+  console.log("userStore.id:", userStore.id);
+});
+// const savedIdSeller = parseInt(localStorage.getItem("idSellerFromSaleItemEach"));
+
+
 console.log(props.saleItemEach);
 // const pictures = ref([import.meta.env.BASE_URL+"images/huawei.png"]);
 const pictures = ref([]);
@@ -256,7 +266,7 @@ function addQtyToParent(type) {
             <div class="gap-4 mt-3 flex">
               <div class="gap-4 flex" v-if="userStore.isSeller">
                 <button
-                  v-if="idSellerFromSaleItemEach === userStore.id"
+                  v-if="idSellerFromSaleItemEach === userStore.id || route.name === 'SaleItemAdd'"
                   class="px-[20px] py-[10px] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] rounded-md text-white font-semibold"
                   :class="{
                     'bg-[#796254]': isActive && isUpdated,
@@ -268,7 +278,7 @@ function addQtyToParent(type) {
                   <slot name="button1">Input Name Button1</slot>
                 </button>
                 <button
-                  v-if="idSellerFromSaleItemEach === userStore.id"
+                  v-if="idSellerFromSaleItemEach === userStore.id || route.name === 'SaleItemAdd'"
                   class="px-[20px] py-[10px] bg-[#8B3A3A] text-white font-semibold rounded-md hover:opacity-80 shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)] cursor-pointer"
                 >
                   <slot name="button2">Input Name Button2</slot>
@@ -286,8 +296,8 @@ function addQtyToParent(type) {
               <div
                 class="flex justify-center items-center gap-4 rounded-lg bg-[#796254] shadow-black shadow-[0_4px_6px_rgba(0,4,4,0)]"
                 v-if="
-                  route.name === 'SaleItemDetail' &&
-                  idSellerFromSaleItemEach !== userStore.id
+                   route.name === 'SaleItemDetail' &&
+                  idSellerFromSaleItemEach !== userStore.id 
                 "
               >
                 <button

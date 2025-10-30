@@ -1,7 +1,7 @@
 <script setup>
 import UserProfile from "@/components/user/UserProfile.vue";
 import {onMounted, ref} from "vue";
-import {addItem, editItem, getItemById} from "@/libs/fetchUtil.js";
+import {addItem, editItemWithToken, getItemsByIdWithToken} from "@/libs/fetchUtil.js";
 import {decodeJWT} from "@/libs/decodeJWT.js";
 import { useRoute, useRouter } from "vue-router";
 
@@ -15,7 +15,7 @@ const maskBankNo = ref('')
 onMounted(async () => {
   if(!accessToken)router.push({name:'Login'})
   try {
-    const data = await getItemById(`${import.meta.env.VITE_APP_URL}/v2/users`, getUser.id)
+    const data = await getItemsByIdWithToken(`${import.meta.env.VITE_APP_URL}/v2/users`, getUser.id, accessToken)
     user.value = data
     maskPhone.value = maskNumber(user.value.phoneNumber)
     maskBankNo.value = maskNumber(user.value.bankAccount)
@@ -45,7 +45,7 @@ const isSuccess = ref(false)
 const isError = ref(false)
 const editUser = async (currentUser) => {
   if (currentUser) {
-    const updateUser = await editItem(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser) 
+    const updateUser = await editItemWithToken(`${import.meta.env.VITE_APP_URL}/v2/users`, currentUser.id, currentUser, accessToken) 
     console.log(updateUser);
     localStorage.setItem("nickname", updateUser.nickName)
      
