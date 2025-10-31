@@ -27,6 +27,9 @@ const props = defineProps({
   },
 });
 
+
+
+
 watchEffect(() => {
   if (route.name === "Register") {
     pathName.value = "Register";
@@ -229,6 +232,20 @@ const enableLoginButton = computed(() => {
         <p class="text-[16px] font-extrabold">
           Welcome to ITB-MSHOP <span class="font-bold">US2</span>
         </p>
+      </div>
+
+      <div v-show="props.is400" class="itbms-message mb-3">
+        <AlertMessageModel :isSuccess="false">
+          <template #message>
+            <p class="text-red-400">
+              {{
+                props.is400
+                  ? "Email already exists. Please use a different email."
+                  : "There is a problem. Please try again later."
+              }}
+            </p>
+          </template>
+        </AlertMessageModel>
       </div>
 
       <form class="space-y-6">
@@ -621,12 +638,11 @@ const enableLoginButton = computed(() => {
             class="w-full px-4 py-3 bg-white text-black rounded-lg focus:ring-2 transition-colors duration-200 placeholder-[#9D8A7C] hover:border-gray-400"
           />
         </div>
-            <label class="block text-[20px] font-medium text-white mb-1"
-              >ID Card Photo</label
-            >
-        <div class=" flex justify-between">
-          <div class="relative flex flex-col w-[49%] ">
-
+        <label class="block text-[20px] font-medium text-white mb-1"
+          >ID Card Photo</label
+        >
+        <div class="flex justify-between">
+          <div class="relative flex flex-col w-[49%]">
             <p
               @click="deleteImage(frontImageShowname)"
               v-if="frontImageShowname.length > 0"
@@ -673,7 +689,7 @@ const enableLoginButton = computed(() => {
             />
           </div>
 
-          <div class="relative flex flex-col w-[49%] ">
+          <div class="relative flex flex-col w-[49%]">
             <p
               @click="deleteImage(backImageShowname)"
               v-if="backImageShowname.length > 0"

@@ -260,6 +260,7 @@ async function verifyEmail(url) {
       credentials: "include",
     });
     const items = await res.json();
+    console.log(items);
     return {
       data: items,
       status: res.status,

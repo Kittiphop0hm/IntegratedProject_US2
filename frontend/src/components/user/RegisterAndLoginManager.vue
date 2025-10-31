@@ -4,22 +4,21 @@ import RegisterAndLogin from "./RegisterAndLogin.vue";
 import { onMounted, ref } from "vue";
 import { register, addItem } from "@/libs/fetchUtil";
 import { decodeJWT } from "@/libs/decodeJWT";
-import { useUserStore } from '../../stores/users.js';
-const accessToken = localStorage.getItem('accessToken')
+import { useUserStore } from "../../stores/users.js";
+const accessToken = localStorage.getItem("accessToken");
 const userStore = useUserStore();
 
 const saveTokens = (accessToken, nickname) => {
-  localStorage.setItem('accessToken', accessToken);
-  console.log('Saving accessToken to localStorage:', accessToken);
+  localStorage.setItem("accessToken", accessToken);
+  console.log("Saving accessToken to localStorage:", accessToken);
   userStore.setUser(decodeJWT(accessToken));
-  localStorage.setItem('nickname', nickname);
+  localStorage.setItem("nickname", nickname);
 };
-onMounted(()=>{
-  if(accessToken){
-    router.push()
+onMounted(() => {
+  if (accessToken) {
+    router.push();
   }
-
-})
+});
 const router = useRouter();
 const roles = ref([
   {
@@ -34,10 +33,10 @@ const roles = ref([
 
 const is401 = ref(false);
 const is400 = ref(false);
-const is403 = ref(false); 
+const is403 = ref(false);
 
 const registerForm = async (event, user) => {
-  event.preventDefault()
+  event.preventDefault();
   try {
     const registerUser = await register(
       `${import.meta.env.VITE_APP_URL}/v2/auth/register`,
@@ -49,6 +48,11 @@ const registerForm = async (event, user) => {
     if (registerUser.status === 201) {
       router.push({ name: "SaleItemHome", query: { alertAddUser: "true" } });
     }
+    if (registerUser.status === 400) {
+      is400.value = true;
+      is401.value = false;
+      is403.value = false;
+    }
   } catch (err) {
     console.log(err);
   }
@@ -59,14 +63,14 @@ const loginForm = async (event, user) => {
   console.log(user);
   console.log("loginForm");
   event.preventDefault();
-  
+
   try {
     loginUser.value = await addItem(
       `${import.meta.env.VITE_APP_URL}/v2/auth/login`,
       user
     );
     console.log(loginUser.value.status);
-    
+
     if (loginUser.value.status === 400) {
       is400.value = true;
       is401.value = false;
@@ -85,32 +89,30 @@ const loginForm = async (event, user) => {
       is401.value = false;
     }
 
-    
     if (loginUser.value.status === 200) {
       let responseData = loginUser.value.data || loginUser.value;
       const accessToken = responseData.access_token;
       const refreshToken = responseData.refresh_token;
-      
-      let nickName = responseData.nickName; 
+
+      let nickName = responseData.nickName;
       if (!nickName && accessToken) {
         const decodedToken = decodeJWT(accessToken);
         if (decodedToken) {
           nickName = decodedToken.nickname;
-          console.log('Decoded JWT payload:', decodedToken);
+          console.log("Decoded JWT payload:", decodedToken);
         }
       }
-      
-      console.log('Extracted values:', { accessToken, refreshToken, nickName });
-      
+
+      console.log("Extracted values:", { accessToken, refreshToken, nickName });
+
       if (accessToken && nickName) {
         saveTokens(accessToken, nickName);
-        router.push({ 
+        router.push({
           name: "SaleItemList",
-          query: { loginSuccess: "true" }
+          query: { loginSuccess: "true" },
         });
       }
     }
-
   } catch (err) {
     console.log(err);
   }
